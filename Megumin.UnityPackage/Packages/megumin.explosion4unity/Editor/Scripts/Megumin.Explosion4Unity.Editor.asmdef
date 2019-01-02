@@ -1,0 +1,16 @@
+{
+    "name": "Megumin.Explosion4Unity.Editor",
+    "references": [
+        "Megumin.Explosion4Unity"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
