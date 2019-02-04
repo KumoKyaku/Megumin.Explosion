@@ -25,6 +25,11 @@ namespace Megumin
         internal static readonly ByteArrayPool ForMemory = new ByteArrayPool(0.05f);
 
         /// <summary>
+        /// 全局共用空数组
+        /// </summary>
+        public static readonly byte[] Empty = new byte[0];
+
+        /// <summary>
         /// 愚蠢的二分查找
         /// </summary>
         /// <param name="minimumLength"></param>
@@ -139,13 +144,30 @@ namespace Megumin
 
 
         /// <summary>
-        /// 取得buffer,保证buffer长度大于参数长度,最大8192
+        /// 取得buffer,保证buffer长度大于等于参数长度,最大8192
+        /// <para>在返回前已经附加了清零操作</para>
         /// </summary>
         /// <param name="minimunLenght"></param>
         /// <returns></returns>
         public byte[] Rent(int minimunLenght)
         {
-            return FindBucket(minimunLenght)?.Rent() ?? new byte[minimunLenght];
+            if (minimunLenght <= 0)
+            {
+                ///增加对长度为0的数组支持
+                return Empty;
+            }
+
+            var buffer = FindBucket(minimunLenght)?.Rent();
+            if (buffer != null)
+            {
+                Array.Clear(buffer, 0, buffer.Length);
+            }
+            else
+            {
+                buffer = new byte[minimunLenght];
+            }
+
+            return buffer;
         }
 
         /// <summary>
@@ -153,10 +175,21 @@ namespace Megumin
         /// <para>请千万小心，不要将同一个数组Push进Pool中两次，会发生致命错误，池中没有内置去重机制。</para>
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="clearArray"></param>
-        public void Return(byte[] buffer, bool clearArray = false)
+        public void Return(byte[] buffer)
         {
-            FindBucket(buffer.Length)?.Return(buffer,clearArray);
+            if (buffer == null)
+            {
+                return;
+            }
+
+            var length = buffer.Length;
+            if (length == 0)
+            {
+                ///增加对长度为0的数组支持
+                return;
+            }
+
+            FindBucket(length)?.Return(buffer);
         }
 
 
@@ -172,15 +205,14 @@ namespace Megumin
         /// 归还长度为65536的buffer
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="clearArray"></param>
-        public void Return65536(byte[] buffer, bool clearArray = false)
+        public void Return65536(byte[] buffer)
         {
             if (buffer.Length != 65536)
             {
                 return;
             }
 
-            pool65536.Return(buffer,clearArray);
+            pool65536.Return(buffer);
         }
         /// <summary>
         /// 取得长度为16384的buffer
@@ -194,15 +226,14 @@ namespace Megumin
         /// 归还长度为16384的buffer
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="clearArray"></param>
-        public void Return16384(byte[] buffer, bool clearArray = false)
+        public void Return16384(byte[] buffer)
         {
             if (buffer.Length != 16384)
             {
                 return;
             }
 
-            pools[9].Return(buffer,clearArray);
+            pools[9].Return(buffer);
         }
 
         /// <summary>
@@ -268,7 +299,7 @@ namespace Megumin
                 return new byte[Size];
             }
 
-            internal void Return(byte[] buffer, bool clearArray = false)
+            internal void Return(byte[] buffer)
             {
                 if (bufferPoop.Count >= MaxCacheCount)
                 {
@@ -276,10 +307,6 @@ namespace Megumin
                 }
                 else
                 {
-                    if (clearArray)
-                    {
-                        Array.Clear(buffer, 0, buffer.Length);
-                    }
                     bufferPoop.Enqueue(buffer);
                 }
             }

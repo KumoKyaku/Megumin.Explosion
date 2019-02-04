@@ -5,9 +5,9 @@
     <RootNamespace>System.Buffers</RootNamespace>
     <LangVersion>7.3</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
-    <FileVersion>0.0.1.0</FileVersion>
-    <Version>0.0.1</Version>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <FileVersion>0.0.2.0</FileVersion>
+    <Version>0.0.2</Version>
     <Description>Megumin 类库的公共基础库之一，包括基础类和扩展函数。</Description>
     <PackageProjectUrl>https://github.com/KumoKyaku/Megumin.Explosion</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/KumoKyaku/Megumin.Explosion/blob/master/LICENSE</PackageLicenseUrl>

@@ -46,47 +46,165 @@ namespace System.Buffers
 
         public override int MaxBufferSize => int.MaxValue;
 
-        class ByteOwner : IMemoryOwner<byte>
+        class ByteOwner : IMemoryOwner<byte>,IRealLength
         {
             private byte[] array;
             private Memory<byte> _memory;
+            private readonly object innerlock = new object();
 
             public Memory<byte> Memory
             {
                 get
                 {
-                    if (_memory.IsEmpty)
+                    lock (innerlock)
                     {
-                        throw new ObjectDisposedException(nameof(IMemoryOwner<byte>));
+                        CheckDispose();
+                        return _memory;
                     }
-                    return _memory;
+                }
+            }
+
+            void CheckDispose()
+            {
+                if (array == null)
+                {
+                    throw new ObjectDisposedException(nameof(IMemoryOwner<byte>));
                 }
             }
 
             public ByteOwner(int mininumLength)
             {
-                this.array = ByteArrayPool.ForMemory.Rent(mininumLength);
-                if (mininumLength <= 0)
-                {
-                    _memory = Memory<byte>.Empty;
-                }
-                else
-                {
-                    _memory = new Memory<byte>(array, 0, mininumLength);
-                    _memory.Span.Clear();
-                }
+                array = ByteArrayPool.ForMemory.Rent(mininumLength);
+                _memory = new Memory<byte>(array, 0, mininumLength);
             }
 
             public void Dispose()
             {
-                _memory = Memory<byte>.Empty;
-                if (array != null)
+                lock (innerlock)
                 {
-                    ByteArrayPool.ForMemory.Return(array);
-                    array = null;
+                    _memory = null;
+                    if (array != null)
+                    {
+                        array = null;
+                        ByteArrayPool.ForMemory.Return(array);
+                    }
                 }
             }
+
+            public int RealLength
+            {
+                get
+                {
+                    lock (innerlock)
+                    {
+                        CheckDispose();
+                        return array.Length;
+                    }
+                }
+            }
+
+            //public void ResizeVisualLength(int newStartPosition, int newEndPosition)
+            //{
+            //    lock (innerlock)
+            //    {
+            //        CheckDispose();
+            //        var newlength = newEndPosition - newStartPosition;
+            //        if (newlength < 0)
+            //        {
+            //            throw new ArgumentOutOfRangeException();
+            //        }
+            //        else if (newlength == 0)
+            //        {
+            //            if (_memory.Length != 0)
+            //            {
+            //                _memory = new Memory<byte>(array, 0, 0);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            if (newlength > array.Length)
+            //            {
+            //                var newArray =  ByteArrayPool.ForMemory.Rent(newlength);
+            //                if (newStartPosition == 0)
+            //                {
+            //                    _memory.Span.CopyTo(newArray);
+            //                }
+            //                else if (newStartPosition > 0)
+            //                {
+            //                    _memory.Span.Slice(newStartPosition).CopyTo(newArray);
+            //                }
+            //                else
+            //                {
+            //                    //todo
+            //                }
+
+
+            //                _memory = new Memory<byte>(newArray, 0, newlength);
+            //                ByteArrayPool.ForMemory.Return(array);
+            //                array = newArray;
+            //                return;
+            //            }
+            //            else
+            //            {
+            //                //todo
+            //            }
+            //        }
+            //    }
+            //}
         }
+
+    }
+
+    /// <summary>
+    /// 真实长度
+    /// </summary>
+    public interface IRealLength
+    {
+        /// <summary>
+        /// 真实长度
+        /// </summary>
+        int RealLength { get; }
+    }
+
+    /// <summary>
+    /// 可调整大小的
+    /// </summary>
+    [Obsolete("",true)]
+    public interface IResizable:IRealLength
+    {
+        /// <summary>
+        /// 重设可见长度，当真实长度不够时自动扩容，数据不变
+        /// <para></para>
+        /// 新的可见长度为<paramref name="newEndPosition"/> - <paramref name="newStartPosition"/>
+        /// <para>当起始位置是负数时，在头部插入 | <paramref name="newStartPosition"/> |  的长度。</para>
+        /// </summary>
+        /// <param name="newStartPosition"></param>
+        /// <param name="newEndPosition"></param>
+        void ResizeVisualLength(int newStartPosition, int newEndPosition);
+    }
+
+    /// <summary>
+    /// 网络协议栈缓冲区
+    /// <para>用于组装协议栈中动态控制缓冲区大小</para>
+    /// </summary>
+    [Obsolete("",true)]
+    public interface INetstackBuffer:IResizable,IMemoryOwner<byte>
+    {
+        ///为什么废弃可调整大小功能？
+        ///
+        ///写到一半时发现，
+        ///
+        ///如果可见位置变小，那么不需要拷贝数据，但是第二次将可见位置变大时，
+        ///新的可见位置将会有未知的数据而不是0，这决定了调整可见大小必须拷贝数据。
+        ///那么在内部调整大小不如调用者重新租赁新的缓冲区。
+        ///
+        ///逻辑就是，如果你想使用大的buffer,那么就必须保存有效数据未知信息index + length
+        ///如果你想使用memory.length 表示有效信息位置，那么在扩容时就必须数据拷贝。
+        ///
+        ///需要考虑的是，并不只是在尾部扩容，也可在头部扩容。
+        ///指定一个额外的memrory字段来表示游戏数据不能解决问题。
+
+        ///所以 https://github.com/skywind3000/kcp/wiki/Network-Layer 无法避免内存拷贝。
 
     }
 }
