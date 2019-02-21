@@ -1,36 +1,79 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!--主配置-->
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>云却</Authors>
+    
+    <!--版本配置-->
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Version>0.1.0.0</Version>
+    
+    <!--包配置-->
+    <Product>MeguminLibrary</Product>
+    <PackageId>Megumin.Explosion</PackageId>
+    <AssemblyName>Megumin.Explosion</AssemblyName>
     <RootNamespace>System</RootNamespace>
-    <LangVersion>7.3</LangVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
-    <FileVersion>0.0.1.0</FileVersion>
-    <Version>0.0.1</Version>
+    <PackageTags>notnetstandard,unity</PackageTags>
     <Description>Megumin 类库的公共基础库之一，包括基础类和扩展函数。</Description>
     <PackageProjectUrl>https://github.com/KumoKyaku/Megumin.Explosion</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/KumoKyaku/Megumin.Explosion/blob/master/LICENSE</PackageLicenseUrl>
-    <Authors>云却</Authors>
-    <Product>MeguminLibrary</Product>
+    <RepositoryUrl>https://github.com/KumoKyaku/Megumin.Explosion</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    
+    <!--许可证配置-->
     <Copyright>Copyright (c) 2019 云却</Copyright>
+    <PackageLicenseUrl>https://github.com/KumoKyaku/Megumin.Explosion/blob/master/LICENSE</PackageLicenseUrl>
+
+  </PropertyGroup> 
+  
+  <!--目标框架配置-->
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.6;netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+  
+  <!--依赖配置-->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+  </ItemGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy bin\$(Configuration)\netstandard2.0\*.* $(SolutionDir)Megumin.UnityPackage\Packages\megumin.explosion4unity\Plugins\ /s /y /d" />
+  </Target>
+  
+  <!--以下是项目通用配置-->
+  
+  <!--基本配置-->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1701;1702;1591</NoWarn>
+    
+    <!--打包配置-->
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\OpenSource.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\netstandard2.0\Megumin.Explosion.xml</DocumentationFile>
-  </PropertyGroup>
-
+    
+    <!--xml注释生成-->
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup> 
+  
+  
+  <!--调试符号配置-->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Debug\netstandard2.0\Megumin.Explosion.xml</DocumentationFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
   </PropertyGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy $(OutDir)*.* $(SolutionDir)Megumin.UnityPackage\Packages\megumin.explosion4unity\Plugins\ /s /y /d" />
-  </Target>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
 
 </Project>

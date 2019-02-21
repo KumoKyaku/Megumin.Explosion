@@ -141,7 +141,7 @@ namespace System.Net
             return false;
         }
 
-
+#if NETSTANDARD2_0
         /// <summary>
         /// 取得IP
         /// <para>true取得局域网IP，flase取得外网IP，默认值为flase</para>
@@ -180,5 +180,7 @@ namespace System.Net
                 }
             }     
         }
+#endif
+
     }
 }
