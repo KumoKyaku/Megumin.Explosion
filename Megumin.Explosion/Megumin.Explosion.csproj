@@ -20,10 +20,6 @@
     <RepositoryUrl>https://github.com/KumoKyaku/Megumin.Explosion</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     
-    <!--许可证配置-->
-    <Copyright>Copyright (c) 2019 云却</Copyright>
-    <PackageLicenseUrl>https://github.com/KumoKyaku/Megumin.Explosion/blob/master/LICENSE</PackageLicenseUrl>
-
   </PropertyGroup> 
   
   <!--目标框架配置-->
@@ -58,8 +54,19 @@
     
     <!--xml注释生成-->
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    
+    <!--版权配置-->
+    <Copyright>Copyright (c) 2019 云却</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup> 
   
+  <!--许可证文件配置-->
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
   
   <!--调试符号配置-->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
