@@ -14,7 +14,7 @@
     <PackageId>Megumin.Explosion</PackageId>
     <AssemblyName>Megumin.Explosion</AssemblyName>
     <RootNamespace>System</RootNamespace>
-    <PackageTags>notnetstandard,unity</PackageTags>
+    <PackageTags>dotnetstandard,unity</PackageTags>
     <Description>Megumin 类库的公共基础库之一，包括基础类和扩展函数。</Description>
     <PackageProjectUrl>https://github.com/KumoKyaku/Megumin.Explosion</PackageProjectUrl>
     <RepositoryUrl>https://github.com/KumoKyaku/Megumin.Explosion</RepositoryUrl>
