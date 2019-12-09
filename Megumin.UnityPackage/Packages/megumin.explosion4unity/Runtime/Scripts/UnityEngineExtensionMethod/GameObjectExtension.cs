@@ -38,5 +38,19 @@ namespace UnityEngine
                 trans.gameObject.layer = layer;
             }
         }
+
+        /// <summary>
+        /// 更改包括子的层级
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="tag"></param>
+        public static void SetTagOnAll(this GameObject obj, string tag)
+        {
+            ///据说GetComponentsInChildren更快
+            foreach (Transform trans in obj.GetComponentsInChildren<Transform>(true))
+            {
+                trans.gameObject.tag = tag;
+            }
+        }
     }
 }
