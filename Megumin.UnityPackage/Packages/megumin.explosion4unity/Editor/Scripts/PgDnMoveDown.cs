@@ -11,7 +11,11 @@ namespace UnityEditor
 
         static PgDnMoveDown()
         {
+#if UNITY_EDITOR && UNITY_2019_2_OR_NEWER
+            SceneView.duringSceneGui += TestMoveDown;
+#elif UNITY_EDITOR
             SceneView.onSceneGUIDelegate += TestMoveDown;
+#endif
         }
 
         private static void TestMoveDown(SceneView sceneView)
