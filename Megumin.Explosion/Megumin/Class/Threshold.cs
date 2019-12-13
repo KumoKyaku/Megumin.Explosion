@@ -25,8 +25,6 @@ namespace Megumin
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="l">下界</param>
-        /// <param name="u">上界</param>
         public Threshold(T lower, T upper)
         {
             if (lower.CompareTo(upper) > 0)

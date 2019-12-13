@@ -91,5 +91,15 @@ namespace UnitTestProject1
             var c2 = await Task.Delay(200).WaitAsync(150);
             Assert.AreEqual(false, c2);
         }
+
+        [TestMethod]
+        public void TestXYZ()
+        {
+            XYZ<int> xyz = new XYZ<int>() { X = 1, Y = 2, Z = 3 };
+            var (x, y, z) = xyz;
+            Assert.AreEqual(1, x);
+            Assert.AreEqual(2, y);
+            Assert.AreEqual(3, z);
+        }
     }
 }

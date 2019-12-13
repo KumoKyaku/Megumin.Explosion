@@ -27,7 +27,7 @@ namespace System
 
             if (s.Length < perLength)
             {
-                ///字符串长度小于要分割每段长度
+                //字符串长度小于要分割每段长度
                 if (allowLastOneShortCount)
                 {
                     return new string[1] { s };
@@ -45,7 +45,7 @@ namespace System
             {
                 int count = s.Length/perLength;
                 int yushu = s.Length % perLength;
-                ///
+                //
                 string[] res = null;
                 if (yushu != 0 && allowLastOneShortCount)
                 {

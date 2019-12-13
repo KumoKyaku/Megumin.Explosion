@@ -38,7 +38,7 @@ namespace System.Net
             string[] res;
             if (address.AddressFamily == Sockets.AddressFamily.InterNetwork)
             {
-                ///IPV4
+                //IPV4
                 res = address.ToString().Split('.');
             }
             else
