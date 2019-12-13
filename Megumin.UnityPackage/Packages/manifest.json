@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.unity.package-manager-ui": "2.0.8",
-    "com.unity.package-validation-suite": "0.7.11-preview",
+    "com.unity.package-validation-suite": "0.7.12-preview",
     "com.unity.textmeshpro": "1.4.1",
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.imgui": "1.0.0",
