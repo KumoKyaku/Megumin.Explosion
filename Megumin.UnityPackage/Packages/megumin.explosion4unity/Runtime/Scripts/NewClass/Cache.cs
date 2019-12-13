@@ -80,7 +80,10 @@ namespace Megumin
             }
         }
         private Func<T> getValue;
-        private long currentFrame;
+        /// <summary>
+        /// 上一次求值时的帧数
+        /// </summary>
+        private long lastCalculateFrame;
         private T value;
 
         public Cache(Func<T> func)
@@ -97,18 +100,23 @@ namespace Megumin
             Calculate(true);
         }
 
+        /// <summary>
+        /// 重新求值的间隔帧数
+        /// </summary>
+        public int DeltaFrameCount { get; set; } = 1;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Calculate(bool force = true)
         {
             if (!force)
             {
-                if (currentFrame == Time.frameCount)
+                if (Time.frameCount - lastCalculateFrame >= DeltaFrameCount)
                 {
                     return value;
                 }
             }
 
-            this.currentFrame = Time.frameCount;
+            this.lastCalculateFrame = Time.frameCount;
             if (getValue == null)
             {
                 throw new ObjectDisposedException(nameof(Cache<T>));

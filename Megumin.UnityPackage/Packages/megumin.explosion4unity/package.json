@@ -2,7 +2,7 @@
   "name": "com.unity.megumin.explosion4unity",
   "displayName": "Explosion",
   "author": "Kumokyaku",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2018.3",
   "description": "KumoKyaku's personal common library.\n\n[KumoKyaku](https://github.com/KumoKyaku)\u7684\u79c1\u4eba\u516c\u5171\u7c7b\u5e93\uff0c\u5305\u542b\u4e00\u4e9b\u5e38\u7528\u7684\u7c7b\u548c\u6269\u5c55\u51fd\u6570\u3002",
   "keywords": [
