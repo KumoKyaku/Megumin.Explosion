@@ -1,0 +1,389 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Megumin.Explosion</name>
+    </assembly>
+    <members>
+        <member name="T:System.ByteArrayExtension_293399541C8D4E38A03A6340FA15498E">
+            <summary>
+            字节数据扩展
+            </summary>
+        </member>
+        <member name="M:System.ByteArrayExtension_293399541C8D4E38A03A6340FA15498E.StartWithBOM(System.Byte[])">
+            <summary>
+            这个数组是不是以BOM头开始的
+            </summary>
+            <param name="buffer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.ByteArrayExtension_293399541C8D4E38A03A6340FA15498E.SkipBOMIfHave(System.Byte[])">
+            <summary>
+            如果含有BOM头则去掉，不含有返回原数组
+            </summary>
+            <param name="buffer"></param>
+            <returns></returns>
+        </member>
+        <member name="T:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C">
+            <summary>
+            字典扩展
+            </summary>
+        </member>
+        <member name="T:System.EnumExtension_5108BEA26E8C44D9A538646E15B6B175">
+            <summary>
+            对枚举类的扩展
+            </summary>
+        </member>
+        <member name="M:System.EnumExtension_5108BEA26E8C44D9A538646E15B6B175.CheckFlags``1">
+            <summary>
+            检查是否有FlagsAttribute
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414">
+            <summary>
+            IPAddressExtension
+            </summary>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetIntPart(System.Net.IPAddress)">
+            <summary>
+            取得IP的各个部分
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetStringParts(System.Net.IPAddress)">
+            <summary>
+            取得IP的各个部分
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsA(System.Net.IPAddress)">
+            <summary>
+            是不是A类地址
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsB(System.Net.IPAddress)">
+            <summary>
+            是不是B类地址
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsC(System.Net.IPAddress)">
+            <summary>
+            是不是C类地址
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsD(System.Net.IPAddress)">
+            <summary>
+            是不是D类地址（多点广播）
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsE(System.Net.IPAddress)">
+            <summary>
+            是不是E类地址（广播）
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsLocalAddress(System.Net.IPAddress)">
+            <summary>
+            判断地址是不是局域网地址
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetIP(System.Boolean)">
+            <summary>
+            取得IP
+            <para>true取得局域网IP，flase取得外网IP，默认值为flase</para>
+            </summary>
+            <param name="IsLAN">true取得局域网IP，flase取得外网IP，默认值为flase</param>
+            <returns></returns>
+        </member>
+        <member name="T:System.StringExtension_E68DD56066C94F2286AF4BD18126A406">
+            <summary>
+            string扩展
+            </summary>
+        </member>
+        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.Split(System.String,System.Int32,System.Boolean)">
+            <summary>
+            按指定长度分割字符串
+            </summary>
+            <param name="s"></param>
+            <param name="perLength">每段长度</param>
+            <param name="allowLastOneShortCount">是够允许最后一段长度小于每段长度，
+            如果为false，不足的末尾将被舍弃。默认为false。</param>
+            <returns></returns>
+        </member>
+        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.ToInt(System.String)">
+            <summary>
+            使用int.Parse转换一个字符串
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.ToEnum``1(System.String)">
+            <summary>
+            将一个字符串转换成枚举
+            </summary>
+            <typeparam name="T">提供一个枚举类型</typeparam>
+            <param name="value"></param>
+            <returns>返回对应的枚举值</returns>
+            <exception cref="T:System.ArgumentException">所给泛型不是枚举</exception>
+        </member>
+        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.ToBool(System.String)">
+            <summary>
+            将string转换成bool。
+            <para>当值为"true""TRUE""True"之一时返回true，否则返回false。</para>
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328">
+            <summary>
+            值扩展
+            </summary>
+        </member>
+        <member name="M:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328.Clamp``1(``0@,``0@,``0@)">
+            <summary>
+            将值限定在指定范围内
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="cur"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431.FirstAttribute``1(System.Type)">
+            <summary>
+            尝试取得第一个指定属性
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Megumin.CoolDownTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Megumin.CoolDownTime.CoolDown">
+            <summary>
+            是否冷却完毕
+            </summary>
+        </member>
+        <member name="M:Megumin.CoolDownTime.op_Implicit(Megumin.CoolDownTime)~System.Boolean">
+            <summary>
+            是否冷却完毕
+            </summary>
+            <param name="time"></param>
+        </member>
+        <member name="P:Megumin.CoolDownTime.Last">
+            <summary>
+            上次返回冷却完毕的时间
+            </summary>
+        </member>
+        <member name="P:Megumin.CoolDownTime.MinDelta">
+            <summary>
+            最小间隔
+            </summary>
+        </member>
+        <member name="T:Megumin.InterlockedID`1">
+            <summary>
+            线程安全ID生成器
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Megumin.K2Dictionary`3">
+            <summary>
+            不是线程安全的
+            </summary>
+            <typeparam name="TKey1"></typeparam>
+            <typeparam name="TKey2"></typeparam>
+            <typeparam name="TValue"></typeparam>
+        </member>
+        <member name="T:Megumin.ListPool`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Megumin.ListPool`1.MaxSize">
+            <summary>
+            默认容量10
+            </summary>
+        </member>
+        <member name="M:Megumin.ListPool`1.Return(System.Collections.Generic.List{`0})">
+            <summary>
+            调用者保证归还后不在使用当前list
+            </summary>
+            <param name="list"></param>
+        </member>
+        <member name="T:Megumin.NotInitException">
+            <summary>
+            未初始化异常
+            </summary>
+        </member>
+        <member name="T:Megumin.Threshold`1">
+            <summary>
+            阈
+            </summary>
+        </member>
+        <member name="P:Megumin.Threshold`1.Lower">
+            <summary>
+            下界
+            </summary>
+        </member>
+        <member name="P:Megumin.Threshold`1.Upper">
+            <summary>
+            上界
+            </summary>
+        </member>
+        <member name="M:Megumin.Threshold`1.#ctor(`0,`0)">
+            <summary>
+            构造函数
+            </summary>
+        </member>
+        <member name="M:Megumin.Threshold`1.Contain(`0)">
+            <summary>
+            是不是在界限内
+            </summary>
+        </member>
+        <member name="M:Megumin.Threshold`1.op_LessThan(`0@,Megumin.Threshold{`0}@)">
+            <summary>
+            是否小于下界
+            </summary>
+        </member>
+        <member name="M:Megumin.Threshold`1.op_GreaterThan(`0@,Megumin.Threshold{`0}@)">
+            <summary>
+            是否大于上界
+            </summary>
+        </member>
+        <member name="T:Megumin.UtilTime">
+            <summary>
+            计时（服务器用）
+            </summary>
+        </member>
+        <member name="P:Megumin.UtilTime.DeltaTime">
+            <summary>
+            上一个时间间隔长度（毫秒）
+            </summary>
+        </member>
+        <member name="P:Megumin.UtilTime.TotalMilliseconds">
+            <summary>
+            获取以整毫秒数和毫秒的小数部分表示的当前 System.TimeSpan 结构的值。
+            </summary>
+        </member>
+        <member name="M:Megumin.UtilTime.Update">
+            <summary>
+            更新时间间隔
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Megumin.OnValueChanged`1">
+            <summary>
+            当值发生改变时被调用
+            <para>因为 new 是关键字，所以参数带有下划线</para>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="new_">新的值</param>
+            <param name="old_">旧的值</param>
+        </member>
+        <member name="T:Megumin.Axial">
+            <summary>
+            轴向
+            </summary>
+        </member>
+        <member name="T:Megumin.LeftOrRight">
+            <summary>
+            左右
+            </summary>
+        </member>
+        <member name="T:Megumin.LineMode">
+            <summary>
+            联机模式
+            </summary>
+        </member>
+        <member name="F:Megumin.LineMode.Single">
+            <summary>
+            单机模式
+            </summary>
+        </member>
+        <member name="F:Megumin.LineMode.Online">
+            <summary>
+            在线
+            </summary>
+        </member>
+        <member name="F:Megumin.LineMode.Offline">
+            <summary>
+            离线
+            </summary>
+        </member>
+        <member name="F:Megumin.LineMode.LAN">
+            <summary>
+            局域网
+            </summary>
+        </member>
+        <member name="T:Megumin.PluginState">
+            <summary>
+            插件状态
+            </summary>
+        </member>
+        <member name="F:Megumin.PluginState.Null">
+            <summary>
+            插件为空
+            </summary>
+        </member>
+        <member name="F:Megumin.PluginState.Initing">
+            <summary>
+            正在初始化
+            </summary>
+        </member>
+        <member name="F:Megumin.PluginState.InitErrorAndStop">
+            <summary>
+            初始化失败已停止工作
+            </summary>
+        </member>
+        <member name="F:Megumin.PluginState.ReIniting">
+            <summary>
+            重新初始化
+            </summary>
+        </member>
+        <member name="F:Megumin.PluginState.InitFinish">
+            <summary>
+            初始化完成
+            </summary>
+        </member>
+        <member name="F:Megumin.PluginState.Open">
+            <summary>
+            开启
+            </summary>
+        </member>
+        <member name="F:Megumin.PluginState.Close">
+            <summary>
+            关闭
+            </summary>
+        </member>
+        <member name="F:Megumin.PluginState.Dispose">
+            <summary>
+            已释放
+            </summary>
+        </member>
+        <member name="T:Megumin.IXYZ`1">
+            <summary>
+            
+            </summary>
+            <remarks>不要重写比较方法</remarks>
+            <typeparam name="T"></typeparam>
+        </member>
+    </members>
+</doc>
