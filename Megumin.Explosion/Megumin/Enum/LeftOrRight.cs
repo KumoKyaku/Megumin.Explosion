@@ -17,10 +17,16 @@ namespace Megumin
     }
 
     /// <summary>
-    /// 上下左右
+    /// 顺时针 上右下左
     /// </summary>
-    public enum UDLR
+    [Flags]
+    public enum URDL
     {
-
+        Up =  1 << 0,
+        Right = 1 << 1,
+        Down = 1 << 2,
+        Left = 1 << 3,
     }
+
+
 }
