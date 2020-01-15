@@ -15,4 +15,12 @@ namespace Megumin
         Right,
         Center,
     }
+
+    /// <summary>
+    /// 上下左右
+    /// </summary>
+    public enum UDLR
+    {
+
+    }
 }
