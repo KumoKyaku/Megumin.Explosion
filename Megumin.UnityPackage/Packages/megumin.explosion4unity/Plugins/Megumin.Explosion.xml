@@ -397,6 +397,29 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Megumin.IMatcher`2" -->
+        <member name="T:Megumin.INode">
+            <summary>
+            节点
+            </summary>
+        </member>
+        <member name="T:Megumin.INode`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="V"></typeparam>
+        </member>
+        <member name="T:Megumin.ISlot">
+            <summary>
+            插槽
+            </summary>
+        </member>
+        <member name="T:Megumin.ISlot`2">
+            <summary>
+            插槽
+            </summary>
+            <typeparam name="K"></typeparam>
+            <typeparam name="V"></typeparam>
+        </member>
         <member name="T:Megumin.IXYZ`1">
             <summary>
             
