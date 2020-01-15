@@ -28,5 +28,25 @@ namespace Megumin
         Left = 1 << 3,
     }
 
+    /// <summary>
+    /// 九宫格
+    /// <para> 7 0 1 </para>
+    /// <para> 6 8 2 </para>
+    /// <para> 5 4 3 </para>
+    /// </summary>
+    [Flags]
+    public enum Sudoku
+    {
+        Up = 1 << 0,
+        RightUp = 1 << 1,
+        Right = 1 << 2,
+        RightDown = 1 << 3,
 
+        Down = 1 << 4,
+        LeftDown = 1 << 5,
+        Left = 1 << 6,
+        LeftUp = 1 << 7,
+        
+        Center = 1 << 8,
+    }
 }

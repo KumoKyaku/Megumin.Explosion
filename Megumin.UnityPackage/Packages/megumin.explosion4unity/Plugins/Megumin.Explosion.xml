@@ -233,6 +233,11 @@
             未初始化异常
             </summary>
         </member>
+        <member name="T:Megumin.SimpleMatcher">
+            <summary>
+            简单的匹配器
+            </summary>
+        </member>
         <member name="T:Megumin.Threshold`1">
             <summary>
             阈
@@ -308,6 +313,19 @@
             左右
             </summary>
         </member>
+        <member name="T:Megumin.URDL">
+            <summary>
+            顺时针 上右下左
+            </summary>
+        </member>
+        <member name="T:Megumin.Sudoku">
+            <summary>
+            九宫格
+            <para> 7 0 1 </para>
+            <para> 6 8 2 </para>
+            <para> 5 4 3 </para>
+            </summary>
+        </member>
         <member name="T:Megumin.LineMode">
             <summary>
             联机模式
@@ -378,6 +396,7 @@
             已释放
             </summary>
         </member>
+        <!-- Badly formed XML comment ignored for member "T:Megumin.IMatcher`2" -->
         <member name="T:Megumin.IXYZ`1">
             <summary>
             
