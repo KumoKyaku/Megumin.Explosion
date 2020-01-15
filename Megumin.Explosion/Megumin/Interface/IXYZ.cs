@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Megumin;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -26,17 +27,14 @@ namespace Megumin
 
     public interface IXY<T> : IX<T>, IY<T>
     {
-        void Deconstruct(out T x, out T y);
     }
 
     public interface IXZ<T> : IX<T>, IZ<T>
     {
-        void Deconstruct(out T x, out T z);
     }
 
     public interface IYZ<T> : IY<T>, IZ<T>
     {
-        void Deconstruct(out T y, out T z);
     }
 
     /// <summary>
@@ -46,6 +44,68 @@ namespace Megumin
     /// <typeparam name="T"></typeparam>
     public interface IXYZ<T> : IX<T>, IY<T>, IZ<T>, IXY<T>, IXZ<T>, IYZ<T>
     {
-        void Deconstruct(out T x, out T y, out T z);
+    }
+}
+
+public static class XYZExtension_66E8DCAC
+{
+    public static void Deconstruct<T>(this IXYZ<T> value,out T x, out T y, out T z)
+    {
+        x = value.X;
+        y = value.Y;
+        z = value.Z;
+    }
+
+    public static void Deconstruct<T>(this IXZ<T> value, out T x, out T z)
+    {
+        x = value.X;
+        z = value.Z;
+    }
+
+    public static void Deconstruct<T>(this T value, out int x, out int y, out int z)
+        where T : IXYZ<int>
+    {
+        x = value.X;
+        y = value.Y;
+        z = value.Z;
+    }
+
+    public static void Deconstruct<V>(this V value, out int x, out int z)
+        where V : IXZ<int>
+    {
+        x = value.X;
+        z = value.Z;
+    }
+}
+
+public static class XYZExtension_765F0A8D
+{
+    public static void Deconstruct<V>(this V value, out int x, out int y)
+        where V : IXY<int>
+    {
+        x = value.X;
+        y = value.Y;
+    }
+
+    public static void Deconstruct<V>(this IXY<V> value, out V x, out V y)
+    {
+        x = value.X;
+        y = value.Y;
+    }
+}
+
+public static class XYZExtension_78970A59
+{
+    public static void Deconstruct<V>(this V value, out int y, out int z)
+        where V : IYZ<int>
+    {
+        y = value.Y;
+        z = value.Z;
+    }
+
+    public static void Deconstruct<V>(this IYZ<V> value, out V y, out V z)
+    {
+        y = value.Y;
+        z = value.Z;
     }
 }

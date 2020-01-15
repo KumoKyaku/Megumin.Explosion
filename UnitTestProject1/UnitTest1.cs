@@ -100,6 +100,9 @@ namespace UnitTestProject1
             Assert.AreEqual(1, x);
             Assert.AreEqual(2, y);
             Assert.AreEqual(3, z);
+
+            XZ<int> xz = new XZ<int>();
+            var (a, b) = xz;
         }
     }
 }
