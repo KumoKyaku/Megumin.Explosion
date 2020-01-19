@@ -397,6 +397,11 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Megumin.IMatcher`2" -->
+        <member name="T:Megumin.IPath">
+            <summary>
+            路径
+            </summary>
+        </member>
         <member name="T:Megumin.INode">
             <summary>
             节点
