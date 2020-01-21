@@ -29,7 +29,7 @@ namespace Megumin
     }
 
     /// <summary>
-    /// 九宫格
+    /// 九宫格 顺时针布局
     /// <para> 7 0 1 </para>
     /// <para> 6 8 2 </para>
     /// <para> 5 4 3 </para>
@@ -48,5 +48,25 @@ namespace Megumin
         LeftUp = 1 << 7,
         
         Center = 1 << 8,
+    }
+
+    /// <summary>
+    /// 九宫格 小键盘布局
+    /// <para> 7 8 9 </para>
+    /// <para> 4 5 6 </para>
+    /// <para> 1 2 3 </para>
+    /// </summary>
+    [Flags]
+    public enum Sudoku_Keypad
+    {
+        LeftDown = 1 << 1,
+        Down = 1 << 2,
+        RightDown = 1 << 3,
+        Left = 1 << 4,
+        Center = 1 << 5,
+        Right = 1 << 6,
+        LeftUp = 1 << 7,
+        Up = 1 << 8,
+        RightUp = 1 << 9,
     }
 }

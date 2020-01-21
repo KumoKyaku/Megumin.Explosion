@@ -320,10 +320,18 @@
         </member>
         <member name="T:Megumin.Sudoku">
             <summary>
-            九宫格
+            九宫格 顺时针布局
             <para> 7 0 1 </para>
             <para> 6 8 2 </para>
             <para> 5 4 3 </para>
+            </summary>
+        </member>
+        <member name="T:Megumin.Sudoku_Keypad">
+            <summary>
+            九宫格 小键盘布局
+            <para> 7 8 9 </para>
+            <para> 4 5 6 </para>
+            <para> 1 2 3 </para>
             </summary>
         </member>
         <member name="T:Megumin.LineMode">
@@ -424,6 +432,26 @@
             </summary>
             <typeparam name="K"></typeparam>
             <typeparam name="V"></typeparam>
+        </member>
+        <member name="T:Megumin.IVisible">
+            <summary>
+            含有可见性的
+            </summary>
+        </member>
+        <member name="P:Megumin.IVisible.Visible">
+            <summary>
+            可见等级
+            </summary>
+        </member>
+        <member name="T:Megumin.IVersionable">
+            <summary>
+            含有版本的
+            </summary>
+        </member>
+        <member name="P:Megumin.IVersionable.Version">
+            <summary>
+            当前版本
+            </summary>
         </member>
         <member name="T:Megumin.IXYZ`1">
             <summary>

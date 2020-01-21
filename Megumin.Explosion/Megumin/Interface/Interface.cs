@@ -62,9 +62,26 @@ namespace Megumin
         V this[K key] { get;set; }
     }
 
+    /// <summary>
+    /// 含有可见性的
+    /// </summary>
     public interface IVisible
     {
-        bool Visible { get; set; }
+        /// <summary>
+        /// 可见等级
+        /// </summary>
+        int Visible { get; set; }
+    }
+
+    /// <summary>
+    /// 含有版本的
+    /// </summary>
+    public interface IVersionable
+    {
+        /// <summary>
+        /// 当前版本
+        /// </summary>
+        Version Version { get; }
     }
 
     public interface IOpenable
@@ -100,6 +117,7 @@ namespace Megumin
 
 namespace Megumin
 {
+    //兼容Unity设计的一组接口
     public interface IAwakeable
     {
         void Awake();

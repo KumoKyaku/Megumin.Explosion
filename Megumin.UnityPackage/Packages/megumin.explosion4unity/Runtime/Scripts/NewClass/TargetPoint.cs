@@ -55,25 +55,28 @@ public class TargetPoint : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        switch (type)
+        if (enabled)
         {
-            case PrimitiveType.Sphere:
-                DrawSphere();
-                break;
-            case PrimitiveType.Capsule:
-                DrawPlayerStart();
-                break;
-            case PrimitiveType.Cylinder:
-                break;
-            case PrimitiveType.Cube:
-                DrawCube();
-                break;
-            case PrimitiveType.Plane:
-                break;
-            case PrimitiveType.Quad:
-                break;
-            default:
-                break;
+            switch (type)
+            {
+                case PrimitiveType.Sphere:
+                    DrawSphere();
+                    break;
+                case PrimitiveType.Capsule:
+                    DrawPlayerStart();
+                    break;
+                case PrimitiveType.Cylinder:
+                    break;
+                case PrimitiveType.Cube:
+                    DrawCube();
+                    break;
+                case PrimitiveType.Plane:
+                    break;
+                case PrimitiveType.Quad:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
