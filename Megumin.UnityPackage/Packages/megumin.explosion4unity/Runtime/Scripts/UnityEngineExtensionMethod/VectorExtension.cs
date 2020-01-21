@@ -28,4 +28,21 @@ public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
 
         return new Vector3Int(value.X, value.Y, value.Z);
     }
+
+    public static Vector3 ParseVector3(this string str)
+    {
+        var parts = str.Split('_');
+
+        return new Vector3(float.Parse(parts[0]),
+            float.Parse(parts[1]),
+            float.Parse(parts[2]));
+    }
+
+    public static (int X, int Y) ToV2(this string str)
+    {
+        var parts = str.Split('_');
+
+        return (int.Parse(parts[0]),
+            int.Parse(parts[1]));
+    }
 }
