@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using UnityEngine;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// 16进制颜色 (长度为8的RGBA16进制字符串)

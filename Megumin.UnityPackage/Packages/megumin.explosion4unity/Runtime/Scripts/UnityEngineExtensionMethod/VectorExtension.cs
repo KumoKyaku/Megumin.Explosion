@@ -1,22 +1,31 @@
-﻿using System;
+﻿using Megumin;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using UnityEngine;
 
-namespace UnityEngine
+public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
 {
-    public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
-    {
-        static readonly Vector3 zeroY = new Vector3(1, 0, 1);
+    static readonly Vector3 zeroY = new Vector3(1, 0, 1);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3 ZeroY(this in Vector3 v)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector3 ZeroY(this in Vector3 v)
+    {
+        return Vector3.Scale(v, zeroY);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Scale(this ref Vector3 a, Vector3 b) => a = Vector3.Scale(a, b);
+
+    public static Vector3Int ToVector3Int(this IXYZ<int> value)
+    {
+        if (value == null)
         {
-            return Vector3.Scale(v,zeroY);
+            return default;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this ref Vector3 a, Vector3 b) => a = Vector3.Scale(a, b);
+        return new Vector3Int(value.X, value.Y, value.Z);
     }
 }
