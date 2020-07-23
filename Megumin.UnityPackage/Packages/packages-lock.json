@@ -1,19 +1,19 @@
 {
   "dependencies": {
-    "com.unity.ext.nunit": {
-      "version": "1.0.0",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.cn"
-    },
-    "com.unity.megumin.explosion4unity": {
+    "com.megumin.explosion4unity": {
       "version": "file:megumin.explosion4unity",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
         "com.unity.modules.animation": "1.0.0"
       }
+    },
+    "com.unity.ext.nunit": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.cn"
     },
     "com.unity.megumin.referenceviewer": {
       "version": "file:megumin.referenceviewer@1.0.0",
