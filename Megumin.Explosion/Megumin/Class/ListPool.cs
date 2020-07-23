@@ -6,10 +6,10 @@ using System.Text;
 namespace Megumin
 {
     /// <summary>
-    /// 
+    /// 线程安全List池
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public static class ListPool<T>
+    public class ListPool<T>
     {
         static ConcurrentQueue<List<T>> pool = new ConcurrentQueue<List<T>>();
 
