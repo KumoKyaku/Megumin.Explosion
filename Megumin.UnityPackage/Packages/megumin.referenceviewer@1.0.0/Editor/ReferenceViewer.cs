@@ -24,17 +24,15 @@ SOFTWARE.
 Author: https://github.com/KumoKyaku
 */
 
-using UnityEngine;
-using UnityEditor;
-using UnityEditor.Experimental.UIElements;
-using UnityEditor.Experimental.UIElements.GraphView;
-using UnityEngine.Experimental.UIElements;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.SceneManagement;
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
 {
@@ -96,7 +94,7 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
         void OnEnable()
         {
             titleContent = new GUIContent("Reference Viewer");
-            var rootView = this.GetRootVisualContainer();
+            var rootView = this.rootVisualElement;
             r = new ReferenceViewer();
             rootView.Add(r);
         }
@@ -224,8 +222,8 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
                     else
                     {
                         var node = new ObjNode(obj);
-                        node.style.positionLeft = - offsetH;
-                        node.style.positionTop = (i - half) * deltaV + (even ? deltaV/2 : 0);
+                        node.style.left = - offsetH;
+                        node.style.top = (i - half) * deltaV + (even ? deltaV/2 : 0);
 
                         node.AddManipulator(new DoubleClickManipulator(()=>
                         {
@@ -262,8 +260,8 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
                     else
                     {
                         var node = new ObjNode(obj);
-                        node.style.positionLeft = offsetH;
-                        node.style.positionTop = (i - half) * deltaV + (even ? deltaV / 2 : 0);
+                        node.style.left = offsetH;
+                        node.style.top = (i - half) * deltaV + (even ? deltaV / 2 : 0);
 
                         node.AddManipulator(new DoubleClickManipulator(() =>
                         {
@@ -313,7 +311,7 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
             if (titleContainer.Q("title-label")?.style is IStyle tempstyle)
             {
                 tempstyle.fontSize = 14;
-                tempstyle.fontStyleAndWeight = FontStyle.BoldAndItalic;
+                tempstyle.unityFontStyleAndWeight = FontStyle.BoldAndItalic;
                 tempstyle.color = Color.white * 0.95f;
             }
 

@@ -40,6 +40,36 @@
             <typeparam name="T"></typeparam>
             <returns></returns>
         </member>
+        <!-- Badly formed XML comment ignored for member "T:System.Megumin.Class.ExcuteGraph`1" -->
+        <member name="M:System.Megumin.Class.SubGraphTemp1.EnterPoint1(System.Threading.CancellationToken)">
+            <summary>
+            入口没有返回值
+            </summary>
+            <param name="token"></param>
+        </member>
+        <member name="P:System.Megumin.Class.SubGraphTemp1.Outpint1">
+            <summary>
+            出口是可等带的, 等带结果是一个状态码和在图中传递的取消令牌，避免抛出取消异常
+            </summary>
+        </member>
+        <member name="P:System.Megumin.Class.SubGraphTemp1.Outpint2">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:System.Megumin.Class.PlaySongGraph.Outpint1">
+            <summary>
+            出口是可等带的, 等带结果是一个状态码和在图中传递的取消令牌，避免抛出取消异常
+            </summary>
+        </member>
+        <member name="M:System.Megumin.Class.PlaySongGraph.PLay(System.Threading.CancellationToken)">
+            <summary>
+            构建一个流程，播放一首音乐，如果成功播放完成一次，结束时等待N秒自动销毁。
+            播放其他音乐会打断当前音乐，如果在此播放正在自动销毁的音乐，停止自动销毁，重置倒计时.
+            
+            为每个节点分配一个位置编号，位置不同，相同的函数成功失败后执行的逻辑可能不同.
+            </summary>
+        </member>
         <member name="T:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414">
             <summary>
             IPAddressExtension
@@ -213,7 +243,7 @@
         </member>
         <member name="T:Megumin.ListPool`1">
             <summary>
-            
+            线程安全List池
             </summary>
             <typeparam name="T"></typeparam>
         </member>

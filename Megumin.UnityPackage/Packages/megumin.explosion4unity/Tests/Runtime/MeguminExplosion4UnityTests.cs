@@ -13,12 +13,4 @@ class MeguminExplosion4UnityTest
     {
            
     }
-
-    [Test]
-    public void TestDebug()
-    {
-        var res = Megumin.MeguminDebug.HookUnity();
-        Assert.AreEqual(true, res);
-        Megumin.MeguminDebug.UnHookUnity();
-    }
 }
