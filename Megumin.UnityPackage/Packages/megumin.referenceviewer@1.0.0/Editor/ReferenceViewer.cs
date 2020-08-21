@@ -199,7 +199,10 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
             }
 
             var curNode = new ObjNode(current);
-            curNode.Q("node-border").style.borderColor = ObjNode.CurBorderColor;
+            curNode.Q("node-border").style.borderLeftColor = ObjNode.CurBorderColor;
+            curNode.Q("node-border").style.borderRightColor = ObjNode.CurBorderColor;
+            curNode.Q("node-border").style.borderBottomColor = ObjNode.CurBorderColor;
+            curNode.Q("node-border").style.borderTopColor = ObjNode.CurBorderColor;
             AddElement(curNode);
 
             const int offsetH = 600;
