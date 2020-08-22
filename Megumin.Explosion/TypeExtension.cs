@@ -8,8 +8,6 @@ namespace System
 {
     public static class TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431
     {
-#if NETSTANDARD2_0
-
         /// <summary>
         /// 尝试取得第一个指定属性
         /// </summary>
@@ -24,10 +22,7 @@ namespace System
             {
                 return default;
             }
-            return type.GetCustomAttributes(typeof(T), true).FirstOrDefault() as T; 
+            return type.GetCustomAttributes(typeof(T), true).FirstOrDefault() as T;
         }
-        
-#endif
-    
-}
+    }
 }

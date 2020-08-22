@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 namespace Megumin
 {
     /// <summary>
-    /// 左右
+    /// 左中右
     /// </summary>
+    [Flags]
     public enum LeftOrRight
     {
-        Left,
-        Right,
-        Center,
+        Left = 1 << 0,
+        Right = 1 << 1,
+        Center = 1 << 2,
     }
 
     /// <summary>
@@ -57,8 +58,13 @@ namespace Megumin
     /// <para> 1 2 3 </para>
     /// </summary>
     [Flags]
-    public enum Sudoku_Keypad
+    public enum KeypadSudoku : short
     {
+        None = 0,
+        /// <summary>
+        /// 负中心，没什么实际意义，因为 第0位 空着，所以当作填充用。
+        /// </summary>
+        NegativeCenter = 1 << 0,
         LeftDown = 1 << 1,
         Down = 1 << 2,
         RightDown = 1 << 3,
@@ -68,5 +74,6 @@ namespace Megumin
         LeftUp = 1 << 7,
         Up = 1 << 8,
         RightUp = 1 << 9,
+        All = 0b1111_1_1111_1,
     }
 }

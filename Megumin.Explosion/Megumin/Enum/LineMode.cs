@@ -7,26 +7,32 @@ using System.Threading.Tasks;
 namespace Megumin
 {
     /// <summary>
-    /// 联机模式
+    /// 联机模式/网络可连接状态
     /// </summary>
+    /// <![CDATA[
+    /// if(CurrentLineMode > LineMode.LAN)
+    /// {
+    ///     //当前有公网连接
+    /// }
+    /// ]]>
     [Flags]
     public enum LineMode
     {
         /// <summary>
-        /// 单机模式
+        /// 离线/无网络连接
         /// </summary>
-        Single = 1 << 0,
+        Offline = 1 << 0,
         /// <summary>
-        /// 在线
+        /// 单机模式/与本机可连接
         /// </summary>
-        Online = 1 << 1,
+        Single = 1 << 1,
         /// <summary>
-        /// 离线
+        /// 局域网/局域网内可连接
         /// </summary>
-        Offline = 1 << 2,
+        LAN = 1 << 2,
         /// <summary>
-        /// 局域网
+        /// 在线/可与公网连接
         /// </summary>
-        LAN = 1 << 3,
+        Online = 1 << 3,
     }
 }

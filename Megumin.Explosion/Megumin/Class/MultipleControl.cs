@@ -100,7 +100,6 @@ namespace Megumin
         /// <summary>
         /// 取消除默认值以外的所有控制
         /// </summary>
-        /// <param name="key"></param>
         public void CancelAll()
         {
             var defaultValue = Controllers[DefaultKey];

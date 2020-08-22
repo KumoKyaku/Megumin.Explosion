@@ -23,27 +23,53 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Clamp<T>(this ref T cur,in T min,in T max) where T: struct,IComparable<T>
         {
-            var mm = min.CompareTo(max);
-            var cm = cur.CompareTo(min);
+            if (cur.CompareTo(min) < 0)
+            {
+                cur = min;
+            }
+            else if (cur.CompareTo(max) > 0)
+            {
+                cur = max;
+            }
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Clamp<T>(this ref T cur,in Threshold<T> threshold) where T : struct, IComparable<T>
+        {
+            cur.Clamp(threshold.Lower, threshold.Upper);
+        }
+
+        /// <summary>
+        /// 将值限定在指定范围内,不知道两个边界谁大谁小，消息比<see cref="Clamp{T}(ref T, in T, in T)"/>低一些。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="cur"></param>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ClampIn<T>(this ref T cur, in T value1, in T value2) where T : struct, IComparable<T>
+        {
+            var mm = value1.CompareTo(value2);
+            var cm = cur.CompareTo(value1);
             if (mm == 0)
             {
                 if (cm == 0)
                 {
                     return;
                 }
-                cur = min;
+                cur = value1;
             }
             else if (mm > 0)
             {
-                if (cur.CompareTo(max) < 0)
+                if (cur.CompareTo(value2) < 0)
                 {
-                    cur = max;
+                    cur = value2;
                     return;
                 }
 
                 if (cm > 0)
                 {
-                    cur = min;
+                    cur = value1;
                     return;
                 }
 
@@ -53,23 +79,18 @@ namespace System
             {
                 if (cm < 0)
                 {
-                    cur = min;
+                    cur = value1;
                     return;
                 }
 
-                if (cur.CompareTo(max) > 0)
+                if (cur.CompareTo(value2) > 0)
                 {
-                    cur = max;
+                    cur = value2;
                     return;
                 }
 
                 return;
             }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Clamp<T>(this ref T cur,in Threshold<T> threshold) where T : struct, IComparable<T>
-        {
-            cur.Clamp(threshold.Lower, threshold.Upper);
         }
     }
 }

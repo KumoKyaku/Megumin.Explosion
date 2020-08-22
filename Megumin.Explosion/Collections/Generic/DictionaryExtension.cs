@@ -11,7 +11,7 @@ namespace System.Collections.Generic
     /// </summary>
     public static class DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C
     {
-        public static void RemoveAll<K, V>(this IDictionary<K, V> source, Func<KeyValuePair<K, V>, bool> predicate)
+        public static void RemoveAll<K, V>(this Dictionary<K, V> source, Func<KeyValuePair<K, V>, bool> predicate)
         {
             if (predicate == null || source == null)
             {
@@ -69,7 +69,7 @@ namespace System.Collections.Generic
             }
         }
 
-        public static void RemoveAll<V>(this IDictionary<int, V> source, Func<KeyValuePair<int, V>, bool> predicate)
+        public static void RemoveAll<V>(this Dictionary<int, V> source, Func<KeyValuePair<int, V>, bool> predicate)
         {
             if (predicate == null || source == null)
             {
@@ -100,7 +100,7 @@ namespace System.Collections.Generic
             }
         }
 
-        public static void RemoveAll<V>(this IDictionary<long, V> source, Func<KeyValuePair<long, V>, bool> predicate)
+        public static void RemoveAll<V>(this Dictionary<long, V> source, Func<KeyValuePair<long, V>, bool> predicate)
         {
             if (predicate == null || source == null)
             {

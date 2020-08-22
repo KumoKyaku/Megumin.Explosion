@@ -4,12 +4,46 @@ using System.Text;
 
 namespace Megumin
 {
-    public interface ICalculate
+    /// <summary>
+    /// 可采样的
+    /// </summary>
+    public interface ISamplable
+    {
+        void Sample();
+    }
+
+    /// <summary>
+    /// 可采样的
+    /// </summary>
+    public interface ISamplable<out T>
+    {
+        T Sample();
+    }
+
+    /// <summary>
+    /// 可估值的
+    /// </summary>
+    public interface IEvaluable
+    {
+        /// <summary>
+        /// 求解
+        /// </summary>
+        void Evaluate();
+    }
+
+    /// <summary>
+    /// 可计算的/可求值的
+    /// </summary>
+    public interface ICalculable
     {
         void Calculate();
     }
 
-    public interface ICalculate<out T>
+    /// <summary>
+    /// 可计算的/可求值的
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface ICalculable<out T>
     {
         T Calculate(bool force = false);
     }

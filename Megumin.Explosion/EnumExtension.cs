@@ -10,7 +10,6 @@ namespace System
     /// </summary>
     public static class EnumExtension_5108BEA26E8C44D9A538646E15B6B175
     {
-        #if NETSTANDARD2_0
         /// <summary>
         /// 检查是否有FlagsAttribute
         /// </summary>
@@ -25,6 +24,5 @@ namespace System
             }
             return result;
         }
-#endif
     }
 }
