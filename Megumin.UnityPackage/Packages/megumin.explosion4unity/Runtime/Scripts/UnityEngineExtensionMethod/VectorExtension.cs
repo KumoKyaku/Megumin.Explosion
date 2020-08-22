@@ -13,7 +13,7 @@ public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector3 ZeroY(this in Vector3 v)
     {
-        return Vector3.Scale(v, zeroY);
+        return new Vector3(v.x, 0, v.z);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

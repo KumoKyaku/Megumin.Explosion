@@ -193,6 +193,15 @@
             <param name="max"></param>
             <returns></returns>
         </member>
+        <member name="M:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328.ClampIn``1(``0@,``0@,``0@)">
+            <summary>
+            将值限定在指定范围内,不知道两个边界谁大谁小，消息比<see cref="M:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328.Clamp``1(``0@,``0@,``0@)"/>低一些。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="cur"></param>
+            <param name="value1"></param>
+            <param name="value2"></param>
+        </member>
         <member name="M:System.TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431.FirstAttribute``1(System.Type)">
             <summary>
             尝试取得第一个指定属性
@@ -333,7 +342,6 @@
             <summary>
             取消除默认值以外的所有控制
             </summary>
-            <param name="key"></param>
         </member>
         <member name="M:Megumin.MultipleControl`2.ApplyValue">
             <summary>
@@ -443,7 +451,7 @@
         </member>
         <member name="T:Megumin.LeftOrRight">
             <summary>
-            左右
+            左中右
             </summary>
         </member>
         <member name="T:Megumin.URDL">
@@ -459,7 +467,7 @@
             <para> 5 4 3 </para>
             </summary>
         </member>
-        <member name="T:Megumin.Sudoku_Keypad">
+        <member name="T:Megumin.KeypadSudoku">
             <summary>
             九宫格 小键盘布局
             <para> 7 8 9 </para>
@@ -467,29 +475,40 @@
             <para> 1 2 3 </para>
             </summary>
         </member>
+        <member name="F:Megumin.KeypadSudoku.NegativeCenter">
+            <summary>
+            负中心，没什么实际意义，因为 第0位 空着，所以当作填充用。
+            </summary>
+        </member>
         <member name="T:Megumin.LineMode">
             <summary>
-            联机模式
+            联机模式/网络可连接状态
+            </summary>
+            <![CDATA[
+            if(CurrentLineMode > LineMode.LAN)
+            {
+                //当前有公网连接
+            }
+            ]]>
+        </member>
+        <member name="F:Megumin.LineMode.Offline">
+            <summary>
+            离线/无网络连接
             </summary>
         </member>
         <member name="F:Megumin.LineMode.Single">
             <summary>
-            单机模式
-            </summary>
-        </member>
-        <member name="F:Megumin.LineMode.Online">
-            <summary>
-            在线
-            </summary>
-        </member>
-        <member name="F:Megumin.LineMode.Offline">
-            <summary>
-            离线
+            单机模式/与本机可连接
             </summary>
         </member>
         <member name="F:Megumin.LineMode.LAN">
             <summary>
-            局域网
+            局域网/局域网内可连接
+            </summary>
+        </member>
+        <member name="F:Megumin.LineMode.Online">
+            <summary>
+            在线/可与公网连接
             </summary>
         </member>
         <member name="T:Megumin.PluginState">
@@ -536,6 +555,37 @@
             <summary>
             已释放
             </summary>
+        </member>
+        <member name="T:Megumin.ISamplable">
+            <summary>
+            可采样的
+            </summary>
+        </member>
+        <member name="T:Megumin.ISamplable`1">
+            <summary>
+            可采样的
+            </summary>
+        </member>
+        <member name="T:Megumin.IEvaluable">
+            <summary>
+            可估值的
+            </summary>
+        </member>
+        <member name="M:Megumin.IEvaluable.Evaluate">
+            <summary>
+            求解
+            </summary>
+        </member>
+        <member name="T:Megumin.ICalculable">
+            <summary>
+            可计算的/可求值的
+            </summary>
+        </member>
+        <member name="T:Megumin.ICalculable`1">
+            <summary>
+            可计算的/可求值的
+            </summary>
+            <typeparam name="T"></typeparam>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Megumin.IMatcher`2" -->
         <member name="T:Megumin.IPath">

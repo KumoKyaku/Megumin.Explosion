@@ -21,6 +21,7 @@ namespace Megumin
         /// 是否启用
         /// </summary>
         public bool isOn = true;
+        public Rect position = new Rect(50, 50, 220, 60);
 
         void Start()
         {
@@ -54,7 +55,7 @@ namespace Megumin
         {
             if (isOn)
             {
-                GUI.Label(new Rect(25, 25, 160, 20), "FPS : " + frameRate.ToString());
+                GUI.Label(position, "FPS : " + frameRate.ToString(), GUI.skin.label);
             }
         }
     }

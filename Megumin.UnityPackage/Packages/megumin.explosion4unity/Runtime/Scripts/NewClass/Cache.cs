@@ -11,22 +11,22 @@ namespace Megumin
     public class Cache
     {
         #region MyRegion
-        static List<ICalculate> cacheValues = null;
+        static List<ICalculable> cacheValues = null;
         static readonly object innerlock = new object();
 
         public static void CollectField<T>()
             where T:Cache
         {
             var collection = (from field in typeof(T).GetFields()
-                     where field.FieldType == typeof(ICalculate)
-                     || field.FieldType.IsSubclassOf(typeof(ICalculate))
-                     select field.GetValue(null) as ICalculate);
+                     where field.FieldType == typeof(ICalculable)
+                     || field.FieldType.IsSubclassOf(typeof(ICalculable))
+                     select field.GetValue(null) as ICalculable);
 
             lock (innerlock)
             {
                 if (cacheValues == null)
                 {
-                    cacheValues = new List<ICalculate>();
+                    cacheValues = new List<ICalculable>();
                 }
             }
 
@@ -68,7 +68,7 @@ namespace Megumin
     }
 
 
-    public sealed class Cache<T> : IDisposable,ICalculate,ICalculate<T>
+    public sealed class Cache<T> : IDisposable, ICalculable, ICalculable<T>
     {
         public T Value
         {
