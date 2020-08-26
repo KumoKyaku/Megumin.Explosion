@@ -255,15 +255,17 @@
             线程安全List池
             </summary>
             <typeparam name="T"></typeparam>
+            <remarks>内部使用<see cref="T:System.Collections.Concurrent.ConcurrentStack`1"/>实现</remarks>
         </member>
         <member name="P:Megumin.ListPool`1.MaxSize">
             <summary>
             默认容量10
             </summary>
         </member>
-        <member name="M:Megumin.ListPool`1.Return(System.Collections.Generic.List{`0})">
+        <member name="M:Megumin.ListPool`1.Return(System.Collections.Generic.List{`0}@)">
             <summary>
-            调用者保证归还后不在使用当前list
+            调用者需要保证归还后不在使用当前list
+            <para/>虽然调用后list被赋值为null，但不能保证没有其他引用指向当前list，尤其小心被保存在Linq语句中的引用。
             </summary>
             <param name="list"></param>
         </member>
