@@ -60,7 +60,7 @@ namespace TMPro
                     var r = d % 10;
                     cursor--;
                     Buffer[cursor] = r + 48;
-                    d = d / 10;
+                    d /= 10;
 
                     ///instert ','
                     if (isN0)
@@ -115,7 +115,7 @@ namespace TMPro
                     var r = (int)(d % 10);
                     cursor--;
                     Buffer[cursor] = r + 48;
-                    d = d / 10;
+                    d /= 10;
 
                     ///instert ','
                     if (isN0)
