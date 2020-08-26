@@ -104,5 +104,19 @@ namespace UnitTestProject1
             XZ<int> xz = new XZ<int>();
             var (a, b) = xz;
         }
+
+        [TestMethod]
+        public void TestListPool()
+        {
+            List<int> temp = ListPool<int>.Rent();
+            temp.Add(1);
+            ListPool<int>.Return(ref temp);
+            Assert.AreEqual(null, temp);
+
+            temp = ListPool<int>.Rent();
+            temp.Add(1);
+            ListPool<int>.Return(ref temp);
+            Assert.AreEqual(null, temp);
+        }
     }
 }
