@@ -9,13 +9,15 @@ namespace TMPro
         const int bufferLength = 30;
 
         [ThreadStatic]
-        static int[] buffer;
+        static char[] buffer;
 
-        public static int[] Buffer {
-            get {
+        public static char[] Buffer
+        {
+            get
+            {
                 if (buffer == null)
                 {
-                    buffer = new int[bufferLength];
+                    buffer = new char[bufferLength];
                 }
                 return buffer;
             }
@@ -51,7 +53,7 @@ namespace TMPro
             if (d == 0)
             {
                 cursor--;
-                Buffer[cursor] = 48;
+                Buffer[cursor] = '0';
             }
             else
             {
@@ -59,7 +61,7 @@ namespace TMPro
                 {
                     var r = d % 10;
                     cursor--;
-                    Buffer[cursor] = r + 48;
+                    Buffer[cursor] = (char)(r + 48);
                     d /= 10;
 
                     ///instert ','
@@ -68,7 +70,7 @@ namespace TMPro
                         if ((bufferLength - cursor) % 3 == 0 && d > 0)
                         {
                             cursor--;
-                            Buffer[cursor] = 44;
+                            Buffer[cursor] = ',';
                         }
                     }
                 }
@@ -77,7 +79,7 @@ namespace TMPro
             if (forceSign || number < 0)
             {
                 cursor--;
-                Buffer[cursor] = number < 0 ? 45 : 43;
+                Buffer[cursor] = number < 0 ? '-' : '+';
             }
 
             text.SetCharArray(Buffer, cursor, bufferLength - cursor);
@@ -106,7 +108,7 @@ namespace TMPro
             if (d == 0)
             {
                 cursor--;
-                Buffer[cursor] = 48;
+                Buffer[cursor] = '0';
             }
             else
             {
@@ -114,7 +116,7 @@ namespace TMPro
                 {
                     var r = (int)(d % 10);
                     cursor--;
-                    Buffer[cursor] = r + 48;
+                    Buffer[cursor] = (char)(r + 48);
                     d /= 10;
 
                     ///instert ','
@@ -123,7 +125,7 @@ namespace TMPro
                         if ((bufferLength - cursor) % 3 == 0 && d > 0)
                         {
                             cursor--;
-                            Buffer[cursor] = 44;
+                            Buffer[cursor] = ',';
                         }
                     }
                 }
@@ -132,7 +134,7 @@ namespace TMPro
             if (forceSign || number < 0)
             {
                 cursor--;
-                Buffer[cursor] = number < 0 ? 45 : 43;
+                Buffer[cursor] = number < 0 ? '-' : '+';
             }
 
             text.SetCharArray(Buffer, cursor, bufferLength - cursor);
