@@ -6,6 +6,17 @@ using System.Text;
 
 namespace System.Collections.Generic
 {
+    public static class KeyValuePairExtension_5EF11360ED17491CA476C08A2272FE4F
+    {
+        public static void Deconstruct<TKey, TValue>(this in KeyValuePair<TKey, TValue> pair,
+                                                     out TKey Key,
+                                                     out TValue Value)
+        {
+            Key = pair.Key;
+            Value = pair.Value;
+        }
+    }
+
     /// <summary>
     /// 字典扩展
     /// </summary>
