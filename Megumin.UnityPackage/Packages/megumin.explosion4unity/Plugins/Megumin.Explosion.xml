@@ -381,6 +381,12 @@
             简单的匹配器
             </summary>
         </member>
+        <member name="M:Megumin.SimplePipeQueue`1.Write(`0)">
+            <summary>
+            当消费者已经等待时，如果不使用<see cref="P:Megumin.IPipeQueue`1.UseSynchronizationContext"/>,或者当前线程和等待线程相同，立刻调用消费者。
+            </summary>
+            <param name="item"></param>
+        </member>
         <member name="T:Megumin.Threshold`1">
             <summary>
             阈
@@ -637,6 +643,18 @@
             <summary>
             当前版本
             </summary>
+        </member>
+        <member name="T:Megumin.IPipeQueue`1">
+            <summary>
+            管道队列，用于处理生产者已经产出，消费者还没有就绪的情况
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Megumin.IPipeQueue`1.ReadAsync">
+            <summary>
+            当队列中有元素时返回。
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Megumin.IXYZ`1">
             <summary>
