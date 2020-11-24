@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 
 namespace Megumin
 {
+    /// <summary>
+    /// 异步缓存管道
+    /// <para/>也可以通过（bool isEnd,T value）元组，来实现终止信号
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class SimplePipeQueue<T> : Queue<T>, IPipeQueue<T>
     {
         readonly object _innerLock = new object();
@@ -31,7 +36,7 @@ namespace Megumin
                         throw new Exception("内部顺序错误，不应该出现，请联系作者");
                     }
 
-                    if (callbackContext == null || callbackContext == System.Threading.SynchronizationContext.Current)
+                    if (callbackContext == null || callbackContext == SynchronizationContext.Current)
                     {
                         var next = source;
                         source = null;
