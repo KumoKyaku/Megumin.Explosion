@@ -14,13 +14,11 @@ namespace Megumin
     {
         readonly object _innerLock = new object();
         private TaskCompletionSource<T> source;
-        SynchronizationContext callbackContext;
-        public bool UseSynchronizationContext { get; set; } = true;
 
-        /// <summary>
-        /// 当消费者已经等待时，如果不使用<see cref="IPipeQueue{T}.UseSynchronizationContext"/>,或者当前线程和等待线程相同，立刻调用消费者。
-        /// </summary>
-        /// <param name="item"></param>
+        //线程同步上下文由Task机制保证，无需额外处理
+        //SynchronizationContext callbackContext;
+        //public bool UseSynchronizationContext { get; set; } = true;
+
         public void Write(T item)
         {
             lock (_innerLock)
@@ -36,25 +34,9 @@ namespace Megumin
                         throw new Exception("内部顺序错误，不应该出现，请联系作者");
                     }
 
-                    if (callbackContext == null || callbackContext == SynchronizationContext.Current)
-                    {
-                        var next = source;
-                        source = null;
-                        next.TrySetResult(item);
-                    }
-                    else
-                    {
-                        var next = source;
-                        source = null;
-                        callbackContext.Post(
-                            state =>
-                            {
-                                if (state is TaskCompletionSource<T> callback)
-                                {
-                                    callback.TrySetResult(item);
-                                }
-                            }, next);
-                    }
+                    var next = source;
+                    source = null;
+                    next.TrySetResult(item);
                 }
             }
         }
@@ -70,15 +52,6 @@ namespace Megumin
                 }
                 else
                 {
-                    if (UseSynchronizationContext)
-                    {
-                        callbackContext = SynchronizationContext.Current;
-                    }
-                    else
-                    {
-                        callbackContext = null;
-                    }
-
                     source = new TaskCompletionSource<T>();
                     return new ValueTask<T>(source.Task);
                 }

@@ -8,7 +8,6 @@ namespace Megumin
     /// <typeparam name="T"></typeparam>
     public interface IPipeQueue<T>
     {
-        bool UseSynchronizationContext { get; set; }
         /// <summary>
         /// 当队列中有元素时返回。
         /// </summary>
