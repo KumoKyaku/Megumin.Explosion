@@ -269,6 +269,19 @@
             </summary>
             <param name="list"></param>
         </member>
+        <member name="T:Megumin.MeguminUtility">
+            <summary>
+            常用工具
+            </summary>
+        </member>
+        <member name="M:Megumin.MeguminUtility.Detail``1(``0)">
+            <summary>
+            反射出类的值
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="T:Megumin.MultipleControl`2">
             <summary>
             多重值控制器。
@@ -381,11 +394,12 @@
             简单的匹配器
             </summary>
         </member>
-        <member name="M:Megumin.SimplePipeQueue`1.Write(`0)">
+        <member name="T:Megumin.SimplePipeQueue`1">
             <summary>
-            当消费者已经等待时，如果不使用<see cref="P:Megumin.IPipeQueue`1.UseSynchronizationContext"/>,或者当前线程和等待线程相同，立刻调用消费者。
+            异步缓存管道
+            <para/>也可以通过（bool isEnd,T value）元组，来实现终止信号
             </summary>
-            <param name="item"></param>
+            <typeparam name="T"></typeparam>
         </member>
         <member name="T:Megumin.Threshold`1">
             <summary>
@@ -442,6 +456,22 @@
             更新时间间隔
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Megumin.ValueTaskSource">
+            <summary>
+            失败品，多线程不安全，有逻辑错误
+            </summary>
+        </member>
+        <member name="T:Megumin.ValueTaskSource`1">
+            <summary>
+            失败品，多线程不安全，有逻辑错误
+            </summary>
+        </member>
+        <member name="M:Megumin.ValueTaskSource`1.EatContinuation(System.Int16)">
+            <summary>
+            吃掉异步后续，释放关联引用，什么也不会发生。
+            </summary>
+            <param name="token"></param>
         </member>
         <member name="T:Megumin.OnValueChanged`1">
             <summary>

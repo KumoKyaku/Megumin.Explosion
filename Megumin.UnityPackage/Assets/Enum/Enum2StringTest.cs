@@ -12,4 +12,10 @@ public class Enum2StringTest : MonoBehaviour
     [Enum2String(typeof(KeypadSudoku))]
     public int test;
     public int test2 = 1;
+
+    void Awake()
+    {
+        string detail = Megumin.MeguminUtility.Detail<UnityEditor.EditorApplication>();
+        Debug.LogError(detail);
+    }
 }
