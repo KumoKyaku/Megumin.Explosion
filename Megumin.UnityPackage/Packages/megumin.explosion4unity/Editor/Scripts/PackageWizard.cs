@@ -80,7 +80,6 @@ public class PackageWizard : EditorWindow
     ""version"": ""0.0.1"",
     ""unity"": ""2019.4"",
     ""description"": ""Wizard Fast Created."",
-    ""type"": ""library"",
     ""hideInEditor"" : false
 }}
 
