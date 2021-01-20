@@ -35,8 +35,7 @@ public class PackageWizard : EditorWindow
         if (GUILayout.Button("Create", GUILayout.Width(60f)))
         {
             CreatePackageFolder(path);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            RefreshAsset();
             Close();
         }
 
@@ -44,13 +43,17 @@ public class PackageWizard : EditorWindow
         if (GUILayout.Button("Delete", GUILayout.Width(60f)))
         {
             Directory.Delete(path,true);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            RefreshAsset();
         }
 
         GUILayout.Space(5);
         EditorGUILayout.HelpBox("创建完成后Editor切换到后台，再切换回来，" +
             "触发package导入，没有找到如何自动导入。", MessageType.Info);
+    }
+
+    private static void RefreshAsset()
+    {
+        var process = System.Diagnostics.Process.Start(MeguminUtility4Unity.PackagesPath);
     }
 
     private void CreatePackageFolder(string path)
