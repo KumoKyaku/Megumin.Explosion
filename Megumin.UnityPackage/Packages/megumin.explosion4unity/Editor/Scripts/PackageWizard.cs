@@ -1,10 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
+#if UNITY_EDITOR
+
+using System.IO;
 using UnityEditor;
 using UnityEngine;
-using System.IO;
 
 public class PackageWizard : EditorWindow
 {
@@ -92,6 +90,6 @@ public class PackageWizard : EditorWindow
 
 
     }
-
-
 }
+
+#endif

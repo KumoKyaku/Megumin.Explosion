@@ -15,7 +15,7 @@ namespace Megumin
         private float oldTime;
         private int frame = 0;
         private static float frameRate = 0f;
-        private const float INTERVAL = 0.5f;
+        private const float INTERVAL = 0.25f;
 
         /// <summary>
         /// 是否启用
