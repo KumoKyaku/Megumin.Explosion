@@ -10,9 +10,6 @@
     "Megumin"
   ],
   "category": "Megumin",
-  "dependencies": {
-    "com.unity.modules.animation": "1.0.0"
-  },
   "type": "library",
   "hideInEditor": false
 }
