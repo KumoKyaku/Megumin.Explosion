@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using static UnityEngine.Networking.UnityWebRequest;
 
 #if UNITY_EDITOR
 
@@ -66,7 +67,14 @@ namespace UnityEngine.UI
                 {
                     yield return uwr.SendWebRequest();
 
-                    if (uwr.isNetworkError || uwr.isHttpError)
+                    bool error = false;
+#if UNITY_2020_1_OR_NEWER
+                    error = uwr.result == Result.ConnectionError || uwr.result == Result.ProtocolError;
+#else
+                    error = uwr.isNetworkError || uwr.isHttpError;
+#endif
+
+                    if (error)
                     {
                         Debug.LogError($"œ¬‘ÿurlImage ß∞‹£¨{uwr.error}°£");
                     }
