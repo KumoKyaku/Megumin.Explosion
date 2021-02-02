@@ -9,7 +9,9 @@ namespace Megumin
 {
     /// <summary>
     /// 16进制颜色 (长度为8的RGBA16进制字符串)
+    /// <see cref="ColorUtility.TryParseHtmlString(string, out Color)"/>
     /// </summary>
+    [Obsolete("ColorUtility", true)]
     public struct HexColor
     {
         /// <summary>
