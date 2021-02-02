@@ -74,7 +74,7 @@ public class PackageWizard : EditorWindow
             Directory.CreateDirectory(path + "/Runtime");
             Directory.CreateDirectory(path + "/Tests");
             string packageInfo =
-@$"
+$@"
 {{
     ""name"": ""{InputPackageName.ToLower()}"",
     ""displayName"": ""{InputPackageName}"",
