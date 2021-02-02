@@ -28,7 +28,7 @@ public class PackageWizard : EditorWindow
     string InputPackageName = "";
     void OnGUI()
     {
-        InputPackageName = EditorGUILayout .TextField(m_NameContent, InputPackageName);
+        InputPackageName = EditorGUILayout.TextField(m_NameContent, InputPackageName);
         var path = Path.GetFullPath($"{MeguminUtility4Unity.PackagesPath}/{InputPackageName}");
         if (GUILayout.Button("Create", GUILayout.Width(60f)))
         {
@@ -40,7 +40,7 @@ public class PackageWizard : EditorWindow
         GUILayout.Space(5);
         if (GUILayout.Button("Delete", GUILayout.Width(60f)))
         {
-            Directory.Delete(path,true);
+            Directory.Delete(path, true);
             RefreshAsset();
         }
 
@@ -73,19 +73,21 @@ public class PackageWizard : EditorWindow
             Directory.CreateDirectory(path + "/Editor");
             Directory.CreateDirectory(path + "/Runtime");
             Directory.CreateDirectory(path + "/Tests");
-            string packageInfo = 
+            string packageInfo =
 @$"
 {{
     ""name"": ""{InputPackageName.ToLower()}"",
     ""displayName"": ""{InputPackageName}"",
+    ""author"": ""PackageWizard"",
     ""version"": ""0.0.1"",
     ""unity"": ""2019.4"",
     ""description"": ""Wizard Fast Created."",
+    ""category"": ""PackageWizard"",
     ""hideInEditor"" : false
 }}
 
 ";
-            File.WriteAllText(path+"/package.json", packageInfo);
+            File.WriteAllText(path + "/package.json", packageInfo);
         }
 
 
