@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if MEGUMIN_TMPROEX
+
+using System;
 
 namespace TMPro
 {
@@ -143,3 +145,6 @@ namespace TMPro
         #endregion
     }
 }
+
+#endif
+

@@ -19,14 +19,6 @@
       "source": "embedded",
       "dependencies": {}
     },
-    "com.unity.megumin.tmproextension": {
-      "version": "file:megumin.tmproextension@1.0.0",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.unity.textmeshpro": "1.0.0"
-      }
-    },
     "com.unity.nuget.mono-cecil": {
       "version": "0.1.6-preview.2",
       "depth": 1,

@@ -1,12 +1,21 @@
 {
     "name": "Megumin.Explosion4Unity",
-    "references": [],
-    "optionalUnityReferences": [],
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "1.5.0",
+            "define": "MEGUMIN_TMPROEX"
+        }
+    ],
+    "noEngineReferences": false
 }
