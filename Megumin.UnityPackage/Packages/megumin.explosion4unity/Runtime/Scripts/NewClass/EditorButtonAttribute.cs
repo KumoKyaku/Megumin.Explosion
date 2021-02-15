@@ -116,7 +116,8 @@ public class EditorButton : Editor
         EditorGUILayout.BeginHorizontal();
         var foldoutRect = EditorGUILayout.GetControlRect(GUILayout.Width(10.0f));
         state.opened = EditorGUI.Foldout(foldoutRect, state.opened, "");
-        bool clicked = GUILayout.Button(MethodDisplayName(methodInfo), GUILayout.ExpandWidth(true));
+        string buttonName = MethodDisplayName(methodInfo);
+        bool clicked = GUILayout.Button(buttonName, GUILayout.ExpandWidth(true));
         EditorGUILayout.EndHorizontal();
 
         if (state.opened)
@@ -261,9 +262,15 @@ public class EditorButton : Editor
             editorButtonName = tmp.buttonName;
             if (string.IsNullOrEmpty(editorButtonName))
             {
+                editorButtonName = method.Name;
+            }
+
+            var methodParams = method.GetParameters();
+            if (methodParams.Length > 0)
+            {
                 StringBuilder sb = new StringBuilder();
-                sb.Append(method.Name + "(");
-                var methodParams = method.GetParameters();
+                sb.Append(editorButtonName + "(");
+
                 foreach (ParameterInfo parameter in methodParams)
                 {
                     sb.Append(MethodParameterDisplayName(parameter));

@@ -5,6 +5,7 @@ using UnityEngine;
 
 [ExecuteAlways]
 [DefaultExecutionOrder(9000)]
+[SelectionBase]
 public class ColliderShower : MonoBehaviour
 {
     /// <summary>
@@ -22,6 +23,8 @@ public class ColliderShower : MonoBehaviour
     public List<Collider> Colliders = new List<Collider>();
     [ReadOnlyInInspector]
     public List<ColliderShower> SubShowers = new List<ColliderShower>();
+    [ReadOnlyInInspector]
+    public ColliderShower Parent;
     void Start()
     {
         ReCollect();
@@ -47,6 +50,11 @@ public class ColliderShower : MonoBehaviour
             }
             return false;
         });
+
+        if (transform.parent)
+        {
+            Parent = transform.parent.GetComponentInParent<ColliderShower>();
+        }
     }
 
     [EditorButton]
@@ -185,7 +193,7 @@ public class ColliderShower : MonoBehaviour
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        if (Colliders != null && ShowLable)
+        if (Colliders != null && ShowLable && enabled)
         {
             foreach (var collider in Colliders)
             {
