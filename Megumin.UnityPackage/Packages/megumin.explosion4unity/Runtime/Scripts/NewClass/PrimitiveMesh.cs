@@ -39,7 +39,7 @@ public static class PrimitiveMesh
     {
         if (primMesh == null)
         {
-            Debug.Log("Getting Unity Primitive Mesh: " + primitiveType);
+            //Debug.Log("Getting Unity Primitive Mesh: " + primitiveType);
             primMesh = Resources.GetBuiltinResource<Mesh>(GetPrimitiveMeshPath(primitiveType));
 
             if (primMesh == null)
