@@ -17,8 +17,8 @@ namespace UnityEngine
         Color old;
         public GUIColorScope(Color color)
         {
-#if UNITY_EDITOR
             old = GUI.color;
+#if UNITY_EDITOR
             GUI.color = color;
 #endif
         }
