@@ -73,9 +73,8 @@ public class InspectorNavigation
         //Debug.Log(cur[0]);
     }
 
-
     [Shortcut("InspectorNavigation Forward", KeyCode.Alpha1)]
-    [Shortcut("InspectorNavigation Forward2", KeyCode.KeypadMinus)]
+    [Shortcut("InspectorNavigationKeypad Forward", KeyCode.KeypadMinus)]
     public static void Foward()
     {
         if (!Enable)
@@ -98,7 +97,7 @@ public class InspectorNavigation
     }
 
     [Shortcut("InspectorNavigation Back", KeyCode.BackQuote)]
-    [Shortcut("InspectorNavigation Back2", KeyCode.KeypadMultiply)]
+    [Shortcut("InspectorNavigationKeypad Back", KeyCode.KeypadMultiply)]
     public static void Back()
     {
         if (!Enable)
@@ -121,6 +120,7 @@ public class InspectorNavigation
     }
 
     [Shortcut("InspectorNavigation Circle", KeyCode.Tab)]
+    [Shortcut("InspectorNavigationKeypad Circle", KeyCode.KeypadPlus)]
     public static void Circle()
     {
         if (!Enable)
