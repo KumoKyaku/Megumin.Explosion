@@ -58,7 +58,7 @@ public class ExplosionSettingProvider : SettingsProvider
 
         if (GUILayout.Button("Foward"))
         {
-            InspectorNavigation.Foward();
+            InspectorNavigation.Forward();
         }
 
         if (GUILayout.Button("Back"))

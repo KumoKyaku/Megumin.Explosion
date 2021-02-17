@@ -1,13 +1,17 @@
 ﻿using Megumin;
+using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 /// <summary>
 /// Inspector导航
 /// </summary>
-public class InspectorNavigation
+public partial class InspectorNavigation
 {
     static Node<int[]> current;
     static InspectorNavigation()
@@ -32,6 +36,12 @@ public class InspectorNavigation
         //Debug.Log("注册 Inspector导航");
         Selection.selectionChanged -= OnSelect;
         Selection.selectionChanged += OnSelect;
+
+#if ENABLE_INPUT_SYSTEM
+        InputSystem.onEvent -= InputSystem_onEvent;
+        InputSystem.onEvent += InputSystem_onEvent;
+#endif
+
         Enable = true;
     }
 
@@ -39,6 +49,11 @@ public class InspectorNavigation
     {
         //Debug.Log("取消注册 Inspector导航");
         Selection.selectionChanged -= OnSelect;
+
+#if ENABLE_INPUT_SYSTEM
+        InputSystem.onEvent -= InputSystem_onEvent;
+#endif
+
         Enable = false;
     }
 
@@ -79,14 +94,14 @@ public class InspectorNavigation
 
     [Shortcut("InspectorNavigation Forward", KeyCode.Alpha1)]
     [Shortcut("InspectorNavigationKeypad Forward", KeyCode.KeypadMinus)]
-    public static void Foward()
+    public static void Forward()
     {
         if (!Enable)
         {
             return;
         }
 
-        if (TestSame(current.Value, lastSelected) 
+        if (TestSame(current.Value, lastSelected)
             || current.Next.Value == null
             || current.Next.Value.Length == 0)
         {
@@ -109,7 +124,7 @@ public class InspectorNavigation
             return;
         }
 
-        if (current.Previous.Value == null 
+        if (current.Previous.Value == null
             || current.Previous.Value.Length == 0
             || TestSame(current.Previous.Value, lastSelected))
         {
@@ -133,7 +148,7 @@ public class InspectorNavigation
         }
 
         if (current.Previous.Value == null
-            || current.Previous.Value.Length == 0 
+            || current.Previous.Value.Length == 0
             || TestSame(current.Previous.Value, lastSelected))
         {
             //到达最后端
@@ -166,3 +181,51 @@ public class InspectorNavigation
         return Enumerable.SequenceEqual(a, b);
     }
 }
+
+
+#if ENABLE_INPUT_SYSTEM
+partial class InspectorNavigation
+{
+    //通过新输入系统硬件事件触发前进后退
+    static int BackRecord = 0;
+    static int ForwarRecord = 0;
+    private unsafe static void InputSystem_onEvent(UnityEngine.InputSystem.LowLevel.InputEventPtr arg1,
+                                            InputDevice arg2)
+    {
+        if (arg2 is Mouse mouse)
+        {
+            if (mouse.backButton.ReadValue() == 1)
+            {
+                if (BackRecord == 0)
+                {
+                    BackRecord = 1;
+                    Back();
+                }
+            }
+            else
+            {
+                BackRecord = 0;
+            }
+
+            if (mouse.forwardButton.ReadValue() == 1)
+            {
+                if (ForwarRecord == 0)
+                {
+                    ForwarRecord = 1;
+                    Forward();
+                }
+            }
+            else
+            {
+                ForwarRecord = 0;
+            }
+        }
+    }
+
+}
+
+#endif
+
+
+
+

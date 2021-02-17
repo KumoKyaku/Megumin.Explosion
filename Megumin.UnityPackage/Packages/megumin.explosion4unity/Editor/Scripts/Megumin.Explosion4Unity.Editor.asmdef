@@ -1,8 +1,10 @@
 {
     "name": "Megumin.Explosion4Unity.Editor",
+    "rootNamespace": "",
     "references": [
         "Megumin.Explosion4Unity",
-        "Unity.Settings.Editor"
+        "Unity.Settings.Editor",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [
         "Editor"
