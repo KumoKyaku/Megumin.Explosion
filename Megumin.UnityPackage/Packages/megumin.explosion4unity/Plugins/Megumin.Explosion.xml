@@ -389,13 +389,30 @@
             未初始化异常
             </summary>
         </member>
+        <member name="M:Megumin.Node`1.Pop">
+            <summary>
+            从原位置摘出来并修复前后链接
+            </summary>
+        </member>
+        <member name="M:Megumin.Node`1.AfterInsert(Megumin.Node{`0})">
+            <summary>
+            在 this 后面插入 node
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:Megumin.Node`1.BeforeInsert(Megumin.Node{`0})">
+            <summary>
+            在 this 前面插入 node
+            </summary>
+            <param name="node"></param>
+        </member>
         <member name="T:Megumin.Ring`1">
             <summary>
             双向环
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Megumin.Ring`1.Ex(Megumin.Node{`0},System.Int32)">
+        <member name="M:Megumin.Ring`1.Expand(Megumin.Node{`0},System.Int32,`0)">
             <summary>
             扩容
             </summary>

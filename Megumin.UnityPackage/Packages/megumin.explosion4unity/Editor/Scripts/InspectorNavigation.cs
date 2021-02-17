@@ -15,7 +15,11 @@ public class InspectorNavigation
         InitRing();
     }
 
-    public static void InitRing(int count = 10)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="count">默认12个，个人实际使用中感觉最好。</param>
+    public static void InitRing(int count = 12)
     {
         Ring<int[]> ring = new Ring<int[]>(count);
         current = ring.Current;
