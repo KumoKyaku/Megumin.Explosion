@@ -27,6 +27,7 @@ public partial class MeguminEditorUtility
     /// 取得所有内置Icon
     /// <para></para>
     /// 通过名字加载 <seealso cref="EditorGUIUtility.FindTexture(string)"/>
+    /// <para><seealso cref="EditorGUIUtility.IconContent(string)"/></para>
     /// </summary>
     /// <returns></returns>
     public List<(Texture2D Icon, string Name)> GetEditorIcon()

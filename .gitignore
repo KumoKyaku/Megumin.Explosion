@@ -21,3 +21,14 @@ Megumin.UnityPackage/Megumin.ReferenceView.Editor.Tests.csproj
 Megumin.UnityPackage/Megumin.TMProExtension.csproj
 Megumin.UnityPackage/Megumin.TMProExtension.Tests.csproj
 Megumin.UnityPackage/npm-debug.log
+Megumin.UnityPackage/Unity.Settings.Editor.csproj
+Megumin.UnityPackage/Unity.Settings.Example.csproj
+Megumin.UnityPackage/Unity.TextMeshPro.csproj
+Megumin.UnityPackage/Unity.TextMeshPro.Editor.csproj
+Megumin.UnityPackage/UnityEditor.TestRunner.csproj
+Megumin.UnityPackage/UnityEditor.UI.csproj
+Megumin.UnityPackage/UnityEngine.TestRunner.csproj
+Megumin.UnityPackage/UnityEngine.UI.csproj
+Megumin.UnityPackage/Assembly-CSharp-Editor.csproj
+Megumin.UnityPackage/Unity.PackageValidationSuite.Editor.csproj
+Megumin.UnityPackage/Unity.PackageValidationSuite.Editor.Extension.csproj

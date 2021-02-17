@@ -118,5 +118,26 @@ namespace UnitTestProject1
             ListPool<int>.Return(ref temp);
             Assert.AreEqual(null, temp);
         }
+
+
+        [TestMethod]
+        public void TestRing()
+        {
+            Ring<string> ring = new Ring<string>(5);
+            var p = ring.Current;
+            for (int i = 0; i < 5; i++)
+            {
+                p.Value = i.ToString();
+                p = p.Next;
+            }
+
+            p = ring.Current;
+            for (int i = 0; i < 5; i++)
+            {
+                var str = i.ToString();
+                Assert.AreEqual(str, p.Value);
+                p = p.Next;
+            }
+        }
     }
 }

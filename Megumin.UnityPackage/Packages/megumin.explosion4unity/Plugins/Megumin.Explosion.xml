@@ -389,6 +389,17 @@
             未初始化异常
             </summary>
         </member>
+        <member name="T:Megumin.Ring`1">
+            <summary>
+            双向环
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Megumin.Ring`1.Ex(Megumin.Node{`0},System.Int32)">
+            <summary>
+            扩容
+            </summary>
+        </member>
         <member name="T:Megumin.SimpleMatcher">
             <summary>
             简单的匹配器

@@ -4,14 +4,16 @@
       "version": "file:megumin.explosion4unity",
       "depth": 0,
       "source": "embedded",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.settings-manager": "1.0.3"
+      }
     },
     "com.unity.ext.nunit": {
       "version": "1.0.6",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.cn"
+      "url": "https://packages.unity.com"
     },
     "com.unity.megumin.referenceviewer": {
       "version": "file:megumin.referenceviewer@1.0.0",
@@ -26,7 +28,7 @@
       "dependencies": {
         "nuget.mono-cecil": "0.1.6-preview"
       },
-      "url": "https://packages.unity.cn"
+      "url": "https://packages.unity.com"
     },
     "com.unity.package-validation-suite": {
       "version": "0.13.0-preview",
@@ -35,7 +37,14 @@
       "dependencies": {
         "com.unity.nuget.mono-cecil": "0.1.6-preview.2"
       },
-      "url": "https://packages.unity.cn"
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.settings-manager": {
+      "version": "1.0.3",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
       "version": "1.1.20",
@@ -46,7 +55,7 @@
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       },
-      "url": "https://packages.unity.cn"
+      "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
       "version": "2.0.1",
@@ -55,7 +64,7 @@
       "dependencies": {
         "com.unity.ugui": "1.0.0"
       },
-      "url": "https://packages.unity.cn"
+      "url": "https://packages.unity.com"
     },
     "com.unity.ugui": {
       "version": "1.0.0",
@@ -71,7 +80,7 @@
       "depth": 2,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.cn"
+      "url": "https://packages.unity.com"
     },
     "com.unity.modules.animation": {
       "version": "1.0.0",
@@ -92,6 +101,12 @@
       "dependencies": {}
     },
     "com.unity.modules.jsonserialize": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
+    },
+    "com.unity.modules.physics": {
       "version": "1.0.0",
       "depth": 0,
       "source": "builtin",
