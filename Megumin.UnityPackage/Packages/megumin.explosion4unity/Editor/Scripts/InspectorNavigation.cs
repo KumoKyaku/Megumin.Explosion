@@ -25,7 +25,7 @@ public class InspectorNavigation
 
     public static void Register()
     {
-        Debug.Log("注册 Inspector导航");
+        //Debug.Log("注册 Inspector导航");
         Selection.selectionChanged -= OnSelect;
         Selection.selectionChanged += OnSelect;
         Enable = true;
@@ -33,7 +33,7 @@ public class InspectorNavigation
 
     public static void UnRegister()
     {
-        Debug.Log("取消注册 Inspector导航");
+        //Debug.Log("取消注册 Inspector导航");
         Selection.selectionChanged -= OnSelect;
         Enable = false;
     }
