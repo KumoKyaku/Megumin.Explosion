@@ -14,22 +14,16 @@ public static class PrimitiveMesh
         {
             case PrimitiveType.Sphere:
                 return GetCachedPrimitiveMesh(ref _unitySphereMesh, primitiveType);
-                break;
             case PrimitiveType.Capsule:
                 return GetCachedPrimitiveMesh(ref _unityCapsuleMesh, primitiveType);
-                break;
             case PrimitiveType.Cylinder:
                 return GetCachedPrimitiveMesh(ref _unityCylinderMesh, primitiveType);
-                break;
             case PrimitiveType.Cube:
                 return GetCachedPrimitiveMesh(ref _unityCubeMesh, primitiveType);
-                break;
             case PrimitiveType.Plane:
                 return GetCachedPrimitiveMesh(ref _unityPlaneMesh, primitiveType);
-                break;
             case PrimitiveType.Quad:
                 return GetCachedPrimitiveMesh(ref _unityQuadMesh, primitiveType);
-                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(primitiveType), primitiveType, null);
         }
@@ -57,22 +51,16 @@ public static class PrimitiveMesh
         {
             case PrimitiveType.Sphere:
                 return "New-Sphere.fbx";
-                break;
             case PrimitiveType.Capsule:
                 return "New-Capsule.fbx";
-                break;
             case PrimitiveType.Cylinder:
                 return "New-Cylinder.fbx";
-                break;
             case PrimitiveType.Cube:
                 return "Cube.fbx";
-                break;
             case PrimitiveType.Plane:
                 return "New-Plane.fbx";
-                break;
             case PrimitiveType.Quad:
                 return "Quad.fbx";
-                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(primitiveType), primitiveType, null);
         }

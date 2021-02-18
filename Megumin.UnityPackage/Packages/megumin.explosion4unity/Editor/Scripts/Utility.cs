@@ -19,7 +19,7 @@ public partial class MeguminEditorUtility
             "GetEditorAssetBundle",
             BindingFlags.NonPublic | BindingFlags.Static);
 
-        return (AssetBundle)getEditorAssetBundle.Invoke(null, new object[] { });
+        return (AssetBundle)getEditorAssetBundle.Invoke(null, null);
     }
 
     static List<(Texture2D Icon, string Name)> EditorIconCache;
@@ -60,6 +60,26 @@ public partial class MeguminEditorUtility
 
             yield return assetName;
         }
+    }
+
+    /// <summary>
+    /// 加载 unity_builtin_extra 里的资源
+    /// <para>unity default resources 里的资源直接用<see cref="Resources.GetBuiltinResource{T}(string)"/></para>
+    /// unity editor resources 没有找到对应API，或者路径不对，没有加载成功。
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static T GetBuiltinExtraResource<T>(string path)
+        where T : UnityEngine.Object
+    {
+
+#if UNITY_EDITOR
+        return UnityEditor.AssetDatabase.GetBuiltinExtraResource<T>(path);
+#else
+        return Resources.GetBuiltinResource<T>(path);
+#endif
+
     }
 
     private static string GetIconsPath()
