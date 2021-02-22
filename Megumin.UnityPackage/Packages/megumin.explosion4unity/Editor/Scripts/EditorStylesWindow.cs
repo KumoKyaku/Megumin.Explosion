@@ -11,7 +11,7 @@ public class EditorStylesWindow : EditorWindow
 {
 
 	static List<GUIStyle> styles = null;
-	[MenuItem("Tool/Style/EditorStyles")]
+	[MenuItem("Tools/Style/EditorStyles")]
 	public static void Test()
 	{
 		EditorWindow.GetWindow<EditorStylesWindow>("EditorStyles");

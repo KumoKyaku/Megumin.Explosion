@@ -10,7 +10,7 @@ public class PackageWizard : EditorWindow
     const float k_MaxWindowHeight = 800f;
     const float k_ScreenSizeWindowBuffer = 50f;
 
-    [MenuItem("Window/Package Wizard...")]
+    [MenuItem("Tools/Package Wizard...")]
     static void CreateWindow()
     {
         PackageWizard wizard = GetWindow<PackageWizard>(true, "Package Wizard", true);

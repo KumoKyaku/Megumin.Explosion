@@ -12,7 +12,7 @@ public class GUIStyleWindow : EditorWindow
     private Vector2 scrollVector2 = Vector2.zero;
     private string search = "";
 
-    [MenuItem("Tool/Style/GUIStyle")]
+    [MenuItem("Tools/Style/GUIStyle")]
     public static void InitWindow()
     {
         EditorWindow.GetWindow(typeof(GUIStyleWindow));
