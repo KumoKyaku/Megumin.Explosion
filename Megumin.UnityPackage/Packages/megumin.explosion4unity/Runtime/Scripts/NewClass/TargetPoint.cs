@@ -10,47 +10,28 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class TargetPoint : MonoBehaviour
 {
+
 #if UNITY_EDITOR
 
     [Tooltip("是否中心调整到模型底部")]
     public bool centerDown = true;
+    [Tooltip("网格模式")]
+    public bool IsWire = true;
     [Tooltip("网格类型")]
     public PrimitiveType type = PrimitiveType.Capsule;
+
     public Vector3 scale = Vector3.one;
     Mesh pointMesh;
-    public Color targetColor  = new Color32(105,227,116,41);
-
-    PrimitiveType old = PrimitiveType.Capsule;
+    public Color targetColor = new Color32(105, 227, 116, 41);
 
     private void Awake()
     {
-        CheckMesh();
+        pointMesh = PrimitiveMesh.GetUnityPrimitiveMesh(type);
     }
 
-    private void Update()
+    void OnValidate()
     {
-        CheckMesh();
-    }
-
-
-    /// <summary>
-    /// 检查mesh变动
-    /// </summary>
-    private void CheckMesh()
-    {
-        if (!pointMesh || type != old)
-        {
-            GameObject temp = GameObject.CreatePrimitive(type);
-            Mesh capsule = temp.GetComponent<MeshFilter>().sharedMesh;
-            pointMesh = capsule;
-#if UNITY_EDITOR
-            DestroyImmediate(temp);
-#else  
-            Destroy(temp);
-#endif
-
-            old = type;
-        }
+        pointMesh = PrimitiveMesh.GetUnityPrimitiveMesh(type);
     }
 
     private void OnDrawGizmos()
@@ -66,6 +47,7 @@ public class TargetPoint : MonoBehaviour
                     DrawPlayerStart();
                     break;
                 case PrimitiveType.Cylinder:
+                    DrawCylinder();
                     break;
                 case PrimitiveType.Cube:
                     DrawCube();
@@ -80,6 +62,18 @@ public class TargetPoint : MonoBehaviour
         }
     }
 
+    private void DrawCylinder()
+    {
+        Gizmos.color = targetColor;
+        Vector3 meshCenter = transform.position;
+        if (centerDown)
+        {
+            meshCenter = transform.position + Vector3.up * scale.y;
+        }
+
+        DrawMesh(meshCenter);
+    }
+
     private void DrawSphere()
     {
         Gizmos.color = targetColor;
@@ -89,8 +83,7 @@ public class TargetPoint : MonoBehaviour
             meshCenter = transform.position + Vector3.up * 0.5f * scale.y;
         }
 
-
-        Gizmos.DrawMesh(pointMesh, meshCenter, transform.rotation, scale);
+        DrawMesh(meshCenter);
     }
 
     private void DrawCube()
@@ -102,8 +95,7 @@ public class TargetPoint : MonoBehaviour
             meshCenter = transform.position + Vector3.up * 0.5f * scale.y;
         }
 
-
-        Gizmos.DrawMesh(pointMesh, meshCenter,transform.rotation, scale);
+        DrawMesh(meshCenter);
     }
 
     private void DrawPlayerStart()
@@ -116,11 +108,32 @@ public class TargetPoint : MonoBehaviour
             meshCenter = transform.position + Vector3.up * scale.y;
         }
 
-        Gizmos.DrawWireMesh(pointMesh, meshCenter, transform.rotation,scale);
+        DrawMesh(meshCenter);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(meshCenter,meshCenter + transform.forward * 1.5f);
+        Gizmos.DrawLine(meshCenter, meshCenter + transform.forward * 1.5f);
+    }
+
+    private void DrawMesh(Vector3 meshCenter)
+    {
+        if (IsWire)
+        {
+            Gizmos.DrawWireMesh(pointMesh, meshCenter, transform.rotation, scale);
+        }
+        else
+        {
+            Gizmos.DrawMesh(pointMesh, meshCenter, transform.rotation, scale);
+        }
     }
 
 #endif
+
 }
+
+
+
+
+
+
+
+

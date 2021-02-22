@@ -8,6 +8,11 @@ using UnityEngine;
 /// </summary>
 public static class PrimitiveMesh
 {
+    /// <summary>
+    /// 获取unity内置的mesh
+    /// </summary>
+    /// <param name="primitiveType"></param>
+    /// <returns></returns>
     public static Mesh GetUnityPrimitiveMesh(PrimitiveType primitiveType)
     {
         switch (primitiveType)
@@ -35,7 +40,7 @@ public static class PrimitiveMesh
         {
             //Debug.Log("Getting Unity Primitive Mesh: " + primitiveType);
             primMesh = Resources.GetBuiltinResource<Mesh>(GetPrimitiveMeshPath(primitiveType));
-            
+
             if (primMesh == null)
             {
                 Debug.LogError("Couldn't load Unity Primitive Mesh: " + primitiveType);

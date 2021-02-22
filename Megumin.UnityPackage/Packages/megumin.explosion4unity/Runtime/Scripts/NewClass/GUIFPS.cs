@@ -9,13 +9,14 @@ namespace Megumin
     /// <summary>
     /// 原生GUI显示帧率
     /// </summary>
-    public class GUIFPS:MonoBehaviour
+    public class GUIFPS : MonoBehaviour
     {
         // FPS
         private float oldTime;
         private int frame = 0;
         private static float frameRate = 0f;
-        private const float INTERVAL = 0.25f;
+        private static string frameRateStr = "0";
+        private const float INTERVAL = 0.5f;
 
         /// <summary>
         /// 是否启用
@@ -36,6 +37,7 @@ namespace Megumin
             if (time >= INTERVAL)
             {
                 frameRate = frame / time;
+                frameRateStr = $"FPS : {frameRate:0.0}";
                 oldTime = Time.realtimeSinceStartup;
                 frame = 0;
             }
@@ -55,7 +57,7 @@ namespace Megumin
         {
             if (isOn)
             {
-                GUI.Label(position, "FPS : " + frameRate.ToString(), GUI.skin.label);
+                GUI.Label(position, frameRateStr);
             }
         }
     }
