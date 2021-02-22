@@ -42,7 +42,11 @@ public class EditorButton : Editor
         }
     }
 
-    EditorButtonState[] editorButtonStates;
+    class DrawMethod
+    {
+        public MethodInfo Method { get; set; }
+        public EditorButtonState State { get; set; }
+    }
 
     delegate object ParameterDrawer(ParameterInfo parameter, object val);
 
@@ -69,46 +73,37 @@ public class EditorButton : Editor
         {typeof(Vector2),"Vector2"},
         {typeof(Quaternion),"Quaternion"}
     };
-    string editorButtonName;
+
+    /// <summary>
+    /// 需要绘制按钮的方法
+    /// </summary>
+    List<DrawMethod> Methods = new List<DrawMethod>();
+    void OnEnable()
+    {
+        var methods = target.GetType()
+            .GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
+                BindingFlags.NonPublic)
+            .Where(o => Attribute.IsDefined(o, typeof(EditorButtonAttribute)));
+
+        Methods.Clear();
+        foreach (var methodInfo in methods)
+        {
+            Methods.Add(new DrawMethod()
+            {
+                Method = methodInfo,
+                State = new EditorButtonState(methodInfo.GetParameters().Length),
+            });
+        }
+    }
+
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
-        var methods = target.GetType()
-            .GetMembers(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
-                BindingFlags.NonPublic)
-            .Where(o => Attribute.IsDefined(o, typeof(EditorButtonAttribute)));
-        int methodIndex = 0;
-
-
-        if (editorButtonStates == null)
+        foreach (var draw in Methods)
         {
-            CreateEditorButtonStates(methods.Select(member => (MethodInfo)member).ToArray());
+            DrawButtonforMethod(target, draw.Method, draw.State);
         }
-
-        foreach (var memberInfo in methods)
-        {
-            var method = memberInfo as MethodInfo;
-
-            DrawButtonforMethod(target, method, GetEditorButtonState(method, methodIndex));
-            methodIndex++;
-        }
-    }
-
-    void CreateEditorButtonStates(MethodInfo[] methods)
-    {
-        editorButtonStates = new EditorButtonState[methods.Length];
-        int methodIndex = 0;
-        foreach (var methodInfo in methods)
-        {
-            editorButtonStates[methodIndex] = new EditorButtonState(methodInfo.GetParameters().Length);
-            methodIndex++;
-        }
-    }
-
-    EditorButtonState GetEditorButtonState(MethodInfo method, int methodIndex)
-    {
-        return editorButtonStates[methodIndex];
     }
 
     void DrawButtonforMethod(Object target, MethodInfo methodInfo, EditorButtonState state)
@@ -254,8 +249,7 @@ public class EditorButton : Editor
 
     string MethodDisplayName(MethodInfo method)
     {
-
-
+        string editorButtonName = "Unknown";
         if (Attribute.IsDefined(method, typeof(EditorButtonAttribute)))
         {
             EditorButtonAttribute tmp =
