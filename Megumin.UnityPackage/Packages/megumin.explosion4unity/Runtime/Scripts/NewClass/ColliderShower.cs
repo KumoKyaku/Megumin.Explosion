@@ -11,7 +11,7 @@ public class ColliderShower : MonoBehaviour
     /// <summary>
     /// 全局显示开关
     /// </summary>
-    public static bool GlobalToggle = true;
+    public static Pref<bool> GlobalToggle;
     public Material Material;
     public bool ShowLable = false;
     /// <summary>
@@ -27,6 +27,11 @@ public class ColliderShower : MonoBehaviour
     public ColliderShower Parent;
     void Start()
     {
+        if (GlobalToggle == null)
+        {
+            GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
+        }
+
         ReCollect();
     }
 
@@ -79,17 +84,28 @@ public class ColliderShower : MonoBehaviour
     }
 
     [EditorButton]
-    void SwitchGlobalToggle()
+    public void SwitchGlobalToggle()
     {
-        GlobalToggle = !GlobalToggle;
+        if (GlobalToggle == null)
+        {
+            GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
+        }
+        GlobalToggle.Value = !GlobalToggle;
+
 #if UNITY_EDITOR
-        UnityEditor.SceneView.RepaintAll();
+        //这里插入一个Update达到刷效目的，否则编辑器模式下脚本LateUpdate调用不及时。
+        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
 #endif
     }
 
     void LateUpdate()
     {
         bool needReCollect = false;
+
+        if (GlobalToggle == null)
+        {
+            GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
+        }
 
         if (GlobalToggle)
         {
@@ -208,3 +224,6 @@ public class ColliderShower : MonoBehaviour
 #endif
 
 }
+
+
+
