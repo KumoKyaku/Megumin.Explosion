@@ -36,6 +36,21 @@ public class ColliderShower : MonoBehaviour
     }
 
     [EditorButton]
+    public void SwitchGlobalToggle()
+    {
+        if (GlobalToggle == null)
+        {
+            GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
+        }
+        GlobalToggle.Value = !GlobalToggle;
+
+#if UNITY_EDITOR
+        //这里插入一个Update达到刷效目的，否则编辑器模式下脚本LateUpdate调用不及时。
+        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+#endif
+    }
+
+    [EditorButton]
     void ReCollect()
     {
         SubShowers.Clear();
@@ -63,6 +78,15 @@ public class ColliderShower : MonoBehaviour
     }
 
     [EditorButton]
+    void ParentReCollect()
+    {
+        if (Parent)
+        {
+            Parent.ReCollect();
+        }
+    }
+
+    [EditorButton]
     void RemoveSubShowers()
     {
         if (SubShowers != null)
@@ -81,21 +105,6 @@ public class ColliderShower : MonoBehaviour
 
             ReCollect();
         }
-    }
-
-    [EditorButton]
-    public void SwitchGlobalToggle()
-    {
-        if (GlobalToggle == null)
-        {
-            GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
-        }
-        GlobalToggle.Value = !GlobalToggle;
-
-#if UNITY_EDITOR
-        //这里插入一个Update达到刷效目的，否则编辑器模式下脚本LateUpdate调用不及时。
-        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
-#endif
     }
 
     void LateUpdate()

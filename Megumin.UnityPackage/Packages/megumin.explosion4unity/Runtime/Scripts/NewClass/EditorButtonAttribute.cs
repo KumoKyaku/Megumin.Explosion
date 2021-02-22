@@ -113,6 +113,7 @@ public class EditorButton : Editor
 
     void DrawButtonforMethod(Object target, MethodInfo methodInfo, EditorButtonState state)
     {
+        EditorGUILayout.Space(2);
         EditorGUILayout.BeginHorizontal();
         var foldoutRect = EditorGUILayout.GetControlRect(GUILayout.Width(10.0f));
         state.opened = EditorGUI.Foldout(foldoutRect, state.opened, "");
