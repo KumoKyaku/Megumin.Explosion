@@ -653,6 +653,26 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:Megumin.IMessageBox">
+            <summary>
+            返回值约定[0：取消;1：确定；2：帮助；]
+            </summary>
+        </member>
+        <member name="T:Megumin.IMessageBox.MessageBoxButtons">
+            <summary>
+            参考 https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.messageboxbuttons?view=net-5.0
+            </summary>
+        </member>
+        <member name="M:Megumin.IMessageBox.Show(System.Object,System.Object,Megumin.IMessageBox.MessageBoxButtons,System.Object)">
+            <summary>
+            对话框通用api
+            </summary>
+            <param name="title"></param>
+            <param name="content"></param>
+            <param name="buttons"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
         <!-- Badly formed XML comment ignored for member "T:Megumin.IMatcher`2" -->
         <member name="T:Megumin.IPath">
             <summary>
