@@ -429,6 +429,12 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:Megumin.SimplePipeQueueWithEndSignal`1">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="T:Megumin.Threshold`1">
             <summary>
             阈
@@ -500,6 +506,27 @@
             吃掉异步后续，释放关联引用，什么也不会发生。
             </summary>
             <param name="token"></param>
+        </member>
+        <member name="T:Megumin.TempValueTaskSource`1">
+            <summary>
+            临时使用的IValueTaskSource，线程安全，但是没有性能优化。当作包装类使用。
+            <para>没有处理线程同步上下文</para>
+            </summary>
+            <typeparam name="TResult"></typeparam>
+        </member>
+        <member name="M:Megumin.TempValueTaskSource`1.Reset">
+            <summary>
+            清理所有状态，准备重用
+            </summary>
+        </member>
+        <member name="M:Megumin.TempValueTaskSource`1.EatContinuation(System.Int16)">
+            <summary>
+            吃掉已等待异步后续，释放关联引用，什么也不触发。
+            </summary>
+            <param name="token"></param>
+        </member>
+        <member name="T:Megumin.TempValueTaskSource">
+            <inheritdoc/>
         </member>
         <member name="T:Megumin.OnValueChanged`1">
             <summary>

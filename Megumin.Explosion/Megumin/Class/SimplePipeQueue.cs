@@ -19,7 +19,7 @@ namespace Megumin
         //SynchronizationContext callbackContext;
         //public bool UseSynchronizationContext { get; set; } = true;
 
-        public void Write(T item)
+        public virtual void Write(T item)
         {
             lock (_innerLock)
             {
@@ -41,7 +41,7 @@ namespace Megumin
             }
         }
 
-        public ValueTask<T> ReadAsync()
+        public virtual ValueTask<T> ReadAsync()
         {
             lock (_innerLock)
             {
@@ -58,4 +58,30 @@ namespace Megumin
             }
         }
     }
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class SimplePipeQueueWithEndSignal<T> : SimplePipeQueue<(T Value, bool IsEnd)>
+    {
+        //public bool IsEnd { get; private set; }
+
+        public void Write(T item, bool isEnd)
+        {
+            Write((item, isEnd));
+        }
+
+        //public override async ValueTask<(T Value, bool IsEnd)> ReadAsync()
+        //{
+        //    if (IsEnd)
+        //    {
+        //        throw new IndexOutOfRangeException();
+        //    }
+        //    var ret = await base.ReadAsync();
+        //    IsEnd = ret.IsEnd;
+        //    return ret;
+        //}
+    }
+
 }

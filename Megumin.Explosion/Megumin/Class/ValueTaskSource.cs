@@ -146,4 +146,221 @@ namespace Megumin
             caches.Remove(token);
         }
     }
+
+
+    /// <summary>
+    /// 临时使用的IValueTaskSource，线程安全，但是没有性能优化。当作包装类使用。
+    /// <para>没有处理线程同步上下文</para>
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    public class TempValueTaskSource<TResult> : IValueTaskSource<TResult>
+    {
+        public Exception Ex { get; private set; }
+
+        ValueTaskSourceStatus status = ValueTaskSourceStatus.Pending;
+        private ManualResetEvent resetEvent;
+        readonly object locker = new object();
+        public List<(Action<object> Continuation, object State)> Continuations
+                = new List<(Action<object> Continuation, object State)>();
+        public short Token { get; private set; } = 0;
+        public ValueTask<TResult> ValueTask => new ValueTask<TResult>(this, Token);
+
+        public TempValueTaskSource()
+        {
+
+        }
+
+        public TempValueTaskSource(short token)
+        {
+            this.Token = token;
+        }
+
+        /// <summary>
+        /// 清理所有状态，准备重用
+        /// </summary>
+        public void Reset()
+        {
+            lock (locker)
+            {
+                resetEvent?.Reset();
+                status = ValueTaskSourceStatus.Pending;
+                Continuations.Clear();
+                Value = default;
+                Ex = null;
+            }
+        }
+
+        public TResult Value { get; private set; }
+
+        public ValueTaskSourceStatus GetStatus(short token)
+        {
+            lock (locker)
+            {
+                return status;
+            }
+        }
+
+        public void OnCompleted(Action<object> continuation, object state, short token, ValueTaskSourceOnCompletedFlags flags)
+        {
+            lock (locker)
+            {
+                if (status == ValueTaskSourceStatus.Pending)
+                {
+                    Continuations.Add((continuation, state));
+                }
+                else
+                {
+                    throw new TaskSchedulerException();
+                }
+            }
+
+        }
+
+        public TResult GetResult(short token)
+        {
+            lock (locker)
+            {
+                switch (status)
+                {
+                    case ValueTaskSourceStatus.Pending:
+                        if (resetEvent == null)
+                        {
+                            resetEvent = new ManualResetEvent(false);
+                        }
+                        resetEvent.WaitOne();
+                        return GetResult(token);
+                    case ValueTaskSourceStatus.Succeeded:
+                        return Value;
+                    case ValueTaskSourceStatus.Faulted:
+                        if (Ex != null)
+                        {
+                            throw Ex;
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
+                    case ValueTaskSourceStatus.Canceled:
+                        throw new TaskCanceledException();
+                    default:
+                        return default;
+                }
+            }
+        }
+
+        public bool TrySetResult(TResult result)
+        {
+            lock (locker)
+            {
+                if (status == ValueTaskSourceStatus.Pending)
+                {
+                    Value = result;
+                    status = ValueTaskSourceStatus.Succeeded;
+                    resetEvent?.Set();
+                    foreach (var item in Continuations)
+                    {
+                        item.Continuation?.Invoke(item.State);
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool TrySetCanceled()
+        {
+            lock (locker)
+            {
+                if (status == ValueTaskSourceStatus.Pending)
+                {
+                    status = ValueTaskSourceStatus.Canceled;
+                    resetEvent?.Set();
+                    foreach (var item in Continuations)
+                    {
+                        item.Continuation?.Invoke(item.State);
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public bool TrySetException(Exception exception)
+        {
+            lock (locker)
+            {
+                if (status == ValueTaskSourceStatus.Pending)
+                {
+                    Ex = exception;
+                    status = ValueTaskSourceStatus.Faulted;
+                    resetEvent?.Set();
+                    foreach (var item in Continuations)
+                    {
+                        item.Continuation?.Invoke(item.State);
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 吃掉已等待异步后续，释放关联引用，什么也不触发。
+        /// </summary>
+        /// <param name="token"></param>
+        public void EatContinuation(short token)
+        {
+            lock (locker)
+            {
+                Continuations.Clear();
+            }
+        }
+    }
+
+    /// <inheritdoc/>
+    public class TempValueTaskSource : TempValueTaskSource<bool>, IValueTaskSource
+    {
+        public TempValueTaskSource() : base()
+        {
+
+        }
+
+        public TempValueTaskSource(short token) : base(token)
+        {
+        }
+
+        public new ValueTask ValueTask => new ValueTask(this, Token);
+
+        void IValueTaskSource.GetResult(short token)
+        {
+            base.GetResult(token);
+        }
+
+        public bool TrySetResult()
+        {
+            return TrySetResult(true);
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
