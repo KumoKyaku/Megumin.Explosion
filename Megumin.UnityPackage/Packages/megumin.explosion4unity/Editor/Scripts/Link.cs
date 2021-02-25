@@ -26,13 +26,25 @@ public class Link
     [MenuItem("Tools/Link/UniRx")]
     static void UniRx()
     {
-        Application.OpenURL("https://github.com/neuecc/UniRx");
+        Application.OpenURL("https://github.com/neuecc/UniRx#upm-package");
     }
 
     [MenuItem("Tools/Link/UniTask")]
     static void UniTask()
     {
-        Application.OpenURL("https://github.com/Cysharp/UniTask");
+        Application.OpenURL("https://github.com/Cysharp/UniTask#upm-package");
+    }
+
+    [MenuItem("Tools/Link/LINQ-to-GameObject-for-Unity")]
+    static void LINQtoGameObjectforUnity()
+    {
+        Application.OpenURL("https://github.com/neuecc/LINQ-to-GameObject-for-Unity/#linq-to-gameobject");
+    }
+
+    [MenuItem("Tools/Link/Newtonsoft.Json for Unity")]
+    static void NewtonsoftJson()
+    {
+        Application.OpenURL("https://github.com/jilleJr/Newtonsoft.Json-for-Unity#installation-via-git-in-upm");
     }
 }
 
