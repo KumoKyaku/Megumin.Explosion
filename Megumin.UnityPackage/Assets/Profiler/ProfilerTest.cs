@@ -16,7 +16,7 @@ public class ProfilerTest : MonoBehaviour
     {
         using (new ProfilerScope("test"))
         {
-            string a = "";
+            //string a = "";
             for (int i = 0; i < 300; i++)
             {
                 //a += i;

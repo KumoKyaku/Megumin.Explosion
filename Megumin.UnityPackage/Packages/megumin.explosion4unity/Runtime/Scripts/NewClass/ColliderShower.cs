@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,20 @@ public class ColliderShower : MonoBehaviour
     /// 全局显示开关
     /// </summary>
     public static Pref<bool> GlobalToggle;
-    public Material Material;
+    public Material DefaultMat;
+    [ReadOnlyInInspector]
+    public Material overrideMat;
+    public Material Material
+    {
+        get
+        {
+            if (overrideMat)
+            {
+                return overrideMat;
+            }
+            return DefaultMat;
+        }
+    }
     public bool ShowLable = false;
     /// <summary>
     /// 即使碰撞盒没有开启也要强制显示
@@ -35,6 +49,7 @@ public class ColliderShower : MonoBehaviour
         ReCollect();
     }
 
+
     [EditorButton]
     public void SwitchGlobalToggle()
     {
@@ -44,10 +59,7 @@ public class ColliderShower : MonoBehaviour
         }
         GlobalToggle.Value = !GlobalToggle;
 
-#if UNITY_EDITOR
-        //这里插入一个Update达到刷效目的，否则编辑器模式下脚本LateUpdate调用不及时。
-        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
-#endif
+        this.InspectorForceUpdate();
     }
 
     [EditorButton]
@@ -213,6 +225,21 @@ public class ColliderShower : MonoBehaviour
                           null,
                           UnityEngine.Rendering.LightProbeUsage.Off,
                           null);
+    }
+
+    [EditorButton]
+    public void OverrideColor(Color color)
+    {
+        overrideMat = Instantiate(DefaultMat);
+        overrideMat.color = color;
+        this.InspectorForceUpdate();
+    }
+
+    [EditorButton]
+    public void ResetMat()
+    {
+        overrideMat = null;
+        this.InspectorForceUpdate();
     }
 
 #if UNITY_EDITOR

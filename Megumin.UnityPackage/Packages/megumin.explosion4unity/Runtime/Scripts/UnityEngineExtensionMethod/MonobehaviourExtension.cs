@@ -97,4 +97,18 @@ public static class MonoBehaviourExtension_DA182CC20A33453FA684CD22CE5B97DC
             "guiText","guiTexture","hingeJoint","light","networkView","particleEmitter",
             "particleSystem","renderer","rigidbody","rigidbody2D",
     };
+
+    /// <summary>
+    /// 这里插入一个EditorUpdate达到刷效果，否则编辑器模式下脚本Update调用不及时。
+    /// </summary>
+    /// <param name="behaviour"></param>
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    public static void InspectorForceUpdate(this UnityEngine.Object behaviour)
+    {
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+#endif
+
+    }
 }
