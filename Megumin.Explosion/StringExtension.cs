@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace System
 {
@@ -18,7 +19,7 @@ namespace System
         /// <param name="allowLastOneShortCount">是够允许最后一段长度小于每段长度，
         /// 如果为false，不足的末尾将被舍弃。默认为false。</param>
         /// <returns></returns>
-        public static string[] Split(this string s,int perLength,bool allowLastOneShortCount = false)
+        public static string[] Split(this string s, int perLength, bool allowLastOneShortCount = false)
         {
             if (perLength > 0 == false)
             {
@@ -37,13 +38,13 @@ namespace System
                     return null;
                 }
             }
-            else if(s.Length == perLength)
+            else if (s.Length == perLength)
             {
                 return new string[1] { s };
             }
             else
             {
-                int count = s.Length/perLength;
+                int count = s.Length / perLength;
                 int yushu = s.Length % perLength;
                 //
                 string[] res = null;
@@ -91,9 +92,9 @@ namespace System
         /// <returns>返回对应的枚举值</returns>
         /// <exception cref="ArgumentException">所给泛型不是枚举</exception>
         public static T ToEnum<T>(this string value)
-            where T:Enum
+            where T : Enum
         {
-            return  (T)Enum.Parse(typeof(T), value);
+            return (T)Enum.Parse(typeof(T), value);
         }
 
         /// <summary>
@@ -104,7 +105,17 @@ namespace System
         /// <returns></returns>
         public static bool ToBool(this string value)
         {
-            return value == "true"|| value == "TRUE"||value == "True";
+            return value == "true" || value == "TRUE" || value == "True";
+        }
+
+        public static string Url2FileName(this string url)
+        {
+            return Regex.Replace(url,
+                                 @"[^a-z0-9.]+",
+                                 "_",
+                                 RegexOptions.IgnoreCase
+                                 | RegexOptions.Multiline
+                                 | RegexOptions.CultureInvariant);
         }
 
         //#region 加密相关

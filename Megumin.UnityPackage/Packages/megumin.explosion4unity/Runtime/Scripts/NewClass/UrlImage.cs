@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -9,23 +10,33 @@ using static UnityEngine.Networking.UnityWebRequest;
 
 namespace UnityEditor.UI
 {
+    using System.Collections.Generic;
     using UnityEditor;
     [CustomEditor(typeof(UrlImage), true)]
     public class UrlImageEditor : ImageEditor
     {
         SerializedProperty url;
+        private List<EditorGUIMethod.DrawMethod> methods = new List<EditorGUIMethod.DrawMethod>();
+        //SerializedProperty ovrride;
         protected override void OnEnable()
         {
             base.OnEnable();
             url = serializedObject.FindProperty("url");
+            //ovrride = base.serializedObject.FindProperty("m_OverrideSprite"); //非序列化的字段找不到
+            this.CollectDrawButtonMethod(methods);
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(url);
+            //using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
+            //{
+            //    EditorGUILayout.PropertyField(ovrride);
+            //}
             serializedObject.ApplyModifiedProperties();
             base.OnInspectorGUI();
+            this.DrawInspectorMethods(methods);
         }
     }
 }
@@ -37,29 +48,57 @@ namespace UnityEngine.UI
     [ExecuteAlways]
     public class UrlImage : Image
     {
-        public string url;
+        public string url = "http://i1.hdslb.com/bfs/archive/c3459e54c2373a8b4eae1c5816157f9b7bace726.jpg";
+        /// <summary>
+        /// 图片缓存目录
+        /// </summary>
+        static string dir = null;
 
         protected override void Start()
         {
+            CheckCacheDir();
+
             base.Start();
             StartCoroutine(GetSprite());
         }
 
+        private void CheckCacheDir()
+        {
+            if (dir == null)
+            {
+                dir = Path.Combine(Application.persistentDataPath, "UrlImageCache");
+            }
+
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+        }
+
         IEnumerator GetSprite()
         {
-            //string fileName = Regex.Replace(url, "/[^a-z0-9.]+/gi", "_");
+            var url = this.url;
+            if (string.IsNullOrEmpty(url))
+            {
+                overrideSprite = null;
+                this.InspectorForceUpdate();
+                yield break;
+            }
 
-            //const string dir = "Library/UrlImageCache";
-            //if (!Directory.Exists(dir))
-            //{
-            //    Directory.CreateDirectory(dir);
-            //}
+            string fileName = Regex.Replace(url,
+                                 @"[^a-z0-9.]+",
+                                 "_",
+                                 RegexOptions.IgnoreCase
+                                 | RegexOptions.Multiline
+                                 | RegexOptions.CultureInvariant);
 
-            //var path = Path.Combine(dir, fileName, ".png");
-            //if (File.Exists(path))
-            //{
-
-            //}
+            var path = Path.GetFullPath(Path.Combine(dir, $"{fileName}.png"));
+            bool isLocalImage = false;
+            if (File.Exists(path))
+            {
+                url = path;
+                isLocalImage = true;
+            }
 
             if (!string.IsNullOrEmpty(url))
             {
@@ -85,9 +124,29 @@ namespace UnityEngine.UI
                         overrideSprite = Sprite.Create(texture,
                         new Rect(0, 0, texture.width, texture.height),
                         Vector2.one / 2);
+
+                        if (!isLocalImage)
+                        {
+                            ///网络图片缓存到本地。
+                            File.WriteAllBytes(path, texture.EncodeToPNG());
+                        }
                     }
                 }
             }
+        }
+
+        [EditorButton]
+        void ReLoad()
+        {
+            CheckCacheDir();
+            StartCoroutine(GetSprite());
+        }
+
+        [EditorButton]
+        void OpenCacheFolder()
+        {
+            CheckCacheDir();
+            System.Diagnostics.Process.Start(dir);
         }
     }
 }
