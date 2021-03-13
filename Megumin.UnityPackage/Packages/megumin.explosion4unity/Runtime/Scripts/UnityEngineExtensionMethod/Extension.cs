@@ -17,6 +17,26 @@ namespace UnityEngine
 #endif
             return error;
         }
+
+        /// <summary>
+        /// 在编辑器中将资源标记为已更改。
+        /// </summary>
+        /// <param name="behaviour"></param>
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        public static void AssetDataSetDirty(this Object obj)
+        {
+
+#if UNITY_EDITOR
+            if (obj)
+            {
+                if (!Application.isPlaying)
+                {
+                    UnityEditor.EditorUtility.SetDirty(obj);
+                }
+            }
+#endif
+
+        }
     }
 }
 
