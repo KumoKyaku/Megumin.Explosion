@@ -9,6 +9,7 @@ using UnityEngine;
 [SelectionBase]
 public class ColliderShower : MonoBehaviour
 {
+    const string OverrideName = "[Override]";
     /// <summary>
     /// 全局显示开关
     /// </summary>
@@ -231,8 +232,47 @@ public class ColliderShower : MonoBehaviour
     public void OverrideColor(Color color)
     {
         overrideMat = Instantiate(DefaultMat);
+        overrideMat.name = OverrideName;
         overrideMat.color = color;
         this.InspectorForceUpdate();
+        this.AssetDataSetDirty();
+    }
+
+    [EditorButton]
+    public void CopyChildColor(int index = 0, bool force = false)
+    {
+        if (SubShowers?.Count > index)
+        {
+            var mat = SubShowers[index]?.overrideMat;
+            if (mat)
+            {
+                if (force || !overrideMat)
+                {
+                    overrideMat = Instantiate(mat);
+                    overrideMat.name = OverrideName;
+                    this.InspectorForceUpdate();
+                    this.AssetDataSetDirty();
+                }
+            }
+        }
+    }
+
+    [EditorButton]
+    public void InhertParentColor(bool force = false)
+    {
+        if (Parent)
+        {
+            if (Parent.overrideMat)
+            {
+                if (force || !overrideMat)
+                {
+                    overrideMat = Instantiate(Parent.overrideMat);
+                    overrideMat.name = OverrideName;
+                    this.InspectorForceUpdate();
+                    this.AssetDataSetDirty();
+                }
+            }
+        }
     }
 
     [EditorButton]
@@ -240,6 +280,7 @@ public class ColliderShower : MonoBehaviour
     {
         overrideMat = null;
         this.InspectorForceUpdate();
+        this.AssetDataSetDirty();
     }
 
 #if UNITY_EDITOR
