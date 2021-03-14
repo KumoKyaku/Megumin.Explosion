@@ -21,6 +21,11 @@ or add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Exp
 
 
 
+# [依赖关系](Image/dependencies.xml)
+![依赖关系](Image/dependencies.jpg)
+
+
+
 
 
 
