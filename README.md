@@ -12,5 +12,25 @@ or add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Exp
 
 >If you want to set a target version, uses the `*.*.*` release tag so you can specify a version like `#2.1.0`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
 
-# [依赖关系](Image/dependencies.xml)
-![依赖关系](Image/dependencies.jpg)
+# 功能列表
+- Package wizard，一键生成包目录结构
+- Inspector导航，支持鼠标侧键切换最近选中对象。
+- EditorButton，将函数之间绘制在Inpector面板，支持参数。
+- Enum2String，在Inpector将string绘制为Enum。
+- TargetPoint，可视化目标点。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
