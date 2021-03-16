@@ -29,5 +29,10 @@ namespace UnityEngine
             GUI.color = old;
 #endif
         }
+
+        public static implicit operator GUIColorScope(in Color color)
+        {
+            return new GUIColorScope(color);
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace UnityEngine
         public static string TempPath { get; } = GetProjectFolderPath("Temp");
         public static string UserSettingsPath { get; } = GetProjectFolderPath("UserSettings");
         public static string BuildPath { get; } = GetProjectFolderPath("Build");
+        public static string BuildIL2CPPPath { get; } = GetProjectFolderPath("BuildIL2CPP");
         public static string ProjectSettings { get; } = GetProjectFolderPath("ProjectSettings");
 
         public static string GetProjectFolderPath(string folder)

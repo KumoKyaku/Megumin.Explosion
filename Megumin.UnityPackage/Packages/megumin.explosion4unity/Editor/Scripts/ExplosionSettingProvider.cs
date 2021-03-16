@@ -7,16 +7,16 @@ using UnityEngine.UIElements;
 [InitializeOnLoad]
 public class ExplosionSettingProvider : SettingsProvider
 {
-	static ExplosionSettingProvider()
+    static ExplosionSettingProvider()
     {
-		//Debug.Log("ExplosionSettingProvider");
+        //Debug.Log("ExplosionSettingProvider");
         if (Nagetive.value)
         {
             InspectorNavigation.Register();
         }
     }
 
-    
+
 
     [SettingsProvider]
     static SettingsProvider CreateSettingsProvider()
@@ -26,16 +26,16 @@ public class ExplosionSettingProvider : SettingsProvider
         return provider;
     }
 
-    static	Settings settings = new Settings(new ISettingsRepository[] { new UserSettingsRepository() });
+    static Settings settings = new Settings(new ISettingsRepository[] { new UserSettingsRepository() });
 
-	class Value<T>:UserSetting<T>
+    class Value<T> : UserSetting<T>
     {
-		public Value(string key, T value)
-			: base(ExplosionSettingProvider.settings, key, value, SettingsScope.User)
-		{ }
-	}
+        public Value(string key, T value)
+            : base(ExplosionSettingProvider.settings, key, value, SettingsScope.User)
+        { }
+    }
 
-    static Value<bool> Nagetive = new Value<bool>("InspectorNavigation", false);
+    static Value<bool> Nagetive = new Value<bool>("InspectorNavigation", true);
 
     public override void OnGUI(string searchContext)
     {
@@ -68,7 +68,7 @@ public class ExplosionSettingProvider : SettingsProvider
     }
 
     public ExplosionSettingProvider(string path, SettingsScope scopes, IEnumerable<string> keywords = null)
-		: base(path, scopes, keywords)
+        : base(path, scopes, keywords)
     {
     }
 
@@ -81,7 +81,7 @@ public class ExplosionSettingProvider : SettingsProvider
     public override void OnDeactivate()
     {
         base.OnDeactivate();
-		//Debug.Log("OnDeactivate");
+        //Debug.Log("OnDeactivate");
         settings.Save();
     }
 }

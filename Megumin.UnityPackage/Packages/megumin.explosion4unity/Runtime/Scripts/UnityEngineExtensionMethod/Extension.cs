@@ -37,6 +37,21 @@ namespace UnityEngine
 #endif
 
         }
+
+
+        /// <summary>
+        /// 这里插入一个EditorUpdate达到刷效果，否则编辑器模式下脚本Update调用不及时。
+        /// </summary>
+        /// <param name="obj"></param>
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        public static void InspectorForceUpdate(this UnityEngine.Object obj)
+        {
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+#endif
+
+        }
     }
 }
 
