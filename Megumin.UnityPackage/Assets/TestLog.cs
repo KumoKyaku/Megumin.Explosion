@@ -18,4 +18,10 @@ public class TestLog : MonoBehaviour
     {
         
     }
+
+    [EditorButton]
+    public void Test(int a, string str = "默认值1111111111")
+    {
+        Debug.Log(str);
+    }
 }

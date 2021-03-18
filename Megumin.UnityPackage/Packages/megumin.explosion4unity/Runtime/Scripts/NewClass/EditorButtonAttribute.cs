@@ -39,9 +39,18 @@ namespace UnityEditor
         {
             public bool opened;
             public System.Object[] parameters;
-            public EditorButtonState(int numberOfParameters)
+            public EditorButtonState(MethodInfo method)
             {
-                parameters = new System.Object[numberOfParameters];
+                var paras = method.GetParameters();
+                parameters = new System.Object[paras.Length];
+                for (int i = 0; i < paras.Length; i++)
+                {
+                    var parameterInfo = paras[i];
+                    if (parameterInfo.HasDefaultValue)
+                    {
+                        parameters[i] = parameterInfo.DefaultValue;
+                    }
+                }
             }
         }
 
@@ -297,7 +306,7 @@ namespace UnityEditor
                 {
                     Method = methodInfo,
                     Attribute = methodInfo.GetCustomAttribute<EditorButtonAttribute>(),
-                    State = new EditorButtonState(methodInfo.GetParameters().Length),
+                    State = new EditorButtonState(methodInfo),
                 });
             }
 
