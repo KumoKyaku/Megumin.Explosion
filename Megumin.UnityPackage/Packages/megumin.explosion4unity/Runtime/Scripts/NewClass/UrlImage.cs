@@ -16,14 +16,12 @@ namespace UnityEditor.UI
     public class UrlImageEditor : ImageEditor
     {
         SerializedProperty url;
-        private List<EditorGUIMethod.DrawMethod> methods = new List<EditorGUIMethod.DrawMethod>();
         //SerializedProperty ovrride;
         protected override void OnEnable()
         {
             base.OnEnable();
             url = serializedObject.FindProperty("url");
             //ovrride = base.serializedObject.FindProperty("m_OverrideSprite"); //非序列化的字段找不到
-            this.CollectDrawButtonMethod(methods);
         }
 
         public override void OnInspectorGUI()
@@ -36,7 +34,7 @@ namespace UnityEditor.UI
             //}
             serializedObject.ApplyModifiedProperties();
             base.OnInspectorGUI();
-            this.DrawInspectorMethods(methods);
+            this.DrawInspectorMethods();
         }
     }
 }

@@ -248,7 +248,9 @@ namespace UnityEditor
 
         public static void DrawButtonforMethod(Object target, MethodInfo methodInfo, EditorButtonState state)
         {
-            EditorGUILayout.Space(2);
+            ///方法绘制间隔
+            EditorGUILayout.Space(1);
+
             EditorGUILayout.BeginHorizontal();
             var foldoutRect = EditorGUILayout.GetControlRect(GUILayout.Width(10.0f));
             state.opened = EditorGUI.Foldout(foldoutRect, state.opened, "");
@@ -328,6 +330,30 @@ namespace UnityEditor
                 DrawButtonforMethod(editor.target, draw.Method, draw.State);
             }
         }
+
+        /// <summary>
+        /// 方法缓存，每个脚本类型公用一组方法和参数。每次重写编译，重载域，静态缓存都会被清除。
+        /// </summary>
+        static Dictionary<Type, List<DrawMethod>> MethodCache
+            = new Dictionary<Type, List<DrawMethod>>();
+
+        /// <summary>
+        /// 绘制按钮
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="list"></param>
+        public static void DrawInspectorMethods(this Editor editor)
+        {
+            Type type = editor.target.GetType();
+            if (!MethodCache.TryGetValue(type, out var list))
+            {
+                list = new List<DrawMethod>();
+                editor.CollectDrawButtonMethod(list);
+                MethodCache[type] = list;
+            }
+
+            editor.DrawInspectorMethods(list);
+        }
     }
 }
 
@@ -338,19 +364,10 @@ namespace UnityEditor
 [CustomEditor(typeof(Object), true)]
 public class EditorButton : Editor
 {
-    /// <summary>
-    /// 需要绘制按钮的方法
-    /// </summary>
-    List<EditorGUIMethod.DrawMethod> Methods = new List<EditorGUIMethod.DrawMethod>();
-    void OnEnable()
-    {
-        this.CollectDrawButtonMethod(Methods);
-    }
-
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        this.DrawInspectorMethods(Methods);
+        this.DrawInspectorMethods();
     }
 }
 
