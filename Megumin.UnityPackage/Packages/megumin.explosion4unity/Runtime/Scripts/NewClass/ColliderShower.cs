@@ -59,8 +59,6 @@ public class ColliderShower : MonoBehaviour
             GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
         }
         GlobalToggle.Value = !GlobalToggle;
-
-        this.InspectorForceUpdate();
     }
 
     [EditorButton]
@@ -234,7 +232,6 @@ public class ColliderShower : MonoBehaviour
         overrideMat = Instantiate(DefaultMat);
         overrideMat.name = OverrideName;
         overrideMat.color = color;
-        this.InspectorForceUpdate();
         this.AssetDataSetDirty();
     }
 
@@ -250,7 +247,6 @@ public class ColliderShower : MonoBehaviour
                 {
                     overrideMat = Instantiate(mat);
                     overrideMat.name = OverrideName;
-                    this.InspectorForceUpdate();
                     this.AssetDataSetDirty();
                 }
             }
@@ -268,7 +264,6 @@ public class ColliderShower : MonoBehaviour
                 {
                     overrideMat = Instantiate(Parent.overrideMat);
                     overrideMat.name = OverrideName;
-                    this.InspectorForceUpdate();
                     this.AssetDataSetDirty();
                 }
             }
@@ -279,7 +274,6 @@ public class ColliderShower : MonoBehaviour
     public void ResetMat()
     {
         overrideMat = null;
-        this.InspectorForceUpdate();
         this.AssetDataSetDirty();
     }
 

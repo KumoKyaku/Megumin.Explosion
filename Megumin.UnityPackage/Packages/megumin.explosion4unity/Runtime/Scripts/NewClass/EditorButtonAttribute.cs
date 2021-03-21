@@ -286,6 +286,12 @@ namespace UnityEditor
                 {
                     Debug.Log("Method call result -> " + returnVal);
                 }
+
+                ///强制更新
+                if (target)
+                {
+                    target.InspectorForceUpdate();
+                }
             }
         }
 
