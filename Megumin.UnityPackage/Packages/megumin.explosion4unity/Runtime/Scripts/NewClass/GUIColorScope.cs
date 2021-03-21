@@ -12,7 +12,34 @@ namespace UnityEngine
     /// <summary>
     /// gui颜色区域
     /// </summary>
-    public struct GUIColorScope : IDisposable
+    public struct GUIColorScopeStruct : IDisposable
+    {
+        Color old;
+        public GUIColorScopeStruct(Color color)
+        {
+            old = GUI.color;
+#if UNITY_EDITOR
+            GUI.color = color;
+#endif
+        }
+
+        public void Dispose()
+        {
+#if UNITY_EDITOR
+            GUI.color = old;
+#endif
+        }
+
+        public static implicit operator GUIColorScopeStruct(in Color color)
+        {
+            return new GUIColorScopeStruct(color);
+        }
+    }
+
+    /// <summary>
+    /// gui颜色区域
+    /// </summary>
+    public class GUIColorScope : IDisposable
     {
         Color old;
         public GUIColorScope(Color color)
@@ -36,3 +63,4 @@ namespace UnityEngine
         }
     }
 }
+
