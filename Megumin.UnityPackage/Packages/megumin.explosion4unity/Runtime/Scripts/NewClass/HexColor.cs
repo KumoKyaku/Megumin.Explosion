@@ -138,7 +138,7 @@ namespace UnityEngine
         {
             foreach (var item in GetAllStaticColor())
             {
-                Debug.Log(item.Item2.Html($"HexColor.{item.Name}.Html(\"Hello World!\")"));
+                Debug.Log(item.Item2.Html($"HexColor.<b>{item.Name}</b>.Html(\"Hello World!\")"));
             }
         }
 
@@ -220,6 +220,7 @@ namespace UnityEngine
         public static readonly HexColor BeauBlue = "#BCD4E6";
         public static readonly HexColor Beaver = "#9F8170";
         public static readonly HexColor Beige = "#2E5894";
+        public static readonly HexColor BdazzledBlue = "#2E5894";
         public static readonly HexColor BigDipOruby = "#9C2542";
         public static readonly HexColor BigFootFeet = "#E88E5A";
         public static readonly HexColor Bisque = "#FFE4C4";
@@ -611,5 +612,17 @@ namespace UnityEngine
     }
 
     #endregion
+
+    public static class LogColor
+    {
+        public static readonly Color 浅褐 = HexColor.FuzzyWuzzy;
+        public static readonly Color 深蓝 = HexColor.AirForceBlueUSAF;
+        public static readonly Color 深红 = HexColor.AlabamaCrimson;
+        public static readonly Color 橘黄 = HexColor.AlloyOrange;
+        public static readonly Color 血红 = HexColor.AlizarinCrimson;
+        public static readonly Color 玫瑰 = HexColor.AmericanRose;
+        public static readonly Color 深绿 = HexColor.AoEnglish;
+        public static readonly Color 浅绿 = HexColor.Avocado;
+    }
 }
 
