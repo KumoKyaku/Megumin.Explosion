@@ -615,14 +615,22 @@ namespace UnityEngine
 
     public static class LogColor
     {
-        public static readonly Color 浅褐 = HexColor.FuzzyWuzzy;
-        public static readonly Color 深蓝 = HexColor.AirForceBlueUSAF;
-        public static readonly Color 深红 = HexColor.AlabamaCrimson;
-        public static readonly Color 橘黄 = HexColor.AlloyOrange;
+        public static readonly Color 深红 = HexColor.DeepRed;
         public static readonly Color 血红 = HexColor.AlizarinCrimson;
-        public static readonly Color 玫瑰 = HexColor.AmericanRose;
-        public static readonly Color 深绿 = HexColor.AoEnglish;
-        public static readonly Color 浅绿 = HexColor.Avocado;
+        public static readonly Color 玫瑰 = HexColor.DogwoodRose;
+        public static readonly Color 浅红 = HexColor.CGRed;
+
+        public static readonly Color 深绿 = HexColor.DeepGreen;
+        public static readonly Color 浅绿 = HexColor.ForestGreenWeb;
+
+        public static readonly Color 深蓝 = HexColor.EgyptianBlue;
+        public static readonly Color 浅蓝 = HexColor.FrenchBlue;
+
+        public static readonly Color 橘黄 = HexColor.AlloyOrange;
+        public static readonly Color 浅褐 = HexColor.FuzzyWuzzy;
+        
+        public static readonly Color 开始 = HexColor.Denim;
+        public static readonly Color 成功 = HexColor.DarkSpringGreen;
     }
 }
 
