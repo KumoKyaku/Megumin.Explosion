@@ -17,11 +17,14 @@ public class FastLabel : MonoBehaviour
     }
 
     [EditorButton]
-    private void InitStyle(Color textColor, int fontSize = 20)
+    private void InitStyle(Color textColor, int fontSize = 40, bool force = false)
     {
-        LabelStyle = new GUIStyle("DefaultCenteredLargeText");
-        LabelStyle.fontSize = fontSize;
-        LabelStyle.normal.textColor = textColor;
+        if (LabelStyle == null || force)
+        {
+            LabelStyle = new GUIStyle("DefaultCenteredLargeText");
+            LabelStyle.fontSize = fontSize;
+            LabelStyle.normal.textColor = textColor;
+        }
     }
 
     [EditorButton]
@@ -30,6 +33,7 @@ public class FastLabel : MonoBehaviour
         if (Instance)
         {
             Instance.Content = text;
+            Instance.InspectorForceUpdate();
         }
     }
 

@@ -17,7 +17,7 @@ public class TestLog : MonoBehaviour
         string message = ColorUtility.ToHtmlStringRGBA(Color.green);
         Debug.Log(message);
         ColorUtility.TryParseHtmlString(message, out TestColor);
-        ret = Color.red.Html(teststr);
+        ret = teststr.Html(HexColor.Blueberry);
         Debug.Log(ret);
     }
 
@@ -31,5 +31,11 @@ public class TestLog : MonoBehaviour
     public void Test(int a, string str = "默认值1111111111")
     {
         Debug.Log(str);
+    }
+
+    [EditorButton]
+    public void LogColor()
+    {
+        HexColor.DebugLogColor();
     }
 }
