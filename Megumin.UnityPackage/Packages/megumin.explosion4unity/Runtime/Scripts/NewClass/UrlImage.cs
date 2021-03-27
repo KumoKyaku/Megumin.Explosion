@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine;
 using static UnityEngine.Networking.UnityWebRequest;
 
 #if UNITY_EDITOR
@@ -12,6 +13,7 @@ namespace UnityEditor.UI
 {
     using System.Collections.Generic;
     using UnityEditor;
+
     [CustomEditor(typeof(UrlImage), true)]
     public class UrlImageEditor : ImageEditor
     {
@@ -36,6 +38,36 @@ namespace UnityEditor.UI
             base.OnInspectorGUI();
             this.DrawInspectorMethods();
         }
+
+        [MenuItem("GameObject/UI/Image -> UrlImage", false, 2002)]
+        static void AddUrlImage(MenuCommand menuCommand)
+        {
+            if (menuCommand.context is GameObject go)
+            {
+                var iamge = go.GetComponent<Image>();
+                if (iamge)
+                {
+                    GameObject.DestroyImmediate(iamge);
+                    var urlimage = go.AddComponent<UrlImage>();
+                    go.AssetDataSetDirty();
+                }
+            }
+        }
+
+        [MenuItem("GameObject/UI/UrlImage -> Image", false, 2002)]
+        static void AddImage(MenuCommand menuCommand)
+        {
+            if (menuCommand.context is GameObject go)
+            {
+                var orignal = go.GetComponent<UrlImage>();
+                if (orignal)
+                {
+                    GameObject.DestroyImmediate(orignal);
+                    var image = go.AddComponent<Image>();
+                    go.AssetDataSetDirty();
+                }
+            }
+        }
     }
 }
 
@@ -44,6 +76,7 @@ namespace UnityEditor.UI
 namespace UnityEngine.UI
 {
     [ExecuteAlways]
+    [AddComponentMenu("UI/UrlImage", 12)]
     public class UrlImage : Image
     {
         public string url = "http://i1.hdslb.com/bfs/archive/c3459e54c2373a8b4eae1c5816157f9b7bace726.jpg";
@@ -89,6 +122,12 @@ namespace UnityEngine.UI
                                  RegexOptions.IgnoreCase
                                  | RegexOptions.Multiline
                                  | RegexOptions.CultureInvariant);
+
+            if (fileName.Length > 100)
+            {
+                Debug.LogWarning($"文件名[{fileName.Length}]太长,推荐使用短网址压缩。  \n {fileName}");
+                fileName = fileName.Substring(0, 100);
+            }
 
             var path = Path.GetFullPath(Path.Combine(dir, $"{fileName}.png"));
             bool isLocalImage = false;
