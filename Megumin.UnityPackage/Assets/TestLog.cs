@@ -12,6 +12,10 @@ public class TestLog : MonoBehaviour
 
     public Color TestColor;
     // Start is called before the first frame update
+
+    [Path(IsFolder = false, Exetension = "txt")]
+    public string path;
+
     void Start()
     {
         string message = ColorUtility.ToHtmlStringRGBA(Color.green);
@@ -24,7 +28,7 @@ public class TestLog : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     [EditorButton]
