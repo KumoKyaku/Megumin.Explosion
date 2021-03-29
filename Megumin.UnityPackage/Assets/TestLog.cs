@@ -16,6 +16,7 @@ public class TestLog : MonoBehaviour
     [Path(IsFolder = false, Exetension = "txt")]
     public string path;
 
+    public Megumin.Overridable<string> overridable = new Megumin.Overridable<string>("test");
     void Start()
     {
         string message = ColorUtility.ToHtmlStringRGBA(Color.green);

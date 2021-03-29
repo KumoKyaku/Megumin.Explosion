@@ -21,9 +21,8 @@ namespace UnityEngine
 
 #if UNITY_EDITOR
 
-namespace Enum2StringDrawer
+namespace UnityEditor.Megumin
 {
-    using UnityEditor;
     [CustomPropertyDrawer(typeof(Enum2StringAttribute))]
     internal sealed class Enum2StringDrawer : PropertyDrawer
     {

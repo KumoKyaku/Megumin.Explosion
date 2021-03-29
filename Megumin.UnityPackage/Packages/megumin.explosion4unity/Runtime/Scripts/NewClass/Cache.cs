@@ -15,12 +15,12 @@ namespace Megumin
         static readonly object innerlock = new object();
 
         public static void CollectField<T>()
-            where T:Cache
+            where T : Cache
         {
             var collection = (from field in typeof(T).GetFields()
-                     where field.FieldType == typeof(ICalculable)
-                     || field.FieldType.IsSubclassOf(typeof(ICalculable))
-                     select field.GetValue(null) as ICalculable);
+                              where field.FieldType == typeof(ICalculable)
+                              || field.FieldType.IsSubclassOf(typeof(ICalculable))
+                              select field.GetValue(null) as ICalculable);
 
             lock (innerlock)
             {

@@ -14,7 +14,7 @@ namespace UnityEngine
 
 #if UNITY_EDITOR
 
-namespace Enum2StringDrawer
+namespace UnityEditor.Megumin
 {
     using UnityEditor;
 

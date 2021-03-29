@@ -18,7 +18,7 @@ namespace UnityEngine
 
 #if UNITY_EDITOR
 
-namespace UnityEditor
+namespace UnityEditor.Megumin
 {
 
     [CustomPropertyDrawer(typeof(InspectorStyleAttribute))]
