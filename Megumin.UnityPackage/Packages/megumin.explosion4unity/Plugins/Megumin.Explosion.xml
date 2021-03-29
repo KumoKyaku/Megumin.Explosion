@@ -178,6 +178,15 @@
             <param name="value"></param>
             <returns></returns>
         </member>
+        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.IsDigit(System.Char,System.Int32,System.Int32@)">
+            <summary>
+            https://source.dot.net/#System.Private.CoreLib/ParseNumbers.cs,634
+            </summary>
+            <param name="c"></param>
+            <param name="radix"></param>
+            <param name="result"></param>
+            <returns></returns>
+        </member>
         <member name="T:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328">
             <summary>
             值扩展

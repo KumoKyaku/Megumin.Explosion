@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -170,5 +171,110 @@ namespace System
         //}
 
         //#endregion
+
+        public static bool TryPerseHexColor(this string hex,
+                                            out byte r,
+                                            out byte g,
+                                            out byte b,
+                                            out byte a,
+                                            int startIndex = 0)
+        {
+            r = 0;
+            g = 0;
+            b = 0;
+            a = byte.MaxValue;
+
+            try
+            {
+                if (!IsDigit(hex[startIndex], 16, out var r1))
+                {
+                    return false;
+                }
+
+                if (!IsDigit(hex[startIndex + 1], 16, out var r2))
+                {
+                    return false;
+                }
+                r = (byte)(r1 * 16 + r2);
+
+
+                if (!IsDigit(hex[startIndex + 2], 16, out var g1))
+                {
+                    return false;
+                }
+
+                if (!IsDigit(hex[startIndex + 3], 16, out var g2))
+                {
+                    return false;
+                }
+                g = (byte)(g1 * 16 + g2);
+
+
+                if (!IsDigit(hex[startIndex + 4], 16, out var b1))
+                {
+                    return false;
+                }
+
+                if (!IsDigit(hex[startIndex + 5], 16, out var b2))
+                {
+                    return false;
+                }
+                b = (byte)(b1 * 16 + b2);
+
+                if (hex.Length > 8 + startIndex)
+                {
+                    //透明度是可选的
+                    if (!IsDigit(hex[startIndex + 6], 16, out var a1))
+                    {
+                        return false;
+                    }
+
+                    if (!IsDigit(hex[startIndex + 7], 16, out var a2))
+                    {
+                        return false;
+                    }
+                    a = (byte)(a1 * 16 + a2);
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// https://source.dot.net/#System.Private.CoreLib/ParseNumbers.cs,634
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="radix"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        [System.Diagnostics.DebuggerHidden]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsDigit(this char c, int radix, out int result)
+        {
+            int tmp;
+            if ((uint)(c - '0') <= 9)
+            {
+                result = tmp = c - '0';
+            }
+            else if ((uint)(c - 'A') <= 'Z' - 'A')
+            {
+                result = tmp = c - 'A' + 10;
+            }
+            else if ((uint)(c - 'a') <= 'z' - 'a')
+            {
+                result = tmp = c - 'a' + 10;
+            }
+            else
+            {
+                result = -1;
+                return false;
+            }
+
+            return tmp < radix;
+        }
     }
 }

@@ -4,6 +4,72 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
+using Megumin;
+
+namespace Megumin
+{
+    public static class MeguminColorUtility
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="htmlString"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        /// <remarks>与<see cref="ColorUtility"/>结果一致，并可以在初始化时使用</remarks>
+        public static bool TryParseHtmlString(string htmlString, out Color color)
+        {
+            int startIndex = 0;
+            if (htmlString.StartsWith("#"))
+            {
+                startIndex = 1;
+            }
+            bool ret = htmlString.TryPerseHexColor(out var r, out var g, out var b, out var a, startIndex);
+
+            //color = new Color32(r, g, b, a);
+            color = new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+            return ret;
+        }
+
+        public static bool TryParseHtmlString2Color32(string htmlString, out Color32 color)
+        {
+            int startIndex = 0;
+            if (htmlString.StartsWith("#"))
+            {
+                startIndex = 1;
+            }
+            bool ret = htmlString.TryPerseHexColor(out var r, out var g, out var b, out var a, startIndex);
+
+            color = new Color32(r, g, b, a);
+            //color = new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+            return ret;
+        }
+
+        public static string ToHtmlStringRGB(Color color)
+        {
+            // Round to int to prevent precision issues that, for example cause values very close to 1 to become FE instead of FF (case 770904).
+            Color32 col32 = new Color32(
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.r * 255), 0, 255),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.g * 255), 0, 255),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.b * 255), 0, 255),
+                1);
+
+            return string.Format("{0:X2}{1:X2}{2:X2}", col32.r, col32.g, col32.b);
+        }
+
+        public static string ToHtmlStringRGBA(Color color)
+        {
+            // Round to int to prevent precision issues that, for example cause values very close to 1 to become FE instead of FF (case 770904).
+            Color32 col32 = new Color32(
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.r * 255), 0, 255),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.g * 255), 0, 255),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.b * 255), 0, 255),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(color.a * 255), 0, 255));
+
+            return string.Format("{0:X2}{1:X2}{2:X2}{3:X2}", col32.r, col32.g, col32.b, col32.a);
+        }
+    }
+}
 
 namespace UnityEngine
 {
@@ -46,7 +112,7 @@ namespace UnityEngine
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Color32(HexColor c)
         {
-            if (ColorUtility.TryParseHtmlString(c.hexCode, out var color))
+            if (MeguminColorUtility.TryParseHtmlString2Color32(c.hexCode, out Color32 color))
             {
                 return color;
             }
@@ -56,7 +122,7 @@ namespace UnityEngine
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Color(HexColor c)
         {
-            if (ColorUtility.TryParseHtmlString(c.hexCode, out var color))
+            if (MeguminColorUtility.TryParseHtmlString(c.hexCode, out Color color))
             {
                 return color;
             }
@@ -628,7 +694,7 @@ namespace UnityEngine
 
         public static readonly Color 橘黄 = HexColor.AlloyOrange;
         public static readonly Color 浅褐 = HexColor.FuzzyWuzzy;
-        
+
         public static readonly Color 开始 = HexColor.Denim;
         public static readonly Color 成功 = HexColor.DarkSpringGreen;
     }

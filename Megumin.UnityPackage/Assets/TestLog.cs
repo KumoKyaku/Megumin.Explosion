@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Megumin;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,5 +43,27 @@ public class TestLog : MonoBehaviour
     public void LogColor()
     {
         HexColor.DebugLogColor();
+    }
+
+    [EditorButton]
+    public void TestParseColor()
+    {
+        foreach (var item in HexColor.GetAllStaticColor())
+        {
+            bool ret1 =  ColorUtility.TryParseHtmlString(item.Item2.ToString(), out var color);
+            bool ret2 = MeguminColorUtility.TryParseHtmlString(item.Item2.ToString(), out var color2);
+            if (color.Equals(color2))
+            {
+                Debug.Log($"结果一致 Color1 = Color2");
+            }
+            else
+            {
+                Debug.LogError($"结果不一致 Color1: {color} -- Color2:{color2}");
+            }
+
+            ret1 = ColorUtility.TryParseHtmlString(item.Item2.ToString(), out var color3);
+            ret2 = MeguminColorUtility.TryParseHtmlString(item.Item2.ToString(), out var color4);
+
+        }
     }
 }
