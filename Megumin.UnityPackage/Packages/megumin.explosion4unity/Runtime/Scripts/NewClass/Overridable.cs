@@ -65,13 +65,12 @@ namespace UnityEditor.Megumin
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var togglePosition = position;
-
-            SerializedProperty toggle = property.FindPropertyRelative("IsOverride");
-            EditorGUI.PropertyField(togglePosition, toggle, GUIContent.none);
-
             var valuePosition = position;
             valuePosition.width -= 20;
             valuePosition.x += 20;
+
+            SerializedProperty toggle = property.FindPropertyRelative("IsOverride");
+            EditorGUI.PropertyField(togglePosition, toggle, GUIContent.none);
 
             if (toggle.boolValue)
             {
