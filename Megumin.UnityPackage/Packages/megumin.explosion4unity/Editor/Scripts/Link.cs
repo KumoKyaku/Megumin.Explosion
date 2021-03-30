@@ -46,6 +46,13 @@ public class Link
     {
         Application.OpenURL("https://github.com/jilleJr/Newtonsoft.Json-for-Unity#installation-via-git-in-upm");
     }
+
+
+    [MenuItem("Tools/Link/ClassTypeReference for Unity")]
+    static void ClassTypeReference()
+    {
+        Application.OpenURL("https://github.com/SolidAlloy/ClassTypeReference-for-Unity");
+    }
 }
 
 
