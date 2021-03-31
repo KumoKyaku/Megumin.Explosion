@@ -1,7 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace UnityEngine
 {
@@ -52,6 +57,31 @@ namespace UnityEngine
 #endif
 
         }
+
+        static MethodInfo OpenPropertyEditor;
+
+        /// <summary>
+        /// 通过反射打开属性面板
+        /// </summary>
+        /// <param name="object"></param>
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        public static void OpenProperty(this UnityEngine.Object @object)
+        {
+#if UNITY_EDITOR
+
+            if (OpenPropertyEditor == null)
+            {
+                var ab = Assembly.GetAssembly(typeof(EditorWindow));
+                var propertyEditor = ab.GetType("UnityEditor.PropertyEditor");
+                OpenPropertyEditor = propertyEditor.GetMethod("OpenPropertyEditor",
+                                                              BindingFlags.NonPublic
+                                                              | BindingFlags.Static);
+            }
+
+            OpenPropertyEditor?.Invoke(null, new object[] { @object, true });
+#endif
+        }
+
     }
 }
 

@@ -6,7 +6,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-public partial class MeguminEditorUtility
+public static partial class MeguminEditorUtility
 {
     /// <summary>
     /// https://github.com/halak/unity-editor-icons/blob/master/Assets/Editor/IconMiner.cs#L149
@@ -30,7 +30,7 @@ public partial class MeguminEditorUtility
     /// <para><seealso cref="EditorGUIUtility.IconContent(string)"/></para>
     /// </summary>
     /// <returns></returns>
-    public List<(Texture2D Icon, string Name)> GetEditorIcon()
+    public static List<(Texture2D Icon, string Name)> GetEditorIcon()
     {
         if (EditorIconCache == null)
         {
@@ -132,7 +132,6 @@ public partial class MeguminEditorUtility
     }
 
 #endif
-
 
 }
 
