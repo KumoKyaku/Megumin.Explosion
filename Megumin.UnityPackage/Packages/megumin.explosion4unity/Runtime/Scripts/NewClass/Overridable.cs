@@ -13,7 +13,7 @@ namespace Megumin
     public class Overridable<T>
     {
         [SerializeField]
-        private T defaultValue;
+        protected T defaultValue;
         [SerializeField]
         public bool IsOverride = false;
         [SerializeField]
@@ -21,7 +21,10 @@ namespace Megumin
 
         public Overridable()
         {
-
+            if (typeof(Color) == typeof(T))
+            {
+                defaultValue = (T)(object)Color.gray;
+            }
         }
 
         public Overridable(T defaultValue)
@@ -41,6 +44,11 @@ namespace Megumin
                 {
                     return defaultValue;
                 }
+            }
+            set
+            {
+                IsOverride = true;
+                MyOverrideValue = value;
             }
         }
 

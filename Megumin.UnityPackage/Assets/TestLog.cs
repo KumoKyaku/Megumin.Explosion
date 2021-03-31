@@ -66,4 +66,13 @@ public class TestLog : MonoBehaviour
 
         }
     }
+
+    [Options2String(typeof(ConstTest))]
+    public string Optionsss;
+}
+
+public class ConstTest
+{
+    public const string Tset111 = "Tset111";
+    public const string aa = "Tset22";
 }

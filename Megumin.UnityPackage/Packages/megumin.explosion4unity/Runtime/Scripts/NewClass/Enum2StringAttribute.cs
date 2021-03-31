@@ -56,7 +56,7 @@ namespace UnityEditor.Megumin
             else
             {
                 //EditorGUI.HelpBox(position, $"{label.text} 字段类型必须是string", MessageType.Error);
-                label.tooltip += $"Enum2StringAttribute失效！\n{label.text} 字段类型必须是string";
+                label.tooltip += $"{nameof(Enum2StringAttribute)}失效！\n{label.text} 字段类型必须是string";
                 label.text = $"??? " + label.text;
                 var old = GUI.color;
                 GUI.color = warning;
@@ -90,13 +90,19 @@ namespace UnityEditor.Megumin
 
                 try
                 {
+                    if (string.IsNullOrEmpty(current))
+                    {
+                        //空串给个初值。
+                        current = Enum.GetNames(type)?[0];
+                    }
+
                     object currentEnum = Enum.Parse(type, current, true);
                     var result = EditorGUI.EnumPopup(valuePosition, overrideName, (Enum)currentEnum);
                     property.stringValue = result.ToString();
                 }
                 catch (Exception)
                 {
-                    label.tooltip += $"Enum2StringAttribute失效！\n当前值: {current} 无法解析为枚举类型: {type.Name}";
+                    label.tooltip += $"{nameof(Enum2StringAttribute)}失效！\n当前值: {current} 无法解析为枚举类型: {type.Name}";
                     label.text = $"??? " + overrideName;
                     var old = GUI.color;
                     GUI.color = warning;
