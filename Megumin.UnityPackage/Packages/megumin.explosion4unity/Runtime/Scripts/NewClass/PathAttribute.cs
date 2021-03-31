@@ -25,11 +25,11 @@ namespace UnityEditor.Megumin
         {
             PathAttribute myattribute = attribute as PathAttribute;
             var propertyPosition = position;
-            propertyPosition.width -= 80;
+            propertyPosition.width -= 76;
 
             var buttonPosition = position;
             buttonPosition.width = 70;
-            buttonPosition.x = position.width - 52;
+            buttonPosition.x += position.width - 70;
 
             EditorGUI.PropertyField(propertyPosition, property, label);
             if (GUI.Button(buttonPosition, "Select"))
