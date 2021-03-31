@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Megumin;
 
 namespace UnityEngine
 {
@@ -12,23 +13,45 @@ namespace UnityEngine
         public Type Type { get; set; }
         public string OverrideName { get; set; }
 
-        static readonly Dictionary<Type, string[]> Cache = new Dictionary<Type, string[]>();
+         static readonly Dictionary<Type, (string[] Show, string[] Value)> Cache 
+            = new Dictionary<Type, (string[] Show, string[] Value)>();
         public Options2StringAttribute(Type type, string overrideName = "")
         {
             Type = type;
             OverrideName = overrideName;
 
-            if (!Cache.TryGetValue(type, out allConst))
+            if (!Cache.TryGetValue(type,out Options))
             {
-                allConst = (from field in type.GetFields()
-                            where field.FieldType == typeof(string)
-                            && field.IsPublic && field.IsStatic
-                            select field.GetValue(null) as string).ToArray();
-                Cache[type] = allConst;
+                var fields = (from field in type.GetFields()
+                              where field.FieldType == typeof(string)
+                              && field.IsPublic && field.IsStatic
+                              select field).ToArray();
+
+                var optionShow = new string[fields.Length];
+                var optionValue = new string[fields.Length];
+                Options = (optionShow, optionValue);
+                Cache[type] = Options;
+
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var field = fields[i];
+                    var value = field.GetValue(null) as string;
+                    var show = value;
+                    foreach (var attr in field.GetCustomAttributes(typeof(AliasAttribute), true))
+                    {
+                        if (attr is AliasAttribute alias)
+                        {
+                            show += $" [{alias.Alias}]";
+                        }
+                    }
+
+                    optionShow[i] = show;
+                    optionValue[i] = value;
+                }
             }
         }
 
-        public string[] allConst = null;
+        public (string[] Show, string[] Value) Options;
     }
 }
 
@@ -86,18 +109,18 @@ namespace UnityEditor.Megumin
                 overrideName = enum2StringAttribute.OverrideName;
             }
 
-            string[] options = enum2StringAttribute.allConst;
-            if (options?.Length > 0)
+            var myOptions = enum2StringAttribute.Options;
+            if (myOptions.Show?.Length > 0)
             {
                 string current = property.stringValue;
 
-                var index = Array.IndexOf(options, current);
+                var index = Array.IndexOf(myOptions.Value, current);
 
                 if (string.IsNullOrEmpty(current))
                 {
                     //新添加给个初值
                     index = 0;
-                    property.stringValue = options[index];
+                    property.stringValue = myOptions.Value[index];
                 }
 
                 if (index != -1)
@@ -105,13 +128,13 @@ namespace UnityEditor.Megumin
                     if (overrideName.StartsWith("Element"))
                     {
                         //容器内不显名字。
-                        index = EditorGUI.Popup(valuePosition, index, options);
+                        index = EditorGUI.Popup(valuePosition, index, myOptions.Show);
                     }
                     else
                     {
-                        index = EditorGUI.Popup(valuePosition, overrideName, index, options);
+                        index = EditorGUI.Popup(valuePosition, overrideName, index, myOptions.Show);
                     }
-                    property.stringValue = options[index];
+                    property.stringValue = myOptions.Value[index];
                 }
                 else
                 {

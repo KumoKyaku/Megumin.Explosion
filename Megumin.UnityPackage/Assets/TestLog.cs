@@ -74,5 +74,7 @@ public class TestLog : MonoBehaviour
 public class ConstTest
 {
     public const string Tset111 = "Tset111";
+    [Alias("别名")]
+    [Alias("别名测试")]
     public const string aa = "Tset22";
 }

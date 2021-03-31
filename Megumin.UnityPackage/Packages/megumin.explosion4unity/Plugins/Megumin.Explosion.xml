@@ -219,6 +219,16 @@
             <param name="type"></param>
             <returns></returns>
         </member>
+        <member name="T:Megumin.AliasAttribute">
+            <summary>
+            别名
+            </summary>
+        </member>
+        <member name="P:Megumin.AliasAttribute.Alias">
+            <summary>
+            别名
+            </summary>
+        </member>
         <member name="T:Megumin.CoolDownTime">
             <summary>
             
