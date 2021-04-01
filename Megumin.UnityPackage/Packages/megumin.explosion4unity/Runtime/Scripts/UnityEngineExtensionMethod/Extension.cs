@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.IO;
+using Megumin;
+using System;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -82,9 +85,31 @@ namespace UnityEngine
 #endif
         }
 
+        /// <summary>
+        /// 返回新对象路径，仅编辑下有效
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="isNew"></param>
+        /// <returns></returns>
+        public static string CreateNewPath(this Object obj, bool isNew = false)
+        {
+#if UNITY_EDITOR
+            var path = AssetDatabase.GetAssetPath(obj);
+            string newFileName = "NewInstance";
+            if (isNew)
+            {
+                newFileName = obj.GetType().Name;
+            }
+            else
+            {
+                newFileName = Path.GetFileNameWithoutExtension(path) + " Clone";
+            }
+            return path.ReplaceFileName(newFileName);
+#else
+            return default;
+#endif
+        }
     }
 }
-
-
 
 

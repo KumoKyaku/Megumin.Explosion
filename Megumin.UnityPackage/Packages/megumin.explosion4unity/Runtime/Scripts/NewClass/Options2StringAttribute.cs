@@ -13,19 +13,30 @@ namespace UnityEngine
         public Type Type { get; set; }
         public string OverrideName { get; set; }
 
-         static readonly Dictionary<Type, (string[] Show, string[] Value)> Cache 
-            = new Dictionary<Type, (string[] Show, string[] Value)>();
+        public bool Sort { get; set; } = true;
+
+        static readonly Dictionary<Type, (string[] Show, string[] Value)> Cache
+           = new Dictionary<Type, (string[] Show, string[] Value)>();
         public Options2StringAttribute(Type type, string overrideName = "")
         {
             Type = type;
             OverrideName = overrideName;
 
-            if (!Cache.TryGetValue(type,out Options))
+            if (!Cache.TryGetValue(type, out Options))
             {
-                var fields = (from field in type.GetFields()
-                              where field.FieldType == typeof(string)
-                              && field.IsPublic && field.IsStatic
-                              select field).ToArray();
+                var selected = (from field in type.GetFields()
+                                where field.FieldType == typeof(string)
+                                && field.IsPublic && field.IsStatic
+                                select field);
+
+                if (Sort)
+                {
+                    selected = from f in selected
+                               orderby f.Name
+                               select f;
+                }
+
+                var fields = selected.ToArray();
 
                 var optionShow = new string[fields.Length];
                 var optionValue = new string[fields.Length];

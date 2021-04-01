@@ -23,14 +23,14 @@ namespace UnityEditor.Megumin
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            PathAttribute myattribute = attribute as PathAttribute;
             var propertyPosition = position;
-            propertyPosition.width -= 76;
+            propertyPosition.width -= 86;
 
             var buttonPosition = position;
-            buttonPosition.width = 70;
-            buttonPosition.x += position.width - 70;
+            buttonPosition.width = 80;
+            buttonPosition.x += position.width - 80;
 
+            PathAttribute myattribute = attribute as PathAttribute;
             EditorGUI.PropertyField(propertyPosition, property, label);
             if (GUI.Button(buttonPosition, "Select"))
             {

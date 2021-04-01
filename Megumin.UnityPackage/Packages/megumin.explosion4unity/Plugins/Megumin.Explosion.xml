@@ -187,6 +187,23 @@
             <param name="result"></param>
             <returns></returns>
         </member>
+        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.ReplaceFileName(System.String,System.String)">
+            <summary>
+            安全替换路径中的文件名，会检测是否已经存在。
+            </summary>
+            <param name="path"></param>
+            <param name="newFileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.CreateFileName(System.String,System.String,System.String)">
+            <summary>
+            fileName 如果存在，自增
+            </summary>
+            <param name="dir"></param>
+            <param name="fileName"></param>
+            <param name="ex">需要前面有 . </param>
+            <returns></returns>
+        </member>
         <member name="T:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328">
             <summary>
             值扩展

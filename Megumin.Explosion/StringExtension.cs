@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -275,6 +276,43 @@ namespace System
             }
 
             return tmp < radix;
+        }
+
+        /// <summary>
+        /// 安全替换路径中的文件名，会检测是否已经存在。
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="newFileName"></param>
+        /// <returns></returns>
+        public static string ReplaceFileName(this string path, string newFileName = "NewInstance")
+        {
+            var dir = Path.GetDirectoryName(path);
+            var ex = Path.GetExtension(path);
+            return dir.CreateFileName(newFileName, ex);
+        }
+
+        /// <summary>
+        /// fileName 如果存在，自增
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="fileName"></param>
+        /// <param name="ex">需要前面有 . </param>
+        /// <returns></returns>
+        public static string CreateFileName(this string dir, string fileName, string ex)
+        {
+            var path = Path.Combine(dir, $"{fileName}{ex}");
+            if (!File.Exists(path))
+            {
+                return path;
+            }
+
+            int cloneCount = 1;
+            do
+            {
+                path = Path.Combine(dir, $"{fileName} ({cloneCount}){ex}");
+                cloneCount++;
+            } while (File.Exists(path));
+            return path;
         }
     }
 }
