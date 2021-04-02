@@ -5,6 +5,20 @@ using UnityEngine;
 
 public class Link
 {
+    [MenuItem("Tools/Link/Unity/ImmediateWindow")]
+    static void ImmediateWindow()
+    {
+        Application.OpenURL("https://github.com/Unity-Technologies/com.unity.immediate-window");
+    }
+
+
+    [MenuItem("Tools/Link/Unity-UI-Extensions")]
+    static void Unity_UI_Extensions()
+    {
+        Application.OpenURL("https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/src/release/");
+    }
+
+
     [MenuItem("Tools/Link/IconList")]
     static void IconList()
     {
@@ -15,12 +29,6 @@ public class Link
     static void LinkList()
     {
         Application.OpenURL("https://docs.qq.com/sheet/DUnhtZVRBR05xTXVI?tab=BB08J2");
-    }
-
-    [MenuItem("Tools/Link/Unity-UI-Extensions")]
-    static void Unity_UI_Extensions()
-    {
-        Application.OpenURL("https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/src/release/");
     }
 
     [MenuItem("Tools/Link/UniRx")]

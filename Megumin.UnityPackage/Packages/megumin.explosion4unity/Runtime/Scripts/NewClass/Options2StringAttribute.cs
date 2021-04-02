@@ -17,9 +17,10 @@ namespace UnityEngine
 
         static readonly Dictionary<Type, (string[] Show, string[] Value)> Cache
            = new Dictionary<Type, (string[] Show, string[] Value)>();
-        public Options2StringAttribute(Type type, string overrideName = "")
+        public Options2StringAttribute(Type type, bool sort = true, string overrideName = "")
         {
             Type = type;
+            Sort = sort;
             OverrideName = overrideName;
 
             if (!Cache.TryGetValue(type, out Options))
@@ -47,10 +48,11 @@ namespace UnityEngine
                 {
                     var field = fields[i];
                     var value = field.GetValue(null) as string;
-                    var show = value;
-                    foreach (var attr in field.GetCustomAttributes(typeof(AliasAttribute), true))
+                    //var show = value; 使用字段名字而不是值，因为写代码比较时用的也是字段名
+                    var show = field.Name;
+                    foreach (var attri in field.GetCustomAttributes(typeof(AliasAttribute), true))
                     {
-                        if (attr is AliasAttribute alias)
+                        if (attri is AliasAttribute alias)
                         {
                             show += $" [{alias.Alias}]";
                         }

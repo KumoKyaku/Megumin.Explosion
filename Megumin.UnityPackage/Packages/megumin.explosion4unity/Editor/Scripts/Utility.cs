@@ -97,42 +97,6 @@ public static partial class MeguminEditorUtility
             return (string)iconsPathProperty.GetValue(null, new object[] { });
 #endif
     }
-
-
-#if InvokeString
-
-    static Action<string> InvokeMethod { get; } = CreateInvokeMethod();
-    static Action<string> CreateInvokeMethod()
-    {
-        ImmediateWindow.ShowPackageManagerWindow();
-        dynamic immediate = ImmediateWindow.CurrentWindow;
-
-        object console = typeof(ImmediateWindow).GetProperty("Console", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(immediate);
-
-        object output = (console.GetType()).GetProperty("ConsoleOutput", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetValue(console);
-        var clear = (output.GetType()).GetMethod("ClearLog");
-        clear.Invoke(output, null);
-
-        UnityEngine.UIElements.TextField textField = (console.GetType()).GetProperty("ConsoleInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(console) as UnityEngine.UIElements.TextField;
-        
-        var invoke = (console.GetType()).GetMethod("CodeEvaluate");
-
-        Action<string> action = (str) =>
-        {
-            textField.value = str;
-            invoke.Invoke(console, null);
-        };
-
-        return action;
-    }
-
-    public static void ExcuteString(string cmd)
-    {
-        InvokeMethod?.Invoke(cmd);
-    }
-
-#endif
-
 }
 
 

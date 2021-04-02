@@ -4,7 +4,8 @@
     "references": [
         "Megumin.Explosion4Unity",
         "Unity.Settings.Editor",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.ImmediateWindow.Editor"
     ],
     "includePlatforms": [
         "Editor"
@@ -15,6 +16,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.immediate-window",
+            "expression": "1.0.0",
+            "define": "InvokeString"
+        }
+    ],
     "noEngineReferences": false
 }
