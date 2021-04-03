@@ -226,12 +226,20 @@ public class ColliderShower : MonoBehaviour
                           null);
     }
 
+    [NonSerialized]
+    Color? CacheOverrideColor = null;
     [EditorButton]
-    public void OverrideColor(Color color)
+    public void OverrideColor(Color color, bool force = false)
     {
+        if (CacheOverrideColor == color && force == false)
+        {
+            return;
+        }
+
         overrideMat = Instantiate(DefaultMat);
         overrideMat.name = OverrideName;
         overrideMat.color = color;
+        CacheOverrideColor = color;
         this.AssetDataSetDirty();
     }
 
