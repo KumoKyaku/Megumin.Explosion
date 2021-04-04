@@ -281,6 +281,7 @@ public class ColliderShower : MonoBehaviour
     [EditorButton]
     public void ResetMat()
     {
+        CacheOverrideColor = null;
         overrideMat = null;
         this.AssetDataSetDirty();
     }
