@@ -15,13 +15,16 @@ namespace UnityEngine
 
         public bool Sort { get; set; } = true;
 
+        public string DefaultValue { get; set; }
+
         static readonly Dictionary<Type, (string[] Show, string[] Value)> Cache
            = new Dictionary<Type, (string[] Show, string[] Value)>();
-        public Options2StringAttribute(Type type, bool sort = true, string overrideName = "")
+        public Options2StringAttribute(Type type, string defaultValue = null, bool sort = true, string overrideName = "")
         {
             Type = type;
             Sort = sort;
             OverrideName = overrideName;
+            DefaultValue = defaultValue;
 
             if (!Cache.TryGetValue(type, out Options))
             {
@@ -131,9 +134,18 @@ namespace UnityEditor.Megumin
 
                 if (string.IsNullOrEmpty(current))
                 {
-                    //新添加给个初值
-                    index = 0;
-                    property.stringValue = myOptions.Value[index];
+                    if (enum2StringAttribute.DefaultValue == null)
+                    {
+                        //新添加给个初值
+                        index = 0;
+                        property.stringValue = myOptions.Value[index];
+                    }
+                    else
+                    {
+                        current = enum2StringAttribute.DefaultValue;
+                        index = Array.IndexOf(myOptions.Value, current);
+                        property.stringValue = current;
+                    }
                 }
 
                 if (index != -1)

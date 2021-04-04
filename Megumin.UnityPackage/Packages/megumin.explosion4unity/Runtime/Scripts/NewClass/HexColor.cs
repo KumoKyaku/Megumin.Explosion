@@ -697,6 +697,9 @@ namespace UnityEngine
 
         public static readonly Color 开始 = HexColor.Denim;
         public static readonly Color 成功 = HexColor.DarkSpringGreen;
+
+        public static readonly Color 进入 = HexColor.Denim;
+        public static readonly Color 退出 = HexColor.DarkSpringGreen;
     }
 }
 
