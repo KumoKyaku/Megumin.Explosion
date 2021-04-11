@@ -4,19 +4,19 @@
         <name>Megumin.Explosion</name>
     </assembly>
     <members>
-        <member name="T:System.ByteArrayExtension_293399541C8D4E38A03A6340FA15498E">
+        <member name="T:ByteArrayExtension_293399541C8D4E38A03A6340FA15498E">
             <summary>
             字节数据扩展
             </summary>
         </member>
-        <member name="M:System.ByteArrayExtension_293399541C8D4E38A03A6340FA15498E.StartWithBOM(System.Byte[])">
+        <member name="M:ByteArrayExtension_293399541C8D4E38A03A6340FA15498E.StartWithBOM(System.Byte[])">
             <summary>
             这个数组是不是以BOM头开始的
             </summary>
             <param name="buffer"></param>
             <returns></returns>
         </member>
-        <member name="M:System.ByteArrayExtension_293399541C8D4E38A03A6340FA15498E.SkipBOMIfHave(System.Byte[])">
+        <member name="M:ByteArrayExtension_293399541C8D4E38A03A6340FA15498E.SkipBOMIfHave(System.Byte[])">
             <summary>
             如果含有BOM头则去掉，不含有返回原数组
             </summary>
@@ -27,18 +27,6 @@
             <summary>
             字典扩展
             </summary>
-        </member>
-        <member name="T:System.EnumExtension_5108BEA26E8C44D9A538646E15B6B175">
-            <summary>
-            对枚举类的扩展
-            </summary>
-        </member>
-        <member name="M:System.EnumExtension_5108BEA26E8C44D9A538646E15B6B175.CheckFlags``1">
-            <summary>
-            检查是否有FlagsAttribute
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
         </member>
         <!-- Badly formed XML comment ignored for member "T:System.Megumin.Class.ExcuteGraph`1" -->
         <member name="M:System.Megumin.Class.SubGraphTemp1.EnterPoint1(System.Threading.CancellationToken)">
@@ -139,101 +127,16 @@
             <param name="IsLAN">true取得局域网IP，flase取得外网IP，默认值为flase</param>
             <returns></returns>
         </member>
-        <member name="T:System.StringExtension_E68DD56066C94F2286AF4BD18126A406">
+        <member name="T:EnumExtension_5108BEA26E8C44D9A538646E15B6B175">
             <summary>
-            string扩展
+            对枚举类的扩展
             </summary>
         </member>
-        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.Split(System.String,System.Int32,System.Boolean)">
+        <member name="M:EnumExtension_5108BEA26E8C44D9A538646E15B6B175.CheckFlags``1">
             <summary>
-            按指定长度分割字符串
-            </summary>
-            <param name="s"></param>
-            <param name="perLength">每段长度</param>
-            <param name="allowLastOneShortCount">是够允许最后一段长度小于每段长度，
-            如果为false，不足的末尾将被舍弃。默认为false。</param>
-            <returns></returns>
-        </member>
-        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.ToInt(System.String)">
-            <summary>
-            使用int.Parse转换一个字符串
-            </summary>
-            <param name="s"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.ToEnum``1(System.String)">
-            <summary>
-            将一个字符串转换成枚举
-            </summary>
-            <typeparam name="T">提供一个枚举类型</typeparam>
-            <param name="value"></param>
-            <returns>返回对应的枚举值</returns>
-            <exception cref="T:System.ArgumentException">所给泛型不是枚举</exception>
-        </member>
-        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.ToBool(System.String)">
-            <summary>
-            将string转换成bool。
-            <para>当值为"true""TRUE""True"之一时返回true，否则返回false。</para>
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.IsDigit(System.Char,System.Int32,System.Int32@)">
-            <summary>
-            https://source.dot.net/#System.Private.CoreLib/ParseNumbers.cs,634
-            </summary>
-            <param name="c"></param>
-            <param name="radix"></param>
-            <param name="result"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.ReplaceFileName(System.String,System.String)">
-            <summary>
-            安全替换路径中的文件名，会检测是否已经存在。
-            </summary>
-            <param name="path"></param>
-            <param name="newFileName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.StringExtension_E68DD56066C94F2286AF4BD18126A406.CreateFileName(System.String,System.String,System.String)">
-            <summary>
-            fileName 如果存在，自增
-            </summary>
-            <param name="dir"></param>
-            <param name="fileName"></param>
-            <param name="ex">需要前面有 . </param>
-            <returns></returns>
-        </member>
-        <member name="T:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328">
-            <summary>
-            值扩展
-            </summary>
-        </member>
-        <member name="M:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328.Clamp``1(``0@,``0@,``0@)">
-            <summary>
-            将值限定在指定范围内
+            检查是否有FlagsAttribute
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="cur"></param>
-            <param name="min"></param>
-            <param name="max"></param>
-            <returns></returns>
-        </member>
-        <member name="M:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328.ClampIn``1(``0@,``0@,``0@)">
-            <summary>
-            将值限定在指定范围内,不知道两个边界谁大谁小，消息比<see cref="M:System.StructExtension_28FDB7156FD24F39B5EA39D95892E328.Clamp``1(``0@,``0@,``0@)"/>低一些。
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="cur"></param>
-            <param name="value1"></param>
-            <param name="value2"></param>
-        </member>
-        <member name="M:System.TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431.FirstAttribute``1(System.Type)">
-            <summary>
-            尝试取得第一个指定属性
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="type"></param>
             <returns></returns>
         </member>
         <member name="T:Megumin.AliasAttribute">
@@ -803,6 +706,131 @@
             </summary>
             <remarks>不要重写比较方法</remarks>
             <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:StringExtension_E68DD56066C94F2286AF4BD18126A406">
+            <summary>
+            string扩展
+            </summary>
+        </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.Split(System.String,System.Int32,System.Boolean)">
+            <summary>
+            按指定长度分割字符串
+            </summary>
+            <param name="s"></param>
+            <param name="perLength">每段长度</param>
+            <param name="allowLastOneShortCount">是够允许最后一段长度小于每段长度，
+            如果为false，不足的末尾将被舍弃。默认为false。</param>
+            <returns></returns>
+        </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.ToInt(System.String)">
+            <summary>
+            使用int.Parse转换一个字符串
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.ToEnum``1(System.String)">
+            <summary>
+            将一个字符串转换成枚举
+            </summary>
+            <typeparam name="T">提供一个枚举类型</typeparam>
+            <param name="value"></param>
+            <returns>返回对应的枚举值</returns>
+            <exception cref="T:System.ArgumentException">所给泛型不是枚举</exception>
+        </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.ToBool(System.String)">
+            <summary>
+            将string转换成bool。
+            <para>当值为"true""TRUE""True"之一时返回true，否则返回false。</para>
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.IsDigit(System.Char,System.Int32,System.Int32@)">
+            <summary>
+            https://source.dot.net/#System.Private.CoreLib/ParseNumbers.cs,634
+            </summary>
+            <param name="c"></param>
+            <param name="radix"></param>
+            <param name="result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.ReplaceFileName(System.String,System.String)">
+            <summary>
+            安全替换路径中的文件名，会检测是否已经存在。
+            </summary>
+            <param name="path"></param>
+            <param name="newFileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.CreateFileName(System.String,System.String,System.String)">
+            <summary>
+            fileName 如果存在，自增
+            </summary>
+            <param name="dir"></param>
+            <param name="fileName"></param>
+            <param name="ex">需要前面有 . </param>
+            <returns></returns>
+        </member>
+        <member name="T:StructExtension_28FDB7156FD24F39B5EA39D95892E328">
+            <summary>
+            值扩展
+            </summary>
+        </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.Clamp``1(``0@,``0@,``0@)">
+            <summary>
+            将值限定在指定范围内
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="cur"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.ClampIn``1(``0@,``0@,``0@)">
+            <summary>
+            将值限定在指定范围内,不知道两个边界谁大谁小，消息比<see cref="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.Clamp``1(``0@,``0@,``0@)"/>低一些。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="cur"></param>
+            <param name="value1"></param>
+            <param name="value2"></param>
+        </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.SnapCeil(System.Int32@,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="orignal"></param>
+            <param name="multiple">倍数</param>
+        </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.SnapFloor(System.Int32@,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="orignal"></param>
+            <param name="multiple">倍数</param>
+        </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.SnapCeil(System.Double@,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="orignal"></param>
+            <param name="multiple">倍数</param>
+        </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.SnapFloor(System.Double@,System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="orignal"></param>
+            <param name="multiple">倍数</param>
+        </member>
+        <member name="M:TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431.FirstAttribute``1(System.Type)">
+            <summary>
+            尝试取得第一个指定属性
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="type"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>
