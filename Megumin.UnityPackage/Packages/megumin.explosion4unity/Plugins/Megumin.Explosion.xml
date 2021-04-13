@@ -181,6 +181,32 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:Megumin.iint">
+            <summary>
+            int 最大值最小值表示无穷
+            <para/>https://stackoverflow.com/questions/21312081/how-to-represent-integer-infinity
+            </summary>
+        </member>
+        <member name="P:Megumin.iint.IsPositiveInfinity">
+            <summary>
+            是不是正无穷
+            </summary>
+        </member>
+        <member name="P:Megumin.iint.IsNegativeInfinity">
+            <summary>
+            是不是负无穷
+            </summary>
+        </member>
+        <member name="F:Megumin.iint.PositiveInfinity">
+            <summary>
+            正无穷
+            </summary>
+        </member>
+        <member name="F:Megumin.iint.NegativeInfinity">
+            <summary>
+            负无穷
+            </summary>
+        </member>
         <member name="T:Megumin.K2Dictionary`3">
             <summary>
             不是线程安全的
