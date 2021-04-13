@@ -110,7 +110,17 @@ namespace UnityEngine
 #endif
         }
 
-        
+        public static string GetFileName(this ScriptableObject scriptableObject)
+        {
+
+#if UNITY_EDITOR
+            var path = AssetDatabase.GetAssetPath(scriptableObject);
+            return Path.GetFileNameWithoutExtension(path);
+#else
+            return default;
+#endif
+
+        }
     }
 }
 
