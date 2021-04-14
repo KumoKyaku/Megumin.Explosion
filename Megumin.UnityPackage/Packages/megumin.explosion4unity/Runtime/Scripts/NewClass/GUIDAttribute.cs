@@ -49,7 +49,7 @@ namespace UnityEditor.Megumin
                     property.stringValue = current;
                 }
 
-                GUI.enabled = !GUID.TryParse(current, out var guid);
+                GUI.enabled = true;
 
                 if (GUI.Button(leftPosotion, "GUID", left))
                 {
