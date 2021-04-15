@@ -121,6 +121,54 @@ namespace UnityEngine
 #endif
 
         }
+
+        /// <summary>
+        /// 宏替换,将给定字符中的宏替换为unity对象的值。
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="orignal"></param>
+        public static void Macro(this Object obj, ref string orignal)
+        {
+            void MacroTransform(Transform transform, ref string orignal)
+            {
+                orignal = orignal.Replace("$(position)", transform.position.ToString());
+                orignal = orignal.Replace("$rotation)", transform.rotation.ToString());
+                orignal = orignal.Replace("$(eulerAngles)", transform.eulerAngles.ToString());
+
+                orignal = orignal.Replace("$(localPosition)", transform.localPosition.ToString());
+                orignal = orignal.Replace("$(localRotation)", transform.localRotation.ToString());
+                orignal = orignal.Replace("$(localEulerAngles)", transform.localEulerAngles.ToString());
+
+                orignal = orignal.Replace("$(parent)", transform.parent.name);
+            }
+
+            void MacroGameObject(GameObject gameObject, ref string orignal)
+            {
+                orignal = orignal.Replace("$(layer)", LayerMask.LayerToName(gameObject.layer));
+                orignal = orignal.Replace("$(tag)", gameObject.tag);
+            }
+
+            orignal = orignal.Replace("$(name)", obj.name);
+
+            if (obj is Component component)
+            {
+                MacroGameObject(component.gameObject, ref orignal);
+                MacroTransform(component.transform, ref orignal);
+            }
+
+            if (obj is GameObject gameObject)
+            {
+                MacroGameObject(gameObject, ref orignal);
+                MacroTransform(gameObject.transform, ref orignal);
+
+            }
+
+            if (obj is Transform transform)
+            {
+                MacroTransform(transform, ref orignal);
+                MacroGameObject(transform.gameObject, ref orignal);
+            }
+        }
     }
 }
 
