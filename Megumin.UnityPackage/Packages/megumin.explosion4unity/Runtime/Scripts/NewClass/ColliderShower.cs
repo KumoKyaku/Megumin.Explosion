@@ -28,16 +28,12 @@ public class ColliderShower : MonoBehaviour
             return DefaultMat;
         }
     }
-    
+
+    public bool ShowOnRuntime = true;
     /// <summary>
     /// 即使碰撞盒没有开启也要强制显示
     /// </summary>
     public bool ForceShowOnDisable = false;
-
-    [Space]
-    public bool ShowLabel = false;
-    [field:SerializeField]
-    public string OverrideLabel { get; set; } = null;
 
     [ReadOnlyInInspector]
     public List<Collider> Colliders = new List<Collider>();
@@ -306,23 +302,7 @@ public class ColliderShower : MonoBehaviour
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        if (Colliders != null && ShowLabel && enabled)
-        {
-            foreach (var collider in Colliders)
-            {
-                if (collider)
-                {
-                    string text = OverrideLabel;
-                    if (string.IsNullOrEmpty(text))
-                    {
-                        text = $"碰撞盒:[{collider.name}|{collider.tag}]";
-                    }
-
-                    UnityEditor.Handles.Label(collider.transform.position,
-                        text);
-                }
-            }
-        }
+        
     }
 #endif
 
