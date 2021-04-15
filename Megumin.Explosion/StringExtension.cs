@@ -220,7 +220,7 @@ public static class StringExtension_E68DD56066C94F2286AF4BD18126A406
             }
             b = (byte)(b1 * 16 + b2);
 
-            if (hex.Length > 8 + startIndex)
+            if (hex.Length >= 8 + startIndex)
             {
                 //透明度是可选的
                 if (!IsDigit(hex[startIndex + 6], 16, out var a1))
