@@ -15,7 +15,12 @@ using UnityEditor;
 //支持ScrpitObject
 
 /// <summary> 
-/// 绘制代码在 <see cref="EditorGUIMethod/> 中
+/// 绘制代码在 <see cref="EditorGUIMethod"/> 中
+/// <para></para>自定义Editor中想要支持这个特性，
+/// <para></para>请在<see cref="Editor.OnInspectorGUI"/>中调用
+/// this.DrawInspectorMethods
+/// 
+/// <para></para><see cref="EditorGUIMethod.DrawInspectorMethods"/>
 /// </summary>
 [System.AttributeUsage(System.AttributeTargets.Method)]
 public class EditorButtonAttribute : PropertyAttribute

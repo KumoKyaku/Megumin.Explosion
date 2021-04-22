@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 
 [ExecuteAlways]
@@ -49,6 +52,34 @@ public class ColliderShower : MonoBehaviour
         }
 
         ReCollect();
+        //#if UNITY_EDITOR
+        //        UnityEditor.SceneView.duringSceneGui += SceneView_duringSceneGui;
+        //#endif
+    }
+
+    //#if UNITY_EDITOR
+
+    //    //这里得OnSceneGUI 在Game中仍然会显示
+    //    private void SceneView_duringSceneGui(SceneView obj)
+    //    {
+    //        if (GlobalToggle == null)
+    //        {
+    //            return;
+    //        }
+
+    //        if (GlobalToggle && !ShowOnRuntime)
+    //        {
+    //            DrawCollider();
+    //        }
+    //    }
+
+    //#endif
+
+    void OnDestroy()
+    {
+        //#if UNITY_EDITOR
+        //        UnityEditor.SceneView.duringSceneGui -= SceneView_duringSceneGui;
+        //#endif
     }
 
 
@@ -130,43 +161,51 @@ public class ColliderShower : MonoBehaviour
             GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
         }
 
-        if (GlobalToggle)
+        if (GlobalToggle && ShowOnRuntime)
         {
-            foreach (var collider in Colliders)
-            {
-                if (collider)
-                {
-                    if (ForceShowOnDisable || collider.enabled)
-                    {
-                        if (collider is BoxCollider box)
-                        {
-                            box.Draw(Material);
-                        }
-                        else if (collider is CapsuleCollider capsule)
-                        {
-                            capsule.Draw(Material);
-                        }
-                        else if (collider is SphereCollider sphere)
-                        {
-                            sphere.Draw(Material);
-                        }
-                        else if (collider is MeshCollider meshCollider)
-                        {
-                            meshCollider.Draw(Material, MeshDrawOffset);
-                        }
-                    }
-                }
-                else
-                {
-                    needReCollect = true;
-                }
-            }
+            needReCollect = DrawCollider();
         }
 
         if (needReCollect)
         {
             ReCollect();
         }
+    }
+
+    internal bool DrawCollider()
+    {
+        bool needReCollect = false;
+        foreach (var collider in Colliders)
+        {
+            if (collider)
+            {
+                if (ForceShowOnDisable || collider.enabled)
+                {
+                    if (collider is BoxCollider box)
+                    {
+                        box.Draw(Material);
+                    }
+                    else if (collider is CapsuleCollider capsule)
+                    {
+                        capsule.Draw(Material);
+                    }
+                    else if (collider is SphereCollider sphere)
+                    {
+                        sphere.Draw(Material);
+                    }
+                    else if (collider is MeshCollider meshCollider)
+                    {
+                        meshCollider.Draw(Material, MeshDrawOffset);
+                    }
+                }
+            }
+            else
+            {
+                needReCollect = true;
+            }
+        }
+
+        return needReCollect;
     }
 
     [NonSerialized]
@@ -244,11 +283,67 @@ public class ColliderShower : MonoBehaviour
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        
+        if (!ShowOnRuntime)
+        {
+            foreach (var collider in Colliders)
+            {
+                if (collider)
+                {
+                    if (ForceShowOnDisable || collider.enabled)
+                    {
+                        if (collider is BoxCollider box)
+                        {
+                            box.GizmoDraw(Material.color);
+                        }
+                        else if (collider is CapsuleCollider capsule)
+                        {
+                            capsule.GizmoDraw(Material.color);
+                        }
+                        else if (collider is SphereCollider sphere)
+                        {
+                            sphere.GizmoDraw(Material.color);
+                        }
+                        else if (collider is MeshCollider meshCollider)
+                        {
+                            meshCollider.GizmoDraw(Material.color, MeshDrawOffset);
+                        }
+                    }
+                }
+            }
+        }
     }
 #endif
 
 }
 
+//#if UNITY_EDITOR
+
+// 这里得OnSceneGUI 在Game中仍然会显示
+
+//[CustomEditor(typeof(ColliderShower), true)]
+//public class ColliderShowerEditor : Editor
+//{
+//    public override void OnInspectorGUI()
+//    {
+//        base.OnInspectorGUI();
+//        this.DrawInspectorMethods();
+//    }
+
+//    void OnSceneGUI()
+//    {
+//        ColliderShower shower = (ColliderShower)target;
+//        if (ColliderShower.GlobalToggle == null)
+//        {
+//            return;
+//        }
+
+//        if (ColliderShower.GlobalToggle && !shower.ShowOnRuntime)
+//        {
+//            shower.DrawCollider();
+//        }
+//    }
+//}
+
+//#endif
 
 
