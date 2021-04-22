@@ -8,6 +8,7 @@ namespace Megumin
     public class LabelShower : MonoBehaviour
     {
         public bool ShowOnRuntime = true;
+        public bool UseStyle = false;
 
         [field: SerializeField]
         public string Prefix { get; set; } = "≈ˆ◊≤∫–";
@@ -15,23 +16,55 @@ namespace Megumin
         [field: SerializeField]
         public string OverrideLabel { get; set; } = null;
 
+        public int FontSize = 18;
+        public Color FontColor = Color.white;
+
+        public GUIStyle LabelStyle;
+
+        void Awake()
+        {
+            InitStyle();
+        }
         void Start()
         {
-            
+
+        }
+
+        [EditorButton]
+        private void InitStyle(string styleName = "CN CountBadge", bool force = false)
+        {
+            if (LabelStyle == null || force)
+            {
+                LabelStyle = new GUIStyle(styleName);
+            }
         }
 
         void OnGUI()
         {
-            if (ShowOnRuntime)
+            if (ShowOnRuntime && Camera.main)
             {
-                //todo
-                if (Camera.current)
+                var pos = Camera.main.WorldToScreenPoint(transform.position);
+                string text = CalText();
+                var rect = new Rect(pos.x, Screen.height - pos.y, 400, 400);
+                if (UseStyle)
                 {
-                    var pos = Camera.current.WorldToScreenPoint(transform.position);
-                    var rect = new Rect(pos.x, pos.y, 500, 40);
-                    string text = CalText();
-                    GUI.Label(rect, text);
+                    GUI.Label(rect, text, LabelStyle);
                 }
+                else
+                {
+                    using ((GUIColorScopeStruct)FontColor)
+                    {
+                        using (new GUIFontSizeScopeStruct(FontSize))
+                        {
+                            GUI.Label(rect, text);
+                        }
+                    }
+                }
+
+                //œ‘ æ¥Û–°¥ÌŒÛ
+                //GUILayout.BeginArea(rect);
+                //GUILayout.Label(text, LabelStyle);
+                //GUILayout.EndArea();
             }
         }
 
@@ -54,8 +87,21 @@ namespace Megumin
             {
                 string text = CalText();
 
-                UnityEditor.Handles.Label(transform.position,
-                    text);
+                if (UseStyle)
+                {
+                    UnityEditor.Handles.Label(transform.position, text, LabelStyle);
+                }
+                else
+                {
+                    using ((GUIColorScopeStruct)FontColor)
+                    {
+                        using (new GUIFontSizeScopeStruct(FontSize))
+                        {
+                            UnityEditor.Handles.Label(transform.position, text);
+                        }
+                    }
+                }
+
             }
         }
 #endif

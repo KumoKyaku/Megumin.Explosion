@@ -18,16 +18,12 @@ namespace UnityEngine
         public GUIColorScopeStruct(Color color)
         {
             old = GUI.color;
-#if UNITY_EDITOR
             GUI.color = color;
-#endif
         }
 
         public void Dispose()
         {
-#if UNITY_EDITOR
             GUI.color = old;
-#endif
         }
 
         public static implicit operator GUIColorScopeStruct(in Color color)
@@ -45,21 +41,33 @@ namespace UnityEngine
         public GUIColorScope(Color color)
         {
             old = GUI.color;
-#if UNITY_EDITOR
             GUI.color = color;
-#endif
         }
 
         public void Dispose()
         {
-#if UNITY_EDITOR
             GUI.color = old;
-#endif
         }
 
         public static implicit operator GUIColorScope(in Color color)
         {
             return new GUIColorScope(color);
+        }
+    }
+
+
+    public struct GUIFontSizeScopeStruct : IDisposable
+    {
+        int old;
+        public GUIFontSizeScopeStruct(int size)
+        {
+            old = GUI.skin.label.fontSize;
+            GUI.skin.label.fontSize = size;
+        }
+
+        public void Dispose()
+        {
+            GUI.skin.label.fontSize = old;
         }
     }
 }
