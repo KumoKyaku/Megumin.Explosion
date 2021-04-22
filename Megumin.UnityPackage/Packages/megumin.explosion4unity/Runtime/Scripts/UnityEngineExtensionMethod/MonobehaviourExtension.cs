@@ -98,6 +98,15 @@ public static class MonoBehaviourExtension_DA182CC20A33453FA684CD22CE5B97DC
             "particleSystem","renderer","rigidbody","rigidbody2D",
     };
 
+    /// <summary>
+    /// 扩展方法ContextMenu 不行
+    /// </summary>
+    /// <param name="monoBehaviour"></param>
+    [ContextMenu("WarlG Context Menu")]
+    static void TestContextMenu(this MonoBehaviour monoBehaviour)
+    {
+        Debug.Log(1);
+    }
 }
 
 

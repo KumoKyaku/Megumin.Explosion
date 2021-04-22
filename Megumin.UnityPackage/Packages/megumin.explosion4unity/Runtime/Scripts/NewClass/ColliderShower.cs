@@ -119,6 +119,8 @@ public class ColliderShower : MonoBehaviour
         }
     }
 
+    static readonly Vector3 MeshDrawOffset = new Vector3(0, 0.025f, 0);
+
     void LateUpdate()
     {
         bool needReCollect = false;
@@ -138,19 +140,19 @@ public class ColliderShower : MonoBehaviour
                     {
                         if (collider is BoxCollider box)
                         {
-                            DrawBox(box);
+                            box.Draw(Material);
                         }
                         else if (collider is CapsuleCollider capsule)
                         {
-                            DrawCapsule(capsule);
+                            capsule.Draw(Material);
                         }
                         else if (collider is SphereCollider sphere)
                         {
-                            DrawSphere(sphere);
+                            sphere.Draw(Material);
                         }
                         else if (collider is MeshCollider meshCollider)
                         {
-                            DrawMesh(meshCollider);
+                            meshCollider.Draw(Material, MeshDrawOffset);
                         }
                     }
                 }
@@ -165,66 +167,6 @@ public class ColliderShower : MonoBehaviour
         {
             ReCollect();
         }
-    }
-
-    private void DrawMesh(MeshCollider meshCollider)
-    {
-        var mesh = meshCollider.sharedMesh;
-        Transform trans = meshCollider.transform;
-        //抬高一点点
-        var offset = new Vector3(0, 0.025f, 0);
-        var matri = Matrix4x4.identity;
-        var size = Vector3.one;
-        matri.SetTRS(trans.position + offset, trans.rotation, size);
-        DrawMesh(mesh, matri);
-    }
-
-    private void DrawSphere(SphereCollider sphere)
-    {
-        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Sphere);
-        Transform trans = sphere.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(sphere.center);
-        var matri = Matrix4x4.identity;
-        var size = sphere.radius * 2 * Vector3.one;
-        matri.SetTRS(trans.position + offset, trans.rotation, size);
-        DrawMesh(mesh, matri);
-    }
-
-    private void DrawCapsule(CapsuleCollider capsule)
-    {
-        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Capsule);
-        Transform trans = capsule.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(capsule.center);
-        var matri = Matrix4x4.identity;
-        var size = new Vector3(capsule.radius * 2, capsule.height / 2, capsule.radius * 2);
-        matri.SetTRS(trans.position + offset, trans.rotation, size);
-        DrawMesh(mesh, matri);
-    }
-
-    private void DrawBox(BoxCollider box)
-    {
-        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Cube);
-        Transform trans = box.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(box.center);
-        var matri = Matrix4x4.identity;
-        matri.SetTRS(trans.position + offset, trans.rotation, box.size);
-        DrawMesh(mesh, matri);
-    }
-
-    private void DrawMesh(Mesh mesh, Matrix4x4 matri)
-    {
-        Graphics.DrawMesh(mesh,
-                          matri,
-                          Material,
-                          0,
-                          default,
-                          default,
-                          default,
-                          UnityEngine.Rendering.ShadowCastingMode.Off,
-                          false,
-                          null,
-                          UnityEngine.Rendering.LightProbeUsage.Off,
-                          null);
     }
 
     [NonSerialized]
