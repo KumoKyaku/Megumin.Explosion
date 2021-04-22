@@ -10,7 +10,7 @@ using UnityEditor;
 [ExecuteAlways]
 [DefaultExecutionOrder(9000)]
 [SelectionBase]
-public class ColliderShower : MonoBehaviour
+public class ColliderRenderer : MonoBehaviour
 {
     const string OverrideName = "[Override]";
     /// <summary>
@@ -41,14 +41,14 @@ public class ColliderShower : MonoBehaviour
     [ReadOnlyInInspector]
     public List<Collider> Colliders = new List<Collider>();
     [ReadOnlyInInspector]
-    public List<ColliderShower> SubShowers = new List<ColliderShower>();
+    public List<ColliderRenderer> SubShowers = new List<ColliderRenderer>();
     [ReadOnlyInInspector]
-    public ColliderShower Parent;
+    public ColliderRenderer Parent;
     void Start()
     {
         if (GlobalToggle == null)
         {
-            GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
+            GlobalToggle = new Pref<bool>(nameof(ColliderRenderer), true);
         }
 
         ReCollect();
@@ -88,7 +88,7 @@ public class ColliderShower : MonoBehaviour
     {
         if (GlobalToggle == null)
         {
-            GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
+            GlobalToggle = new Pref<bool>(nameof(ColliderRenderer), true);
         }
         GlobalToggle.Value = !GlobalToggle;
     }
@@ -97,7 +97,7 @@ public class ColliderShower : MonoBehaviour
     void ReCollect()
     {
         SubShowers.Clear();
-        GetComponentsInChildren<ColliderShower>(SubShowers);
+        GetComponentsInChildren<ColliderRenderer>(SubShowers);
         SubShowers.RemoveAll(ele => ele == this);
 
         Colliders.Clear();
@@ -116,7 +116,7 @@ public class ColliderShower : MonoBehaviour
 
         if (transform.parent)
         {
-            Parent = transform.parent.GetComponentInParent<ColliderShower>();
+            Parent = transform.parent.GetComponentInParent<ColliderRenderer>();
         }
     }
 
@@ -158,7 +158,7 @@ public class ColliderShower : MonoBehaviour
 
         if (GlobalToggle == null)
         {
-            GlobalToggle = new Pref<bool>(nameof(ColliderShower), true);
+            GlobalToggle = new Pref<bool>(nameof(ColliderRenderer), true);
         }
 
         if (GlobalToggle && ShowOnRuntime)

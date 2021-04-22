@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Megumin
 {
     [ExecuteAlways]
-    public class LabelShower : MonoBehaviour
+    public class LabelRenderer : MonoBehaviour
     {
         public bool ShowOnRuntime = true;
         public bool UseStyle = false;
