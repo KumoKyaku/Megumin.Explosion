@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class ColliderRenderer : MonoBehaviour
 {
     const string OverrideName = "[Override]";
     /// <summary>
-    /// È«¾ÖÏÔÊ¾¿ª¹Ø
+    /// å…¨å±€æ˜¾ç¤ºå¼€å…³
     /// </summary>
     public static Pref<bool> GlobalToggle;
     public Material DefaultMat;
@@ -34,7 +34,7 @@ public class ColliderRenderer : MonoBehaviour
 
     public bool ShowOnRuntime = true;
     /// <summary>
-    /// ¼´Ê¹Åö×²ºĞÃ»ÓĞ¿ªÆôÒ²ÒªÇ¿ÖÆÏÔÊ¾
+    /// å³ä½¿ç¢°æ’ç›’æ²¡æœ‰å¼€å¯ä¹Ÿè¦å¼ºåˆ¶æ˜¾ç¤º
     /// </summary>
     public bool ForceShowOnDisable = false;
 
@@ -64,7 +64,7 @@ public class ColliderRenderer : MonoBehaviour
 
     //#if UNITY_EDITOR
 
-    //    //ÕâÀïµÃOnSceneGUI ÔÚGameÖĞÈÔÈ»»áÏÔÊ¾
+    //    //è¿™é‡Œå¾—OnSceneGUI åœ¨Gameä¸­ä»ç„¶ä¼šæ˜¾ç¤º
     //    private void SceneView_duringSceneGui(SceneView obj)
     //    {
     //        if (GlobalToggle == null)
@@ -317,7 +317,7 @@ public class ColliderRenderer : MonoBehaviour
 
 //#if UNITY_EDITOR
 
-// ÕâÀïµÃOnSceneGUI ÔÚGameÖĞÈÔÈ»»áÏÔÊ¾
+// è¿™é‡Œå¾—OnSceneGUI åœ¨Gameä¸­ä»ç„¶ä¼šæ˜¾ç¤º
 
 //[CustomEditor(typeof(ColliderShower), true)]
 //public class ColliderShowerEditor : Editor

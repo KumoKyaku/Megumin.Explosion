@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,12 +36,12 @@ namespace UnityEditor.Megumin
             {
                 if (myattribute.IsFolder)
                 {
-                    var path = EditorUtility.OpenFolderPanel("Ñ¡ÔñÎÄ¼þ¼Ð", "", "");
+                    var path = EditorUtility.OpenFolderPanel("é€‰æ‹©æ–‡ä»¶å¤¹", "", "");
                     property.stringValue = path;
                 }
                 else
                 {
-                    var path = EditorUtility.OpenFilePanel("Ñ¡ÔñÎÄ¼þ", "", myattribute.Exetension);
+                    var path = EditorUtility.OpenFilePanel("é€‰æ‹©æ–‡ä»¶", "", myattribute.Exetension);
                     property.stringValue = path;
                 }
             }

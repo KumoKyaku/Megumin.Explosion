@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,7 +18,7 @@ public class SceneSwitcher : MonoBehaviour
         yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode);
         if (Log)
         {
-            Debug.Log($"Load {SceneName} Scene Success".Html(LogColor.�ɹ�));
+            Debug.Log($"Load {SceneName} Scene Success".Html(LogColor.成功));
         }
         OnLoaded?.Invoke(SceneName, LoadSceneMode);
     }

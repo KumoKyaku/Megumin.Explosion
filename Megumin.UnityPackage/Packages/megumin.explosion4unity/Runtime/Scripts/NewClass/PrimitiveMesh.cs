@@ -1,4 +1,4 @@
-using System;
+锘縰sing System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +9,7 @@ using UnityEngine;
 public static class PrimitiveMesh
 {
     /// <summary>
-    /// 获取unity内置的mesh
+    /// 鑾峰彇unity鍐呯疆鐨刴esh
     /// </summary>
     /// <param name="primitiveType"></param>
     /// <returns></returns>

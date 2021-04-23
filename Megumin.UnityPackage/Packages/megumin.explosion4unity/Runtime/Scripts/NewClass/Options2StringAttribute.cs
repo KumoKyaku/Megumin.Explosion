@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +51,7 @@ namespace UnityEngine
                 {
                     var field = fields[i];
                     var value = field.GetValue(null) as string;
-                    //var show = value; Ê¹ÓÃ×Ö¶ÎÃû×Ö¶ø²»ÊÇÖµ£¬ÒòÎªĞ´´úÂë±È½ÏÊ±ÓÃµÄÒ²ÊÇ×Ö¶ÎÃû
+                    //var show = value; ä½¿ç”¨å­—æ®µåå­—è€Œä¸æ˜¯å€¼ï¼Œå› ä¸ºå†™ä»£ç æ¯”è¾ƒæ—¶ç”¨çš„ä¹Ÿæ˜¯å­—æ®µå
                     var show = field.Name;
                     foreach (var attri in field.GetCustomAttributes(typeof(AliasAttribute), true))
                     {
@@ -92,7 +92,7 @@ namespace UnityEditor.Megumin
                 valuePosition.width -= 20;
                 //valuePosition.x += 20;
 
-                ///ÔÚºóÃæ»­¸öĞ¡¹´£¬ÇĞ»»×Ö·û´®»¹ÊÇEnum
+                ///åœ¨åé¢ç”»ä¸ªå°å‹¾ï¼Œåˆ‡æ¢å­—ç¬¦ä¸²è¿˜æ˜¯Enum
                 UseEnum = GUI.Toggle(togglePosition, UseEnum, GUIContent.none);
 
                 if (UseEnum)
@@ -106,8 +106,8 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                //EditorGUI.HelpBox(position, $"{label.text} ×Ö¶ÎÀàĞÍ±ØĞëÊÇstring", MessageType.Error);
-                label.tooltip += $"{nameof(Options2StringAttribute)}Ê§Ğ§£¡\n{label.text} ×Ö¶ÎÀàĞÍ±ØĞëÊÇstring";
+                //EditorGUI.HelpBox(position, $"{label.text} å­—æ®µç±»å‹å¿…é¡»æ˜¯string", MessageType.Error);
+                label.tooltip += $"{nameof(Options2StringAttribute)}å¤±æ•ˆï¼\n{label.text} å­—æ®µç±»å‹å¿…é¡»æ˜¯string";
                 label.text = $"??? " + label.text;
                 var old = GUI.color;
                 GUI.color = warning;
@@ -136,7 +136,7 @@ namespace UnityEditor.Megumin
                 {
                     if (enum2StringAttribute.DefaultValue == null)
                     {
-                        //ĞÂÌí¼Ó¸ø¸ö³õÖµ
+                        //æ–°æ·»åŠ ç»™ä¸ªåˆå€¼
                         index = 0;
                         property.stringValue = myOptions.Value[index];
                     }
@@ -152,7 +152,7 @@ namespace UnityEditor.Megumin
                 {
                     if (overrideName.StartsWith("Element"))
                     {
-                        //ÈİÆ÷ÄÚ²»ÏÔÃû×Ö¡£
+                        //å®¹å™¨å†…ä¸æ˜¾åå­—ã€‚
                         index = EditorGUI.Popup(valuePosition, index, myOptions.Show);
                     }
                     else
@@ -163,14 +163,14 @@ namespace UnityEditor.Megumin
                 }
                 else
                 {
-                    label.tooltip += $"{nameof(Options2StringAttribute)}Ê§Ğ§£¡\nµ±Ç°Öµ: {current} ÎŞ·¨½âÎöÎª{enum2StringAttribute.Type.Name}µÄ³£Á¿¡£";
+                    label.tooltip += $"{nameof(Options2StringAttribute)}å¤±æ•ˆï¼\nå½“å‰å€¼: {current} æ— æ³•è§£æä¸º{enum2StringAttribute.Type.Name}çš„å¸¸é‡ã€‚";
                     label.text = $"!! " + overrideName;
                     EditorGUI.PropertyField(valuePosition, property, label);
                 }
             }
             else
             {
-                label.tooltip += $"{nameof(Options2StringAttribute)}Ê§Ğ§£¡\n Ã»ÓĞ³£Á¿string£¡";
+                label.tooltip += $"{nameof(Options2StringAttribute)}å¤±æ•ˆï¼\n æ²¡æœ‰å¸¸é‡stringï¼";
                 label.text = $"!! " + overrideName;
                 EditorGUI.PropertyField(valuePosition, property, label);
             }

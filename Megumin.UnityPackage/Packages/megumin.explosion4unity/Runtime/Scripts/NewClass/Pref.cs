@@ -1,7 +1,7 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 /// <summary>
-/// ¼òÒ×ÓÃ»§ÅäÖÃ
+/// ç®€æ˜“ç”¨æˆ·é…ç½®
 /// </summary>
 /// <typeparam name="T"></typeparam>
 [System.Serializable]
@@ -24,7 +24,7 @@ public class Pref<T>
     /// 
     /// </summary>
     /// <param name="key"></param>
-    /// <param name="IsPerProjectInstace">Í¬Ò»¸öÏîÄ¿¶à¿ªÊ±ÊÇ²»ÊÇÃ¿¸öÏîÄ¿µ¥¶ÀÅäÖÃ</param>
+    /// <param name="IsPerProjectInstace">åŒä¸€ä¸ªé¡¹ç›®å¤šå¼€æ—¶æ˜¯ä¸æ˜¯æ¯ä¸ªé¡¹ç›®å•ç‹¬é…ç½®</param>
     public Pref(string key, T defaultValue = default, bool IsPerProjectInstace = true)
     {
         if (IsPerProjectInstace)
@@ -95,7 +95,7 @@ public class Pref<T>
     {
         if (pref == null)
         {
-            //ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ï¿½Ã¡ï¿½
+            //é˜²æ­¢é…ç½®æ²¡æœ‰åˆå§‹åŒ–
             Debug.LogWarning($"{nameof(Pref<T>)} is null, return default");
             return default;
         }

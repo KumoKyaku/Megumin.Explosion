@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ namespace Megumin
         public bool UseStyle = false;
 
         [field: SerializeField]
-        public string Prefix { get; set; } = "Åö×²ºĞ";
+        public string Prefix { get; set; } = "ç¢°æ’ç›’";
 
         [field: SerializeField]
         public string OverrideLabel { get; set; } = null;
@@ -22,7 +22,7 @@ namespace Megumin
         public GUIStyle LabelStyle;
 
         /// <summary>
-        /// È«¾ÖÏÔÊ¾¿ª¹Ø
+        /// å…¨å±€æ˜¾ç¤ºå¼€å…³
         /// </summary>
         public static Pref<bool> GlobalToggle;
 
@@ -82,7 +82,7 @@ namespace Megumin
                     }
                 }
 
-                //ÏÔÊ¾´óĞ¡´íÎó
+                //æ˜¾ç¤ºå¤§å°é”™è¯¯
                 //GUILayout.BeginArea(rect);
                 //GUILayout.Label(text, LabelStyle);
                 //GUILayout.EndArea();
@@ -94,7 +94,7 @@ namespace Megumin
             string text = OverrideLabel;
             if (string.IsNullOrEmpty(text))
             {
-                text = $"{Prefix}£º[{name}|{tag}]";
+                text = $"{Prefix}ï¼š[{name}|{tag}]";
             }
 
             this.Macro(ref text);

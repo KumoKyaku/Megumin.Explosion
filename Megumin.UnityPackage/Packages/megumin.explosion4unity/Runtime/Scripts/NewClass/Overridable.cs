@@ -1,4 +1,4 @@
-using System.Collections;
+锘縰sing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -8,7 +8,7 @@ namespace Megumin
     /// <summary>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <remarks>unity支持泛型序列化后可用</remarks>
+    /// <remarks>unity鏀寔娉涘瀷搴忓垪鍖栧悗鍙敤</remarks>
     [Serializable]
     public class Overridable<T>
     {

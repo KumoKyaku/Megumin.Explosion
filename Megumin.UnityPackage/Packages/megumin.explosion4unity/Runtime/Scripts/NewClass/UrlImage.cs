@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -23,7 +23,7 @@ namespace UnityEditor.UI
         {
             base.OnEnable();
             url = serializedObject.FindProperty("url");
-            //ovrride = base.serializedObject.FindProperty("m_OverrideSprite"); //·ÇĞòÁĞ»¯µÄ×Ö¶ÎÕÒ²»µ½
+            //ovrride = base.serializedObject.FindProperty("m_OverrideSprite"); //éåºåˆ—åŒ–çš„å­—æ®µæ‰¾ä¸åˆ°
         }
 
         public override void OnInspectorGUI()
@@ -81,7 +81,7 @@ namespace UnityEngine.UI
     {
         public string url = "http://i1.hdslb.com/bfs/archive/c3459e54c2373a8b4eae1c5816157f9b7bace726.jpg";
         /// <summary>
-        /// Í¼Æ¬»º´æÄ¿Â¼
+        /// å›¾ç‰‡ç¼“å­˜ç›®å½•
         /// </summary>
         static string dir = null;
 
@@ -125,7 +125,7 @@ namespace UnityEngine.UI
 
             if (fileName.Length > 100)
             {
-                Debug.LogWarning($"ÎÄ¼şÃû[{fileName.Length}]Ì«³¤,ÍÆ¼öÊ¹ÓÃ¶ÌÍøÖ·Ñ¹Ëõ¡£  \n {fileName}");
+                Debug.LogWarning($"æ–‡ä»¶å[{fileName.Length}]å¤ªé•¿,æ¨èä½¿ç”¨çŸ­ç½‘å€å‹ç¼©ã€‚  \n {fileName}");
                 fileName = fileName.Substring(0, 100);
             }
 
@@ -152,7 +152,7 @@ namespace UnityEngine.UI
 
                     if (error)
                     {
-                        Debug.LogError($"ÏÂÔØurlImageÊ§°Ü£¬{uwr.error}¡£");
+                        Debug.LogError($"ä¸‹è½½urlImageå¤±è´¥ï¼Œ{uwr.error}ã€‚");
                     }
                     else
                     {
@@ -164,7 +164,7 @@ namespace UnityEngine.UI
 
                         if (!isLocalImage)
                         {
-                            ///ÍøÂçÍ¼Æ¬»º´æµ½±¾µØ¡£
+                            ///ç½‘ç»œå›¾ç‰‡ç¼“å­˜åˆ°æœ¬åœ°ã€‚
                             File.WriteAllBytes(path, texture.EncodeToPNG());
                         }
                     }

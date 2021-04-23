@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -65,7 +65,7 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                label.tooltip += $"{nameof(GUIDAttribute)}Ê§Ð§£¡\n{label.text} ×Ö¶ÎÀàÐÍ±ØÐëÊÇstring";
+                label.tooltip += $"{nameof(GUIDAttribute)}Ê§Ð§ï¿½ï¿½\n{label.text} ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½Í±ï¿½ï¿½ï¿½ï¿½ï¿½string";
                 EditorGUI.PropertyField(position, property, label);
             }
         }

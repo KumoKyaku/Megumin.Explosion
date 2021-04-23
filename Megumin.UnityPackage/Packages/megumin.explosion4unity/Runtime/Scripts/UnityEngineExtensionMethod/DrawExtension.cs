@@ -1,4 +1,4 @@
-using System;
+锘縰sing System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +6,7 @@ using UnityEngine;
 public static class DrawExtension_95DA6E62
 {
     /// <summary>
-    /// 在游戏中绘制一个mesh
+    /// 鍦ㄦ父鎴忎腑缁樺埗涓�涓猰esh
     /// </summary>
     /// <param name="mesh"></param>
     /// <param name="matri"></param>
@@ -30,7 +30,7 @@ public static class DrawExtension_95DA6E62
         }
         else
         {
-            Debug.LogWarning($"mesh:{mesh} material:{material} 有参数为null");
+            Debug.LogWarning($"mesh:{mesh} material:{material} 鏈夊弬鏁颁负null");
         }
     }
 
