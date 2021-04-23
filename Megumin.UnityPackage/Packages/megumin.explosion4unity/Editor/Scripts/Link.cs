@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -27,7 +27,7 @@ namespace Megumin
             Application.OpenURL("https://github.com/halak/unity-editor-icons/blob/master/README.md");
         }
 
-        [MenuItem("Tools/Link/ÈºÓÑ·ÖÏíÁ´½Ó")]
+        [MenuItem("Tools/Link/ç¾¤å‹åˆ†äº«é“¾æ¥")]
         static void LinkList()
         {
             Application.OpenURL("https://docs.qq.com/sheet/DUnhtZVRBR05xTXVI?tab=BB08J2");

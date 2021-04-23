@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -33,13 +33,13 @@ namespace Megumin
             iint value = p.intValue;
 
             GUI.enabled = !value.IsNegativeInfinity;
-            if (GUI.Button(leftPosotion, "- ¡Þ", left))
+            if (GUI.Button(leftPosotion, "- âˆž", left))
             {
                 p.intValue = iint.NegativeInfinity;
             }
 
             GUI.enabled = !value.IsPositiveInfinity;
-            if (GUI.Button(rightPosition, "+ ¡Þ", right))
+            if (GUI.Button(rightPosition, "+ âˆž", right))
             {
                 p.intValue = iint.PositiveInfinity;
             }

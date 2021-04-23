@@ -1,4 +1,4 @@
-#if InvokeString
+ï»¿#if InvokeString
 
 using System;
 using System.Collections;
@@ -12,7 +12,7 @@ namespace Megumin
     {
 
         ///// <summary>
-        ///// µÚ¶ş´Îµ÷ÓÃ´ò²»¿ª´°¿Ú
+        ///// ç¬¬äºŒæ¬¡è°ƒç”¨æ‰“ä¸å¼€çª—å£
         ///// </summary>
         //static Action<string> InvokeMethod { get; } = CreateInvokeMethod();
         //static Action<string> CreateInvokeMethod()

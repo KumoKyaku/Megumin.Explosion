@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -24,9 +24,9 @@ public static partial class MeguminEditorUtility
 
     static List<(Texture2D Icon, string Name)> EditorIconCache;
     /// <summary>
-    /// È¡µÃËùÓĞÄÚÖÃIcon
+    /// å–å¾—æ‰€æœ‰å†…ç½®Icon
     /// <para></para>
-    /// Í¨¹ıÃû×Ö¼ÓÔØ <seealso cref="EditorGUIUtility.FindTexture(string)"/>
+    /// é€šè¿‡åå­—åŠ è½½ <seealso cref="EditorGUIUtility.FindTexture(string)"/>
     /// <para><seealso cref="EditorGUIUtility.IconContent(string)"/></para>
     /// </summary>
     /// <returns></returns>
@@ -63,9 +63,9 @@ public static partial class MeguminEditorUtility
     }
 
     /// <summary>
-    /// ¼ÓÔØ unity_builtin_extra ÀïµÄ×ÊÔ´
-    /// <para>unity default resources ÀïµÄ×ÊÔ´Ö±½ÓÓÃ<see cref="Resources.GetBuiltinResource{T}(string)"/></para>
-    /// unity editor resources Ã»ÓĞÕÒµ½¶ÔÓ¦API£¬»òÕßÂ·¾¶²»¶Ô£¬Ã»ÓĞ¼ÓÔØ³É¹¦¡£
+    /// åŠ è½½ unity_builtin_extra é‡Œçš„èµ„æº
+    /// <para>unity default resources é‡Œçš„èµ„æºç›´æ¥ç”¨<see cref="Resources.GetBuiltinResource{T}(string)"/></para>
+    /// unity editor resources æ²¡æœ‰æ‰¾åˆ°å¯¹åº”APIï¼Œæˆ–è€…è·¯å¾„ä¸å¯¹ï¼Œæ²¡æœ‰åŠ è½½æˆåŠŸã€‚
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="path"></param>

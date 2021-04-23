@@ -1,4 +1,4 @@
-using System.Collections;
+锘縰sing System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -46,7 +46,7 @@ public class GUIStyleWindow : EditorWindow
         GUILayout.Space(40);
         EditorGUILayout.SelectableLabel("", style, GUILayout.Height(40), GUILayout.Width(40));
         GUILayout.Space(50);
-        if (GUILayout.Button("复制GUIStyle名字"))
+        if (GUILayout.Button("澶嶅埗GUIStyle鍚嶅瓧"))
         {
             TextEditor textEditor = new TextEditor();
             textEditor.text = style.name;
@@ -58,7 +58,7 @@ public class GUIStyleWindow : EditorWindow
     }
 
     /// <summary>
-    /// 用法示例
+    /// 鐢ㄦ硶绀轰緥
     /// <para></para> https://www.jianshu.com/p/44078f1f07ef
     /// </summary>
     void UseCase()
@@ -76,7 +76,7 @@ public class GUIStyleWindow : EditorWindow
 
         btnStyle.fixedWidth = 60;
 
-        //等同于：
+        //绛夊悓浜庯細
 
         GUIStyle btnStyle_1 = new GUIStyle("Command")
 

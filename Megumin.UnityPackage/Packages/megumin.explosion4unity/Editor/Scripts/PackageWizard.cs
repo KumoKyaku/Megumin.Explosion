@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+ï»¿#if UNITY_EDITOR
 
 using System.IO;
 using UnityEditor;
@@ -45,8 +45,8 @@ public class PackageWizard : EditorWindow
         }
 
         GUILayout.Space(5);
-        EditorGUILayout.HelpBox("´´½¨Íê³ÉºóEditorÇĞ»»µ½ºóÌ¨£¬ÔÙÇĞ»»»ØÀ´£¬" +
-            "´¥·¢packageµ¼Èë£¬Ã»ÓĞÕÒµ½ÈçºÎ×Ô¶¯µ¼Èë¡£", MessageType.Info);
+        EditorGUILayout.HelpBox("åˆ›å»ºå®ŒæˆåEditoråˆ‡æ¢åˆ°åå°ï¼Œå†åˆ‡æ¢å›æ¥ï¼Œ" +
+            "è§¦å‘packageå¯¼å…¥ï¼Œæ²¡æœ‰æ‰¾åˆ°å¦‚ä½•è‡ªåŠ¨å¯¼å…¥ã€‚", MessageType.Info);
     }
 
     private static void RefreshAsset()
@@ -58,13 +58,13 @@ public class PackageWizard : EditorWindow
     {
         if (string.IsNullOrEmpty(InputPackageName))
         {
-            Debug.LogError($"°üÃû²»ÄÜÎª¿Õ");
+            Debug.LogError($"åŒ…åä¸èƒ½ä¸ºç©º");
             return;
         }
 
         if (Directory.Exists(path))
         {
-            Debug.LogError($"°üÒÑ´æÔÚ");
+            Debug.LogError($"åŒ…å·²å­˜åœ¨");
             return;
         }
         else
