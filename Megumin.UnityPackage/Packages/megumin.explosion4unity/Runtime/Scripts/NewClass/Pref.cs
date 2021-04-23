@@ -1,11 +1,86 @@
 ﻿using UnityEngine;
 
+public class Pref
+{
+    public string Key { get; protected set; }
+
+    public static T GetPref<T>(string k, T defaultValue = default)
+    {
+        if (!PlayerPrefs.HasKey(k))
+        {
+            return defaultValue;
+        }
+
+        switch (defaultValue)
+        {
+            case string def:
+                {
+                    var ret = PlayerPrefs.GetString(k, def);
+                    return (T)(object)ret;
+                }
+            case int def:
+                {
+                    var ret = PlayerPrefs.GetInt(k, def);
+                    return (T)(object)ret;
+                }
+            case float def:
+                {
+                    var ret = PlayerPrefs.GetFloat(k, def);
+                    return (T)(object)ret;
+                }
+            case bool def:
+                {
+                    int temp = def ? 1 : 0;
+                    var v = PlayerPrefs.GetInt(k, temp);
+                    var ret = v == 0 ? false : true;
+                    return (T)(object)ret;
+                }
+            default:
+                return default;
+        }
+    }
+
+    public static void SetPref<T>(string k, T value)
+    {
+        switch (value)
+        {
+            case string def:
+                {
+                    PlayerPrefs.SetString(k, def);
+                    break;
+                }
+            case int def:
+                {
+                    PlayerPrefs.SetInt(k, def);
+                    break;
+                }
+            case float def:
+                {
+                    PlayerPrefs.SetFloat(k, def);
+                    break;
+                }
+            case bool def:
+                {
+                    int temp = def ? 1 : 0;
+                    PlayerPrefs.SetInt(k, temp);
+                    break;
+                }
+            default:
+                {
+                    var str = value.ToString();
+                    PlayerPrefs.SetString(k, str);
+                    break;
+                }
+        }
+    }
+}
+
 /// <summary>
 /// 简易用户配置
 /// </summary>
 /// <typeparam name="T"></typeparam>
 [System.Serializable]
-public class Pref<T>
+public class Pref<T> : Pref
 {
     private T value;
 
@@ -19,13 +94,12 @@ public class Pref<T>
         }
     }
 
-    public string Key { get; protected set; }
     /// <summary>
     /// 
     /// </summary>
     /// <param name="key"></param>
-    /// <param name="IsPerProjectInstace">同一个项目多开时是不是每个项目单独配置</param>
-    public Pref(string key, T defaultValue = default, bool IsPerProjectInstace = true)
+    /// <param name="IsPerProjectInstace">同一个项目多开时是不是每个项目实例单独配置</param>
+    public Pref(string key, T defaultValue = default, bool IsPerProjectInstace = false)
     {
         if (IsPerProjectInstace)
         {
@@ -38,57 +112,6 @@ public class Pref<T>
         Key = key;
 
         value = GetPref(key, defaultValue);
-    }
-
-    static T GetPref(string k, T defaultValue = default)
-    {
-        if (!PlayerPrefs.HasKey(k))
-        {
-            return defaultValue;
-        }
-
-        var o = (object)defaultValue;
-
-        if (typeof(T) == typeof(string))
-        {
-            o = PlayerPrefs.GetString(k, (string)o);
-        }
-        else if (typeof(T) == typeof(bool))
-        {
-            var strV = PlayerPrefs.GetString(k, defaultValue.ToString());
-            var b = bool.Parse(strV);
-            o = b;
-        }
-        else if (typeof(T) == typeof(float))
-        {
-            o = PlayerPrefs.GetFloat(k, (float)o);
-        }
-        else if (typeof(T) == typeof(int))
-        {
-            o = PlayerPrefs.GetInt(k, (int)o);
-        }
-
-        return (T)o;
-    }
-
-    static void SetPref(string k, T value)
-    {
-        if (typeof(T) == typeof(string))
-        {
-            PlayerPrefs.SetString(k, (string)(object)value);
-        }
-        else if (typeof(T) == typeof(bool))
-        {
-            PlayerPrefs.SetString(k, value.ToString());
-        }
-        else if (typeof(T) == typeof(float))
-        {
-            PlayerPrefs.SetFloat(k, (float)(object)value);
-        }
-        else if (typeof(T) == typeof(int))
-        {
-            PlayerPrefs.SetInt(k, (int)(object)value);
-        }
     }
 
     public static implicit operator T(Pref<T> pref)

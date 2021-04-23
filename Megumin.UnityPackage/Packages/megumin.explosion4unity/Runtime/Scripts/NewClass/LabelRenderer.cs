@@ -104,7 +104,8 @@ namespace Megumin
 #if UNITY_EDITOR
         void OnDrawGizmos()
         {
-            if (enabled)
+            InitGlobalToggle();
+            if (enabled && GlobalToggle)
             {
                 string text = CalText();
 
