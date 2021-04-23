@@ -129,25 +129,6 @@ namespace UnityEngine
         /// <param name="orignal"></param>
         public static void Macro(this Object obj, ref string orignal)
         {
-            void MacroTransform(Transform transform, ref string orignal)
-            {
-                orignal = orignal.Replace("$(position)", transform.position.ToString());
-                orignal = orignal.Replace("$rotation)", transform.rotation.ToString());
-                orignal = orignal.Replace("$(eulerAngles)", transform.eulerAngles.ToString());
-
-                orignal = orignal.Replace("$(localPosition)", transform.localPosition.ToString());
-                orignal = orignal.Replace("$(localRotation)", transform.localRotation.ToString());
-                orignal = orignal.Replace("$(localEulerAngles)", transform.localEulerAngles.ToString());
-
-                orignal = orignal.Replace("$(parent)", transform.parent.name);
-            }
-
-            void MacroGameObject(GameObject gameObject, ref string orignal)
-            {
-                orignal = orignal.Replace("$(layer)", LayerMask.LayerToName(gameObject.layer));
-                orignal = orignal.Replace("$(tag)", gameObject.tag);
-            }
-
             orignal = orignal.Replace("$(name)", obj.name);
 
             if (obj is Component component)
@@ -168,6 +149,25 @@ namespace UnityEngine
                 MacroTransform(transform, ref orignal);
                 MacroGameObject(transform.gameObject, ref orignal);
             }
+        }
+
+        private static void MacroTransform(Transform transform, ref string orignal)
+        {
+            orignal = orignal.Replace("$(position)", transform.position.ToString());
+            orignal = orignal.Replace("$rotation)", transform.rotation.ToString());
+            orignal = orignal.Replace("$(eulerAngles)", transform.eulerAngles.ToString());
+
+            orignal = orignal.Replace("$(localPosition)", transform.localPosition.ToString());
+            orignal = orignal.Replace("$(localRotation)", transform.localRotation.ToString());
+            orignal = orignal.Replace("$(localEulerAngles)", transform.localEulerAngles.ToString());
+
+            orignal = orignal.Replace("$(parent)", transform.parent.name);
+        }
+
+        private static void MacroGameObject(GameObject gameObject, ref string orignal)
+        {
+            orignal = orignal.Replace("$(layer)", LayerMask.LayerToName(gameObject.layer));
+            orignal = orignal.Replace("$(tag)", gameObject.tag);
         }
     }
 }

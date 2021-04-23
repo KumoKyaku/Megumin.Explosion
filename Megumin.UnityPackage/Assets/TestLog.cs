@@ -25,6 +25,9 @@ public class TestLog : MonoBehaviour
         ColorUtility.TryParseHtmlString(message, out TestColor);
         ret = teststr.Html(HexColor.Blueberry);
         Debug.Log(ret);
+
+        GlobalToggle = new Pref<bool>(nameof(TestLog), true);
+        Debug.Log($"{nameof(GlobalToggle)}:{GlobalToggle}");
     }
 
     // Update is called once per frame
@@ -69,6 +72,7 @@ public class TestLog : MonoBehaviour
 
     [Options2String(typeof(ConstTest))]
     public string Optionsss;
+    public Pref<bool> GlobalToggle;
 }
 
 public class ConstTest

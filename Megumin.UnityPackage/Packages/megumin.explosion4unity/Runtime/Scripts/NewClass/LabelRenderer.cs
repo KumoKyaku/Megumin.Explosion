@@ -21,13 +21,33 @@ namespace Megumin
 
         public GUIStyle LabelStyle;
 
+        /// <summary>
+        /// 全局显示开关
+        /// </summary>
+        public static Pref<bool> GlobalToggle;
+
         void Awake()
         {
             InitStyle();
         }
         void Start()
         {
+            InitGlobalToggle();
+        }
 
+        protected static void InitGlobalToggle()
+        {
+            if (GlobalToggle == null)
+            {
+                GlobalToggle = new Pref<bool>(nameof(LabelRenderer), true);
+            }
+        }
+
+        [EditorButton]
+        public void SwitchGlobalToggle()
+        {
+            InitGlobalToggle();
+            GlobalToggle.Value = !GlobalToggle;
         }
 
         [EditorButton]
@@ -41,7 +61,8 @@ namespace Megumin
 
         void OnGUI()
         {
-            if (ShowOnRuntime && Camera.main)
+            InitGlobalToggle();
+            if (ShowOnRuntime && Camera.main && GlobalToggle)
             {
                 var pos = Camera.main.WorldToScreenPoint(transform.position);
                 string text = CalText();

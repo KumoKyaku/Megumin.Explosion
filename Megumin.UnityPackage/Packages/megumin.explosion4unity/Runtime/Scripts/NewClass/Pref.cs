@@ -93,6 +93,13 @@ public class Pref<T>
 
     public static implicit operator T(Pref<T> pref)
     {
+        if (pref == null)
+        {
+            //�����ֹ����δ��ʼ�������¿����á�
+            Debug.LogWarning($"{nameof(Pref<T>)} is null, return default");
+            return default;
+        }
+
         return pref.value;
     }
 }

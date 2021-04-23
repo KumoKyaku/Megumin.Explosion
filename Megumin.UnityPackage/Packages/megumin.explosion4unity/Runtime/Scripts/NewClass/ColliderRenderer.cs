@@ -46,15 +46,20 @@ public class ColliderRenderer : MonoBehaviour
     public ColliderRenderer Parent;
     void Start()
     {
-        if (GlobalToggle == null)
-        {
-            GlobalToggle = new Pref<bool>(nameof(ColliderRenderer), true);
-        }
+        InitGlabalToggle();
 
         ReCollect();
         //#if UNITY_EDITOR
         //        UnityEditor.SceneView.duringSceneGui += SceneView_duringSceneGui;
         //#endif
+    }
+
+    private static void InitGlabalToggle()
+    {
+        if (GlobalToggle == null)
+        {
+            GlobalToggle = new Pref<bool>(nameof(ColliderRenderer), true);
+        }
     }
 
     //#if UNITY_EDITOR
@@ -86,10 +91,7 @@ public class ColliderRenderer : MonoBehaviour
     [EditorButton]
     public void SwitchGlobalToggle()
     {
-        if (GlobalToggle == null)
-        {
-            GlobalToggle = new Pref<bool>(nameof(ColliderRenderer), true);
-        }
+        InitGlabalToggle();
         GlobalToggle.Value = !GlobalToggle;
     }
 
@@ -156,10 +158,7 @@ public class ColliderRenderer : MonoBehaviour
     {
         bool needReCollect = false;
 
-        if (GlobalToggle == null)
-        {
-            GlobalToggle = new Pref<bool>(nameof(ColliderRenderer), true);
-        }
+        InitGlabalToggle();
 
         if (GlobalToggle && ShowOnRuntime)
         {
