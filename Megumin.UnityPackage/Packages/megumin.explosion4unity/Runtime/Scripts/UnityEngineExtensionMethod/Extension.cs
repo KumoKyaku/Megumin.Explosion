@@ -129,6 +129,16 @@ namespace UnityEngine
         /// <param name="orignal"></param>
         public static void Macro(this Object obj, ref string orignal)
         {
+            if (orignal is null)
+            {
+                return;
+            }
+
+            if (!obj)
+            {
+                return;
+            }
+
             orignal = orignal.Replace("$(name)", obj.name);
 
             if (obj is Component component)
@@ -154,7 +164,7 @@ namespace UnityEngine
         private static void MacroTransform(Transform transform, ref string orignal)
         {
             orignal = orignal.Replace("$(position)", transform.position.ToString());
-            orignal = orignal.Replace("$rotation)", transform.rotation.ToString());
+            orignal = orignal.Replace("$(rotation)", transform.rotation.ToString());
             orignal = orignal.Replace("$(eulerAngles)", transform.eulerAngles.ToString());
 
             orignal = orignal.Replace("$(localPosition)", transform.localPosition.ToString());

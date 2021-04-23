@@ -9,6 +9,8 @@ public class FastLabel : MonoBehaviour
     public string Content = "Fast Label";
     public GUIStyle LabelStyle;
 
+    public static Object MacroTarget { get; set; }
+
     public static FastLabel Instance { get; protected set; }
     void Awake()
     {
@@ -17,13 +19,23 @@ public class FastLabel : MonoBehaviour
     }
 
     [EditorButton]
-    private void InitStyle(Color textColor, int fontSize = 40, bool force = false)
+    private void InitStyle(Color textColor, int fontSize = 40)
+    {
+        if (LabelStyle == null)
+        {
+            InitStyle();
+        }
+
+        LabelStyle.fontSize = fontSize;
+        LabelStyle.normal.textColor = textColor;
+    }
+
+    [EditorButton]
+    private void InitStyle(string styleName = "CN CountBadge", bool force = false)
     {
         if (LabelStyle == null || force)
         {
-            LabelStyle = new GUIStyle("DefaultCenteredLargeText");
-            LabelStyle.fontSize = fontSize;
-            LabelStyle.normal.textColor = textColor;
+            LabelStyle = new GUIStyle(styleName);
         }
     }
 
@@ -56,6 +68,7 @@ public class FastLabel : MonoBehaviour
         }
         else
         {
+            MacroTarget.Macro(ref Content);
             GUI.Label(Position, Content, LabelStyle);
         }
     }
