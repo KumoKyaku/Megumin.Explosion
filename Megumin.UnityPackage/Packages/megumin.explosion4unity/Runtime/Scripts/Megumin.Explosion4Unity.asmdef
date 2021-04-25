@@ -1,7 +1,9 @@
 {
     "name": "Megumin.Explosion4Unity",
+    "rootNamespace": "",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:7f7d1af65c2641843945d409d28f2e20"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -15,6 +17,11 @@
             "name": "com.unity.textmeshpro",
             "expression": "1.5.0",
             "define": "MEGUMIN_TMPROEX"
+        },
+        {
+            "name": "com.unity.animation.rigging",
+            "expression": "1.0.0",
+            "define": "MEGUMIN_RIGGING"
         }
     ],
     "noEngineReferences": false
