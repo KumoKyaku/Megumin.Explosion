@@ -65,7 +65,7 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                label.tooltip += $"{nameof(GUIDAttribute)}ʧЧ��\n{label.text} �ֶ����ͱ�����string";
+                label.tooltip += $"{nameof(GUIDAttribute)}失效！\n{label.text} 字段类型必须是string";
                 EditorGUI.PropertyField(position, property, label);
             }
         }
