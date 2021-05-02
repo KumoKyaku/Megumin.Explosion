@@ -73,9 +73,9 @@ namespace Megumin
                 }
                 else
                 {
-                    using ((GUIColorScopeStruct)FontColor)
+                    using ((ValueGUIColor)FontColor)
                     {
-                        using (new GUIFontSizeScopeStruct(FontSize))
+                        using (new ValueGUIFontSize(FontSize))
                         {
                             GUI.Label(rect, text);
                         }
@@ -115,9 +115,9 @@ namespace Megumin
                 }
                 else
                 {
-                    using ((GUIColorScopeStruct)FontColor)
+                    using ((ValueGUIColor)FontColor)
                     {
-                        using (new GUIFontSizeScopeStruct(FontSize))
+                        using (new ValueGUIFontSize(FontSize))
                         {
                             UnityEditor.Handles.Label(transform.position, text);
                         }

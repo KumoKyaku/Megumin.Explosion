@@ -73,6 +73,15 @@ public class TestLog : MonoBehaviour
     [Options2String(typeof(ConstTest))]
     public string Optionsss;
     public Pref<bool> GlobalToggle;
+
+    [EditorButton]
+    public void TestQ()
+    {
+        Vector3 vector3 = new Vector3(0.1f, 0.2f, 0.3f);
+        var matri = Matrix4x4.TRS(vector3, Quaternion.identity, Vector3.one);
+        var r = matri.GetPosition();
+    }
+
 }
 
 public class ConstTest

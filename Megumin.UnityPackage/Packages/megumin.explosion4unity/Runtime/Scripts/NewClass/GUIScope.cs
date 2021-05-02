@@ -12,10 +12,10 @@ namespace UnityEngine
     /// <summary>
     /// gui颜色区域
     /// </summary>
-    public struct GUIColorScopeStruct : IDisposable
+    public struct ValueGUIColor : IDisposable
     {
         Color old;
-        public GUIColorScopeStruct(Color color)
+        public ValueGUIColor(Color color)
         {
             old = GUI.color;
             GUI.color = color;
@@ -26,9 +26,9 @@ namespace UnityEngine
             GUI.color = old;
         }
 
-        public static implicit operator GUIColorScopeStruct(in Color color)
+        public static implicit operator ValueGUIColor(in Color color)
         {
-            return new GUIColorScopeStruct(color);
+            return new ValueGUIColor(color);
         }
     }
 
@@ -56,10 +56,10 @@ namespace UnityEngine
     }
 
 
-    public struct GUIFontSizeScopeStruct : IDisposable
+    public struct ValueGUIFontSize : IDisposable
     {
         int old;
-        public GUIFontSizeScopeStruct(int size)
+        public ValueGUIFontSize(int size)
         {
             old = GUI.skin.label.fontSize;
             GUI.skin.label.fontSize = size;
@@ -68,6 +68,11 @@ namespace UnityEngine
         public void Dispose()
         {
             GUI.skin.label.fontSize = old;
+        }
+
+        public static implicit operator ValueGUIFontSize(int size)
+        {
+            return new ValueGUIFontSize(size);
         }
     }
 }

@@ -45,4 +45,10 @@ public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
         return (int.Parse(parts[0]),
             int.Parse(parts[1]));
     }
+
+    public static Vector3 GetPosition(this in Matrix4x4 matrix)
+    {
+        return new Vector3(matrix.m03, matrix.m13, matrix.m23);
+        //return default;
+    }
 }
