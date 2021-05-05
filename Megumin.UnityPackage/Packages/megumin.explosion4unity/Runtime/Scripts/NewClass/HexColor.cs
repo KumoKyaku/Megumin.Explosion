@@ -76,6 +76,7 @@ namespace UnityEngine
     /// <summary>
     /// 16进制颜色 (长度为8的RGBA16进制字符串)
     /// <see cref="ColorUtility.TryParseHtmlString(string, out Color)"/>
+    /// <para></para>todo 支持HDR
     /// </summary>
     public partial struct HexColor
     {
@@ -151,6 +152,12 @@ namespace UnityEngine
         public static implicit operator string(HexColor c)
         {
             return c.hexCode;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator HSVColor(in HexColor hex)
+        {
+            return (Color)hex;
         }
 
         /// <summary>

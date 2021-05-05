@@ -288,6 +288,11 @@ MonoBehaviour:
   ret: 
   TestColor: {r: 0, g: 0, b: 0, a: 0}
   path: C:/Users/Sun/Desktop/CristalTest.shader
+  HSVColor:
+    Hue: 0
+    Saturation: 1
+    Value: 2
+    Alpha: 1
   Optionsss: Tset22
 --- !u!114 &2022781348
 MonoBehaviour:
@@ -363,7 +368,7 @@ MonoBehaviour:
       m_Top: 0
       m_Bottom: 0
     m_Font: {fileID: 0}
-    m_FontSize: 20
+    m_FontSize: 40
     m_FontStyle: 0
     m_Alignment: 4
     m_WordWrap: 0

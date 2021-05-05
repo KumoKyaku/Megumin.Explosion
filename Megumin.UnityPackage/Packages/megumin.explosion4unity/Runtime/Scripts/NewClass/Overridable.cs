@@ -16,6 +16,7 @@ namespace Megumin
         protected T defaultValue;
         [SerializeField]
         public bool IsOverride = false;
+        [ColorUsage(true, true)]
         [SerializeField]
         public T MyOverrideValue;
 

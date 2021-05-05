@@ -16,7 +16,7 @@ public class TestLog : MonoBehaviour
 
     [Path(IsFolder = false, Exetension = "txt")]
     public string path;
-
+    public HSVColor HSVColor;
     public Megumin.Overridable<string> overridable = new Megumin.Overridable<string>("test");
     void Start()
     {
@@ -39,7 +39,7 @@ public class TestLog : MonoBehaviour
     [EditorButton]
     public void Test(int a, string str = "默认值1111111111")
     {
-        Debug.Log(str);
+        Debug.Log($"{str.Html(HSVColor)}--{HSVColor}--{(Color)HSVColor}--{(HexColor)HSVColor}");
     }
 
     [EditorButton]
