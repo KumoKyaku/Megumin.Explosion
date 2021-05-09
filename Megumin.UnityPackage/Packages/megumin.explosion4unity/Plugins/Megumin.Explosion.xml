@@ -149,6 +149,85 @@
             别名
             </summary>
         </member>
+        <member name="T:Megumin.ITimeControlable">
+            <summary>
+            时间控制
+            </summary>
+        </member>
+        <member name="M:Megumin.ITimeControlable.Pause(System.Object)">
+            <summary>
+            暂停
+            </summary>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.ITimeControlable.Resume(System.Object)">
+            <summary>
+            继续
+            </summary>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Megumin.ICDTimer">
+            <summary>
+            冷却计时器
+            <para>支持充能点数</para>
+            </summary>
+        </member>
+        <member name="P:Megumin.ICDTimer.CanUse">
+            <summary>
+            当前是不是可用，至少含有1点。
+            </summary>
+        </member>
+        <member name="M:Megumin.ICDTimer.TryUse(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Megumin.ICDTimer.MaxCanUseCount">
+            <summary>
+            最大可用点数
+            </summary>
+        </member>
+        <member name="P:Megumin.ICDTimer.ResidualCanUseCount">
+            <summary>
+            当前剩余可用点数
+            </summary>
+        </member>
+        <member name="M:Megumin.ICDTimer.ForceAddResidualCanUseCount(System.Int32)">
+            <summary>
+            强制增加当前可用点数
+            </summary>
+            <param name="count"></param>
+        </member>
+        <member name="T:Megumin.ICDTimer`1">
+            <summary>
+            冷却计时器
+            </summary>
+            <typeparam name="Unit"></typeparam>
+        </member>
+        <member name="P:Megumin.ICDTimer`1.NextCanUse">
+            <summary>
+            无论当前可用点数是多少，距离下一次冷却完成的时长，返回值总是[0-PerSpan]
+            </summary>
+            <remarks>想象一下最大可用5，当前可用2，然后倒计时扇形显示的是到下个可用点的时间，而不是到最大可用的时间</remarks>
+        </member>
+        <member name="P:Megumin.ICDTimer`1.PerSpan">
+            <summary>
+            每完成一个冷却点数所需的时间
+            </summary>
+        </member>
+        <member name="M:Megumin.ICDTicker`1.CheckNow(`0,`0,`0@)">
+            <summary>
+            检查当前时刻到记录时刻是不是大于perSpan, 
+            </summary>
+            <param name="stamp"></param>
+            <param name="perSpan"></param>
+            <param name="next"></param>
+            <returns></returns>
+        </member>
         <member name="T:Megumin.CoolDownTime">
             <summary>
             
@@ -276,9 +355,9 @@
             排序用Linq表达式
             </summary>
         </member>
-        <member name="F:Megumin.MultipleControl`2.OnControlledValue">
+        <member name="E:Megumin.MultipleControl`2.OnValueChanged">
             <summary>
-            将值设置到目标上
+            值发生改变
             </summary>
         </member>
         <member name="F:Megumin.MultipleControl`2.DefaultKey">
@@ -291,13 +370,12 @@
             当前值
             </summary>
         </member>
-        <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1,System.Action{`1})">
+        <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1)">
             <summary>
             
             </summary>
             <param name="defaultKey">默认key</param>
             <param name="defaultValue">默认值</param>
-            <param name="onControlledValue">设置值回调函数</param>
         </member>
         <member name="M:Megumin.MultipleControl`2.InitSortLinq">
             <summary>
@@ -337,7 +415,7 @@
         <member name="T:Megumin.SimpleMultipleControl`1">
             <inheritdoc/>
         </member>
-        <member name="M:Megumin.SimpleMultipleControl`1.#ctor(System.Object,`0,System.Action{`0})">
+        <member name="M:Megumin.SimpleMultipleControl`1.#ctor(System.Object,`0)">
             <inheritdoc/>
         </member>
         <member name="T:Megumin.BlackScreenMultipleControl">
@@ -346,7 +424,7 @@
              </summary>
             <inheritdoc/>
         </member>
-        <member name="M:Megumin.BlackScreenMultipleControl.#ctor(System.Object,System.Boolean,System.Action{System.Boolean})">
+        <member name="M:Megumin.BlackScreenMultipleControl.#ctor(System.Object,System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:Megumin.NotInitException">
