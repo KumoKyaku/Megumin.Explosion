@@ -26,7 +26,8 @@ namespace Megumin
     /// <para></para>
     /// 用例2：多个功能想要黑屏Loading。只要有一个功能还需要Loading，那么Loading就不该消失。
     /// </remarks>
-    public class MultipleControl<K,V>
+    public class MultipleControl<K, V>
+        where V : IEquatable<V>
     {
         protected readonly Dictionary<K, V> Controllers = new Dictionary<K, V>();
 
@@ -36,9 +37,9 @@ namespace Megumin
         protected IEnumerable<V> SortLinq;
 
         /// <summary>
-        /// 将值设置到目标上
+        /// 值发生改变
         /// </summary>
-        protected Action<V> OnControlledValue;
+        public event OnValueChanged<V> OnValueChanged;
 
         /// <summary>
         /// 默认值Key
@@ -55,12 +56,10 @@ namespace Megumin
         /// </summary>
         /// <param name="defaultKey">默认key</param>
         /// <param name="defaultValue">默认值</param>
-        /// <param name="onControlledValue">设置值回调函数</param>
-        public MultipleControl(K defaultKey, V defaultValue, Action<V> onControlledValue)
+        public MultipleControl(K defaultKey, V defaultValue)
         {
             DefaultKey = defaultKey;
             Controllers[defaultKey] = defaultValue;
-            OnControlledValue = onControlledValue;
             InitSortLinq();
             ApplyValue();
         }
@@ -72,8 +71,8 @@ namespace Megumin
         protected virtual void InitSortLinq()
         {
             SortLinq = from kv in Controllers
-                      orderby kv.Value ascending
-                      select kv.Value;
+                       orderby kv.Value ascending
+                       select kv.Value;
         }
 
         /// <summary>
@@ -81,31 +80,34 @@ namespace Megumin
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void Control(K key, V value)
+        public V Control(K key, V value)
         {
             Controllers[key] = value;
             ApplyValue();
+            return Current;
         }
 
         /// <summary>
         /// 取消控制
         /// </summary>
         /// <param name="key"></param>
-        public void Cancel(K key)
+        public V Cancel(K key)
         {
             Controllers.Remove(key);
             ApplyValue();
+            return Current;
         }
 
         /// <summary>
         /// 取消除默认值以外的所有控制
         /// </summary>
-        public void CancelAll()
+        public V CancelAll()
         {
             var defaultValue = Controllers[DefaultKey];
             Controllers.Clear();
             Controllers[DefaultKey] = defaultValue;
             ApplyValue();
+            return Current;
         }
 
         /// <summary>
@@ -113,9 +115,14 @@ namespace Megumin
         /// </summary>
         protected virtual void ApplyValue()
         {
+            var old = Current;
             var result = SortLinq.FirstOrDefault();
             Current = result;
-            OnControlledValue?.Invoke(result);
+
+            if (!old.Equals(result))
+            {
+                OnValueChanged?.Invoke(result, old);
+            }
         }
 
         /// <summary>
@@ -130,10 +137,11 @@ namespace Megumin
 
     ///<inheritdoc/>
     public class SimpleMultipleControl<V> : MultipleControl<object, V>
+        where V : IEquatable<V>
     {
         ///<inheritdoc/>
-        public SimpleMultipleControl(object defaultHandle, V defaultValue, Action<V> OnChangedValue) 
-            : base(defaultHandle, defaultValue, OnChangedValue)
+        public SimpleMultipleControl(object defaultHandle, V defaultValue)
+            : base(defaultHandle, defaultValue)
         {
         }
     }
@@ -145,8 +153,8 @@ namespace Megumin
     public class BlackScreenMultipleControl : SimpleMultipleControl<bool>
     {
         ///<inheritdoc/>
-        public BlackScreenMultipleControl(object defaultHandle, bool defaultValue, Action<bool> OnChangedValue) 
-            : base(defaultHandle, defaultValue, OnChangedValue)
+        public BlackScreenMultipleControl(object defaultHandle, bool defaultValue)
+            : base(defaultHandle, defaultValue)
         {
         }
 
