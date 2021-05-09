@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,17 @@ namespace UnityEngine
         {
             var path = Path.Combine(Application.dataPath, $"..\\{folder}");
             return Path.GetFullPath(path);
+        }
+
+        //=====================================
+
+        /// <summary>
+        /// 打印为实现代替抛出异常
+        /// </summary>
+        /// <param name="funcName"></param>
+        public static void LogNotImplemented([CallerMemberName] string funcName = null)
+        {
+            UnityEngine.Debug.LogError($"{funcName} NotImplemented.    [Instead throw Exception]");
         }
     }
 }

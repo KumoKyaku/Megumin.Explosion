@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using System.IO;
 using Megumin;
 using System;
+using System.Runtime.CompilerServices;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -178,6 +179,11 @@ namespace UnityEngine
         {
             orignal = orignal.Replace("$(layer)", LayerMask.LayerToName(gameObject.layer));
             orignal = orignal.Replace("$(tag)", gameObject.tag);
+        }
+
+        public static void LogNotImplemented(this Object obj, [CallerMemberName] string funcName = null)
+        {
+            UnityEngine.Debug.LogError($"{funcName} NotImplemented.    [Instead throw Exception]");
         }
     }
 }
