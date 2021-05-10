@@ -45,7 +45,7 @@ namespace Megumin
         }
 
         [MenuItem("Tools/Path/Open AssetStoreCache Folder")]
-        static void OpenAssetStoreCacheFolder()
+        public static void OpenAssetStoreCacheFolder()
         {
             var dir = Path.Combine(GetFolderPath(SpecialFolder.ApplicationData),
                                    "Unity/Asset Store-5.x");
