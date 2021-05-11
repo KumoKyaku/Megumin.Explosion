@@ -4,8 +4,8 @@ using UnityEngine;
 
 public interface IAnimatorCallback
 {
-    void OnAnimatorMove(Animator animator);
-    void OnAnimatorIK(Animator animator, int layerIndex);
+    void OnAnimatorMoveCallback(Animator animator);
+    void OnAnimatorIKCallback(Animator animator, int layerIndex);
 }
 
 [ExecuteAlways]
@@ -16,17 +16,41 @@ public class AnimatorCallback : MonoBehaviour
     public Animator Animator;
     public IAnimatorCallback Callback { get; set; }
 
+    public Object CallbackTarget;
+
     public Transform OverrideRoot;
     void Awake()
     {
         Animator = GetComponent<Animator>();
+        BindCallback(CallbackTarget);
+    }
+
+    public void BindCallback(Object callBackBindTarget)
+    {
+        if (CallbackTarget != callBackBindTarget)
+        {
+            CallbackTarget = callBackBindTarget;
+        }
+
+        if (CallbackTarget)
+        {
+            if (CallbackTarget is IAnimatorCallback callback)
+            {
+                Callback = callback;
+            }
+        }
+    }
+
+    private void OnValidate()
+    {
+        BindCallback(CallbackTarget);
     }
 
     void OnAnimatorIK(int layerIndex)
     {
         if (Callback != null)
         {
-            Callback.OnAnimatorIK(Animator, layerIndex);
+            Callback.OnAnimatorIKCallback(Animator, layerIndex);
         }
     }
 
@@ -34,13 +58,13 @@ public class AnimatorCallback : MonoBehaviour
     {
         if (Callback != null)
         {
-            Callback.OnAnimatorMove(Animator);
+            Callback.OnAnimatorMoveCallback(Animator);
         }
         else
         {
             if (OverrideRoot)
             {
-                OverrideRoot.Translate(Animator.deltaPosition);
+                OverrideRoot.Translate(Animator.deltaPosition, Space.World);
                 OverrideRoot.rotation *= Animator.deltaRotation;
             }
             else
