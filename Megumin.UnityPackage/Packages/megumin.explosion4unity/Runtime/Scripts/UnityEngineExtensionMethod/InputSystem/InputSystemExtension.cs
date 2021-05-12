@@ -22,6 +22,16 @@ namespace UnityEngine.InputSystem
         {
             Debug.LogError(context.ToLogStr());
         }
+
+        public static bool IsMouse(this in InputAction.CallbackContext context)
+        {
+            return context.control.device.name == "Mouse";
+        }
+
+        public static bool IsKeyboard(this in InputAction.CallbackContext context)
+        {
+            return context.control.device.name == "Keyboard";
+        }
     }
 }
 
