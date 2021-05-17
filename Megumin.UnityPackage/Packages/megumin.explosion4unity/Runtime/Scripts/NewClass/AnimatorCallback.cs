@@ -14,9 +14,9 @@ public class AnimatorCallback : MonoBehaviour
 {
     [ReadOnlyInInspector]
     public Animator Animator;
-    public IAnimatorCallback Callback { get; set; }
+    public HashSet<IAnimatorCallback> Callback { get; } = new HashSet<IAnimatorCallback>();
 
-    public Object CallbackTarget;
+    public Object[] CallbackTarget;
 
     public Transform OverrideRoot;
     void Awake()
@@ -25,18 +25,16 @@ public class AnimatorCallback : MonoBehaviour
         BindCallback(CallbackTarget);
     }
 
-    public void BindCallback(Object callBackBindTarget)
+    public void BindCallback(Object[] callBackBindTarget)
     {
-        if (CallbackTarget != callBackBindTarget)
+        if (callBackBindTarget != null)
         {
-            CallbackTarget = callBackBindTarget;
-        }
-
-        if (CallbackTarget)
-        {
-            if (CallbackTarget is IAnimatorCallback callback)
+            foreach (var item in callBackBindTarget)
             {
-                Callback = callback;
+                if (item is IAnimatorCallback callback)
+                {
+                    Callback.Add(callback);
+                }
             }
         }
     }
@@ -48,17 +46,23 @@ public class AnimatorCallback : MonoBehaviour
 
     void OnAnimatorIK(int layerIndex)
     {
-        if (Callback != null)
+        if (Callback?.Count > 0)
         {
-            Callback.OnAnimatorIKCallback(Animator, layerIndex);
+            foreach (var item in Callback)
+            {
+                item.OnAnimatorMoveCallback(Animator);
+            }
         }
     }
 
     void OnAnimatorMove()
     {
-        if (Callback != null)
+        if (Callback?.Count > 0)
         {
-            Callback.OnAnimatorMoveCallback(Animator);
+            foreach (var item in Callback)
+            {
+                item.OnAnimatorMoveCallback(Animator);
+            }
         }
         else
         {
