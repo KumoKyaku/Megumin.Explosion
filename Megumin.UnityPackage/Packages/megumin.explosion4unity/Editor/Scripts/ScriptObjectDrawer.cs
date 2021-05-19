@@ -69,7 +69,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                     var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
                     var dir = Path.GetDirectoryName(path);
                     var ex = Path.GetExtension(path);
-                    path = dir.CreateFileName(type, ex);
+                    path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{type}", ex);
 
                     AssetDatabase.CreateAsset(instance, path);
                     AssetDatabase.Refresh();

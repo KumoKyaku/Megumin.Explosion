@@ -15,7 +15,7 @@ public class AnimatorCallback : MonoBehaviour
     [ReadOnlyInInspector]
     public Animator Animator;
     public HashSet<IAnimatorCallback> Callback { get; } = new HashSet<IAnimatorCallback>();
-
+    public bool EnableCallback = true;
     public Object[] CallbackTarget;
 
     public Transform OverrideRoot;
@@ -23,6 +23,11 @@ public class AnimatorCallback : MonoBehaviour
     {
         Animator = GetComponent<Animator>();
         BindCallback(CallbackTarget);
+    }
+
+    public void Start()
+    {
+        
     }
 
     public void BindCallback(Object[] callBackBindTarget)
@@ -46,7 +51,7 @@ public class AnimatorCallback : MonoBehaviour
 
     void OnAnimatorIK(int layerIndex)
     {
-        if (Callback?.Count > 0)
+        if (Callback?.Count > 0 && EnableCallback)
         {
             foreach (var item in Callback)
             {
@@ -57,7 +62,7 @@ public class AnimatorCallback : MonoBehaviour
 
     void OnAnimatorMove()
     {
-        if (Callback?.Count > 0)
+        if (Callback?.Count > 0 && EnableCallback)
         {
             foreach (var item in Callback)
             {
