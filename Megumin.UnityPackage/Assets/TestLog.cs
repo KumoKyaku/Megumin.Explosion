@@ -7,13 +7,12 @@ public class TestLog : MonoBehaviour
 {
     [InspectorStyle(ReadOnly = true, Color = "#00FF00FF")]
     public string teststr = "TestStr";
-
     [ColorSpacer(30, 3, 100, 1, 0, 0)]
     public string ret = "";
 
     public Color TestColor;
     // Start is called before the first frame update
-
+    [HelpBox("teststeete")]
     [Path(IsFolder = false, Exetension = "txt")]
     public string path;
     public HSVColor HSVColor;

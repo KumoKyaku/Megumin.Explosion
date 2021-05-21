@@ -25,9 +25,26 @@ namespace Megumin
             Alias = alias;
         }
     }
+
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+    public class ShortNameAttribute : Attribute
+    {
+        /// <summary>
+        /// 别名
+        /// </summary>
+        public string Name { get; set; }
+
+        public ShortNameAttribute()
+        {
+
+        }
+
+        public ShortNameAttribute(string name)
+        {
+            Name = name;
+        }
+    }
 }
-
-
 
 
 
