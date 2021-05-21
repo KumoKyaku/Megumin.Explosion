@@ -372,6 +372,8 @@ namespace UnityEditor
 
 #if UNITY_EDITOR
 
+[ExcludeFromObjectFactory]
+[CanEditMultipleObjects]
 [CustomEditor(typeof(Object), true)]
 public class EditorButton : Editor
 {
