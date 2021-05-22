@@ -8,10 +8,13 @@ using UnityEngine;
 
 public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
 {
-    static readonly Vector3 zeroY = new Vector3(1, 0, 1);
-
+    /// <summary>
+    /// 返回当前y=0的新的Vector3
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector3 ZeroY(this in Vector3 v)
+    public static Vector3 GetMuteY(this in Vector3 v)
     {
         return new Vector3(v.x, 0, v.z);
     }
@@ -51,4 +54,36 @@ public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
         return new Vector3(matrix.m03, matrix.m13, matrix.m23);
         //return default;
     }
+
+    public static readonly Quaternion TurnRightQ = Quaternion.Euler(0, 90, 0);
+    public static readonly Quaternion TurnLeftQ = Quaternion.Euler(0, -90, 0);
+
+    /// <summary>
+    /// y轴转90
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <returns></returns>
+    public static Vector3 TurnRight(this in Vector3 vector)
+    {
+        return TurnRightQ * vector;
+    }
+
+    /// <summary>
+    /// y轴转-90
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <returns></returns>
+    public static Vector3 TurnLeft(this in Vector3 vector)
+    {
+        return TurnLeftQ * vector;
+    }
 }
+
+
+
+
+
+
+
+
+
