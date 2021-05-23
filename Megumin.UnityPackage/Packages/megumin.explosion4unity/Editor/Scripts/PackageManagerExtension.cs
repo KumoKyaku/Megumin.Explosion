@@ -53,12 +53,12 @@ namespace Megumin
 
             public void OnPackageAddedOrUpdated(UnityEditor.PackageManager.PackageInfo packageInfo)
             {
-                MeguminUtility4Unity.LogNotImplemented();
+                //MeguminUtility4Unity.LogNotImplemented();
             }
 
             public void OnPackageRemoved(UnityEditor.PackageManager.PackageInfo packageInfo)
             {
-                MeguminUtility4Unity.LogNotImplemented();
+                //MeguminUtility4Unity.LogNotImplemented();
             }
         }
     }
