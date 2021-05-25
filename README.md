@@ -13,16 +13,41 @@ or add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Exp
 >If you want to set a target version, uses the `*.*.*` release tag so you can specify a version like `#2.1.0`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
 
 # 功能列表
+
+编辑器功能：
 - Package wizard，一键生成包目录结构
 - Inspector导航，支持鼠标侧键切换最近选中对象。
-- EditorButton，将函数之间绘制在Inpector面板，支持参数。
-- Enum2String，在Inpector将string绘制为Enum。
-- TargetPoint，可视化目标点。
+- Link，一些常用插件链接。
+- ScriptObjectDrawer，ScriptObject面版增加new和clone两个按钮。
 
+
+脚本组件：
+- TargetPoint，可视化目标点。
+- 通用CD功能
+- ColliderRenderer，运行时绘制碰撞体。
+- LabelRenderer，运行时显示一个标签，支持宏配置。
+- UrlImage，支持网络图片，不用把图片资源放到项目里，方便demo制作。
+- GUIFPS，原生GUI显示帧率。
+
+数据类型：
+- HexColor，十六进制颜色，支持字符串解析。
+- HSVColor
+- Pref，支持用户配置功能。
+- Overrideable，泛型可以重写字段，支持一个默认值和重写值。
+- iint，支持正负无穷的int类型。
+
+特性：  
+- Options2StringAttribute，将一个类里的string字段在Inspector中显示为下拉菜单。
+- PathAttribute，string字段快速路径序列化。
+- EditorButtonAttribute，将函数之间绘制在Inpector面板，支持参数。
+- Enum2StringAttribute，在Inpector将string绘制为Enum。
+- ReadOnlyInInspectorAttribute，在Inpector显示为只读。
+- HelpBoxAttribute，显示一个帮助Label。
+- GUIDAttribute，将一个string自动填入guid。
 
 
 # [依赖关系](Image/dependencies.xml)
-![依赖关系](Image/dependencies.jpg)
+![依赖关系](Image/Dependencies.png)
 
 
 
