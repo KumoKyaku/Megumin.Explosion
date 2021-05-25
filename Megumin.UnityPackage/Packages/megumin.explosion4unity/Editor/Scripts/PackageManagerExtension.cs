@@ -22,10 +22,31 @@ namespace Megumin
         {
             public VisualElement CreateExtensionUI()
             {
-                button = new Button();
-                button.text = "Open Cache Folder";
-                button.clicked += Button_onClick;
-                return button;
+                VisualElement visual = new VisualElement();
+
+                openFolder = new Button();
+                openFolder.text = "Open Cache Folder";
+                openFolder.clicked += Button_onClick;
+                visual.Add(openFolder);
+
+                opengit = new Button();
+                opengit.text = "Open Git Link";
+                opengit.clicked += Opengit_clicked;
+                visual.Add(opengit);
+
+                return visual;
+            }
+
+            private void Opengit_clicked()
+            {
+                if (current?.source == UnityEditor.PackageManager.PackageSource.Git)
+                {
+                    var url = current.GetType().GetField("m_ProjectDependenciesEntry",
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                        .GetValue(current) as string;
+                    Debug.Log($"打开链接：{url}");
+                    Application.OpenURL(url);
+                }
             }
 
             private void Button_onClick()
@@ -42,13 +63,15 @@ namespace Megumin
             }
 
             public UnityEditor.PackageManager.PackageInfo current = null;
-            private Button button;
+            private Button openFolder;
+            private Button opengit;
 
             public void OnPackageSelectionChange(UnityEditor.PackageManager.PackageInfo packageInfo)
             {
                 //packageInfo 永远是null，应该是个Bug。
                 current = packageInfo;
                 //button.SetEnabled(false);
+                opengit.SetEnabled(current?.source == UnityEditor.PackageManager.PackageSource.Git);
             }
 
             public void OnPackageAddedOrUpdated(UnityEditor.PackageManager.PackageInfo packageInfo)

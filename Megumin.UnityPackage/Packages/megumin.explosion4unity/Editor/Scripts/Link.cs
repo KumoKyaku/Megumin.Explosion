@@ -20,6 +20,23 @@ namespace Megumin
             OpenURL("https://github.com/Unity-Technologies/com.unity.immediate-window");
         }
 
+        [MenuItem("Tools/Link/Unity/Japan/UnityChanSpringBone")]
+        static void UnityChanSpringBone()
+        {
+            OpenURL("https://github.com/unity3d-jp/UnityChanSpringBone/tree/release/1.2");
+        }
+
+        //[MenuItem("Tools/Link/Unity/Japan/UnityChanSpringBone/Add")]
+        //static void UnityChanSpringBoneAdd()
+        //{
+            
+        //}
+
+        [MenuItem("Tools/Link/Unity/Japan/Universal Toon Shader for URP")]
+        static void UnityChanToonShaderVer2_Project()
+        {
+            OpenURL("https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/tree/release/urp%2F2.2.3");
+        }
 
         [MenuItem("Tools/Link/Unity-UI-Extensions")]
         static void Unity_UI_Extensions()
