@@ -34,30 +34,62 @@ public static class DrawExtension_95DA6E62
         }
     }
 
-    public static void Draw(this BoxCollider box, Material material)
+    public static void Draw(this Collider collider, Material material, Vector3 offset = default)
+    {
+        switch (collider)
+        {
+            case BoxCollider box:
+                box.Draw(material, offset);
+                break;
+            case CapsuleCollider capsule:
+                capsule.Draw(material, offset);
+                break;
+            case SphereCollider sphere:
+                sphere.Draw(material, offset);
+                break;
+            case MeshCollider meshCollider:
+                meshCollider.Draw(material, offset);
+                break;
+            case CharacterController characterController:
+                characterController.Draw(material, offset);
+                break;
+        }
+    }
+
+    public static void Draw(this BoxCollider box, Material material, Vector3 offset = default)
     {
         var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Cube);
         Transform trans = box.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(box.center);
+        offset += trans.localToWorldMatrix.MultiplyVector(box.center);
         var matri = Matrix4x4.TRS(trans.position + offset, trans.rotation, box.size);
         mesh.Draw(matri, material);
     }
 
-    public static void Draw(this CapsuleCollider capsule, Material material)
+    public static void Draw(this CapsuleCollider capsule, Material material, Vector3 offset = default)
     {
         var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Capsule);
         Transform trans = capsule.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(capsule.center);
+        offset += trans.localToWorldMatrix.MultiplyVector(capsule.center);
         var size = new Vector3(capsule.radius * 2, capsule.height / 2, capsule.radius * 2);
         var matri = Matrix4x4.TRS(trans.position + offset, trans.rotation, size);
         mesh.Draw(matri, material);
     }
 
-    public static void Draw(this SphereCollider sphere, Material material)
+    public static void Draw(this CharacterController characterController, Material material, Vector3 offset = default)
+    {
+        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Capsule);
+        Transform trans = characterController.transform;
+        offset += trans.localToWorldMatrix.MultiplyVector(characterController.center);
+        var size = new Vector3(characterController.radius * 2, characterController.height / 2, characterController.radius * 2);
+        var matri = Matrix4x4.TRS(trans.position + offset, trans.rotation, size);
+        mesh.Draw(matri, material);
+    }
+
+    public static void Draw(this SphereCollider sphere, Material material, Vector3 offset = default)
     {
         var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Sphere);
         Transform trans = sphere.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(sphere.center);
+        offset += trans.localToWorldMatrix.MultiplyVector(sphere.center);
         var size = sphere.radius * 2 * Vector3.one;
         var matri = Matrix4x4.TRS(trans.position + offset, trans.rotation, size);
         mesh.Draw(matri, material);
@@ -86,30 +118,62 @@ public static class DrawExtension_95DA6E62
         Gizmos.matrix = oldMatrix;
     }
 
-    public static void GizmoDraw(this BoxCollider box, Color color)
+    public static void GizmoDraw(this Collider collider, Color color, Vector3 offset = default)
+    {
+        switch (collider)
+        {
+            case BoxCollider box:
+                box.GizmoDraw(color, offset);
+                break;
+            case CapsuleCollider capsule:
+                capsule.GizmoDraw(color, offset);
+                break;
+            case SphereCollider sphere:
+                sphere.GizmoDraw(color, offset);
+                break;
+            case MeshCollider meshCollider:
+                meshCollider.GizmoDraw(color, offset);
+                break;
+            case CharacterController characterController:
+                characterController.GizmoDraw(color, offset);
+                break;
+        }
+    }
+
+    public static void GizmoDraw(this BoxCollider box, Color color, Vector3 offset = default)
     {
         var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Cube);
         Transform trans = box.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(box.center);
+        offset += trans.localToWorldMatrix.MultiplyVector(box.center);
         var matri = Matrix4x4.TRS(trans.position + offset, trans.rotation, box.size);
         mesh.GizmoDraw(matri, color);
     }
 
-    public static void GizmoDraw(this CapsuleCollider capsule, Color color)
+    public static void GizmoDraw(this CapsuleCollider capsule, Color color, Vector3 offset = default)
     {
         var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Capsule);
         Transform trans = capsule.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(capsule.center);
+        offset += trans.localToWorldMatrix.MultiplyVector(capsule.center);
         var size = new Vector3(capsule.radius * 2, capsule.height / 2, capsule.radius * 2);
         var matri = Matrix4x4.TRS(trans.position + offset, trans.rotation, size);
         mesh.GizmoDraw(matri, color);
     }
 
-    public static void GizmoDraw(this SphereCollider sphere, Color color)
+    public static void GizmoDraw(this CharacterController characterController, Color color, Vector3 offset = default)
+    {
+        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Capsule);
+        Transform trans = characterController.transform;
+        offset += trans.localToWorldMatrix.MultiplyVector(characterController.center);
+        var size = new Vector3(characterController.radius * 2, characterController.height / 2, characterController.radius * 2);
+        var matri = Matrix4x4.TRS(trans.position + offset, trans.rotation, size);
+        mesh.GizmoDraw(matri, color);
+    }
+
+    public static void GizmoDraw(this SphereCollider sphere, Color color, Vector3 offset = default)
     {
         var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Sphere);
         Transform trans = sphere.transform;
-        var offset = trans.localToWorldMatrix.MultiplyVector(sphere.center);
+        offset += trans.localToWorldMatrix.MultiplyVector(sphere.center);
         var size = sphere.radius * 2 * Vector3.one;
         var matri = Matrix4x4.TRS(trans.position + offset, trans.rotation, size);
         mesh.GizmoDraw(matri, color);
