@@ -19,9 +19,6 @@ public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
         return new Vector3(v.x, 0, v.z);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Scale(this ref Vector3 a, Vector3 b) => a = Vector3.Scale(a, b);
-
     public static Vector3Int ToVector3Int(this IXYZ<int> value)
     {
         if (value == null)
