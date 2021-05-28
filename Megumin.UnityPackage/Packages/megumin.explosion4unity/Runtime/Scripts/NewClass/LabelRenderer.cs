@@ -65,27 +65,30 @@ namespace Megumin
             if (ShowOnRuntime && Camera.main && GlobalToggle)
             {
                 var pos = Camera.main.WorldToScreenPoint(transform.position);
-                string text = CalText();
-                var rect = new Rect(pos.x, Screen.height - pos.y, 400, 400);
-                if (UseStyle)
+                if (pos.z > 0)
                 {
-                    GUI.Label(rect, text, LabelStyle);
-                }
-                else
-                {
-                    using ((ValueGUIColor)FontColor)
+                    string text = CalText();
+                    var rect = new Rect(pos.x, Screen.height - pos.y, 400, 400);
+                    if (UseStyle)
                     {
-                        using (new ValueGUIFontSize(FontSize))
+                        GUI.Label(rect, text, LabelStyle);
+                    }
+                    else
+                    {
+                        using ((ValueGUIColor)FontColor)
                         {
-                            GUI.Label(rect, text);
+                            using (new ValueGUIFontSize(FontSize))
+                            {
+                                GUI.Label(rect, text);
+                            }
                         }
                     }
-                }
 
-                //显示大小错误
-                //GUILayout.BeginArea(rect);
-                //GUILayout.Label(text, LabelStyle);
-                //GUILayout.EndArea();
+                    //显示大小错误
+                    //GUILayout.BeginArea(rect);
+                    //GUILayout.Label(text, LabelStyle);
+                    //GUILayout.EndArea();
+                }
             }
         }
 
