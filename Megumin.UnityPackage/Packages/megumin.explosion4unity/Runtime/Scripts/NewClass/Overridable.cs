@@ -16,7 +16,7 @@ namespace Megumin
         protected T defaultValue;
         [SerializeField]
         public bool IsOverride = false;
-        [ColorUsage(true, true)]
+        //[ColorUsage(true, true)] //加了其他类型会报错，支持不了HDR
         [SerializeField]
         public T MyOverrideValue;
 

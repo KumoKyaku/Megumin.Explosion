@@ -19,6 +19,16 @@ public class AnimatorCallback : MonoBehaviour
     public Object[] CallbackTarget;
 
     public Transform OverrideRoot;
+
+    [Space]
+    public bool LogDelta = false;
+    [ReadOnlyInInspector]
+    public Vector3 TotalDelta = default;
+    [ReadOnlyInInspector]
+    public Vector3 TotalAngel = default;
+    [ReadOnlyInInspector]
+    public Quaternion TotalQ = Quaternion.identity;
+
     void Awake()
     {
         Animator = GetComponent<Animator>();
@@ -62,6 +72,15 @@ public class AnimatorCallback : MonoBehaviour
 
     void OnAnimatorMove()
     {
+        if (LogDelta)
+        {
+            TotalDelta += Animator.deltaPosition;
+            TotalQ *= Animator.deltaRotation;
+            TotalAngel = TotalQ.eulerAngles;
+            Debug.Log($"Frame:{Time.frameCount} -- deltaPosition:{Animator.deltaPosition} -- deltaRotation:{Animator.deltaRotation} -- angle:{Animator.deltaRotation.eulerAngles}" +
+                $" -- TotalDelta:{TotalDelta} -- TotalAngel:{TotalAngel}");
+        }
+
         if (Callback?.Count > 0 && EnableCallback)
         {
             foreach (var item in Callback)
@@ -81,6 +100,14 @@ public class AnimatorCallback : MonoBehaviour
                 Animator.ApplyBuiltinRootMotion();
             }
         }
+    }
+
+    [EditorButton]
+    public void ClearLogDelta()
+    {
+        TotalDelta = default;
+        TotalAngel = default;
+        TotalQ = Quaternion.identity;
     }
 }
 
