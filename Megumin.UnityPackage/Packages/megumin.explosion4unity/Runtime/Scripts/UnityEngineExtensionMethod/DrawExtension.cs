@@ -107,13 +107,22 @@ public static class DrawExtension_95DA6E62
 
 
 
-    public static void GizmoDraw(this Mesh mesh, Matrix4x4 matri, Color color)
+    public static void GizmoDraw(this Mesh mesh, Matrix4x4 matri, Color color,bool isWire = false)
     {
         var oldColor = Gizmos.color;
         var oldMatrix = Gizmos.matrix;
         Gizmos.color = color;
         Gizmos.matrix = matri;
-        Gizmos.DrawMesh(mesh);
+
+        if (isWire)
+        {
+            Gizmos.DrawWireMesh(mesh);
+        }
+        else
+        {
+            Gizmos.DrawMesh(mesh);
+        }
+
         Gizmos.color = oldColor;
         Gizmos.matrix = oldMatrix;
     }
