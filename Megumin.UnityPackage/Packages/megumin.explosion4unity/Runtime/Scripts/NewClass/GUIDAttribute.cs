@@ -53,7 +53,10 @@ namespace UnityEditor.Megumin
 
                 if (GUI.Button(leftPosotion, "GUID", left))
                 {
-                    property.stringValue = GUID.Generate().ToString();
+                    if (EditorUtility.DisplayDialog("GUID","确定生成新的GUID吗","OK","Cancel"))
+                    {
+                        property.stringValue = GUID.Generate().ToString();
+                    }
                 }
 
                 GUI.enabled = true;

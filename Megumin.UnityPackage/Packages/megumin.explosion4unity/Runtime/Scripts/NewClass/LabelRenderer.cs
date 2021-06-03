@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Megumin
 {
@@ -25,14 +26,22 @@ namespace Megumin
         /// 全局显示开关
         /// </summary>
         public static Pref<bool> GlobalToggle;
+        [ReadOnlyInInspector]
+        public string cacheText;
 
         void Awake()
         {
             InitStyle();
         }
+
         void Start()
         {
             InitGlobalToggle();
+        }
+
+        private void Update()
+        {
+            cacheText = CalText();
         }
 
         protected static void InitGlobalToggle()
@@ -67,7 +76,7 @@ namespace Megumin
                 var pos = Camera.main.WorldToScreenPoint(transform.position);
                 if (pos.z > 0)
                 {
-                    string text = CalText();
+                    string text = cacheText;
                     var rect = new Rect(pos.x, Screen.height - pos.y, 400, 400);
                     if (UseStyle)
                     {
@@ -94,6 +103,7 @@ namespace Megumin
 
         private string CalText()
         {
+            Profiler.BeginSample(nameof(CalText));
             string text = OverrideLabel;
             if (string.IsNullOrEmpty(text))
             {
@@ -101,6 +111,7 @@ namespace Megumin
             }
 
             this.Macro(ref text);
+            Profiler.EndSample();
             return text;
         }
 
@@ -110,7 +121,7 @@ namespace Megumin
             InitGlobalToggle();
             if (enabled && GlobalToggle)
             {
-                string text = CalText();
+                string text = cacheText;
 
                 if (UseStyle)
                 {

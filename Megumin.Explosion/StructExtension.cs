@@ -31,6 +31,31 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
         }
     }
 
+    /// <summary>
+    /// 返回限定在指定范围内的值
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="cur"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T GetClamp<T>(this T cur, in T min, in T max) where T : struct, IComparable<T>
+    {
+        var res = cur;
+
+        if (cur.CompareTo(min) < 0)
+        {
+            res = min;
+        }
+        else if (cur.CompareTo(max) > 0)
+        {
+            res = max;
+        }
+
+        return res;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clamp<T>(this ref T cur, in Threshold<T> threshold) where T : struct, IComparable<T>
     {

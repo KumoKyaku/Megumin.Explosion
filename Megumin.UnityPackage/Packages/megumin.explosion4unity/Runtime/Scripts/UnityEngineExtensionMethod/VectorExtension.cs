@@ -74,6 +74,45 @@ public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
     {
         return TurnLeftQ * vector;
     }
+
+    /// <summary>
+    /// 将相对位置转换为4方向混合动画参数
+    /// </summary>
+    /// <param name="orignal"></param>
+    /// <returns></returns>
+    public static Vector2 PosOffsetTo4DirPara(this in Vector2 orignal,
+                                              float scale = 1,
+                                              float maxAxisValue = 1,
+                                              float deadzonex = 0.01f,
+                                              float deadzoney = 0.01f)
+    {
+        var temp = orignal * scale;
+
+        float CaxAxis(float v, float deadzone, float maxValue = 1)
+        {
+            var res = v;
+            if (Mathf.Abs(res) < deadzone)
+            {
+                res = 0;
+            }
+            else
+            {
+                if (res > maxValue)
+                {
+                    res = 1;
+                }
+                else if (res < maxValue * -1)
+                {
+                    res = maxValue * -1;
+                }
+            }
+            return res;
+        }
+        var x = CaxAxis(temp.x, deadzonex, maxAxisValue);
+        var y = CaxAxis(temp.y, deadzoney, maxAxisValue);
+
+        return new Vector2(x, y);
+    }
 }
 
 

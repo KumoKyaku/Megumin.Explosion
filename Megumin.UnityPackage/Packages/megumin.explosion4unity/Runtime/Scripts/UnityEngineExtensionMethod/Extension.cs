@@ -7,6 +7,7 @@ using System.IO;
 using Megumin;
 using System;
 using System.Runtime.CompilerServices;
+using UnityEngine.Profiling;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -130,36 +131,35 @@ namespace UnityEngine
         /// <param name="orignal"></param>
         public static void Macro(this Object obj, ref string orignal)
         {
-            if (orignal is null)
+            Profiler.BeginSample(nameof(Macro));
+            if (!string.IsNullOrEmpty(orignal))
             {
-                return;
+                if (obj)
+                {
+                    orignal = orignal.Replace("$(name)", obj.name);
+
+                    if (obj is Component component)
+                    {
+                        MacroGameObject(component.gameObject, ref orignal);
+                        MacroTransform(component.transform, ref orignal);
+                    }
+
+                    if (obj is GameObject gameObject)
+                    {
+                        MacroGameObject(gameObject, ref orignal);
+                        MacroTransform(gameObject.transform, ref orignal);
+
+                    }
+
+                    if (obj is Transform transform)
+                    {
+                        MacroTransform(transform, ref orignal);
+                        MacroGameObject(transform.gameObject, ref orignal);
+                    }
+                }
             }
 
-            if (!obj)
-            {
-                return;
-            }
-
-            orignal = orignal.Replace("$(name)", obj.name);
-
-            if (obj is Component component)
-            {
-                MacroGameObject(component.gameObject, ref orignal);
-                MacroTransform(component.transform, ref orignal);
-            }
-
-            if (obj is GameObject gameObject)
-            {
-                MacroGameObject(gameObject, ref orignal);
-                MacroTransform(gameObject.transform, ref orignal);
-
-            }
-
-            if (obj is Transform transform)
-            {
-                MacroTransform(transform, ref orignal);
-                MacroGameObject(transform.gameObject, ref orignal);
-            }
+            Profiler.EndSample();
         }
 
         private static void MacroTransform(Transform transform, ref string orignal)

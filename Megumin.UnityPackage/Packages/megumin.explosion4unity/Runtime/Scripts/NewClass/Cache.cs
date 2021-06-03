@@ -110,7 +110,7 @@ namespace Megumin
         {
             if (!force)
             {
-                if (Time.frameCount - lastCalculateFrame >= DeltaFrameCount)
+                if (Time.frameCount - lastCalculateFrame <= DeltaFrameCount)
                 {
                     return value;
                 }
