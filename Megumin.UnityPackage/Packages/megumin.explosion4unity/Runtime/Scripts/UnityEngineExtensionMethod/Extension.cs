@@ -185,6 +185,12 @@ namespace UnityEngine
         {
             UnityEngine.Debug.LogError($"{funcName} NotImplemented.    [Instead throw Exception]");
         }
+
+        public static string LogCallerMemberName(this Object obj, [CallerMemberName] string func = default)
+        {
+            Debug.Log(func);
+            return func;
+        }
     }
 }
 
