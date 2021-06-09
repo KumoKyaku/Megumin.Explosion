@@ -35,9 +35,13 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
         {
             if (GUI.Button(leftPosotion, "New", left))
             {
-                var clone = ScriptableObject.CreateInstance(obj.GetType());
+                var type = obj.GetType();
+                var clone = ScriptableObject.CreateInstance(type);
 
-                var path = obj.CreateNewPath(true);
+                var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
+                var dir = Path.GetDirectoryName(path);
+                var ex = Path.GetExtension(path);
+                path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{type}", ex);
 
                 AssetDatabase.CreateAsset(clone, path);
                 AssetDatabase.Refresh();
