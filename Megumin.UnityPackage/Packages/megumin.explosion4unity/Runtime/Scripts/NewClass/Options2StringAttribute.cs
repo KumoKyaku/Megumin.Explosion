@@ -104,6 +104,10 @@ namespace UnityEditor.Megumin
                     EditorGUI.PropertyField(valuePosition, property, label);
                 }
             }
+            else if (property.propertyType == SerializedPropertyType.Generic)
+            {
+                EditorGUI.PropertyField(position, property, label, true);
+            }
             else
             {
                 //EditorGUI.HelpBox(position, $"{label.text} 字段类型必须是string", MessageType.Error);

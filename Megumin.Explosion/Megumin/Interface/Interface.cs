@@ -11,7 +11,29 @@ namespace Megumin
     /// <typeparam name="K"><peparam>
     public interface IMatcher<in T, in K>
     {
-        bool Match(T input, K target);
+        /// <summary>
+        /// 检测两个对象是否可以匹配
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <returns></returns>
+        /// <remarks>匹配是单向的，交换参数位置可能导致结果不同</remarks>
+        bool Match(T lhs, K rhs);
+    }
+
+    /// <summary>
+    /// 可匹配的
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IMatchable<in T>
+    {
+        /// <summary>
+        /// 目标对象是否与自身匹配
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        /// <remarks>匹配是单向的，即使目标与自身匹配，自身不一定与目标匹配</remarks>
+        bool Match(T target);
     }
 
     /// <summary>

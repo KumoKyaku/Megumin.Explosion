@@ -52,7 +52,9 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
             {
                 var clone = ScriptableObject.Instantiate(obj);
                 var path = AssetDatabase.GetAssetPath(obj);
-                var newFileName = Path.GetFileNameWithoutExtension(path) + " Clone";
+                var oriName = Path.GetFileNameWithoutExtension(path);
+
+                var newFileName = oriName.FileNameAddOne();
                 path = path.ReplaceFileName(newFileName);
 
                 AssetDatabase.CreateAsset(clone, path);

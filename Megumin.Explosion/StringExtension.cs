@@ -289,6 +289,58 @@ public static class StringExtension_E68DD56066C94F2286AF4BD18126A406
         return dir.CreateFileName(newFileName, ex);
     }
 
+    static readonly Regex EndNumber = new Regex(@"(\d+)$");
+    static readonly Regex EndNumber2 = new Regex(@"\((\d+)\)$");
+    public static bool GetEndNumber(this string orignal, out int number)
+    {
+        number = default;
+        var result = EndNumber.Match(orignal);
+
+        if (result.Success)
+        {
+            number = int.Parse(result.Groups[1].Value);
+            return true;
+        }
+
+        var result2 = EndNumber2.Match(orignal);
+        if (result2.Success)
+        {
+            number = int.Parse(result2.Groups[1].Value);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 如果文件命以数字或者括号数字结尾，则数字加一
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    public static string FileNameAddOne(this string fileName)
+    {
+        var result = EndNumber.Match(fileName);
+        if (result.Success)
+        {
+            var number = int.Parse(result.Groups[1].Value);
+            var f = fileName.Substring(0, fileName.Length - result.Value.Length);
+            f += (number + 1);
+            return f;
+        }
+
+        var result2 = EndNumber2.Match(fileName);
+        if (result2.Success)
+        {
+            var number = int.Parse(result2.Groups[1].Value);
+            var f = fileName.Substring(0, fileName.Length - result2.Value.Length);
+            f += $"({number + 1})";
+            return f;
+        }
+
+        fileName += " (1)";
+        return fileName;
+    }
+
     /// <summary>
     /// fileName 如果存在，自增
     /// </summary>

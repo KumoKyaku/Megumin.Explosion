@@ -16,7 +16,7 @@ public class AnimatorCallback : MonoBehaviour
     public Animator Animator;
     public HashSet<IAnimatorCallback> Callback { get; } = new HashSet<IAnimatorCallback>();
     public bool EnableCallback = true;
-    public Object[] CallbackTarget;
+    public List<Object> CallbackTarget;
 
     public Transform OverrideRoot;
 
@@ -40,7 +40,8 @@ public class AnimatorCallback : MonoBehaviour
         
     }
 
-    public void BindCallback(Object[] callBackBindTarget)
+    public void BindCallback<T>(T callBackBindTarget)
+        where T:IEnumerable<Object>
     {
         if (callBackBindTarget != null)
         {

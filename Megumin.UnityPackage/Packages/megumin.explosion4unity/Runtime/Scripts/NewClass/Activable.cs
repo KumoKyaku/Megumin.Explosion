@@ -47,6 +47,16 @@ namespace UnityEditor.Megumin
     [CustomPropertyDrawer(typeof(Activeable<>), true)]
     internal sealed class ActiveableDrawer : PropertyDrawer
     {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            var prop = property.FindPropertyRelative("Value");
+            if (prop.isArray && prop.isExpanded)
+            {
+                return 300;
+            }
+            return base.GetPropertyHeight(property, label);
+        }
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var togglePosition = position;
@@ -57,9 +67,9 @@ namespace UnityEditor.Megumin
             valuePosition.width -= 20;
             SerializedProperty toggle = property.FindPropertyRelative("Active");
             toggle.boolValue = GUI.Toggle(togglePosition, toggle.boolValue, GUIContent.none);
-            
+
             GUI.enabled = toggle.boolValue;
-            EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("Value"), label);
+            EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("Value"), label, true);
             GUI.enabled = true;
         }
     }

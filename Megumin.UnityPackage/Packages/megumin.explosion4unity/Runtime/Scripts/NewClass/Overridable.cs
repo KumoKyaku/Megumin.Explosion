@@ -87,14 +87,14 @@ namespace UnityEditor.Megumin
 
             if (toggle.boolValue)
             {
-                EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("MyOverrideValue"), label);
+                EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("MyOverrideValue"), label, true);
             }
             else
             {
                 using (new EditorGUI.DisabledGroupScope(true))
                 {
                     label.text += " [Default]";
-                    EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("defaultValue"), label);
+                    EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("defaultValue"), label, true);
                 }
             }
         }

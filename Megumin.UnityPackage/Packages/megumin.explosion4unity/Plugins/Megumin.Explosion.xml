@@ -149,6 +149,11 @@
             别名
             </summary>
         </member>
+        <member name="P:Megumin.ShortNameAttribute.Name">
+            <summary>
+            别名
+            </summary>
+        </member>
         <member name="T:Megumin.ITimeControlable">
             <summary>
             时间控制
@@ -744,6 +749,29 @@
             <returns></returns>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Megumin.IMatcher`2" -->
+        <member name="M:Megumin.IMatcher`2.Match(`0,`1)">
+            <summary>
+            检测两个对象是否可以匹配
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <returns></returns>
+            <remarks>匹配是单向的，交换参数位置可能导致结果不同</remarks>
+        </member>
+        <member name="T:Megumin.IMatchable`1">
+            <summary>
+            可匹配的
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Megumin.IMatchable`1.Match(`0)">
+            <summary>
+            目标对象是否与自身匹配
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+            <remarks>匹配是单向的，即使目标与自身匹配，自身不一定与目标匹配</remarks>
+        </member>
         <member name="T:Megumin.IPath">
             <summary>
             路径
@@ -867,6 +895,13 @@
             <param name="newFileName"></param>
             <returns></returns>
         </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.FileNameAddOne(System.String)">
+            <summary>
+            如果文件命以数字或者括号数字结尾，则数字加一
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
         <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.CreateFileName(System.String,System.String,System.String)">
             <summary>
             fileName 如果存在，自增
@@ -884,6 +919,16 @@
         <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.Clamp``1(``0@,``0@,``0@)">
             <summary>
             将值限定在指定范围内
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="cur"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.GetClamp``1(``0,``0@,``0@)">
+            <summary>
+            返回限定在指定范围内的值
             </summary>
             <typeparam name="T"></typeparam>
             <param name="cur"></param>
