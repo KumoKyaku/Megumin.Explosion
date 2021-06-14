@@ -44,6 +44,16 @@ namespace Megumin
             Name = name;
         }
     }
+
+
+    public class SupportTypesAttribute : Attribute
+    {
+        public Type[] Support { get; set; }
+        public SupportTypesAttribute(params Type[] types)
+        {
+            Support = types;
+        }
+    }
 }
 
 

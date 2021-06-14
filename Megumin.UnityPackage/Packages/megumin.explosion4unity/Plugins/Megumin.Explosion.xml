@@ -375,18 +375,25 @@
             当前值
             </summary>
         </member>
-        <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1)">
+        <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1,Megumin.OnValueChanged{`1})">
             <summary>
             
             </summary>
             <param name="defaultKey">默认key</param>
             <param name="defaultValue">默认值</param>
+            <param name="onValueChanged"></param>
         </member>
         <member name="M:Megumin.MultipleControl`2.InitSortLinq">
             <summary>
             初始化值计算
             </summary>
-            <remarks>默认根据值升序</remarks>
+            <remarks>默认根据值升序,应用第一个值，也就是结果最小的</remarks>
+        </member>
+        <member name="M:Megumin.MultipleControl`2.ReInitSortLinq(System.Boolean)">
+            <summary>
+            true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。
+            </summary>
+            <param name="ascending"></param>
         </member>
         <member name="M:Megumin.MultipleControl`2.Control(`0,`1)">
             <summary>
@@ -417,19 +424,19 @@
             </summary>
             <param name="multipleControl"></param>
         </member>
-        <member name="T:Megumin.SimpleMultipleControl`1">
+        <member name="T:Megumin.MultipleControl`1">
             <inheritdoc/>
         </member>
-        <member name="M:Megumin.SimpleMultipleControl`1.#ctor(System.Object,`0)">
+        <member name="M:Megumin.MultipleControl`1.#ctor(System.Object,`0,Megumin.OnValueChanged{`0})">
             <inheritdoc/>
         </member>
-        <member name="T:Megumin.BlackScreenMultipleControl">
-             <summary>
-             黑屏Loading控制
-             </summary>
-            <inheritdoc/>
+        <member name="T:Megumin.ActiveControl">
+            <summary>
+            开启关闭控制，只有有个一个控制源开启，结果就是开启
+            </summary>
+            <remarks>处理黑屏，碰撞盒开闭</remarks>
         </member>
-        <member name="M:Megumin.BlackScreenMultipleControl.#ctor(System.Object,System.Boolean)">
+        <member name="M:Megumin.ActiveControl.#ctor(System.Object,System.Boolean,Megumin.OnValueChanged{System.Boolean})">
             <inheritdoc/>
         </member>
         <member name="T:Megumin.NotInitException">
@@ -582,8 +589,8 @@
             <para>因为 new 是关键字，所以参数带有下划线</para>
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="new_">新的值</param>
-            <param name="old_">旧的值</param>
+            <param name="newValue">新的值</param>
+            <param name="oldValue">旧的值</param>
         </member>
         <member name="T:Megumin.Axial">
             <summary>

@@ -56,23 +56,55 @@ namespace Megumin
         /// </summary>
         /// <param name="defaultKey">默认key</param>
         /// <param name="defaultValue">默认值</param>
-        public MultipleControl(K defaultKey, V defaultValue)
+        /// <param name="onValueChanged"></param>
+        public MultipleControl(K defaultKey,
+                               V defaultValue,
+                               OnValueChanged<V> onValueChanged = null)
         {
             DefaultKey = defaultKey;
             Controllers[defaultKey] = defaultValue;
             InitSortLinq();
+
+            if (onValueChanged != null)
+            {
+                OnValueChanged += onValueChanged;
+            }
+
             ApplyValue();
         }
 
         /// <summary>
         /// 初始化值计算
         /// </summary>
-        /// <remarks>默认根据值升序</remarks>
+        /// <remarks>默认根据值升序,应用第一个值，也就是结果最小的</remarks>
         protected virtual void InitSortLinq()
         {
             SortLinq = from kv in Controllers
                        orderby kv.Value ascending
                        select kv.Value;
+        }
+
+        /// <summary>
+        /// true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。
+        /// </summary>
+        /// <param name="ascending"></param>
+        public V ReInitSortLinq(bool ascending = true)
+        {
+            if (ascending)
+            {
+                SortLinq = from kv in Controllers
+                           orderby kv.Value ascending
+                           select kv.Value;
+            }
+            else
+            {
+                SortLinq = from kv in Controllers
+                           orderby kv.Value descending
+                           select kv.Value;
+            }
+
+            ApplyValue();
+            return Current;
         }
 
         /// <summary>
@@ -136,25 +168,30 @@ namespace Megumin
     }
 
     ///<inheritdoc/>
-    public class SimpleMultipleControl<V> : MultipleControl<object, V>
+    public class MultipleControl<V> : MultipleControl<object, V>
         where V : IEquatable<V>
     {
         ///<inheritdoc/>
-        public SimpleMultipleControl(object defaultHandle, V defaultValue)
-            : base(defaultHandle, defaultValue)
+        public MultipleControl(object defaultHandle,
+                                     V defaultValue,
+                                     OnValueChanged<V> onValueChanged = null)
+            : base(defaultHandle, defaultValue, onValueChanged)
         {
+
         }
     }
 
     /// <summary>
-    /// 黑屏Loading控制
+    /// 开启关闭控制，只有有个一个控制源开启，结果就是开启
     /// </summary>
-    ///<inheritdoc/>
-    public class BlackScreenMultipleControl : SimpleMultipleControl<bool>
+    /// <remarks>处理黑屏，碰撞盒开闭</remarks>
+    public class ActiveControl : MultipleControl<bool>
     {
         ///<inheritdoc/>
-        public BlackScreenMultipleControl(object defaultHandle, bool defaultValue)
-            : base(defaultHandle, defaultValue)
+        public ActiveControl(object defaultHandle,
+                             bool defaultValue,
+                             OnValueChanged<bool> onValueChanged = null)
+            : base(defaultHandle, defaultValue, onValueChanged)
         {
         }
 
@@ -166,6 +203,8 @@ namespace Megumin
                        select kv.Value;
         }
     }
+
+
 }
 
 
