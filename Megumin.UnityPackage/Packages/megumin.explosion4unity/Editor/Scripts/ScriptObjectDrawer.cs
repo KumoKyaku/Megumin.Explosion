@@ -106,6 +106,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
             else
             {
                 //没有设置特性
+                EditorGUI.PropertyField(propertyPosition, property, label);
 
                 if (GUI.Button(leftPosotion, "New", left))
                 {
