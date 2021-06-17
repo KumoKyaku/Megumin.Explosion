@@ -57,17 +57,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
 
             if (GUI.Button(leftPosotion, "New", left))
             {
-                var type = obj.GetType();
-                var clone = ScriptableObject.CreateInstance(type);
-
-                var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
-                var dir = Path.GetDirectoryName(path);
-                var ex = Path.GetExtension(path);
-                path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{type}", ex);
-
-                AssetDatabase.CreateAsset(clone, path);
-                AssetDatabase.Refresh();
-                property.objectReferenceValue = clone;
+                CreateInstance(property, obj.GetType().Name);
             }
 
             if (GUI.Button(rightPosition, "Clone", right))
@@ -113,8 +103,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                     var ret = typeRegex.Match(property.type);
                     if (ret.Success)
                     {
-                        var type = ret.Groups[1].Value;
-                        CreateInstance(property, type);
+                        CreateInstance(property, ret.Groups[1].Value);
                     }
                 }
 
@@ -142,10 +131,18 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
     private static void CreateInstance(SerializedProperty property, string type)
     {
         var instance = ScriptableObject.CreateInstance(type);
-
         var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
+        if (string.IsNullOrEmpty(path))
+        {
+            var root = PrefabUtility.GetOutermostPrefabInstanceRoot(property.serializedObject.targetObject);
+            if (root)
+            {
+                var ori = PrefabUtility.GetPrefabParent(root);
+                path = AssetDatabase.GetAssetPath(ori);
+            }
+        }
         var dir = Path.GetDirectoryName(path);
-        var ex = Path.GetExtension(path);
+        var ex = ".asset";
         path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{type}", ex);
 
         AssetDatabase.CreateAsset(instance, path);
