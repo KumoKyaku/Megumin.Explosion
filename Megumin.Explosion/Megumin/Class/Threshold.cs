@@ -8,7 +8,7 @@ namespace Megumin
     /// <summary>
     /// 阈
     /// </summary>
-    public struct Threshold<T> where T:IComparable<T>
+    public struct Threshold<T> where T : IComparable<T>
     {
         /// <summary>
         /// 下界
@@ -18,9 +18,6 @@ namespace Megumin
         /// 上界
         /// </summary>
         public T Upper { get; }
-
-        
-        
 
         /// <summary>
         /// 构造函数
@@ -50,7 +47,7 @@ namespace Megumin
         /// <summary>
         /// 是否小于下界
         /// </summary>
-        public static bool operator < (in T target,in Threshold<T> threshold)
+        public static bool operator <(in T target, in Threshold<T> threshold)
         {
             return target.CompareTo(threshold.Lower) < 0;
         }
@@ -58,9 +55,25 @@ namespace Megumin
         /// <summary>
         /// 是否大于上界
         /// </summary>
-        public static bool operator > (in T target,in Threshold<T> threshold)
+        public static bool operator >(in T target, in Threshold<T> threshold)
         {
             return target.CompareTo(threshold.Upper) > 0;
+        }
+
+        public static implicit operator Threshold<T>((T lower, T upper) value)
+        {
+            return new Threshold<T>(value.lower, value.upper);
+        }
+
+        public static implicit operator (T Lower, T Upper)(Threshold<T> value)
+        {
+            return (value.Lower, value.Upper);
+        }
+
+        public void Deconstruct(out T lower, out T upper)
+        {
+            lower = Lower;
+            upper = Upper;
         }
     }
 }

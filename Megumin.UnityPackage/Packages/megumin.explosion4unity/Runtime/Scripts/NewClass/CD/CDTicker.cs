@@ -12,6 +12,7 @@ namespace Megumin
     /// 支持string/object 做 key
     /// <para>共享冷却公用一个CDTimer就好。</para>
     /// </summary>
+    [DefaultExecutionOrder(-999)]
     public class CDTicker : MonoBehaviour, ICDTicker<float>
     {
         public bool CheckNow(float stamp, float perSpan, out float next)
@@ -80,6 +81,15 @@ namespace Megumin
 
                 return res;
             }
+        }
+
+        public (int CompleteCount, float CheckStamp, float Next) Check(float stamp, float perSpan)
+        {
+            var delta = Now - stamp;
+            var count = (int)(delta / perSpan);
+            var next = delta % perSpan;
+            var check = stamp + count * perSpan;
+            return (count, check, next);
         }
     }
 }

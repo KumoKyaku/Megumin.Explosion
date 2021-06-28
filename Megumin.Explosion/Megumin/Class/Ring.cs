@@ -63,15 +63,20 @@ namespace Megumin
             }
             Previous = node;
         }
+
+        public static implicit operator Node<T>(T value)
+        {
+            return new Node<T>() { Value = value };
+        }
     }
 
     /// <summary>
-    /// 双向环
+    /// 双向环,用来做前进后退堆栈。
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Ring<T>
     {
-        public class RingNode<T> : Node<T>
+        public class RingNode : Node<T>
         {
             public RingNode(Ring<T> ring)
             {
@@ -82,6 +87,7 @@ namespace Megumin
         }
 
         public Node<T> Current { get; set; }
+        public int Count { get; private set; }
 
         public Ring(int count)
         {
@@ -89,9 +95,10 @@ namespace Megumin
 
             if (count > 0)
             {
-                Current = new RingNode<T>(this);
+                Current = new RingNode(this);
                 Current.Next = Current;
                 Current.Previous = Current;
+                Count = 1;
                 Expand(Current, count - 1);
             }
         }
@@ -105,7 +112,7 @@ namespace Megumin
             var last = node.Next;
             for (int i = 0; i < count; i++)
             {
-                RingNode<T> ringNode = new RingNode<T>(this);
+                RingNode ringNode = new RingNode(this);
                 ringNode.Value = default;
                 p.Next = ringNode;
                 ringNode.Previous = p;
@@ -117,6 +124,8 @@ namespace Megumin
             {
                 last.Previous = p;
             }
+
+            Count += count;
         }
 
 

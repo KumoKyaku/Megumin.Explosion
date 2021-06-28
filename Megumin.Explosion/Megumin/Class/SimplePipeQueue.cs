@@ -67,7 +67,7 @@ namespace Megumin
     {
         //public bool IsEnd { get; private set; }
 
-        public void Write(T item, bool isEnd)
+        public void Write(T item, bool isEnd = false)
         {
             Write((item, isEnd));
         }

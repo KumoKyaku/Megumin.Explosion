@@ -21,7 +21,7 @@ namespace Megumin
         }
     }
 
-    public class XY<T>:IXY<T>
+    public class XY<T> : IXY<T>
     {
         public T X { get; set; }
         public T Y { get; set; }
@@ -32,14 +32,14 @@ namespace Megumin
         }
     }
 
-    public class XZ<T>:IXZ<T>
+    public class XZ<T> : IXZ<T>
     {
         public T X { get; set; }
         public T Z { get; set; }
 
         public static implicit operator XYZ<T>(XZ<T> xz)
         {
-            return new XYZ<T>() { X = xz.X, Z = xz.Z};
+            return new XYZ<T>() { X = xz.X, Z = xz.Z };
         }
     }
 

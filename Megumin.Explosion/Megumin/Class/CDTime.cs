@@ -79,47 +79,83 @@ namespace Megumin
     public interface ICDTicker<Unit>
     {
         Unit Now { get; }
-
         /// <summary>
-        /// 检查当前时刻到记录时刻是不是大于perSpan, 
+        /// 检查计时器当前时刻与记录时刻比较，是不是大于perSpan, 
         /// </summary>
-        /// <param name="stamp"></param>
-        /// <param name="perSpan"></param>
-        /// <param name="next"></param>
-        /// <returns></returns>
-        bool CheckNow(Unit stamp, Unit perSpan, out Unit next);
+        /// <param name="stamp">记录时刻</param>
+        /// <param name="perSpan">间隔时长</param>
+        /// <returns>
+        /// 完成间隔次数,最后检查点，距离下次完成时长
+        /// </returns>
+        (int CompleteCount, Unit CheckStamp, Unit Next) Check(Unit stamp, Unit perSpan);
     }
 
     public class CDTimer<Unit> : ICDTimer<Unit>
     {
         static readonly List<CDTimer<Unit>> pool = new List<CDTimer<Unit>>();
-        public static CDTimer<Unit> Create(int maxCanUse = 1, int defaultCanUse = 1)
-        {
-            lock (pool)
-            {
-                CDTimer<Unit> timer = new CDTimer<Unit>();
-                timer.MaxCanUseCount = maxCanUse;
-                timer.ResidualCanUseCount = defaultCanUse;
+        static readonly List<WeakReference<CDTimer<Unit>>> pool2 
+            = new List<WeakReference<CDTimer<Unit>>>();
 
-                pool.Add(timer);
-                return timer;
+        public static CDTimer<Unit> Create(int maxCanUse = 1, int defaultCanUse = 1, bool weak = true)
+        {
+            CDTimer<Unit> timer = new CDTimer<Unit>();
+            timer.MaxCanUseCount = maxCanUse;
+            timer.ResidualCanUseCount = defaultCanUse;
+
+            if (weak)
+            {
+                lock (pool2)
+                {
+                    var weakref = new WeakReference<CDTimer<Unit>>(timer);
+                    pool2.Add(weakref);
+                }
             }
+            else
+            {
+                lock (pool)
+                {
+                    pool.Add(timer);
+                }
+            }
+
+            return timer;
         }
 
         public static void TickAll(ICDTicker<Unit> ticker)
         {
             lock (pool)
             {
+                pool.RemoveAll(ele => ele.Valid == false);
+
                 foreach (var item in pool)
                 {
                     item.Tick(ticker);
                 }
+            }
 
-                pool.RemoveAll(ele => ele.Valid == false);
+            lock (pool2)
+            {
+                pool2.RemoveAll(ele =>
+                {
+                    if (ele.TryGetTarget(out var timer))
+                    {
+                        return !timer.Valid;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                });
+
+                foreach (var item in pool2)
+                {
+                    if (item.TryGetTarget(out var timer))
+                    {
+                        timer.Tick(ticker);
+                    }
+                }
             }
         }
-
-
 
         bool Valid = true;
         Unit Stamp;
@@ -136,17 +172,16 @@ namespace Megumin
             {
                 if (IsCDing)
                 {
-                    bool comp = ticker.CheckNow(Stamp, PerSpan, out var next);
-                    if (comp)
+                    var (CompleteCount, CheckStamp, Next) = ticker.Check(Stamp, PerSpan);
+
+                    if (CompleteCount > 0)
                     {
-                        ResidualCanUseCount++;
-                        Stamp = ticker.Now;
-                        NextCanUse = default;
+                        Stamp = CheckStamp;
                     }
-                    else
-                    {
-                        NextCanUse = next;
-                    }
+
+                    var newCount = ResidualCanUseCount + CompleteCount;
+                    NextCanUse = newCount >= MaxCanUseCount ? default : Next;
+                    ResidualCanUseCount = Math.Min(newCount, MaxCanUseCount);
                 }
                 else
                 {
