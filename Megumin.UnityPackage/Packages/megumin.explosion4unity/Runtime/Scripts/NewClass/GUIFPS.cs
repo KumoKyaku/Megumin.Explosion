@@ -9,7 +9,8 @@ namespace Megumin
     /// <summary>
     /// 原生GUI显示帧率
     /// </summary>
-    public class GUIFPS : MonoBehaviour
+    [ExecuteAlways]
+    public class GUIFPS : LabelBase
     {
         // FPS
         private float oldTime;
@@ -17,12 +18,6 @@ namespace Megumin
         private static float frameRate = 0f;
         private static string frameRateStr = "0";
         private const float INTERVAL = 0.5f;
-
-        /// <summary>
-        /// 是否启用
-        /// </summary>
-        public bool isOn = true;
-        public Rect position = new Rect(50, 50, 220, 60);
 
         void Start()
         {
@@ -37,7 +32,8 @@ namespace Megumin
             if (time >= INTERVAL)
             {
                 frameRate = frame / time;
-                frameRateStr = $"FPS : {frameRate:0.0}";
+                Content = $"FPS : {frameRate:0.0}"; ;
+                frameRateStr = Content;
                 oldTime = Time.realtimeSinceStartup;
                 frame = 0;
             }
@@ -52,13 +48,15 @@ namespace Megumin
             return frameRate;
         }
 
-
-        void OnGUI()
+        public override void InitStyle(string styleName = "CN CountBadge", bool force = false)
         {
-            if (isOn)
+            if (LabelStyle == null || force)
             {
-                GUI.Label(position, frameRateStr);
+                LabelStyle = new GUIStyle(GUI.skin.label);
             }
         }
     }
 }
+
+
+

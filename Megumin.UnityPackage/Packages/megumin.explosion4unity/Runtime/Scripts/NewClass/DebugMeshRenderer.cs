@@ -16,7 +16,7 @@ namespace Megumin
         [Tooltip("网格模式")]
         public bool IsWire = true;
         [Tooltip("网格类型")]
-        public PrimitiveType type = PrimitiveType.Capsule;
+        public PrimitiveType type = PrimitiveType.Sphere;
         public Mesh mesh;
         public Overridable<float> Scale = new Overridable<float>(1);
         public Vector3 center = Vector3.zero;

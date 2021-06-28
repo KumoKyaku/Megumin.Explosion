@@ -137,7 +137,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
             var root = PrefabUtility.GetOutermostPrefabInstanceRoot(property.serializedObject.targetObject);
             if (root)
             {
-                var ori = PrefabUtility.GetPrefabParent(root);
+                var ori = PrefabUtility.GetCorrespondingObjectFromSource(root);
                 path = AssetDatabase.GetAssetPath(ori);
             }
         }

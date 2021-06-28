@@ -78,6 +78,7 @@ namespace UnityEngine
     /// <see cref="ColorUtility.TryParseHtmlString(string, out Color)"/>
     /// <para></para>todo 支持HDR
     /// </summary>
+    [System.Serializable]
     public partial struct HexColor
     {
         public string hexCode;

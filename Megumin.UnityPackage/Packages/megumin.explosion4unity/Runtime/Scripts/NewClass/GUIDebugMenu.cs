@@ -7,25 +7,40 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public class GUIDebugMenu : MonoBehaviour
 {
-    public Rect ButtonPos = new Rect(1650, 50, 160, 45);
-    public int Space = 10;
-    public Button.ButtonClickedEvent[] Bindings = new Button.ButtonClickedEvent[1];
+    public Rect ButtonPos = new Rect(0.9f, 0.1f, 100, 30);
+    public int Space = 8;
+    [SerializeField]
+    private Binds[] Buttons = new Binds[1];
 
     void OnGUI()
     {
-        if (Bindings != null)
-        {
-            for (int i = 0; i < Bindings.Length; i++)
-            {
-                var rect = ButtonPos;
-                rect.y += (Space + ButtonPos.height) * i;
+        var pos = ButtonPos;
+        pos.x = Mathf.Min(Mathf.Abs(pos.x), 1);
+        pos.y = Mathf.Min(Mathf.Abs(pos.y), 1);
 
-                if (GUI.Button(rect, $"Debug {i}"))
+        pos.x *= (Screen.width - ButtonPos.width);
+        pos.y *= (Screen.height - ButtonPos.height);
+
+        if (Buttons != null)
+        {
+            for (int i = 0; i < Buttons.Length; i++)
+            {
+                var rect = pos;
+                rect.y += (Space + pos.height) * i;
+
+                if (GUI.Button(rect, Buttons[i].Name))
                 {
-                    Bindings[i]?.Invoke();
+                    Buttons[i]?.Bind?.Invoke();
                 }
             }
         }
+    }
+
+    [System.Serializable]
+    class Binds
+    {
+        public string Name = "DebugButton";
+        public Button.ButtonClickedEvent Bind;
     }
 
     public void TestLog()
