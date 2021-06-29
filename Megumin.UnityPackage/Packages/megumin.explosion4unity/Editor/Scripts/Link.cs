@@ -29,7 +29,7 @@ namespace Megumin
         //[MenuItem("Tools/Link/Unity/Japan/UnityChanSpringBone/Add")]
         //static void UnityChanSpringBoneAdd()
         //{
-            
+
         //}
 
         [MenuItem("Tools/Link/Unity/Japan/Universal Toon Shader for URP")]
@@ -93,5 +93,16 @@ namespace Megumin
         {
             OpenURL("https://github.com/JimmyCushnie/Noisy-Nodes");
         }
+
+        [MenuItem("Tools/Link/In-game Debug Console")]
+        static void In_game_Debug_Console()
+        {
+            OpenURL("https://github.com/yasirkula/UnityIngameDebugConsole#installation");
+        }
     }
 }
+
+
+
+
+
