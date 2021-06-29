@@ -99,6 +99,18 @@ namespace Megumin
         {
             OpenURL("https://github.com/yasirkula/UnityIngameDebugConsole#installation");
         }
+
+        [MenuItem("Tools/Link/Runtime Inspector & Hierarchy for Unity 3D")]
+        static void RuntimeInspectorHierarchyforUnity3D()
+        {
+            OpenURL("https://github.com/yasirkula/UnityRuntimeInspector#c-installation");
+        }
+
+        [MenuItem("Tools/Link/Runtime Scene Gizmo for Unity")]
+        static void RuntimeSceneGizmoforUnity()
+        {
+            OpenURL("https://github.com/yasirkula/UnityRuntimeSceneGizmo#installation");
+        }
     }
 }
 
