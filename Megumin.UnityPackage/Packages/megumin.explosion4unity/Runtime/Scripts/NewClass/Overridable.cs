@@ -71,6 +71,12 @@ namespace UnityEditor.Megumin
     [CustomPropertyDrawer(typeof(Overridable<>), true)]
     internal sealed class OverrideValueDrawer : PropertyDrawer
     {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            var prop = property.FindPropertyRelative("MyOverrideValue");
+            return EditorGUI.GetPropertyHeight(prop);
+        }
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var togglePosition = position;

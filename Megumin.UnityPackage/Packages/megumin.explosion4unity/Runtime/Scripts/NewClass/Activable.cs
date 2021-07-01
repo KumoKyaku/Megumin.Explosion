@@ -50,11 +50,7 @@ namespace UnityEditor.Megumin
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             var prop = property.FindPropertyRelative("Value");
-            if (prop.isArray && prop.isExpanded)
-            {
-                return 300;
-            }
-            return base.GetPropertyHeight(property, label);
+            return EditorGUI.GetPropertyHeight(prop);
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
