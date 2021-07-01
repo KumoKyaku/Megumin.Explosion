@@ -10,5 +10,7 @@
     "ReferenceViewer"
   ],
   "category": "Megumin",
-  "description": "Find referencing resources and referenced resources."
+  "description": "Find referencing resources and referenced resources.",
+  "hideInEditor": false,
+  "type": "tool"
 }
