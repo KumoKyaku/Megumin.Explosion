@@ -51,7 +51,7 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
             needReCal = true;
         }
 
-        [MenuItem("Assets/Open ReferenceViewer",true)]
+        [MenuItem("Assets/Open ReferenceViewer", true)]
         public static bool OpenValid()
         {
             var res = false;
@@ -62,7 +62,7 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
             return res;
         }
 
-        [MenuItem("Assets/Open ReferenceViewer",false,31)]
+        [MenuItem("Assets/Open ReferenceViewer", false, 31)]
         public static void Open()
         {
             var graphWindow = GetWindow<ReferenceViewerWindow>();
@@ -72,20 +72,18 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
             {
                 graphWindow.r.Initialize(Selection.activeObject);
 
-                graphWindow.r.SetPosition(new Vector2((graphWindow.position.width - ObjNode.width) / 2,
-                    (graphWindow.position.height - ObjNode.heigth) / 2));
+                graphWindow.r.SetPosition(new Vector3((graphWindow.position.width - ObjNode.width) / 2,
+                    (graphWindow.position.height - ObjNode.heigth) / 2, 0));
             };
 
-            MainThreadInvoke(() =>
+            MainThreadInvoke(async () =>
             {
                 if (needReCal)
                 {
-                    CalculateRef(tempcallback);
+                    await CalculateRef();
                 }
-                else
-                {
-                    tempcallback.Invoke();
-                }
+
+                tempcallback.Invoke();
             });
         }
 
@@ -118,7 +116,7 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
 
         public static readonly Dictionary<int, List<string[]>> CacheTree = new Dictionary<int, List<string[]>>();
         static readonly object insertLock = new object();
-        static void CalculateRef(Action tempcallback)
+        static Task CalculateRef()
         {
             CacheTree.Clear();
             var allpath = AssetDatabase.GetAllAssetPaths();
@@ -148,20 +146,22 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
                                 }
                             }));
 
-                EditorUtility.DisplayProgressBar("Calculate Reference Tree", 
-                    $"{alltask.Count}/{allpath.Length}",((float)alltask.Count)/allpath.Length);
+                EditorUtility.DisplayProgressBar("Calculate Reference Tree",
+                    $"{alltask.Count}/{allpath.Length}", ((float)alltask.Count) / allpath.Length);
             }
 
+            TaskCompletionSource<int> source = new TaskCompletionSource<int>();
             Task.Run(() =>
             {
                 Task.WaitAll(alltask.ToArray());
                 needReCal = false;
-                MainThreadInvoke(()=>
+                MainThreadInvoke(() =>
                 {
                     EditorUtility.ClearProgressBar();
-                    tempcallback?.Invoke();
+                    source.SetResult(0);
                 });
             });
+            return source.Task;
         }
     }
 
@@ -170,7 +170,7 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
         static readonly Color BGColor = new Color(0.125f, 0.125f, 0.125f, 1f);
         public ReferenceViewer()
         {
-            style.backgroundColor =  BGColor;
+            style.backgroundColor = BGColor;
             SetupZoom(0.05f, 2f);
             this.StretchToParentSize();
             this.AddManipulator(new ContentDragger());
@@ -210,7 +210,7 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
 
             #region AddReference
             {
-                var deps = AssetDatabase.GetDependencies(curNode.Path,false);
+                var deps = AssetDatabase.GetDependencies(curNode.Path, false);
                 var half = deps.Length / 2;
                 bool even = deps.Length % 2 == 0;
 
@@ -225,10 +225,10 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
                     else
                     {
                         var node = new ObjNode(obj);
-                        node.style.left = - offsetH;
-                        node.style.top = (i - half) * deltaV + (even ? deltaV/2 : 0);
+                        node.style.left = -offsetH;
+                        node.style.top = (i - half) * deltaV + (even ? deltaV / 2 : 0);
 
-                        node.AddManipulator(new DoubleClickManipulator(()=>
+                        node.AddManipulator(new DoubleClickManipulator(() =>
                         {
                             Initialize(obj);
                             SetPosition(new Vector2((worldBound.width - ObjNode.width) / 2,
@@ -286,7 +286,8 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
 
         public void SetPosition(Vector3 vector)
         {
-            contentViewContainer.transform.position = vector;
+            UpdateViewTransform(vector, transform.scale);
+            //contentViewContainer.transform.position = vector;
         }
 
         protected override bool canCutSelection => false;
@@ -302,7 +303,7 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
         public const int heigth = 230;
         public static readonly Color InColor = Color.red * 0.95f;
         public static readonly Color OutColor = Color.green * 0.95f;
-        public static readonly Color CurBorderColor = new Color(0.849f,0.514f,0.1f,1);
+        public static readonly Color CurBorderColor = new Color(0.849f, 0.514f, 0.1f, 1);
         public string Path { get; }
         public int PathHashCode { get; }
         public ObjNode(UnityEngine.Object obj)
@@ -323,7 +324,15 @@ namespace ReferenceViewer_34282AD3401B490AB7C35AF746BC986E
             var controlsContainer = new VisualElement { name = "resource" };
             mainContainer.Add(controlsContainer);
 
-            var of = new ObjectField() { value = obj };
+            var of = new ObjectField();
+            try
+            {
+                of.value = obj;
+            }
+            catch (Exception)
+            {
+            }
+
             of.SetCanSelect(false);
             controlsContainer.Add(of);
 
