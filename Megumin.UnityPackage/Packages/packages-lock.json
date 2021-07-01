@@ -15,12 +15,6 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.megumin.referenceviewer": {
-      "version": "file:megumin.referenceviewer@1.0.0",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.unity.nuget.mono-cecil": {
       "version": "0.1.6-preview.2",
       "depth": 1,
