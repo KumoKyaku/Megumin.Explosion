@@ -109,7 +109,7 @@ namespace Megumin
         [MenuItem("Tools/Link/Runtime Scene Gizmo for Unity")]
         static void RuntimeSceneGizmoforUnity()
         {
-            OpenURL("https://github.com/yasirkula/UnityRuntimeSceneGizmo#installation");
+            OpenURL("https://github.com/0x3f3f3f3f/UnityRuntimeSceneGizmo");
         }
     }
 }

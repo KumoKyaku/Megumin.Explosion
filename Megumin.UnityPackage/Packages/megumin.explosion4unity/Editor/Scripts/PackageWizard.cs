@@ -78,7 +78,6 @@ $@"
 {{
     ""name"": ""{InputPackageName.ToLower()}"",
     ""displayName"": ""{InputPackageName}"",
-    ""author"": ""PackageWizard"",
     ""version"": ""0.0.1"",
     ""unity"": ""2019.4"",
     ""description"": ""Wizard Fast Created."",
@@ -87,6 +86,7 @@ $@"
 }}
 
 ";
+            //不要加作者，你的包可能被别人fork。
             File.WriteAllText(path + "/package.json", packageInfo);
         }
 

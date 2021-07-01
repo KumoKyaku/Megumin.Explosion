@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEditor.PackageManager.UI;
 using UnityEngine.UIElements;
+using System.IO;
 
 namespace Megumin
 {
@@ -34,7 +35,35 @@ namespace Megumin
                 opengit.clicked += Opengit_clicked;
                 visual.Add(opengit);
 
+                move2Local = new Button();
+                move2Local.text = "Move Cache To Local";
+                move2Local.clicked += Move2Local_clicked;
+                visual.Add(move2Local);
+
                 return visual;
+            }
+
+            private void Move2Local_clicked()
+            {
+                if (current == null)
+                {
+                    
+                }
+                else
+                {
+                    DirectoryInfo info = new DirectoryInfo(current.resolvedPath);
+                    var foldername = info.Name;
+                    var desPath = Path.Combine(MeguminUtility4Unity.PackagesPath, foldername);
+                    Debug.Log(desPath);
+
+                    if (Directory.Exists(desPath))
+                    {
+                        Directory.Delete(desPath);
+                    }
+
+                    Directory.Move(current.resolvedPath, desPath);
+                    System.Diagnostics.Process.Start(desPath);
+                }
             }
 
             private void Opengit_clicked()
@@ -65,6 +94,7 @@ namespace Megumin
             public UnityEditor.PackageManager.PackageInfo current = null;
             private Button openFolder;
             private Button opengit;
+            private Button move2Local;
 
             public void OnPackageSelectionChange(UnityEditor.PackageManager.PackageInfo packageInfo)
             {
@@ -72,6 +102,7 @@ namespace Megumin
                 current = packageInfo;
                 //button.SetEnabled(false);
                 opengit.SetEnabled(current?.source == UnityEditor.PackageManager.PackageSource.Git);
+                move2Local.SetEnabled(!current?.resolvedPath.StartsWith(MeguminUtility4Unity.PackagesPath) ?? false);
             }
 
             public void OnPackageAddedOrUpdated(UnityEditor.PackageManager.PackageInfo packageInfo)
