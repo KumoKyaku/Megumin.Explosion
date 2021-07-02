@@ -20,6 +20,12 @@ namespace Megumin
             OpenURL("https://github.com/Unity-Technologies/com.unity.immediate-window");
         }
 
+        [MenuItem("Tools/Link/Unity/NavMesh Components")]
+        static void NavMeshComponents()
+        {
+            OpenURL("https://github.com/Unity-Technologies/NavMeshComponents/tree/package");
+        }
+
         [MenuItem("Tools/Link/Unity/Japan/UnityChanSpringBone")]
         static void UnityChanSpringBone()
         {
