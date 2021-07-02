@@ -1,5 +1,6 @@
 ﻿using Megumin;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -183,6 +184,29 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
         {
             orignal = ((int)(orignal / multiple) * multiple);
         }
+    }
+
+    public static unsafe string ToBinaryString(this int x, bool insertSeparator = false)
+    {
+        if (insertSeparator)
+        {
+            char[] s = new char[39];
+
+            for (int i = 0; i < 39; i++)
+            {
+                s[i] = '_';
+            }
+
+            for (int i = 0; i < 32; i++)
+            {
+                var index = i + i / 4;
+                s[index] = ((x >> 31 - i) & 1) == 1 ? '1' : '0';
+            }
+
+            return new string(s);
+        }
+
+        return Convert.ToString(x, 2).PadLeft(32, '0');
     }
 }
 

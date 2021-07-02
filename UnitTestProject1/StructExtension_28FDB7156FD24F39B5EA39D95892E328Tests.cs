@@ -5,6 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+namespace Tests
+{
+    [TestClass()]
+    public class StructExtension_28FDB7156FD24F39B5EA39D95892E328Tests
+    {
+        [TestMethod()]
+        public void ToBinaryStringTest()
+        {
+            int a = 0b0000_1111_0000_1111_0000_1111_0000_1111;
+            string s = a.ToBinaryString(true);
+            Assert.AreEqual("0000_1111_0000_1111_0000_1111_0000_1111", s);
+            string s2 = a.ToBinaryString();
+            Assert.AreEqual("00001111000011110000111100001111", s2);
+        }
+    }
+}
+
 namespace System.Tests
 {
     [TestClass()]
