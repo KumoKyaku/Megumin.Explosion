@@ -73,7 +73,7 @@ namespace Megumin
         /// <summary>
         /// 每完成一个冷却点数所需的时间
         /// </summary>
-        Unit PerSpan { get; }
+        Unit PerSpan { get; set; }
     }
 
     public interface ICDTicker<Unit>
@@ -93,7 +93,7 @@ namespace Megumin
     public class CDTimer<Unit> : ICDTimer<Unit>
     {
         static readonly List<CDTimer<Unit>> pool = new List<CDTimer<Unit>>();
-        static readonly List<WeakReference<CDTimer<Unit>>> pool2 
+        static readonly List<WeakReference<CDTimer<Unit>>> pool2
             = new List<WeakReference<CDTimer<Unit>>>();
 
         public static CDTimer<Unit> Create(int maxCanUse = 1, int defaultCanUse = 1, bool weak = true)
@@ -202,7 +202,7 @@ namespace Megumin
 
 
         public Unit NextCanUse { get; protected set; }
-        public Unit PerSpan { get; }
+        public Unit PerSpan { get; set; }
         public bool CanUse => ResidualCanUseCount > 0;
 
         public bool TryUse(int count = 1)

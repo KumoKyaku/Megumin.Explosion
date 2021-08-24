@@ -10,6 +10,8 @@ public class TestLog : MonoBehaviour
     [ColorSpacer(30, 3, 100, 1, 0, 0)]
     public string ret = "";
 
+    [Enum2String(typeof(TestEnum))]
+    public string TestEnumField;
     public Color TestColor;
     // Start is called before the first frame update
     [HelpBox("teststeete")]
@@ -81,6 +83,11 @@ public class TestLog : MonoBehaviour
         var r = matri.GetPosition();
     }
 
+    public enum TestEnum
+    {
+        Aaa,
+        Bbb,
+    }
 }
 
 public class ConstTest
