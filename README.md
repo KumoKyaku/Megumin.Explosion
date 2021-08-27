@@ -3,6 +3,10 @@
 还有一些UnityPackage,是unity用的扩展函数，和一些常用类。  
 
 # UPM Package
+
+### 当前版本目标框架为netstandard2.1
+Unity2021.2之前的版本请使用 vnetstandard2.0版本,后续不会在维护旧版本.
+
 ### Install via git URL
 
 
