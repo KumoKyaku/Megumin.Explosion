@@ -5,6 +5,8 @@
 # UPM Package
 
 ### 当前版本目标框架为netstandard2.1
+> error CS1705: Assembly 'Megumin.Explosion' with identity 'Megumin.Explosion, Version=0.1.4.0, Culture=neutral, PublicKeyToken=83a041e0a8636db9' uses 'netstandard, Version=2.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51' which has a higher version than referenced assembly 'netstandard' with identity 'netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51
+
 Unity2021.2之前的版本请使用 vnetstandard2.0版本,后续不会在维护旧版本.
 
 ### Install via git URL

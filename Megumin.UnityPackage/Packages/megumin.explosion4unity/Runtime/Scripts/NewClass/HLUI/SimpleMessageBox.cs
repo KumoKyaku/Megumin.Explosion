@@ -1,9 +1,12 @@
+ï»¿
+#if UNITY_2021_2_OR_NEWER
+
 using System.Threading.Tasks;
 
 namespace Megumin
 {
     /// <summary>
-    /// ¼òÒ×¶Ô»°¿ò×é¼ş
+    /// ç®€æ˜“å¯¹è¯æ¡†ç»„ä»¶
     /// </summary>
     public class SimpleMessageBox : MessageBox
     {
@@ -41,5 +44,5 @@ namespace Megumin
 
 
 
-
+#endif
 
