@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+
 using UnityEditor;
+
 using UnityEngine;
+
 using static System.Environment;
 
 namespace Megumin
@@ -21,18 +24,43 @@ namespace Megumin
         [MenuItem("Tools/Path/Create Build Folder")]
         static void CreateBuildFolder()
         {
-            var dir = MeguminUtility4Unity.BuildPath;
+            var dir = MeguminUtility4Unity.BuildPCMonoPath;
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
             }
 
-            dir = MeguminUtility4Unity.BuildIL2CPPPath;
+            dir = MeguminUtility4Unity.BuildPCIL2CPPPath;
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
             }
 
+            dir = MeguminUtility4Unity.BuildAndroidPath;
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            dir = MeguminUtility4Unity.BuildiOSPath;
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            dir = MeguminUtility4Unity.BuildPS4Path;
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            dir = MeguminUtility4Unity.BuildPS5Path;
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            Debug.Log($"创建打包目录");
             System.Diagnostics.Process.Start(MeguminUtility4Unity.ProjectPath);
         }
 
