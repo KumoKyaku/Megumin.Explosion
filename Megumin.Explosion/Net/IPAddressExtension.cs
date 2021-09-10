@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace System.Net
 {
@@ -123,7 +126,7 @@ namespace System.Net
             {
                 if (parts[0] == 172)
                 {
-                    if (parts[1] >= 16 && parts[1]<= 31)
+                    if (parts[1] >= 16 && parts[1] <= 31)
                     {
                         return true;
                     }
@@ -151,33 +154,60 @@ namespace System.Net
         {
             if (IsLAN)
             {
-                var list = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
-                foreach (var item in list)
-                {
-                    if (item.AddressFamily == Sockets.AddressFamily.InterNetwork && item.IsLocalAddress())
-                    {
-                        return item;
-                    }
-                }
-                return IPAddress.Loopback;
+                return GetLANIP();
             }
             else
             {
-                Uri uri = new Uri("http://ip-api.com/");
-                System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
-                req.Method = "get";
-                using (Stream s = req.GetResponse().GetResponseStream())
+                return GetGloablIPAsync().Result;
+            }
+        }
+
+        public static IPAddress GetLANIP()
+        {
+            var list = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
+            foreach (var item in list)
+            {
+                if (item.AddressFamily == Sockets.AddressFamily.InterNetwork && item.IsLocalAddress())
                 {
-                    using (StreamReader reader = new StreamReader(s))
-                    {
-                        char[] ch = { '[', ']' };
-                        string str = reader.ReadToEnd();
-                        System.Text.RegularExpressions.Match m = System.Text.RegularExpressions.Regex.Match(str, @"\[(?<IP>[0-9\.]*)\]");
-                        var ipstring = m.Value.Trim(ch);
-                        return IPAddress.Parse(ipstring);
-                    }
+                    return item;
                 }
-            }     
+            }
+            return IPAddress.Loopback;
+        }
+
+        public static async ValueTask<IPAddress> GetIPAsync(bool IsLAN = false)
+        {
+            if (IsLAN)
+            {
+                return GetLANIP();
+            }
+            else
+            {
+                return await GetGloablIPAsync();
+            }
+        }
+
+        public static async ValueTask<IPAddress> GetGloablIPAsync()
+        {
+            Uri uri = new Uri("http://ip-api.com/json");
+            System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
+            req.Method = "get";
+            using (Stream s = (await req.GetResponseAsync()).GetResponseStream())
+            {
+                using (StreamReader reader = new StreamReader(s))
+                {
+                    char[] ch = { '[', ']' };
+                    string str = reader.ReadToEnd();
+                    Match m = Regex.Match(str, @"""query"":""(\S+)""");
+                    var ipstring = m.Value.Trim(ch);
+                    if (m.Success)
+                    {
+                        ipstring = m.Groups[1].Value;
+                    }
+
+                    return IPAddress.Parse(ipstring);
+                }
+            }
         }
     }
 }
