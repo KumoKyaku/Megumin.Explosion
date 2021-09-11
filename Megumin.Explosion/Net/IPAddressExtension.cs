@@ -158,7 +158,7 @@ namespace System.Net
             }
             else
             {
-                return GetGloablIPAsync().Result;
+                return GetGloablIP();
             }
         }
 
@@ -187,6 +187,28 @@ namespace System.Net
             }
         }
 
+        public static IPAddress GetGloablIP()
+        {
+            Uri uri = new Uri("http://ip-api.com/json");
+            System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
+            req.Method = "get";
+            using (Stream s = req.GetResponse().GetResponseStream())
+            {
+                using (StreamReader reader = new StreamReader(s))
+                {
+                    string str = reader.ReadToEnd();
+                    Match m = Regex.Match(str, @"""query"":""(\S+)""");
+                    var ipstring = "";
+                    if (m.Success)
+                    {
+                        ipstring = m.Groups[1].Value;
+                    }
+
+                    return IPAddress.Parse(ipstring);
+                }
+            }
+        }
+
         public static async ValueTask<IPAddress> GetGloablIPAsync()
         {
             Uri uri = new Uri("http://ip-api.com/json");
@@ -196,10 +218,9 @@ namespace System.Net
             {
                 using (StreamReader reader = new StreamReader(s))
                 {
-                    char[] ch = { '[', ']' };
                     string str = reader.ReadToEnd();
                     Match m = Regex.Match(str, @"""query"":""(\S+)""");
-                    var ipstring = m.Value.Trim(ch);
+                    var ipstring = "";
                     if (m.Success)
                     {
                         ipstring = m.Groups[1].Value;
