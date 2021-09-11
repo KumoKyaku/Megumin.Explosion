@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Megumin
 {
-    internal class Link
+    internal partial class Link
     {
         static void OpenURL(string url)
         {
@@ -117,6 +117,36 @@ namespace Megumin
         static void RuntimeSceneGizmoforUnity()
         {
             OpenURL("https://github.com/0x3f3f3f3f/UnityRuntimeSceneGizmo");
+        }
+    }
+
+    partial class Link
+    {
+        //dotnet source link
+
+        [MenuItem("Tools/Link/Dotnet Source/List")]
+        static void DotnetSourceList()
+        {
+            OpenURL("https://source.dot.net/#System.Private.CoreLib/List.cs,cf7f4095e4de7646");
+        }
+
+        [MenuItem("Tools/Link/Dotnet Source/Dictionary")]
+        static void DotnetSourceDictionary()
+        {
+            OpenURL("https://source.dot.net/#System.Private.CoreLib/Dictionary.cs,d3599058f8d79be0");
+        }
+
+
+        [MenuItem("Tools/Link/Dotnet Source/Socket")]
+        static void DotnetSourceSocket()
+        {
+            OpenURL("https://source.dot.net/#q=Socket");
+        }
+
+        [MenuItem("Tools/Link/Dotnet Source/Task")]
+        static void DotnetSourceTask()
+        {
+            OpenURL("https://source.dot.net/#System.Private.CoreLib/Task.cs,045a746eb48cbaa9");
         }
     }
 }
