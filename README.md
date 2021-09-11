@@ -4,12 +4,8 @@
 
 # UPM Package
 
-### 当前版本目标框架为netstandard2.1
-> error CS1705: Assembly 'Megumin.Explosion' with identity 'Megumin.Explosion, Version=0.1.4.0, Culture=neutral, PublicKeyToken=83a041e0a8636db9' uses 'netstandard, Version=2.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51' which has a higher version than referenced assembly 'netstandard' with identity 'netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51
 
-Unity2021.2之前的版本请使用 vnetstandard2.0版本,后续不会在维护旧版本.
-
-### Install via git URL
+## Install via git URL
 
 
 ![image](https://user-images.githubusercontent.com/46207/79450714-3aadd100-8020-11ea-8aae-b8d87fc4d7be.png)
@@ -17,6 +13,13 @@ Unity2021.2之前的版本请使用 vnetstandard2.0版本,后续不会在维护�
 or add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explosion.git?path=Megumin.UnityPackage/Packages/megumin.explosion4unity"` to `Packages/manifest.json`.
 
 >If you want to set a target version, uses the `*.*.*` release tag so you can specify a version like `#2.1.0`. For example `https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.1.0`.
+
+
+## 当前版本目标框架为netstandard2.1
+> error CS1705: Assembly 'Megumin.Explosion' with identity 'Megumin.Explosion, Version=0.1.4.0, Culture=neutral, PublicKeyToken=83a041e0a8636db9' uses 'netstandard, Version=2.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51' which has a higher version than referenced assembly 'netstandard' with identity 'netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51
+
+Unity2021.2之前的版本请使用 vnetstandard2.0版本,后续不会在维护旧版本.  
+Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explosion.git?path=Megumin.UnityPackage/Packages/megumin.explosion4unity#vnetstandard2.0"` to `Packages/manifest.json`.
 
 # 功能列表
 
@@ -32,6 +35,7 @@ or add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Exp
 - 通用CD功能
 - ColliderRenderer，运行时绘制碰撞体。
 - LabelRenderer，运行时显示一个标签，支持宏配置。
+- DebugMeshRenderer, 运行时绘制一个mesh.
 - UrlImage，支持网络图片，不用把图片资源放到项目里，方便demo制作。
 - GUIFPS，原生GUI显示帧率。
 
