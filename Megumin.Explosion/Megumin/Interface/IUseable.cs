@@ -52,10 +52,7 @@ namespace Megumin
         void ForceAddResidualCanUseCount(int count = 1);
     }
 
-    /// <summary>
-    /// 冷却计时器
-    /// </summary>
-    /// <typeparam name="Unit"></typeparam>
+    /// <inheritdoc/>
     public interface IUseable<Unit> : IUseable
     {
 

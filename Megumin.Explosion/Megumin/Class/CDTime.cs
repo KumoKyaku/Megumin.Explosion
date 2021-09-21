@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Megumin
 {
+    ///<inheritdoc cref="IUseable{Unit}"/>
     public class CDTimer<Unit> : IUseable<Unit>, ITimeControlable
     {
         static readonly List<CDTimer<Unit>> pool = new List<CDTimer<Unit>>();
