@@ -24,9 +24,11 @@ Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explos
 # 功能列表
 
 编辑器功能：
-- Package wizard，一键生成包目录结构
+- Package wizard，一键生成包目录结构.  
+  ![image-20210921185844394](README.assets/image-20210921185844394.png)  
 - Inspector导航，支持鼠标侧键切换最近选中对象。
-- Link，一些常用插件链接。
+- Link，一些常用插件链接。  
+  ![image-20210921185911351](README.assets/image-20210921185911351.png)
 - ScriptObjectDrawer，ScriptObject面版增加new和clone两个按钮。
 
 
@@ -41,8 +43,10 @@ Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explos
 - GUIFPS，原生GUI显示帧率。
 
 数据类型：
-- HexColor，十六进制颜色，支持字符串解析。
-- HSVColor
+- HexColor，十六进制颜色，支持字符串解析。  
+  ![image-20210921190022944](README.assets/image-20210921190022944.png)
+- HSVColor  
+  ![image-20210921190056680](README.assets/image-20210921190056680.png)
 - Pref，支持用户配置功能。
 - Overrideable，泛型可以重写字段，支持一个默认值和重写值。
 - iint，支持正负无穷的int类型。
