@@ -78,15 +78,35 @@ $@"
 {{
     ""name"": ""{InputPackageName.ToLower()}"",
     ""displayName"": ""{InputPackageName}"",
+    
     ""version"": ""0.0.1"",
     ""unity"": ""2019.4"",
     ""description"": ""Wizard Fast Created."",
     ""category"": ""PackageWizard"",
-    ""hideInEditor"" : false
+    
+    ""documentationUrl"": ""https://example.com/"",
+    ""changelogUrl"": ""https://example.com/changelog.html"",
+    ""licensesUrl"": ""https://example.com/licensing.html"",
+    
+    ""hideInEditor"" : false,
+    
+    ""keywords"": [
+        ""PackageWizard"",
+        ""{InputPackageName}""
+    ],
+
+    ""author"": {{
+        ""name"": ""Unity"",
+        ""email"": ""unity@example.com"",
+        ""url"": ""https://www.unity3d.com""
+    }}
 }}
 
+
+
+
 ";
-            //不要加作者，你的包可能被别人fork。
+            
             File.WriteAllText(path + "/package.json", packageInfo);
         }
 
@@ -95,3 +115,6 @@ $@"
 }
 
 #endif
+
+
+
