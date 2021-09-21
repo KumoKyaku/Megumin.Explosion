@@ -154,85 +154,8 @@
             别名
             </summary>
         </member>
-        <member name="T:Megumin.ITimeControlable">
-            <summary>
-            时间控制
-            </summary>
-        </member>
-        <member name="M:Megumin.ITimeControlable.Pause(System.Object)">
-            <summary>
-            暂停
-            </summary>
-            <param name="option"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Megumin.ITimeControlable.Resume(System.Object)">
-            <summary>
-            继续
-            </summary>
-            <param name="option"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Megumin.ICDTimer">
-            <summary>
-            冷却计时器
-            <para>支持充能点数</para>
-            </summary>
-        </member>
-        <member name="P:Megumin.ICDTimer.CanUse">
-            <summary>
-            当前是不是可用，至少含有1点。
-            </summary>
-        </member>
-        <member name="M:Megumin.ICDTimer.TryUse(System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="count"></param>
-            <returns></returns>
-        </member>
-        <member name="P:Megumin.ICDTimer.MaxCanUseCount">
-            <summary>
-            最大可用点数
-            </summary>
-        </member>
-        <member name="P:Megumin.ICDTimer.ResidualCanUseCount">
-            <summary>
-            当前剩余可用点数
-            </summary>
-        </member>
-        <member name="M:Megumin.ICDTimer.ForceAddResidualCanUseCount(System.Int32)">
-            <summary>
-            强制增加当前可用点数
-            </summary>
-            <param name="count"></param>
-        </member>
-        <member name="T:Megumin.ICDTimer`1">
-            <summary>
-            冷却计时器
-            </summary>
-            <typeparam name="Unit"></typeparam>
-        </member>
-        <member name="P:Megumin.ICDTimer`1.NextCanUse">
-            <summary>
-            无论当前可用点数是多少，距离下一次冷却完成的时长，返回值总是[0-PerSpan]
-            </summary>
-            <remarks>想象一下最大可用5，当前可用2，然后倒计时扇形显示的是到下个可用点的时间，而不是到最大可用的时间</remarks>
-        </member>
-        <member name="P:Megumin.ICDTimer`1.PerSpan">
-            <summary>
-            每完成一个冷却点数所需的时间
-            </summary>
-        </member>
-        <member name="M:Megumin.ICDTicker`1.Check(`0,`0)">
-            <summary>
-            检查计时器当前时刻与记录时刻比较，是不是大于perSpan, 
-            </summary>
-            <param name="stamp">记录时刻</param>
-            <param name="perSpan">间隔时长</param>
-            <returns>
-            完成间隔次数,最后检查点，距离下次完成时长
-            </returns>
+        <member name="T:Megumin.CDTimer`1">
+            <inheritdoc cref="T:Megumin.IUseable`1"/>
         </member>
         <member name="T:Megumin.CoolDownTime">
             <summary>
@@ -584,6 +507,20 @@
         <member name="T:Megumin.TempValueTaskSource">
             <inheritdoc/>
         </member>
+        <member name="T:Megumin.WeakReferenceList`1">
+            <summary>
+            弱引用集合,用于全局遍历
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Megumin.WeakReferenceList`1.ForEachAutoRemoveNull(System.Action{`0})">
+            <summary>
+            https://source.dot.net/#System.Private.CoreLib/List.cs,879
+            RemoveAll 通过双指针实现,应该不影响效率,
+            但是每次使用Action会产生闭包,不一定比feache 和 RemoveAll 效率高
+            </summary>
+            <param name="action"></param>
+        </member>
         <member name="T:Megumin.OnValueChanged`1">
             <summary>
             当值发生改变时被调用
@@ -839,6 +776,97 @@
             当队列中有元素时返回。
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Megumin.ITimeControlable">
+            <summary>
+            时间控制
+            </summary>
+        </member>
+        <member name="M:Megumin.ITimeControlable.Pause(System.Object)">
+            <summary>
+            暂停
+            </summary>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.ITimeControlable.Resume(System.Object)">
+            <summary>
+            继续
+            </summary>
+            <param name="option"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.ICDTicker`1.Check(`0,`0)">
+            <summary>
+            检查计时器当前时刻与记录时刻比较，是不是大于perSpan, 
+            </summary>
+            <param name="stamp">记录时刻</param>
+            <param name="perSpan">间隔时长</param>
+            <returns>
+            完成间隔次数,最后检查点，距离下次完成时长
+            </returns>
+        </member>
+        <member name="T:Megumin.IUseable">
+            <summary>
+            可使用的.  
+            <para/>包括冷却型的和充能型的,物品堆叠型的
+            <para>支持充能点数</para>
+            </summary>
+            <remarks>
+            设计目的: 对模型层一个抽象,View层显示图标状态使用这个接口访问模型层数据信息.
+            是否可用 比 CD相关功能范围更大
+            比如猎空黑影技能
+            </remarks>
+        </member>
+        <member name="P:Megumin.IUseable.CanUse">
+            <summary>
+            当前是不是可用，至少含有1点。
+            </summary>
+        </member>
+        <member name="P:Megumin.IUseable.IsUsing">
+            <summary>
+            正在使用中
+            </summary>
+            <remarks>
+            比如黑影的隐身,猎空的闪回,使用是一个持续过程
+            </remarks>
+        </member>
+        <member name="M:Megumin.IUseable.TryUse(System.Int32)">
+            <summary>
+            使用掉一个可用点数
+            </summary>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Megumin.IUseable.MaxCanUseCount">
+            <summary>
+            最大可用点数
+            </summary>
+        </member>
+        <member name="P:Megumin.IUseable.ResidualCanUseCount">
+            <summary>
+            当前剩余可用点数
+            </summary>
+        </member>
+        <member name="M:Megumin.IUseable.ForceAddResidualCanUseCount(System.Int32)">
+            <summary>
+            强制增加当前可用点数
+            </summary>
+            <param name="count"></param>
+        </member>
+        <member name="T:Megumin.IUseable`1">
+            <inheritdoc/>
+        </member>
+        <member name="P:Megumin.IUseable`1.NextCanUse">
+            <summary>
+            无论当前可用点数是多少，距离下一次冷却完成的时长，返回值总是[0-PerSpan]
+            </summary>
+            <remarks>想象一下最大可用5，当前可用2，然后倒计时扇形显示的是到下个可用点的时间，而不是到最大可用的时间</remarks>
+        </member>
+        <member name="P:Megumin.IUseable`1.PerSpan">
+            <summary>
+            每完成一个冷却点数所需的时间
+            </summary>
         </member>
         <member name="T:Megumin.IXYZ`1">
             <summary>

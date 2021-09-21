@@ -32,7 +32,8 @@ Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explos
 
 脚本组件：
 - TargetPoint，可视化目标点。
-- 通用CD功能
+- 通用CD功能    
+  ![CDEffect](README.assets/CDEffect.gif)
 - ColliderRenderer，运行时绘制碰撞体。
 - LabelRenderer，运行时显示一个标签，支持宏配置。
 - DebugMeshRenderer, 运行时绘制一个mesh.
@@ -58,7 +59,6 @@ Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explos
 
 # [依赖关系](Image/dependencies.xml)
 ![依赖关系](Image/Dependencies.png)
-
 
 
 
