@@ -56,7 +56,7 @@ namespace Megumin
     /// 
     /// </summary>
     /// <typeparam name="V"></typeparam>
-    public interface INode<V>:INode
+    public interface INode<V> : INode
     {
         V NodeValue { get; set; }
     }
@@ -79,9 +79,9 @@ namespace Megumin
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public interface ISlot<K, V>:IEnumerable<KeyValuePair<K,V>>
+    public interface ISlot<K, V> : IEnumerable<KeyValuePair<K, V>>
     {
-        V this[K key] { get;set; }
+        V this[K key] { get; set; }
     }
 
     /// <summary>

@@ -4,93 +4,7 @@ using System.Text;
 
 namespace Megumin
 {
-    /// <summary>
-    /// 时间控制
-    /// </summary>
-    public interface ITimeControlable
-    {
-        /// <summary>
-        /// 暂停
-        /// </summary>
-        /// <param name="option"></param>
-        /// <returns></returns>
-        int Pause(object option = null);
-
-        /// <summary>
-        /// 继续
-        /// </summary>
-        /// <param name="option"></param>
-        /// <returns></returns>
-        int Resume(object option = null);
-    }
-
-    /// <summary>
-    /// 冷却计时器
-    /// <para>支持充能点数</para>
-    /// </summary>
-    public interface ICDTimer : ITimeControlable
-    {
-        /// <summary>
-        /// 当前是不是可用，至少含有1点。
-        /// </summary>
-        bool CanUse { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        bool TryUse(int count = 1);
-
-        /// <summary>
-        /// 最大可用点数
-        /// </summary>
-        int MaxCanUseCount { get; }
-        /// <summary>
-        /// 当前剩余可用点数
-        /// </summary>
-        int ResidualCanUseCount { get; }
-        /// <summary>
-        /// 强制增加当前可用点数
-        /// </summary>
-        /// <param name="count"></param>
-        void ForceAddResidualCanUseCount(int count = 1);
-    }
-
-    /// <summary>
-    /// 冷却计时器
-    /// </summary>
-    /// <typeparam name="Unit"></typeparam>
-    public interface ICDTimer<Unit> : ICDTimer
-    {
-
-        /// <summary>
-        /// 无论当前可用点数是多少，距离下一次冷却完成的时长，返回值总是[0-PerSpan]
-        /// </summary>
-        /// <remarks>想象一下最大可用5，当前可用2，然后倒计时扇形显示的是到下个可用点的时间，而不是到最大可用的时间</remarks>
-        Unit NextCanUse { get; }
-
-        /// <summary>
-        /// 每完成一个冷却点数所需的时间
-        /// </summary>
-        Unit PerSpan { get; set; }
-    }
-
-    public interface ICDTicker<Unit>
-    {
-        Unit Now { get; }
-        /// <summary>
-        /// 检查计时器当前时刻与记录时刻比较，是不是大于perSpan, 
-        /// </summary>
-        /// <param name="stamp">记录时刻</param>
-        /// <param name="perSpan">间隔时长</param>
-        /// <returns>
-        /// 完成间隔次数,最后检查点，距离下次完成时长
-        /// </returns>
-        (int CompleteCount, Unit CheckStamp, Unit Next) Check(Unit stamp, Unit perSpan);
-    }
-
-    public class CDTimer<Unit> : ICDTimer<Unit>
+    public class CDTimer<Unit> : IUseable<Unit>, ITimeControlable
     {
         static readonly List<CDTimer<Unit>> pool = new List<CDTimer<Unit>>();
         static readonly List<WeakReference<CDTimer<Unit>>> pool2
@@ -234,7 +148,7 @@ namespace Megumin
             throw new NotImplementedException();
         }
 
-
+        public bool IsUsing { get; set; }
     }
 }
 
