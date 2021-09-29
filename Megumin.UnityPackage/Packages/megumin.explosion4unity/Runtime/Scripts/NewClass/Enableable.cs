@@ -1,32 +1,37 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 namespace Megumin
 {
+    /// <summary>
+    /// 可启用的
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class Activeable<T>
+    public class Enableable<T>
     {
         [SerializeField]
-        public bool Active = true;
+        [UnityEngine.Serialization.FormerlySerializedAs("Active")]
+        public bool Enabled = true;
         [SerializeField]
         public T Value;
 
-        public Activeable(bool active = true, T def = default)
+        public Enableable(bool enabled = true, T def = default)
         {
-            Active = active;
+            Enabled = enabled;
             Value = def;
         }
 
-        public static implicit operator T(Activeable<T> activeable)
+        public static implicit operator T(Enableable<T> activeable)
         {
             return activeable.Value;
         }
 
-        public static implicit operator bool(Activeable<T> activeable)
+        public static implicit operator bool(Enableable<T> activeable)
         {
-            return activeable?.Active ?? false;
+            return activeable?.Enabled ?? false;
         }
 
         //public static implicit operator Nullable<T>(Activeable<T> activeable)
@@ -44,8 +49,8 @@ namespace UnityEditor.Megumin
     using global::Megumin;
     using UnityEditor;
 
-    [CustomPropertyDrawer(typeof(Activeable<>), true)]
-    internal sealed class ActiveableDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(Enableable<>), true)]
+    internal sealed class EnableableDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -61,7 +66,7 @@ namespace UnityEditor.Megumin
 
             var valuePosition = position;
             valuePosition.width -= 20;
-            SerializedProperty toggle = property.FindPropertyRelative("Active");
+            SerializedProperty toggle = property.FindPropertyRelative("Enabled");
             toggle.boolValue = GUI.Toggle(togglePosition, toggle.boolValue, GUIContent.none);
 
             GUI.enabled = toggle.boolValue;
