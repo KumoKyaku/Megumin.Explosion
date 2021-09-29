@@ -26,10 +26,17 @@ public class PackageWizard : EditorWindow
 
     readonly GUIContent m_NameContent = new GUIContent("PackageName");
     string InputPackageName = "";
+    bool CreateRuntimeAsmdef = true;
+    bool CreateEditorAsmdef = false;
+
     void OnGUI()
     {
         InputPackageName = EditorGUILayout.TextField(m_NameContent, InputPackageName);
         var path = Path.GetFullPath($"{MeguminUtility4Unity.PackagesPath}/{InputPackageName}");
+
+        CreateRuntimeAsmdef = EditorGUILayout.Toggle("CreateRuntimeAsmdef", CreateRuntimeAsmdef);
+        CreateEditorAsmdef = EditorGUILayout.Toggle("CreateEditorAsmdef", CreateEditorAsmdef);
+
         if (GUILayout.Button("Create", GUILayout.Width(60f)))
         {
             CreatePackageFolder(path);
@@ -106,8 +113,69 @@ $@"
 
 
 ";
-            
+
             File.WriteAllText(path + "/package.json", packageInfo);
+
+            if (CreateRuntimeAsmdef)
+            {
+                string runtimeasmdef =
+$@"{{
+    ""name"": ""{InputPackageName}"",
+    ""rootNamespace"": """",
+    ""references"": [],
+    ""includePlatforms"": [],
+    ""excludePlatforms"": [],
+    ""allowUnsafeCode"": true,
+    ""overrideReferences"": false,
+    ""precompiledReferences"": [],
+    ""autoReferenced"": true,
+    ""defineConstraints"": [],
+    ""versionDefines"": [],
+    ""noEngineReferences"": false
+}}";
+
+                File.WriteAllText(path + "/Runtime" + $"/{InputPackageName}.asmdef", runtimeasmdef);
+
+                //无法找到构造函数
+                //AssemblyDefinitionAsset assembly =
+                //    System.Activator.CreateInstance(typeof(AssemblyDefinitionAsset),
+                //    BindingFlags.NonPublic| BindingFlags.Instance,
+                //    runtimeasmdef)
+                //    as AssemblyDefinitionAsset;
+
+                //CreateAsset无法创建.asmdef
+                //TextAsset asset = new TextAsset(runtimeasmdef);
+                //AssetDatabase.CreateAsset(asset, path + "/Runtime" + $"/{InputPackageName}.asmdef");
+                //AssetDatabase.Refresh();
+
+                //无法取得guid
+                //AssetDatabase.ImportAsset(path + "/Runtime" + $"/{InputPackageName}.asmdef");
+                //var guid = AssetDatabase.GUIDFromAssetPath(path + "/Runtime" + $"/{InputPackageName}.asmdef");
+                //Debug.Log(guid);
+            }
+
+            if (CreateEditorAsmdef)
+            {
+                string editorasmdef =
+$@"{{
+    ""name"": ""{InputPackageName}.Editor"",
+    ""rootNamespace"": """",
+    ""references"": [
+        ""{(CreateRuntimeAsmdef ? InputPackageName : "")}""
+    ],
+    ""includePlatforms"": [],
+    ""excludePlatforms"": [],
+    ""allowUnsafeCode"": true,
+    ""overrideReferences"": false,
+    ""precompiledReferences"": [],
+    ""autoReferenced"": true,
+    ""defineConstraints"": [],
+    ""versionDefines"": [],
+    ""noEngineReferences"": false
+}}";
+
+                File.WriteAllText(path + "/Editor" + $"/{InputPackageName}.Editor.asmdef", editorasmdef);
+            }
         }
 
 
