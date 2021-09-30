@@ -18,21 +18,38 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
     string[] SupportNames;
     int index = 0;
     Type[] SupportTypes;
+    HashSet<Type> allTypes;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        if (SupportNames == null)
+        if (allTypes == null)
         {
+            allTypes = new HashSet<Type>();
             var customattributes = this.fieldInfo.GetCustomAttributes(true);
-            Megumin.SupportTypesAttribute ab = customattributes.FirstOrDefault(e => e is Megumin.SupportTypesAttribute) as Megumin.SupportTypesAttribute;
-            if (ab != null)
+            var abs = from cab in customattributes
+                      where cab is Megumin.SupportTypesAttribute
+                      let sa = cab as Megumin.SupportTypesAttribute
+                      select sa;
+
+            foreach (var ab in abs)
             {
-                SupportNames = new string[ab.Support.Length];
-                SupportTypes = ab.Support;
-                for (int i = 0; i < SupportTypes.Length; i++)
+                if (ab != null && ab.Support != null)
                 {
-                    SupportNames[i] = SupportTypes[i].Name;
+                    for (int i = 0; i < ab.Support.Length; i++)
+                    {
+                        allTypes.Add(ab.Support[i]);
+                    }
                 }
+            }
+
+            int index = 0;
+            SupportNames = new string[allTypes.Count];
+            SupportTypes = new Type[allTypes.Count];
+            foreach (var item in allTypes)
+            {
+                SupportNames[index] = item.Name;
+                SupportTypes[index] = item;
+                index++;
             }
         }
 

@@ -45,13 +45,19 @@ namespace Megumin
         }
     }
 
-
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class SupportTypesAttribute : Attribute
     {
         public Type[] Support { get; set; }
         public SupportTypesAttribute(params Type[] types)
         {
             Support = types;
+        }
+
+        public SupportTypesAttribute(Type type)
+        {
+            Support = new Type[1];
+            Support[0] = type;
         }
     }
 }
