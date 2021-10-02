@@ -27,7 +27,7 @@ namespace Megumin
         {
             var x = time / XScale;
             x += XOffset;
-            var y = Curve.Evaluate(x);
+            var y = Curve?.Evaluate(x) ?? 0f;
             y += YOffset;
             y *= YScale;
             return y;

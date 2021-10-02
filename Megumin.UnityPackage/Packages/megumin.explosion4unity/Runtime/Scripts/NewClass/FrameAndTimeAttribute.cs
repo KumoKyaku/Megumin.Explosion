@@ -12,11 +12,45 @@ namespace UnityEngine
     /// </summary>
     public class FrameAndTimeAttribute : PropertyAttribute
     {
+        public enum TimeUnit
+        {
+            Second,
+            Millisecond,
+        }
+
+        public enum SaveData
+        {
+            Frame,
+            Time,
+        }
+
+        public TimeUnit ShowMode { get; set; } = TimeUnit.Second;
+        public SaveData Data { get; set; } = SaveData.Frame;
+
         public int FrameRate { get; set; } = 60;
 
-        public FrameAndTimeAttribute(int frameRate = 60)
+        public FrameAndTimeAttribute(int frameRate = 60,
+                                     SaveData data = SaveData.Frame,
+                                     TimeUnit timeUnit = TimeUnit.Second)
         {
             FrameRate = frameRate;
+            Data = data;
+            ShowMode = timeUnit;
+        }
+    }
+
+    /// <summary>
+    /// 默认60帧,保存为int毫秒数
+    /// </summary>
+    public class FrameAndTime2Attribute : FrameAndTimeAttribute
+    {
+        public FrameAndTime2Attribute(int frameRate = 60,
+                                 SaveData data = SaveData.Time,
+                                 TimeUnit timeUnit = TimeUnit.Millisecond)
+        {
+            FrameRate = frameRate;
+            Data = data;
+            ShowMode = timeUnit;
         }
     }
 }
@@ -26,11 +60,12 @@ namespace UnityEngine
 
 namespace UnityEditor.Megumin
 {
-    [CustomPropertyDrawer(typeof(FrameAndTimeAttribute))]
+    [CustomPropertyDrawer(typeof(FrameAndTimeAttribute), true)]
     internal sealed class Frame2TimeDrawer : PropertyDrawer
     {
         public bool inputmode = false;
         static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType == SerializedPropertyType.Integer)
@@ -42,34 +77,121 @@ namespace UnityEditor.Megumin
                 togglePosition.x += togglePosition.width - 14;
                 togglePosition.width = 16;
 
-                var timePosition = position;
-                timePosition.x += position.width - 100;
-                timePosition.width = 80;
+                var exShow = position;
+                exShow.x += position.width - 100;
+                exShow.width = 80;
+
+                //const int ShowUnitLen = 16;
+                //int offset = 24;
+                //var exShowUnitPos = position;
+                //exShowUnitPos.x += position.width - (offset + ShowUnitLen);
+                //exShowUnitPos.width = ShowUnitLen;
+
 
                 inputmode = GUI.Toggle(togglePosition, inputmode, GUIContent.none);
-                FrameAndTimeAttribute frame2TimeAttribute = (FrameAndTimeAttribute)attribute;
 
-                var rate = frame2TimeAttribute.FrameRate;
-                var value = property.intValue;
-                var time = ((float)value / rate);
+                FrameAndTimeAttribute attri = (FrameAndTimeAttribute)attribute;
 
-                if (inputmode)
+                var isInputFrameMode = true;
+                if (attri.Data == FrameAndTimeAttribute.SaveData.Frame)
                 {
-                    GUI.enabled = false;
-                    EditorGUI.PropertyField(propertyPosition, property, label);
-                    GUI.enabled = true;
-
-                    time = EditorGUI.FloatField(timePosition, time);
-                    var f = (int)(time * rate);
-                    property.intValue = f;
+                    isInputFrameMode = !inputmode;
                 }
-                else
+                if (attri.Data == FrameAndTimeAttribute.SaveData.Time)
                 {
-                    EditorGUI.PropertyField(propertyPosition, property, label);
-                    GUI.enabled = false;
-                    EditorGUI.FloatField(timePosition, time);
-                    GUI.enabled = true;
+                    isInputFrameMode = inputmode;
                 }
+
+                var rate = attri.FrameRate;
+
+                switch (attri.Data)
+                {
+                    case FrameAndTimeAttribute.SaveData.Frame:
+                        {
+                            var frame = property.intValue;
+                            var time = ((float)frame / rate);
+                            var mstime = (int)((float)frame * 1000 / rate + 0.5f);
+
+                            if (isInputFrameMode)
+                            {
+                                //帧数输入模式
+                                EditorGUI.PropertyField(propertyPosition, property, label);
+                                GUI.enabled = false;
+                                switch (attri.ShowMode)
+                                {
+                                    case FrameAndTimeAttribute.TimeUnit.Second:
+                                        EditorGUI.FloatField(exShow, time);
+                                        break;
+                                    case FrameAndTimeAttribute.TimeUnit.Millisecond:
+                                        EditorGUI.IntField(exShow, mstime);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                GUI.enabled = true;
+                            }
+                            else
+                            {
+                                //时间输入模式
+                                GUI.enabled = false;
+                                EditorGUI.PropertyField(propertyPosition, property, label);
+                                GUI.enabled = true;
+
+                                switch (attri.ShowMode)
+                                {
+                                    case FrameAndTimeAttribute.TimeUnit.Second:
+                                        {
+                                            time = EditorGUI.FloatField(exShow, time);
+                                            var f = (int)(time * rate + 0.5f);
+                                            property.intValue = f;
+                                        }
+                                        break;
+                                    case FrameAndTimeAttribute.TimeUnit.Millisecond:
+                                        {
+                                            mstime = EditorGUI.IntField(exShow, mstime);
+                                            var f = (int)(mstime * rate / 1000 + 0.5f);
+                                            property.intValue = f;
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                    case FrameAndTimeAttribute.SaveData.Time:
+                        {
+                            var mstime = property.intValue;
+                            var frame = (int)(mstime * rate / 1000 + 0.5f);
+
+                            if (isInputFrameMode)
+                            {
+                                //帧数输入模式
+                                GUI.enabled = false;
+                                EditorGUI.PropertyField(propertyPosition, property, label);
+                                GUI.enabled = true;
+                                frame = EditorGUI.IntField(exShow, frame);
+                                mstime = (int)((float)frame * 1000 / rate + 0.5f);
+                                property.intValue = mstime;
+                            }
+                            else
+                            {
+                                //时间输入模式
+                                GUI.enabled = true;
+                                EditorGUI.PropertyField(propertyPosition, property, label);
+                                GUI.enabled = false;
+                                EditorGUI.IntField(exShow, frame);
+                                GUI.enabled = true;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                //GUI.enabled = true;
+                //EditorGUI.LabelField(exShowUnitPos, "t");
+                //GUI.enabled = true;
             }
             else
             {
