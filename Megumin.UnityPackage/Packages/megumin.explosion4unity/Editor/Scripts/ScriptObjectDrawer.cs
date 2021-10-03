@@ -8,7 +8,11 @@ using System;
 using System.Linq;
 using UnityEngine.UIElements;
 
+#if DISABLE_SCROBJ_DRAWER
+
+#else
 [CustomPropertyDrawer(typeof(ScriptableObject), true)]
+#endif
 public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
 {
     static GUIStyle left = new GUIStyle("minibuttonleft");

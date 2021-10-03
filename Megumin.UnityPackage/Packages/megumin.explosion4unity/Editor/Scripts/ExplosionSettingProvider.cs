@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.SettingsManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Linq;
 
 [InitializeOnLoad]
 public class ExplosionSettingProvider : SettingsProvider
@@ -33,9 +34,58 @@ public class ExplosionSettingProvider : SettingsProvider
         public Value(string key, T value)
             : base(ExplosionSettingProvider.settings, key, value, SettingsScope.User)
         { }
+
+
+    }
+
+    class SymbolValue : Value<bool>
+    {
+        public SymbolValue(string key, bool value) : base(key, value)
+        {
+        }
+
+        public void DrawSymbol(string searchContext)
+        {
+            var old = value;
+            value = SettingsGUILayout.SearchableToggle(key, value, searchContext);
+
+            if (value != old)
+            {
+                if (value)
+                {
+                    PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.Standalone, out var array);
+
+                    if (!array.Contains(key))
+                    {
+                        var list = array.ToList();
+                        list.Add(key);
+                        array = list.ToArray();
+                        PlayerSettings.SetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.Standalone, array);
+                        Debug.Log($"Add Scripting Define Symbol [{key}]");
+                    }
+                }
+                else
+                {
+                    PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.Standalone, out var array);
+
+                    if (array.Contains(key))
+                    {
+                        var list = array.ToList();
+                        list.Remove(key);
+                        array = list.ToArray();
+                        PlayerSettings.SetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.Standalone, array);
+                        Debug.Log($"Remove Scripting Define Symbol [{key}]");
+                    }
+                }
+            }
+
+
+        }
     }
 
     static Value<bool> Nagetive = new Value<bool>("InspectorNavigation", true);
+    static SymbolValue DISABLE_SCROBJ_DRAWER = new SymbolValue("DISABLE_SCROBJ_DRAWER", false);
+    static SymbolValue DISABLE_EDITORBUTTONATTRIBUTE = new SymbolValue("DISABLE_EDITORBUTTONATTRIBUTE", false);
 
     public override void OnGUI(string searchContext)
     {
@@ -56,6 +106,9 @@ public class ExplosionSettingProvider : SettingsProvider
             }
         }
 
+        DISABLE_SCROBJ_DRAWER.DrawSymbol(searchContext);
+        DISABLE_EDITORBUTTONATTRIBUTE.DrawSymbol(searchContext);
+
         if (GUILayout.Button("Foward"))
         {
             InspectorNavigation.Forward();
@@ -64,6 +117,11 @@ public class ExplosionSettingProvider : SettingsProvider
         if (GUILayout.Button("Back"))
         {
             InspectorNavigation.Back();
+        }
+
+        if (GUILayout.Button("Log"))
+        {
+            Debug.Log("Preferences");
         }
     }
 

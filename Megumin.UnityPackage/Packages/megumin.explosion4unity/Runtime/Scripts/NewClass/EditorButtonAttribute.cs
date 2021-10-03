@@ -372,9 +372,13 @@ namespace UnityEditor
 
 #if UNITY_EDITOR
 
+#if DISABLE_EDITORBUTTONATTRIBUTE
+
+#else
 [ExcludeFromObjectFactory]
 [CanEditMultipleObjects]
 [CustomEditor(typeof(Object), true)]
+#endif
 public class EditorButton : Editor
 {
     public override void OnInspectorGUI()
