@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// 将string字段添加GUID功能.
+    /// </summary>
+    /// <remarks>使用string GUID做key时,Ctrl + D 复制会出现相同ID,不好用</remarks>
     public class GUIDAttribute : PropertyAttribute
     {
 
