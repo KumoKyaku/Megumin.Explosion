@@ -1,12 +1,10 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using System.IO;
-using System.Text.RegularExpressions;
-using System;
-using System.Linq;
-using UnityEngine.UIElements;
 
 #if DISABLE_SCROBJ_DRAWER
 
@@ -78,7 +76,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
 
             if (GUI.Button(leftPosotion, "New", left))
             {
-                CreateInstance(property, obj.GetType().Name);
+                CreateInstance(property, obj.GetType());
             }
 
             if (GUI.Button(rightPosition, "Clone", right))
@@ -111,7 +109,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
 
                 if (GUI.Button(leftPosotion, "New", left))
                 {
-                    CreateInstance(property, targetType.Name);
+                    CreateInstance(property, targetType);
                 }
             }
             else
@@ -121,10 +119,35 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
 
                 if (GUI.Button(leftPosotion, "New", left))
                 {
-                    var ret = typeRegex.Match(property.type);
-                    if (ret.Success)
+                    var fieldType = fieldInfo.FieldType;
+                    if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
                     {
-                        CreateInstance(property, ret.Groups[1].Value);
+                        var type = fieldType.GetGenericArguments()[0];
+                        CreateInstance(property, type);
+                    }
+                    else if (fieldType.IsSubclassOf(typeof(Array)))
+                    {
+                        var type = fieldType.GetElementType();
+                        CreateInstance(property, type);
+                    }
+                    else
+                    {
+                        var ret = typeRegex.Match(property.type);
+                        if (ret.Success)
+                        {
+                            if (ret.Groups[1].Value == fieldType.Name)
+                            {
+                                CreateInstance(property, fieldType);
+                            }
+                            else
+                            {
+                                CreateInstance(property, ret.Groups[1].Value);
+                            }
+                        }
+                        else
+                        {
+                            CreateInstance(property, fieldType);
+                        }
                     }
                 }
 
@@ -152,6 +175,17 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
     private static void CreateInstance(SerializedProperty property, string type)
     {
         var instance = ScriptableObject.CreateInstance(type);
+        CreateInstanceAsset(property, instance);
+    }
+
+    private static void CreateInstance(SerializedProperty property, Type type)
+    {
+        var instance = ScriptableObject.CreateInstance(type);
+        CreateInstanceAsset(property, instance);
+    }
+
+    private static void CreateInstanceAsset(SerializedProperty property, ScriptableObject instance)
+    {
         var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
         if (string.IsNullOrEmpty(path))
         {
@@ -164,7 +198,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
         }
         var dir = Path.GetDirectoryName(path);
         var ex = ".asset";
-        path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{type}", ex);
+        path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}", ex);
 
         AssetDatabase.CreateAsset(instance, path);
         AssetDatabase.Refresh();
