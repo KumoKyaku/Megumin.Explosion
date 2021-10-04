@@ -13,18 +13,19 @@ namespace UnityEngine
         public static string ProjectPath { get; } = GetProjectFolderPath("");
         public static string PackagesPath { get; } = GetProjectFolderPath("Packages");
         public static string LibraryPath { get; } = GetProjectFolderPath("Library");
+        public static string LibraryPackageCachePath { get; } = GetProjectFolderPath("Library/PackageCache");
         public static string LogsPath { get; } = GetProjectFolderPath("Logs");
         public static string TempPath { get; } = GetProjectFolderPath("Temp");
         public static string UserSettingsPath { get; } = GetProjectFolderPath("UserSettings");
-        
+
         public static string BuildPCMonoPath { get; } = GetProjectFolderPath("Build/PCMomo");
         public static string BuildPCIL2CPPPath { get; } = GetProjectFolderPath("Build/PCIL2CPP");
         public static string BuildAndroidPath { get; } = GetProjectFolderPath("Build/Android");
         public static string BuildiOSPath { get; } = GetProjectFolderPath("Build/iOS");
         public static string BuildPS4Path { get; } = GetProjectFolderPath("Build/PS4");
         public static string BuildPS5Path { get; } = GetProjectFolderPath("Build/PS5");
-        
-        
+
+
         public static string ProjectSettingsPath { get; } = GetProjectFolderPath("ProjectSettings");
         public static string ConsoleLogPath { get; } = Path.GetDirectoryName(Application.consoleLogPath);
 
