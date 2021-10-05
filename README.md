@@ -59,6 +59,8 @@ Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explos
 - ReadOnlyInInspectorAttribute，在Inpector显示为只读。
 - HelpBoxAttribute，显示一个帮助Label。
 - GUIDAttribute，将一个string自动填入guid。
+- EnumQueueAttribute,一个像renderqueue那样的属性抽屉.  
+  ![CancelQueueEffect](README.assets/CancelQueueEffect.gif)
 
 
 # [依赖关系](Image/dependencies.xml)
