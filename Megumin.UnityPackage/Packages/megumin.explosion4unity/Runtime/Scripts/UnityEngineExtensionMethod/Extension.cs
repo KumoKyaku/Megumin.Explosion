@@ -172,7 +172,7 @@ namespace UnityEngine
             orignal = orignal.Replace("$(localRotation)", transform.localRotation.ToString());
             orignal = orignal.Replace("$(localEulerAngles)", transform.localEulerAngles.ToString());
 
-            orignal = orignal.Replace("$(parent)", transform.parent.name);
+            orignal = orignal.Replace("$(parent)", transform.parent?.name);
         }
 
         private static void MacroGameObject(GameObject gameObject, ref string orignal)

@@ -19,7 +19,7 @@ namespace Megumin
 
         public int FontSize = 18;
         public Color FontColor = Color.white;
-
+        public Vector3 Offset = Vector3.zero;
         public GUIStyle LabelStyle;
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Megumin
             InitGlobalToggle();
             if (ShowOnRuntime && Camera.main && GlobalToggle)
             {
-                var pos = Camera.main.WorldToScreenPoint(transform.position);
+                var pos = Camera.main.WorldToScreenPoint(transform.position + Offset);
                 if (pos.z > 0)
                 {
                     string text = cacheText;
@@ -125,7 +125,7 @@ namespace Megumin
 
                 if (UseStyle)
                 {
-                    UnityEditor.Handles.Label(transform.position, text, LabelStyle);
+                    UnityEditor.Handles.Label(transform.position + Offset, text, LabelStyle);
                 }
                 else
                 {
@@ -133,7 +133,7 @@ namespace Megumin
                     {
                         using (new ValueGUIFontSize(FontSize))
                         {
-                            UnityEditor.Handles.Label(transform.position, text);
+                            UnityEditor.Handles.Label(transform.position + Offset, text);
                         }
                     }
                 }
