@@ -46,14 +46,20 @@ Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explos
 - HexColor，十六进制颜色，支持字符串解析。  
   ![image-20210921190022944](README.assets/image-20210921190022944.png)
 - HSVColor  
-  ![image-20210921190056680](README.assets/image-20210921190056680.png)
+  ![image-20210921190056680](README.assets/image-20210921190056680.png) 
 - Pref，支持用户配置功能。
-- Overrideable，泛型可以重写字段，支持一个默认值和重写值。
-- iint，支持正负无穷的int类型。
+- Overrideable，泛型可以重写字段，支持一个默认值和重写值。    
+  ![Overrideable](README.assets/Overrideable.gif)
+- Enableable,泛型可快关字段.    
+  ![Enableable](README.assets/Enableable.gif)
+- iint，支持正负无穷的int类型。  
+  
 
 特性：  
-- Options2StringAttribute，将一个类里的string字段在Inspector中显示为下拉菜单。
-- PathAttribute，string字段快速路径序列化。
+- Options2StringAttribute，将一个类里的string字段在Inspector中显示为下拉菜单。  
+  ![image-20211006123217496](README.assets/image-20211006123217496.png)
+- PathAttribute，string字段快速路径序列化。  
+  ![image-20211006123348619](README.assets/image-20211006123348619.png)
 - EditorButtonAttribute，将函数之间绘制在Inpector面板，支持参数。
 - Enum2StringAttribute，在Inpector将string绘制为Enum。
 - ReadOnlyInInspectorAttribute，在Inpector显示为只读。

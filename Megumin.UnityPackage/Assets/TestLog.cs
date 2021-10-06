@@ -19,6 +19,7 @@ public class TestLog : MonoBehaviour
     public string path;
     public HSVColor HSVColor;
     public Megumin.Overridable<string> overridable = new Megumin.Overridable<string>("test");
+    public Enableable<string> Enableable = new Enableable<string>(false, "可开关字段");
     void Start()
     {
         string message = ColorUtility.ToHtmlStringRGBA(Color.green);

@@ -43,7 +43,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 9411622396fd1724799b4a8ef5d5d5f4,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +119,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -202,6 +205,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -231,6 +235,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2022781346}
+          m_TargetAssemblyTypeName: 
           m_MethodName: TestLog
           m_Mode: 1
           m_Arguments:
@@ -263,6 +268,13 @@ MonoBehaviour:
     Saturation: 1
     Value: 2
     Alpha: 1
+  overridable:
+    defaultValue: test
+    IsOverride: 0
+    MyOverrideValue: "\u53EF\u91CD\u5199\u9ED8\u8BA4\u503C\u5B57\u6BB5"
+  Enableable:
+    Enabled: 0
+    Value: "\u53EF\u5F00\u5173\u5B57\u6BB5"
   Optionsss: Tset22
 --- !u!1001 &2934216655231609562
 PrefabInstance:
