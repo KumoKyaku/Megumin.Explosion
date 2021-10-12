@@ -276,21 +276,8 @@ public static class StringExtension_E68DD56066C94F2286AF4BD18126A406
         return tmp < radix;
     }
 
-    /// <summary>
-    /// 安全替换路径中的文件名，会检测是否已经存在。
-    /// </summary>
-    /// <param name="path"></param>
-    /// <param name="newFileName"></param>
-    /// <returns></returns>
-    public static string ReplaceFileName(this string path, string newFileName = "NewInstance")
-    {
-        var dir = Path.GetDirectoryName(path);
-        var ex = Path.GetExtension(path);
-        return dir.CreateFileName(newFileName, ex);
-    }
-
-    static readonly Regex EndNumber = new Regex(@"(\d+)$");
-    static readonly Regex EndNumber2 = new Regex(@"\((\d+)\)$");
+    public static readonly Regex EndNumber = new Regex(@"(\d+)$");
+    public static readonly Regex EndNumber2 = new Regex(@"\((\d+)\)$");
     public static bool GetEndNumber(this string orignal, out int number)
     {
         number = default;
@@ -311,60 +298,97 @@ public static class StringExtension_E68DD56066C94F2286AF4BD18126A406
 
         return false;
     }
-
-    /// <summary>
-    /// 如果文件命以数字或者括号数字结尾，则数字加一
-    /// </summary>
-    /// <param name="fileName"></param>
-    /// <returns></returns>
-    public static string FileNameAddOne(this string fileName)
-    {
-        var result = EndNumber.Match(fileName);
-        if (result.Success)
-        {
-            var number = int.Parse(result.Groups[1].Value);
-            var f = fileName.Substring(0, fileName.Length - result.Value.Length);
-            f += (number + 1);
-            return f;
-        }
-
-        var result2 = EndNumber2.Match(fileName);
-        if (result2.Success)
-        {
-            var number = int.Parse(result2.Groups[1].Value);
-            var f = fileName.Substring(0, fileName.Length - result2.Value.Length);
-            f += $"({number + 1})";
-            return f;
-        }
-
-        fileName += " (1)";
-        return fileName;
-    }
-
-    /// <summary>
-    /// fileName 如果存在，自增
-    /// </summary>
-    /// <param name="dir"></param>
-    /// <param name="fileName"></param>
-    /// <param name="ex">需要前面有 . </param>
-    /// <returns></returns>
-    public static string CreateFileName(this string dir, string fileName, string ex)
-    {
-        var path = Path.Combine(dir, $"{fileName}{ex}");
-        if (!File.Exists(path))
-        {
-            return path;
-        }
-
-        int cloneCount = 1;
-        do
-        {
-            path = Path.Combine(dir, $"{fileName} ({cloneCount}){ex}");
-            cloneCount++;
-        } while (File.Exists(path));
-        return path;
-    }
 }
 
+namespace System.IO
+{
+    using static StringExtension_E68DD56066C94F2286AF4BD18126A406;
 
+    public static class StringExtension_FA3412521A22430AAAF2BB15471A5277
+    {
+        /// <summary>
+        /// 安全替换路径中的文件名，会检测是否已经存在。
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="newFileName"></param>
+        /// <returns></returns>
+        public static string ReplaceFileName(this string path, string newFileName = "NewInstance")
+        {
+            var dir = Path.GetDirectoryName(path);
+            var ex = Path.GetExtension(path);
+            return dir.CreateFileName(newFileName, ex);
+        }
+
+        /// <summary>
+        /// 如果文件命以数字或者括号数字结尾，则数字加一
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static string FileNameAddOne(this string fileName)
+        {
+            var result = EndNumber.Match(fileName);
+            if (result.Success)
+            {
+                var number = int.Parse(result.Groups[1].Value);
+                var f = fileName.Substring(0, fileName.Length - result.Value.Length);
+                f += (number + 1);
+                return f;
+            }
+
+            var result2 = EndNumber2.Match(fileName);
+            if (result2.Success)
+            {
+                var number = int.Parse(result2.Groups[1].Value);
+                var f = fileName.Substring(0, fileName.Length - result2.Value.Length);
+                f += $"({number + 1})";
+                return f;
+            }
+
+            fileName += " (1)";
+            return fileName;
+        }
+
+        public static string AutoFileName(this string fileName, string dir, string ex)
+        {
+            var path = Path.Combine(dir, $"{fileName}{ex}");
+            if (!File.Exists(path))
+            {
+                return fileName;
+            }
+
+            string newFName = fileName.FileNameAddOne();
+            path = Path.Combine(dir, $"{newFName}{ex}");
+            while (File.Exists(path))
+            {
+                newFName = newFName.FileNameAddOne();
+                path = Path.Combine(dir, $"{newFName}{ex}");
+            }
+            return newFName;
+        }
+
+        /// <summary>
+        /// fileName 如果存在，自增
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="fileName"></param>
+        /// <param name="ex">需要前面有 . </param>
+        /// <returns></returns>
+        public static string CreateFileName(this string dir, string fileName, string ex)
+        {
+            var path = Path.Combine(dir, $"{fileName}{ex}");
+            if (!File.Exists(path))
+            {
+                return path;
+            }
+
+            int cloneCount = 1;
+            do
+            {
+                path = Path.Combine(dir, $"{fileName} ({cloneCount}){ex}");
+                cloneCount++;
+            } while (File.Exists(path));
+            return path;
+        }
+    }
+}
 

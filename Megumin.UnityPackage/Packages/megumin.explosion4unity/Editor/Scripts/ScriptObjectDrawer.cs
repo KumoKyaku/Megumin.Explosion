@@ -187,27 +187,17 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                         instance = ScriptableObject.CreateInstance(TName);
                     }
 
-                    var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
-                    string dir = Root;
-                    if (!string.IsNullOrEmpty(path))
-                    {
-                        dir = Path.GetDirectoryName(path);
-                    }
-                    else
-                    {
-                        var scene = EditorSceneManager.GetActiveScene();
-                        if (scene.path != null)
-                        {
-                            dir = Path.GetDirectoryName(scene.path);
-                        }
-                    }
-                    var instancePath = EditorUtility.SaveFilePanel("Create", dir, TName, "asset");
 
-                    //if (instancePath.StartsWith(Application.dataPath))
-                    //{
-                    //    var t = instancePath.Replace(Application.dataPath, "");
-                    //    instancePath = Path.Combine(@"/Assets", t);
-                    //}
+                    string dir = GetDir(property);
+                    var fileName = $"{property.serializedObject.targetObject.name}_{instance.GetType().Name}";
+                    fileName = fileName.AutoFileName(dir, ".asset");
+                    var instancePath = EditorUtility.SaveFilePanel("Create", dir, fileName, "asset");
+                    instancePath = Path.GetFullPath(instancePath);
+
+                    if (instancePath.StartsWith(MeguminUtility4Unity.ProjectPath))
+                    {
+                        instancePath = instancePath.Replace(MeguminUtility4Unity.ProjectPath, "");
+                    }
 
                     AssetDatabase.CreateAsset(instance, instancePath);
                     AssetDatabase.Refresh();
@@ -231,6 +221,18 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
 
     const string Root = @"Assets";
     private static void CreateInstanceAsset(SerializedProperty property, ScriptableObject instance)
+    {
+        string dir = GetDir(property);
+
+        var ex = ".asset";
+        var path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}", ex);
+
+        AssetDatabase.CreateAsset(instance, path);
+        AssetDatabase.Refresh();
+        property.objectReferenceValue = instance;
+    }
+
+    private static string GetDir(SerializedProperty property)
     {
         var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
         if (string.IsNullOrEmpty(path))
@@ -257,12 +259,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
             }
         }
 
-        var ex = ".asset";
-        path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}", ex);
-
-        AssetDatabase.CreateAsset(instance, path);
-        AssetDatabase.Refresh();
-        property.objectReferenceValue = instance;
+        return dir;
     }
 }
 

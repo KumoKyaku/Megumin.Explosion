@@ -28,6 +28,30 @@
             字典扩展
             </summary>
         </member>
+        <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.ReplaceFileName(System.String,System.String)">
+            <summary>
+            安全替换路径中的文件名，会检测是否已经存在。
+            </summary>
+            <param name="path"></param>
+            <param name="newFileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.FileNameAddOne(System.String)">
+            <summary>
+            如果文件命以数字或者括号数字结尾，则数字加一
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.CreateFileName(System.String,System.String,System.String)">
+            <summary>
+            fileName 如果存在，自增
+            </summary>
+            <param name="dir"></param>
+            <param name="fileName"></param>
+            <param name="ex">需要前面有 . </param>
+            <returns></returns>
+        </member>
         <!-- Badly formed XML comment ignored for member "T:System.Megumin.Class.ExcuteGraph`1" -->
         <member name="M:System.Megumin.Class.SubGraphTemp1.EnterPoint1(System.Threading.CancellationToken)">
             <summary>
@@ -921,30 +945,6 @@
             <param name="c"></param>
             <param name="radix"></param>
             <param name="result"></param>
-            <returns></returns>
-        </member>
-        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.ReplaceFileName(System.String,System.String)">
-            <summary>
-            安全替换路径中的文件名，会检测是否已经存在。
-            </summary>
-            <param name="path"></param>
-            <param name="newFileName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.FileNameAddOne(System.String)">
-            <summary>
-            如果文件命以数字或者括号数字结尾，则数字加一
-            </summary>
-            <param name="fileName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.CreateFileName(System.String,System.String,System.String)">
-            <summary>
-            fileName 如果存在，自增
-            </summary>
-            <param name="dir"></param>
-            <param name="fileName"></param>
-            <param name="ex">需要前面有 . </param>
             <returns></returns>
         </member>
         <member name="T:StructExtension_28FDB7156FD24F39B5EA39D95892E328">
