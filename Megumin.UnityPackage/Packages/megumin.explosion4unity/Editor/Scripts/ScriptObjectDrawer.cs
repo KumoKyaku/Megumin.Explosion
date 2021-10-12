@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 #if DISABLE_SCROBJ_DRAWER
@@ -117,18 +118,20 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                 //没有设置特性
                 EditorGUI.PropertyField(propertyPosition, property, label);
 
-                if (GUI.Button(leftPosotion, "New", left))
+                (Type T, string TName) CalTargetType()
                 {
                     var fieldType = fieldInfo.FieldType;
+                    Type resultType = null;
+                    string resultTName = null;
                     if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
                     {
                         var type = fieldType.GetGenericArguments()[0];
-                        CreateInstance(property, type);
+                        resultType = type;
                     }
                     else if (fieldType.IsSubclassOf(typeof(Array)))
                     {
                         var type = fieldType.GetElementType();
-                        CreateInstance(property, type);
+                        resultType = type;
                     }
                     else
                     {
@@ -137,36 +140,78 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                         {
                             if (ret.Groups[1].Value == fieldType.Name)
                             {
-                                CreateInstance(property, fieldType);
+                                resultType = fieldType;
                             }
                             else
                             {
-                                CreateInstance(property, ret.Groups[1].Value);
+                                resultTName = ret.Groups[1].Value;
                             }
                         }
                         else
                         {
-                            CreateInstance(property, fieldType);
+                            resultType = fieldType;
                         }
+                    }
+
+                    if (resultType != null)
+                    {
+                        resultTName = resultType.Name;
+                    }
+
+                    return (resultType, resultTName);
+                }
+
+                if (GUI.Button(leftPosotion, "New", left))
+                {
+                    var (T, TName) = CalTargetType();
+                    if (T != null)
+                    {
+                        CreateInstance(property, T);
+                    }
+                    else
+                    {
+                        CreateInstance(property, TName);
                     }
                 }
 
                 if (GUI.Button(rightPosition, "Save", right))
                 {
-                    var ret = typeRegex.Match(property.type);
-                    if (ret.Success)
+                    var (T, TName) = CalTargetType();
+                    ScriptableObject instance = null;
+                    if (T != null)
                     {
-                        var type = ret.Groups[1].Value;
-                        var instance = ScriptableObject.CreateInstance(type);
-                        var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
-                        var dir = Path.GetDirectoryName(path);
-                        var instancePath = EditorUtility.SaveFilePanel("Create", dir, type, "asset");
-                        instancePath = "Assets" + instancePath.Replace(Application.dataPath, "");
-
-                        AssetDatabase.CreateAsset(instance, instancePath);
-                        AssetDatabase.Refresh();
-                        property.objectReferenceValue = instance;
+                        instance = ScriptableObject.CreateInstance(T);
                     }
+                    else
+                    {
+                        instance = ScriptableObject.CreateInstance(TName);
+                    }
+
+                    var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
+                    string dir = Root;
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        dir = Path.GetDirectoryName(path);
+                    }
+                    else
+                    {
+                        var scene = EditorSceneManager.GetActiveScene();
+                        if (scene.path != null)
+                        {
+                            dir = Path.GetDirectoryName(scene.path);
+                        }
+                    }
+                    var instancePath = EditorUtility.SaveFilePanel("Create", dir, TName, "asset");
+
+                    //if (instancePath.StartsWith(Application.dataPath))
+                    //{
+                    //    var t = instancePath.Replace(Application.dataPath, "");
+                    //    instancePath = Path.Combine(@"/Assets", t);
+                    //}
+
+                    AssetDatabase.CreateAsset(instance, instancePath);
+                    AssetDatabase.Refresh();
+                    property.objectReferenceValue = instance;
                 }
             }
         }
@@ -184,6 +229,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
         CreateInstanceAsset(property, instance);
     }
 
+    const string Root = @"Assets";
     private static void CreateInstanceAsset(SerializedProperty property, ScriptableObject instance)
     {
         var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
@@ -196,7 +242,21 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                 path = AssetDatabase.GetAssetPath(ori);
             }
         }
-        var dir = Path.GetDirectoryName(path);
+
+        string dir = Root;
+        if (!string.IsNullOrEmpty(path))
+        {
+            dir = Path.GetDirectoryName(path);
+        }
+        else
+        {
+            var scene = EditorSceneManager.GetActiveScene();
+            if (scene.path != null)
+            {
+                dir = Path.GetDirectoryName(scene.path);
+            }
+        }
+
         var ex = ".asset";
         path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}", ex);
 
