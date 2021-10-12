@@ -28,9 +28,21 @@ public class EditorButtonAttribute : PropertyAttribute
     public string ButtonName { get; set; }
     public bool UseTypeFullName { get; set; }
 
+    /// <summary>
+    /// <para/>true :编辑模式运行模式都有效.
+    /// <para/>false:仅运行模式有效.
+    /// </summary>
+    /// <value></value>
+    public bool ExecuteAlways { get; set; } = true;
+
     public EditorButtonAttribute(string buttonName = null)
     {
         ButtonName = buttonName;
+    }
+
+    public EditorButtonAttribute(bool executeAlways)
+    {
+        ExecuteAlways = executeAlways;
     }
 }
 
@@ -264,7 +276,7 @@ namespace UnityEditor
             return sb.ToString();
         }
 
-        public static void DrawButtonforMethod(Object target, MethodInfo methodInfo, EditorButtonState state)
+        public static void DrawButtonforMethod(Object target, MethodInfo methodInfo, EditorButtonState state, bool executeAlways)
         {
             ///方法绘制间隔
             EditorGUILayout.Space(1);
@@ -291,24 +303,27 @@ namespace UnityEditor
 
             if (clicked)
             {
-                object returnVal = methodInfo.Invoke(target, state.parameters);
-
-                if (returnVal is IEnumerator)
+                if (executeAlways || Application.isPlaying)
                 {
-                    if (target is MonoBehaviour mono)
+                    object returnVal = methodInfo.Invoke(target, state.parameters);
+
+                    if (returnVal is IEnumerator)
                     {
-                        mono.StartCoroutine((IEnumerator)returnVal);
+                        if (target is MonoBehaviour mono)
+                        {
+                            mono.StartCoroutine((IEnumerator)returnVal);
+                        }
                     }
-                }
-                else if (returnVal != null)
-                {
-                    Debug.Log("Method call result -> " + returnVal);
-                }
+                    else if (returnVal != null)
+                    {
+                        Debug.Log("Method call result -> " + returnVal);
+                    }
 
-                ///强制更新
-                if (target)
-                {
-                    target.InspectorForceUpdate();
+                    ///强制更新
+                    if (target)
+                    {
+                        target.InspectorForceUpdate();
+                    }
                 }
             }
         }
@@ -351,7 +366,7 @@ namespace UnityEditor
         {
             foreach (var draw in list)
             {
-                DrawButtonforMethod(editor.target, draw.Method, draw.State);
+                DrawButtonforMethod(editor.target, draw.Method, draw.State, draw.Attribute.ExecuteAlways);
             }
         }
 
