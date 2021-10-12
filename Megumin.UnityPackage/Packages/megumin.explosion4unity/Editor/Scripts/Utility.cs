@@ -97,6 +97,17 @@ public static partial class MeguminEditorUtility
             return (string)iconsPathProperty.GetValue(null, new object[] { });
 #endif
     }
+
+    /// <summary>
+    /// 反射同步IDE
+    /// </summary>
+    public static void SyncSolution()
+    {
+        Assembly assembly = Assembly.GetAssembly(typeof(EditorApplication));
+        var type = assembly.GetType("UnityEditor.SyncVS");
+        var sync = type.GetMethod("SyncSolution");
+        sync.Invoke(null, new object[0]);
+    }
 }
 
 

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.PackageManager.UI;
+using UnityEngine;
 using UnityEngine.UIElements;
-using System.IO;
 
 namespace Megumin
 {
@@ -76,6 +71,7 @@ namespace Megumin
 
                     Directory.Move(current.resolvedPath, desPath);
                     System.Diagnostics.Process.Start(desPath);
+                    MeguminEditorUtility.SyncSolution();
                 }
             }
 
@@ -99,6 +95,7 @@ namespace Megumin
 
                     Directory.Move(current.resolvedPath, desPath);
                     System.Diagnostics.Process.Start(desPath);
+                    MeguminEditorUtility.SyncSolution();
                 }
             }
 
