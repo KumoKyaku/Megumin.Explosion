@@ -26,6 +26,12 @@ using UnityEditor;
 public class EditorButtonAttribute : PropertyAttribute
 {
     public string ButtonName { get; set; }
+    public bool UseTypeFullName { get; set; }
+
+    public EditorButtonAttribute(string buttonName = null)
+    {
+        ButtonName = buttonName;
+    }
 }
 
 ///Editor
@@ -191,12 +197,19 @@ namespace UnityEditor
             return paramValue;
         }
 
-        public static string MethodParameterDisplayName(ParameterInfo parameterInfo)
+        public static string MethodParameterDisplayName(ParameterInfo parameterInfo, bool useFullName = false)
         {
             string parameterTypeDisplayName;
             if (!TypeDisplayName.TryGetValue(parameterInfo.ParameterType, out parameterTypeDisplayName))
             {
-                parameterTypeDisplayName = parameterInfo.ParameterType.ToString();
+                if (useFullName)
+                {
+                    parameterTypeDisplayName = parameterInfo.ParameterType.FullName;
+                }
+                else
+                {
+                    parameterTypeDisplayName = parameterInfo.ParameterType.Name;
+                }
             }
 
             return parameterTypeDisplayName + " " + parameterInfo.Name;
@@ -223,7 +236,7 @@ namespace UnityEditor
 
                     foreach (ParameterInfo parameter in methodParams)
                     {
-                        sb.Append(MethodParameterDisplayName(parameter));
+                        sb.Append(MethodParameterDisplayName(parameter, tmp.UseTypeFullName));
                         sb.Append(",");
                     }
 
