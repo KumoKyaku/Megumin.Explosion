@@ -282,8 +282,12 @@ namespace UnityEditor
             EditorGUILayout.Space(1);
 
             EditorGUILayout.BeginHorizontal();
+
+            GUI.enabled = methodInfo.GetParameters().Length > 0;
             var foldoutRect = EditorGUILayout.GetControlRect(GUILayout.Width(10.0f));
             state.opened = EditorGUI.Foldout(foldoutRect, state.opened, "");
+
+            GUI.enabled = true;
             string buttonName = MethodDisplayName(methodInfo);
             bool clicked = GUILayout.Button(buttonName, GUILayout.ExpandWidth(true));
             EditorGUILayout.EndHorizontal();

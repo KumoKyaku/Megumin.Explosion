@@ -185,6 +185,13 @@ namespace UnityEngine.UI
             CheckCacheDir();
             System.Diagnostics.Process.Start(dir);
         }
+
+        [ContextMenu(nameof(OpenLink))]
+        [EditorButton]
+        void OpenLink()
+        {
+            Application.OpenURL(url);
+        }
     }
 }
 
