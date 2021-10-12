@@ -1,17 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-
+﻿using System.IO;
 using UnityEditor;
-
 using UnityEngine;
-
 using static System.Environment;
 
 namespace Megumin
 {
     internal static class DirectoryUtility
     {
+        [MenuItem("Tools/Path/Log Application Detail")]
+        static void LogApplicationDetail()
+        {
+            Debug.Log(MeguminUtility.Detail<Application>());
+        }
+
+        [MenuItem("Tools/Path/Log EditorApplication Detail")]
+        static void LogEditorApplicationDetail()
+        {
+            Debug.Log(MeguminUtility.Detail<EditorApplication>());
+        }
+
         [MenuItem("Tools/Path/Log Environment SpecialFolder")]
         static void LogEnvironmentSpecialFolder()
         {
