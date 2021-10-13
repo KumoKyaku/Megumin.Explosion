@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityEngine;
 using static UnityEngine.Networking.UnityWebRequest;
 
 #if UNITY_EDITOR
 
 namespace UnityEditor.UI
 {
-    using System.Collections.Generic;
     using UnityEditor;
 
     [CustomEditor(typeof(UrlImage), true)]
@@ -84,6 +83,7 @@ namespace UnityEngine.UI
         /// 图片缓存目录
         /// </summary>
         static string dir = null;
+        private TaskCompletionSource<Sprite> GetSpriteSource;
 
         protected override void Start()
         {
@@ -158,9 +158,17 @@ namespace UnityEngine.UI
                     {
                         // Get downloaded asset bundle
                         var texture = DownloadHandlerTexture.GetContent(uwr);
-                        overrideSprite = Sprite.Create(texture,
-                        new Rect(0, 0, texture.width, texture.height),
-                        Vector2.one / 2);
+                        Sprite urlSprite = Sprite.Create(texture,
+                                                new Rect(0, 0, texture.width, texture.height),
+                                                Vector2.one / 2);
+                        overrideSprite = urlSprite;
+
+                        if (GetSpriteSource == null || GetSpriteSource.Task.IsCompleted)
+                        {
+                            GetSpriteSource = new TaskCompletionSource<Sprite>();
+                        }
+
+                        GetSpriteSource.TrySetResult(urlSprite);
 
                         if (!isLocalImage)
                         {
@@ -170,6 +178,15 @@ namespace UnityEngine.UI
                     }
                 }
             }
+        }
+
+        public Task<Sprite> GetUrlSprite()
+        {
+            if (GetSpriteSource == null)
+            {
+                GetSpriteSource = new TaskCompletionSource<Sprite>();
+            }
+            return GetSpriteSource.Task;
         }
 
         [EditorButton]
