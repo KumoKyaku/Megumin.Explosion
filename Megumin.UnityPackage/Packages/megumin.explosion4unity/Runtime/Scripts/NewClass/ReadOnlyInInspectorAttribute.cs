@@ -14,11 +14,16 @@
     [UnityEditor.CustomPropertyDrawer(typeof(ReadOnlyInInspectorAttribute))]
     public class LockedInInspectorAttributeDrawer : UnityEditor.PropertyDrawer
     {
+        public override float GetPropertyHeight(UnityEditor.SerializedProperty property, GUIContent label)
+        {
+            return UnityEditor.EditorGUI.GetPropertyHeight(property);
+        }
+
         public override void OnGUI(Rect position, UnityEditor.SerializedProperty property, GUIContent label)
         {
             using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
             {
-                UnityEditor.EditorGUI.PropertyField(position, property, label);
+                UnityEditor.EditorGUI.PropertyField(position, property, label, true);
             }
         }
     }
