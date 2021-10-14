@@ -125,7 +125,10 @@ namespace UnityEngine.UI
 
             if (fileName.Length > 100)
             {
-                Debug.LogWarning($"文件名[{fileName.Length}]太长,推荐使用短网址压缩。  \n {fileName}");
+
+#if UNITY_EDITOR || DEBUG
+                //Debug.Log($"文件名[{fileName.Length}]太长,推荐使用短网址压缩。  \n {fileName}");
+#endif
                 fileName = fileName.Substring(0, 100);
             }
 
