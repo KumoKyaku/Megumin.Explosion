@@ -18,6 +18,16 @@ namespace System.Collections.Generic
             return default;
         }
 
+        public static bool ValidIndex<T>(this IList<T> list, int index)
+        {
+            return index >= 0 && index < list.Count;
+        }
+
+        public static bool ValidIndex(this Array array, int index)
+        {
+            return index >= 0 && index < array.Length;
+        }
+
         public static T Random<T>(this ICollection<T> enumerable)
         {
             if (enumerable.Count > 0)
