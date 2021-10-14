@@ -18,7 +18,7 @@ namespace UnityEngine
         public static string TempPath { get; } = GetProjectFolderPath("Temp");
         public static string UserSettingsPath { get; } = GetProjectFolderPath("UserSettings");
 
-        public static string BuildPCMonoPath { get; } = GetProjectFolderPath("Build/PCMomo");
+        public static string BuildPCMonoPath { get; } = GetProjectFolderPath("Build/PCMono");
         public static string BuildPCIL2CPPPath { get; } = GetProjectFolderPath("Build/PCIL2CPP");
         public static string BuildAndroidPath { get; } = GetProjectFolderPath("Build/Android");
         public static string BuildiOSPath { get; } = GetProjectFolderPath("Build/iOS");
