@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Megumin.Syntax
+namespace Megumin.SyntaxTest
 {
     public interface ITestInterface<T>
     {
@@ -12,12 +12,11 @@ namespace Megumin.Syntax
         }
     }
 
-    public interface ITestInterface2 : ITestInterface<int>
-    {
+    public interface ITestInterface2 : ITestInterface<int> { }
 
-    }
+    public struct TestStruct : ITestInterface2 { }
 
-    public class SyntaxTest
+    public class SyntaxTest : MonoBehaviour
     {
         /// <summary>
         /// 默认接口实现与泛型
@@ -30,6 +29,16 @@ namespace Megumin.Syntax
         {
             t.Fun(1);
         }
+
+        public void Test2(TestStruct test)
+        {
+            //会不会导致装箱?
+            //会. https://docs.microsoft.com/zh-cn/dotnet/api/system.reflection.emit.opcodes.constrained?view=net-5.0
+            Test(test);
+        }
+
+        [EditorButton]
+        public void Test3() => Test2(default);
     }
 }
 
