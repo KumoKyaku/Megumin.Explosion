@@ -94,7 +94,8 @@ namespace UnityEditor
             {typeof(Color),DrawColorParameter},
             {typeof(Vector3),DrawVector3Parameter},
             {typeof(Vector2),DrawVector2Parameter},
-            {typeof(Quaternion),DrawQuaternionParameter}
+            {typeof(Quaternion),DrawQuaternionParameter},
+            {typeof(TimeSpan),DrawTimeSpanParameter}
         };
 
         public static Dictionary<Type, string> TypeDisplayName { get; } = new Dictionary<Type, string>
@@ -159,20 +160,42 @@ namespace UnityEditor
             return Quaternion.Euler(EditorGUILayout.Vector3Field("", ((Quaternion)val).eulerAngles));
         }
 
-        public static ParameterDrawer GetParameterDrawer(ParameterInfo parameter)
+        static object DrawTimeSpanParameter(ParameterInfo parameterInfo, object val)
+        {
+            TimeSpan span = TimeSpan.Zero;
+            if (val is TimeSpan)
+            {
+                span = (TimeSpan)val;
+            }
+            var res = EditorGUILayout.IntField((int)span.TotalSeconds);
+            return TimeSpan.FromSeconds(res);
+        }
+
+        public static (ParameterDrawer, bool) GetParameterDrawer(ParameterInfo parameter)
         {
             Type parameterType = parameter.ParameterType;
 
             if (typeof(UnityEngine.Object).IsAssignableFrom(parameterType))
-                return DrawUnityEngineObjectParameter;
+                return (DrawUnityEngineObjectParameter, false);
 
             ParameterDrawer drawer;
-            if (TypeDrawer.TryGetValue(parameterType, out drawer))
+
+            bool isnullable = false;
+            if (parameterType.IsGenericType)
             {
-                return drawer;
+                if (parameterType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    isnullable = true;
+                    parameterType = parameterType.GetGenericArguments()[0];
+                }
             }
 
-            return null;
+            if (TypeDrawer.TryGetValue(parameterType, out drawer))
+            {
+                return (drawer, isnullable);
+            }
+
+            return default;
         }
 
         static object GetDefaultValue(ParameterInfo parameter)
@@ -199,10 +222,35 @@ namespace UnityEditor
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(parameterInfo.Name);
 
-            ParameterDrawer drawer = GetParameterDrawer(parameterInfo);
-            if (currentValue == null)
-                currentValue = GetDefaultValue(parameterInfo);
-            paramValue = drawer.Invoke(parameterInfo, currentValue);
+            (ParameterDrawer drawer, bool isNullable) = GetParameterDrawer(parameterInfo);
+            if (isNullable)
+            {
+                var curNull = currentValue != null;
+                GUI.enabled = curNull;
+
+                if (drawer != null)
+                {
+                    if (currentValue == null)
+                        currentValue = GetDefaultValue(parameterInfo);
+                    paramValue = drawer.Invoke(parameterInfo, currentValue);
+                }
+
+                GUI.enabled = true;
+                var newNull = EditorGUILayout.Toggle(curNull);
+                if (!newNull)
+                {
+                    paramValue = null;
+                }
+            }
+            else
+            {
+                if (drawer != null)
+                {
+                    if (currentValue == null)
+                        currentValue = GetDefaultValue(parameterInfo);
+                    paramValue = drawer.Invoke(parameterInfo, currentValue);
+                }
+            }
 
             EditorGUILayout.EndHorizontal();
 
