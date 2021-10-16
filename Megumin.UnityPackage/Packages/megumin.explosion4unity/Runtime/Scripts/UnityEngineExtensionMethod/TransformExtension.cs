@@ -40,4 +40,20 @@ public static class TransformExtension_1356FE83A31E4D0ABE20837814D1C94D
             trans.localScale = tar.localScale;
         }
     }
+
+    /// <summary>
+    /// 切换第一个子的开启关闭
+    /// </summary>
+    /// <param name="transform"></param>
+    public static void ToggleChild0(this Transform transform)
+    {
+        if (transform && transform.childCount > 0)
+        {
+            var child0 = transform.GetChild(0);
+            if (child0)
+            {
+                child0.gameObject.SetActive(!child0.gameObject.activeSelf);
+            }
+        }
+    }
 }
