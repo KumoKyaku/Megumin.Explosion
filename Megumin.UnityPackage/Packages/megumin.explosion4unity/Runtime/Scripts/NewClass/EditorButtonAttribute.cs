@@ -95,6 +95,8 @@ namespace UnityEditor
             {typeof(Vector3),DrawVector3Parameter},
             {typeof(Vector2),DrawVector2Parameter},
             {typeof(Quaternion),DrawQuaternionParameter},
+            {typeof(DateTime),DrawDateTimeParameter},
+            {typeof(DateTimeOffset),DrawDateTimeOffsetParameter},
             {typeof(TimeSpan),DrawTimeSpanParameter}
         };
 
@@ -167,8 +169,33 @@ namespace UnityEditor
             {
                 span = (TimeSpan)val;
             }
-            var res = EditorGUILayout.IntField((int)span.TotalSeconds);
-            return TimeSpan.FromSeconds(res);
+            var str = EditorGUILayout.TextField(span.ToString());
+            var success = TimeSpan.TryParse(str, out span);
+            return span;
+        }
+
+        static object DrawDateTimeParameter(ParameterInfo parameterInfo, object val)
+        {
+            DateTime dateTime = DateTime.Now;
+            if (val is DateTime)
+            {
+                dateTime = (DateTime)val;
+            }
+            var str = EditorGUILayout.TextField(dateTime.ToString());
+            DateTime.TryParse(str, out dateTime);
+            return dateTime;
+        }
+
+        static object DrawDateTimeOffsetParameter(ParameterInfo parameterInfo, object val)
+        {
+            DateTimeOffset dateTime = DateTimeOffset.Now;
+            if (val is DateTimeOffset)
+            {
+                dateTime = (DateTimeOffset)val;
+            }
+            var str = EditorGUILayout.TextField(dateTime.ToString());
+            DateTimeOffset.TryParse(str, out dateTime);
+            return dateTime;
         }
 
         public static (ParameterDrawer, bool) GetParameterDrawer(ParameterInfo parameter)
