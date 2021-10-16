@@ -143,6 +143,45 @@ namespace TMPro
         }
 
         #endregion
+
+        public static void SetWOWBuffTime(this TextMeshProUGUI text, TimeSpan? time)
+        {
+            if (text)
+            {
+                if (time.HasValue)
+                {
+                    var t = time.Value;
+                    int d = t.Days;
+                    if (d > 0)
+                    {
+                        text.SetText("{0} d", d);
+                        return;
+                    }
+
+                    var h = t.Hours;
+                    if (h > 0)
+                    {
+                        text.SetText("{0} h", h);
+                        return;
+                    }
+
+                    var m = t.Minutes;
+                    if (m > 0)
+                    {
+                        text.SetText("{0} m", m);
+                        return;
+                    }
+
+                    var s = t.Seconds;
+                    text.SetText("{0} s", s);
+                }
+                else
+                {
+                    text.SetText("N/A");
+                }
+            }
+
+        }
     }
 }
 
