@@ -144,6 +144,11 @@ namespace TMPro
 
         #endregion
 
+        /// <summary>
+        /// 像魔兽世界Buff那样显示时间
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="time"></param>
         public static void SetWOWBuffTime(this TextMeshProUGUI text, TimeSpan? time)
         {
             if (text)
@@ -152,21 +157,21 @@ namespace TMPro
                 {
                     var t = time.Value;
                     int d = t.Days;
-                    if (d > 0)
+                    if (d != 0)
                     {
                         text.SetText("{0} d", d);
                         return;
                     }
 
                     var h = t.Hours;
-                    if (h > 0)
+                    if (h != 0)
                     {
                         text.SetText("{0} h", h);
                         return;
                     }
 
                     var m = t.Minutes;
-                    if (m > 0)
+                    if (m != 0)
                     {
                         text.SetText("{0} m", m);
                         return;

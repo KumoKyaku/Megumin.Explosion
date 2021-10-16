@@ -164,7 +164,7 @@ namespace UnityEditor
 
         static object DrawTimeSpanParameter(ParameterInfo parameterInfo, object val)
         {
-            TimeSpan span = TimeSpan.Zero;
+            TimeSpan span = TimeSpan.FromSeconds(5);
             if (val is TimeSpan)
             {
                 span = (TimeSpan)val;
