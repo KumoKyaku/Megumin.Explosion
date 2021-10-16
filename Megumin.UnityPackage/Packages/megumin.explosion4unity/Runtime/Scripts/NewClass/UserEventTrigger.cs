@@ -12,6 +12,7 @@ namespace Megumin
     {
         public float delta = 0.5f;
         public UnityEvent OnDoubleClick;
+        public UnityEvent OnRightClick;
         float last = -1;
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -27,6 +28,7 @@ namespace Megumin
         {
             //Debug.Log($"count {eventData.clickCount}");
 
+            //双击
             var now = eventData.clickTime;
             if (now - last < delta)
             {
@@ -38,6 +40,12 @@ namespace Megumin
             else
             {
                 last = now;
+            }
+
+            //右键
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                OnRightClick?.Invoke();
             }
         }
     }
