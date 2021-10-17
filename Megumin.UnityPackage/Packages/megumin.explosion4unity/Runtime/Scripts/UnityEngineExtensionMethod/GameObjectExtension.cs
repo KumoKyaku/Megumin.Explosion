@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Megumin;
 using UnityEngine;
 
 public static class GameObjectExtension_044A46672EEE4ED5BDE291E8DEC3012E
@@ -49,6 +50,88 @@ public static class GameObjectExtension_044A46672EEE4ED5BDE291E8DEC3012E
         foreach (Transform trans in obj.GetComponentsInChildren<Transform>(true))
         {
             trans.gameObject.tag = tag;
+        }
+    }
+
+    public static void CallInChildren<T>(this GameObject gameObject, Action<T> action, string ignoreTag = "SubElement")
+    {
+        if (action == null)
+        {
+            return;
+        }
+
+        if (gameObject)
+        {
+            var item = gameObject.GetComponentInChildren<T>();
+            if (item is MonoBehaviour behaviour && behaviour.tag != ignoreTag)
+            {
+                action.Invoke(item);
+            }
+        }
+    }
+
+    public static void CallsInChildren<T>(this GameObject gameObject, Action<T> action, string ignoreTag = "SubElement")
+    {
+        if (action == null)
+        {
+            return;
+        }
+
+        if (gameObject)
+        {
+            using (var handle = ListPool<T>.RentAutoReturn())
+            {
+                var list = handle.List;
+                gameObject.GetComponentsInChildren(true, list);
+                foreach (var item in list)
+                {
+                    if (item is MonoBehaviour behaviour && behaviour.tag != ignoreTag)
+                    {
+                        action.Invoke(item);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void CallInParent<T>(this GameObject gameObject, Action<T> action, string ignoreTag = "SubElement")
+    {
+        if (action == null)
+        {
+            return;
+        }
+
+        if (gameObject)
+        {
+            var item = gameObject.GetComponentInParent<T>();
+            if (item is MonoBehaviour behaviour && behaviour.tag != ignoreTag)
+            {
+                action.Invoke(item);
+            }
+        }
+    }
+
+    public static void CallsInParent<T>(this GameObject gameObject, Action<T> action, string ignoreTag = "SubElement")
+    {
+        if (action == null)
+        {
+            return;
+        }
+
+        if (gameObject)
+        {
+            using (var handle = ListPool<T>.RentAutoReturn())
+            {
+                var list = handle.List;
+                gameObject.GetComponentsInParent(true, list);
+                foreach (var item in list)
+                {
+                    if (item is MonoBehaviour behaviour && behaviour.tag != ignoreTag)
+                    {
+                        action.Invoke(item);
+                    }
+                }
+            }
         }
     }
 }

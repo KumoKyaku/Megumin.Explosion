@@ -39,6 +39,7 @@ namespace Megumin
         /// <para/>虽然调用后list被赋值为null，但不能保证没有其他引用指向当前list，尤其小心被保存在Linq语句中的引用。
         /// </summary>
         /// <param name="list"></param>
+        /// <remarks>使用ref 来保证list被置为null,防止出现数据错误.</remarks>
         public static void Return(ref List<T> list)
         {
             if (list == null)
@@ -58,6 +59,36 @@ namespace Megumin
         public static void Clear()
         {
             pool.Clear();
+        }
+
+        public struct ListHandle : IDisposable
+        {
+            internal List<T> list;
+            public List<T> List => list;
+            public void Dispose()
+            {
+                Return(ref list);
+            }
+
+            public static implicit operator List<T>(ListHandle handle)
+            {
+                return handle.list;
+            }
+        }
+
+        public static ListHandle RentAutoReturn()
+        {
+            ListHandle handle = default;
+            handle.list = Rent();
+            return handle;
+        }
+
+        static void Test2()
+        {
+            using (var auto = RentAutoReturn())
+            {
+
+            }
         }
     }
 }
