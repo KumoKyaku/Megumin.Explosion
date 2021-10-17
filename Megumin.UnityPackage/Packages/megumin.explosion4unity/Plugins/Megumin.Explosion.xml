@@ -769,12 +769,17 @@
             <typeparam name="K"></typeparam>
             <typeparam name="V"></typeparam>
         </member>
-        <member name="T:Megumin.IVisible">
+        <member name="T:Megumin.IVisibleable">
             <summary>
             含有可见性的
             </summary>
         </member>
-        <member name="P:Megumin.IVisible.Visible">
+        <member name="T:Megumin.IVisibleLevelable">
+            <summary>
+            含有可见性等级的
+            </summary>
+        </member>
+        <member name="P:Megumin.IVisibleLevelable.VisibleLevel">
             <summary>
             可见等级
             </summary>

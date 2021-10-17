@@ -87,12 +87,20 @@ namespace Megumin
     /// <summary>
     /// 含有可见性的
     /// </summary>
-    public interface IVisible
+    public interface IVisibleable
+    {
+        bool Visible {  get; set; }
+    }
+
+    /// <summary>
+    /// 含有可见性等级的
+    /// </summary>
+    public interface IVisibleLevelable
     {
         /// <summary>
         /// 可见等级
         /// </summary>
-        int Visible { get; set; }
+        int VisibleLevel { get; set; }
     }
 
     /// <summary>
