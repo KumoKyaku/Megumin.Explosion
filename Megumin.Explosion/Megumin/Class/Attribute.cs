@@ -49,6 +49,21 @@ namespace Megumin
     public class SupportTypesAttribute : Attribute
     {
         public Type[] Support { get; set; }
+
+        /// <summary>
+        /// 是否包含其他程序集的子类型
+        /// </summary>
+        public bool IncludeChildInOtherAssembly { get; set; } = false;
+        /// <summary>
+        /// 是否包含同一程序集的子类型
+        /// </summary>
+        /// <remarks></remarks>
+        public bool IncludeChildInSameAssembly { get; set; } = false;
+        /// <summary>
+        /// 是否允许抽象类型
+        /// </summary>
+        public bool AllowAbstract { get; set; } = true;
+
         public SupportTypesAttribute(params Type[] types)
         {
             Support = types;
@@ -59,6 +74,24 @@ namespace Megumin
             Support = new Type[1];
             Support[0] = type;
         }
+    }
+
+    /// <summary>
+    /// 生成名字时的生成方式.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+    public class GenarateNameAttribute : Attribute
+    {
+        /// <summary>
+        /// None,
+        /// Fixed,
+        /// Dynamic
+        /// </summary>
+        public string PrefixType { get; set; } = "None";
+        public string Prefix { get; set; }
+
+        public string PostfixType { get; set; } = "None";
+        public string Postfix { get; set; }
     }
 }
 

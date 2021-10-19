@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -40,7 +41,26 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                 {
                     for (int i = 0; i < ab.Support.Length; i++)
                     {
-                        allTypes.Add(ab.Support[i]);
+                        var type = ab.Support[i];
+                        if (ab.AllowAbstract || !type.IsAbstract)
+                        {
+                            allTypes.Add(type);
+                        }
+
+                        if (ab.IncludeChildInSameAssembly)
+                        {
+                            Assembly assembly = type.Assembly;
+                            foreach (var item in assembly.GetTypes())
+                            {
+                                if (type.IsAssignableFrom(item))
+                                {
+                                    if (ab.AllowAbstract || !item.IsAbstract)
+                                    {
+                                        allTypes.Add(item);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

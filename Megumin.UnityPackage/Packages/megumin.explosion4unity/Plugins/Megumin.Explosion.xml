@@ -178,6 +178,34 @@
             别名
             </summary>
         </member>
+        <member name="P:Megumin.SupportTypesAttribute.IncludeChildInOtherAssembly">
+            <summary>
+            是否包含其他程序集的子类型
+            </summary>
+        </member>
+        <member name="P:Megumin.SupportTypesAttribute.IncludeChildInSameAssembly">
+            <summary>
+            是否包含同一程序集的子类型
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="P:Megumin.SupportTypesAttribute.AllowAbstract">
+            <summary>
+            是否允许抽象类型
+            </summary>
+        </member>
+        <member name="T:Megumin.GenarateNameAttribute">
+            <summary>
+            生成名字时的生成方式.
+            </summary>
+        </member>
+        <member name="P:Megumin.GenarateNameAttribute.PrefixType">
+            <summary>
+            None,
+            Fixed,
+            Dynamic
+            </summary>
+        </member>
         <member name="T:Megumin.CDTimer`1">
             <inheritdoc cref="T:Megumin.IUseable`1"/>
         </member>
