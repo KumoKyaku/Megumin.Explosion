@@ -67,17 +67,15 @@ public class SceneSwitcher : MonoBehaviour
         }
     }
 
-#endif
-
     private void OnValidate()
     {
-#if UNITY_EDITOR
         if (TargetScene)
         {
             SceneName = TargetScene.name;
         }
-#endif
     }
+
+#endif
 }
 
 
