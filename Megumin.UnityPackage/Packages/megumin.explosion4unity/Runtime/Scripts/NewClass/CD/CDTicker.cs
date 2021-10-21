@@ -25,19 +25,10 @@ namespace Megumin
 
         public float Now { get; private set; }
 
-        public static CDTicker Instance { get; private set; }
-
-
+        public static CDTicker Instance => IUnitySingleton<CDTicker>.Instance;
         private void Awake()
         {
-            if (Instance)
-            {
-                Destroy(this);
-                return;
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            IUnitySingleton<CDTicker>.TrySetInstance(this);
         }
 
         private void FixedUpdate()
