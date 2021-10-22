@@ -20,6 +20,10 @@ namespace Megumin
         public int FontSize = 18;
         public Color FontColor = Color.white;
         public Vector3 Offset = Vector3.zero;
+        [Range(-1, 1)]
+        public float ScreenOffsetX = 0f;
+        [Range(-1, 1)]
+        public float ScreenOffsetY = 0f;
         public GUIStyle LabelStyle;
 
         /// <summary>
@@ -77,31 +81,39 @@ namespace Megumin
                 if (pos.z > 0)
                 {
                     string text = cacheText;
-                    var rect = new Rect(pos.x, Screen.height - pos.y, 400, 400);
-                    if (UseStyle)
+
+                    if (!string.IsNullOrEmpty(text))
                     {
-                        GUI.Label(rect, text, LabelStyle);
-                    }
-                    else
-                    {
-                        using ((ValueGUIColor)FontColor)
+                        var rect = new Rect(pos.x + (Screen.width * ScreenOffsetX),
+                                            Screen.height - pos.y + (Screen.height * ScreenOffsetY),
+                                            400,
+                                            400);
+
+                        if (UseStyle)
                         {
-                            using (new ValueGUIFontSize(FontSize))
+                            GUI.Label(rect, text, LabelStyle);
+                        }
+                        else
+                        {
+                            using ((ValueGUIColor)FontColor)
                             {
-                                GUI.Label(rect, text);
+                                using (new ValueGUIFontSize(FontSize))
+                                {
+                                    GUI.Label(rect, text);
+                                }
                             }
                         }
-                    }
 
-                    //显示大小错误
-                    //GUILayout.BeginArea(rect);
-                    //GUILayout.Label(text, LabelStyle);
-                    //GUILayout.EndArea();
+                        //显示大小错误
+                        //GUILayout.BeginArea(rect);
+                        //GUILayout.Label(text, LabelStyle);
+                        //GUILayout.EndArea();
+                    }
                 }
             }
         }
 
-        private string CalText()
+        protected virtual string CalText()
         {
             Profiler.BeginSample(nameof(CalText));
             string text = OverrideLabel;
@@ -123,21 +135,23 @@ namespace Megumin
             {
                 string text = cacheText;
 
-                if (UseStyle)
+                if (!string.IsNullOrEmpty(text))
                 {
-                    UnityEditor.Handles.Label(transform.position + Offset, text, LabelStyle);
-                }
-                else
-                {
-                    using ((ValueGUIColor)FontColor)
+                    if (UseStyle)
                     {
-                        using (new ValueGUIFontSize(FontSize))
+                        UnityEditor.Handles.Label(transform.position + Offset, text, LabelStyle);
+                    }
+                    else
+                    {
+                        using ((ValueGUIColor)FontColor)
                         {
-                            UnityEditor.Handles.Label(transform.position + Offset, text);
+                            using (new ValueGUIFontSize(FontSize))
+                            {
+                                UnityEditor.Handles.Label(transform.position + Offset, text);
+                            }
                         }
                     }
                 }
-
             }
         }
 #endif
