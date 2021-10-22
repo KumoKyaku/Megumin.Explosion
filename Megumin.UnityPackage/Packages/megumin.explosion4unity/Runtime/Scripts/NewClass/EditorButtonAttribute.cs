@@ -144,6 +144,16 @@ namespace UnityEditor
 
         static object DrawUnityEngineObjectParameter(ParameterInfo parameterInfo, object val)
         {
+            if (val == null)
+            {
+                if (GUILayout.Button("Temp", GUILayout.Width(50)))
+                {
+                    //创建一个临时对象,没有保存在工程里.
+                    var instance = ScriptableObject.CreateInstance(parameterInfo.ParameterType);
+                    //instance.OpenProperty(); 报错
+                    return instance;
+                }
+            }
             return EditorGUILayout.ObjectField((UnityEngine.Object)val, parameterInfo.ParameterType, true);
         }
 
@@ -164,11 +174,7 @@ namespace UnityEditor
 
         static object DrawTimeSpanParameter(ParameterInfo parameterInfo, object val)
         {
-            TimeSpan span = TimeSpan.FromSeconds(5);
-            if (val is TimeSpan)
-            {
-                span = (TimeSpan)val;
-            }
+            TimeSpan span = (TimeSpan)val;
             var str = EditorGUILayout.TextField(span.ToString());
             var success = TimeSpan.TryParse(str, out span);
             return span;
@@ -176,11 +182,7 @@ namespace UnityEditor
 
         static object DrawDateTimeParameter(ParameterInfo parameterInfo, object val)
         {
-            DateTime dateTime = DateTime.Now;
-            if (val is DateTime)
-            {
-                dateTime = (DateTime)val;
-            }
+            DateTime dateTime = (DateTime)val;
             var str = EditorGUILayout.TextField(dateTime.ToString());
             DateTime.TryParse(str, out dateTime);
             return dateTime;
@@ -188,11 +190,7 @@ namespace UnityEditor
 
         static object DrawDateTimeOffsetParameter(ParameterInfo parameterInfo, object val)
         {
-            DateTimeOffset dateTime = DateTimeOffset.Now;
-            if (val is DateTimeOffset)
-            {
-                dateTime = (DateTimeOffset)val;
-            }
+            DateTimeOffset dateTime = (DateTimeOffset)val;
             var str = EditorGUILayout.TextField(dateTime.ToString());
             DateTimeOffset.TryParse(str, out dateTime);
             return dateTime;
@@ -208,6 +206,19 @@ namespace UnityEditor
             ParameterDrawer drawer;
 
             bool isnullable = false;
+            (isnullable, parameterType) = CheckNullable(parameterType);
+
+            if (TypeDrawer.TryGetValue(parameterType, out drawer))
+            {
+                return (drawer, isnullable);
+            }
+
+            return default;
+        }
+
+        private static (bool Isnullable, Type ParamType) CheckNullable(Type parameterType)
+        {
+            bool isnullable = false;
             if (parameterType.IsGenericType)
             {
                 if (parameterType.GetGenericTypeDefinition() == typeof(Nullable<>))
@@ -217,12 +228,7 @@ namespace UnityEditor
                 }
             }
 
-            if (TypeDrawer.TryGetValue(parameterType, out drawer))
-            {
-                return (drawer, isnullable);
-            }
-
-            return default;
+            return (isnullable, parameterType);
         }
 
         static object GetDefaultValue(ParameterInfo parameter)
@@ -233,6 +239,27 @@ namespace UnityEditor
                 return parameter.DefaultValue;
 
             Type parameterType = parameter.ParameterType;
+            var res = CheckNullable(parameterType);
+            if (res.Isnullable)
+            {
+                if (res.ParamType.IsValueType)
+                {
+                    if (res.ParamType == typeof(TimeSpan))
+                    {
+                        return TimeSpan.FromSeconds(5);
+                    }
+                    else if (res.ParamType == typeof(DateTimeOffset))
+                    {
+                        return DateTimeOffset.Now;
+                    }
+                    else if (res.ParamType == typeof(DateTime))
+                    {
+                        return DateTime.Now;
+                    }
+                    return Activator.CreateInstance(res.ParamType);
+                }
+            }
+
             if (parameterType.IsValueType)
             {
                 return Activator.CreateInstance(parameterType);
@@ -247,7 +274,7 @@ namespace UnityEditor
             object paramValue = null;
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(parameterInfo.Name);
+            EditorGUILayout.LabelField(parameterInfo.Name, GUILayout.MinWidth(100), GUILayout.MaxWidth(200));
 
             (ParameterDrawer drawer, bool isNullable) = GetParameterDrawer(parameterInfo);
             if (isNullable)

@@ -84,6 +84,18 @@ public class TestLog : MonoBehaviour
         var r = matri.GetPosition();
     }
 
+    [EditorButton]
+    public void TestArgs(Loger loger)
+    {
+        
+    }
+
+    [EditorButton]
+    public void Test2(int? loger)
+    {
+
+    }
+
     public enum TestEnum
     {
         Aaa,
