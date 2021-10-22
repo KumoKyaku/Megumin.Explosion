@@ -10,7 +10,8 @@ namespace Megumin
     /// <para/>也可以通过（bool isEnd,T value）元组，来实现终止信号
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SimplePipeQueue<T> : Queue<T>, IPipeQueue<T>
+    [Obsolete]
+    public class SimplePipeQueue<T> : Queue<T>, IValuePipe<T>
     {
         readonly object _innerLock = new object();
         private TaskCompletionSource<T> source;
@@ -63,6 +64,7 @@ namespace Megumin
     /// <inheritdoc/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Obsolete]
     public class SimplePipeQueueWithEndSignal<T> : SimplePipeQueue<(T Value, bool IsEnd)>
     {
         //public bool IsEnd { get; private set; }
@@ -84,4 +86,121 @@ namespace Megumin
         //}
     }
 
+    /// <summary>
+    /// <inheritdoc cref="IPipe{T}"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class QueuePipe<T> : Queue<T>, IPipe<T>
+    {
+        readonly object _innerLock = new object();
+        private TaskCompletionSource<T> source;
+
+        //线程同步上下文由Task机制保证，无需额外处理
+        //SynchronizationContext callbackContext;
+        //public bool UseSynchronizationContext { get; set; } = true;
+
+        public virtual void Write(T item)
+        {
+            lock (_innerLock)
+            {
+                if (source == null)
+                {
+                    Enqueue(item);
+                }
+                else
+                {
+                    if (Count > 0)
+                    {
+                        throw new Exception("内部顺序错误，不应该出现，请联系作者");
+                    }
+
+                    var next = source;
+                    source = null;
+                    next.TrySetResult(item);
+                }
+            }
+        }
+
+        public virtual Task<T> ReadAsync()
+        {
+            lock (_innerLock)
+            {
+                if (this.Count > 0)
+                {
+                    var next = Dequeue();
+                    return Task.FromResult(next);
+                }
+                else
+                {
+                    source = new TaskCompletionSource<T>();
+                    return source.Task;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class QueueSignalPipe<T> : QueuePipe<(T Value, bool IsEnd)>
+    {
+        public void Write(T item, bool isEnd = false)
+        {
+            Write((item, isEnd));
+        }
+    }
+
+    /// <summary>
+    /// <inheritdoc cref="IPipe{T}"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class StackPipe<T> : Stack<T>
+    {
+        readonly object _innerLock = new object();
+        private TaskCompletionSource<T> source;
+
+        //线程同步上下文由Task机制保证，无需额外处理
+        //SynchronizationContext callbackContext;
+        //public bool UseSynchronizationContext { get; set; } = true;
+
+        public virtual void Write(T item)
+        {
+            lock (_innerLock)
+            {
+                if (source == null)
+                {
+                    Push(item);
+                }
+                else
+                {
+                    if (Count > 0)
+                    {
+                        throw new Exception("内部顺序错误，不应该出现，请联系作者");
+                    }
+
+                    var next = source;
+                    source = null;
+                    next.TrySetResult(item);
+                }
+            }
+        }
+
+        public virtual Task<T> ReadAsync()
+        {
+            lock (_innerLock)
+            {
+                if (this.Count > 0)
+                {
+                    var next = Pop();
+                    return Task.FromResult(next);
+                }
+                else
+                {
+                    source = new TaskCompletionSource<T>();
+                    return source.Task;
+                }
+            }
+        }
+    }
 }
