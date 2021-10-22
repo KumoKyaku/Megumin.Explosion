@@ -144,7 +144,7 @@ namespace UnityEditor
 
         static object DrawUnityEngineObjectParameter(ParameterInfo parameterInfo, object val)
         {
-            if (val == null)
+            if (val == null && typeof(ScriptableObject).IsAssignableFrom(parameterInfo.ParameterType))
             {
                 if (GUILayout.Button("Temp", GUILayout.Width(50)))
                 {
