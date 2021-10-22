@@ -379,11 +379,12 @@
             <param name="key"></param>
             <param name="value"></param>
         </member>
-        <member name="M:Megumin.MultipleControl`2.Cancel(`0)">
+        <member name="M:Megumin.MultipleControl`2.Cancel(`0,`1)">
             <summary>
             取消控制
             </summary>
             <param name="key"></param>
+            <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
         </member>
         <member name="M:Megumin.MultipleControl`2.CancelAll">
             <summary>
@@ -464,6 +465,24 @@
         <member name="T:Megumin.SimplePipeQueueWithEndSignal`1">
             <summary>
             <inheritdoc/>
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Megumin.QueuePipe`1">
+            <summary>
+            <inheritdoc cref="T:Megumin.IPipe`1"/>
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Megumin.QueueSignalPipe`1">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Megumin.StackPipe`1">
+            <summary>
+            <inheritdoc cref="T:Megumin.IPipe`1"/>
             </summary>
             <typeparam name="T"></typeparam>
         </member>
@@ -823,13 +842,31 @@
             当前版本
             </summary>
         </member>
-        <member name="T:Megumin.IPipeQueue`1">
+        <member name="T:Megumin.IPipe`1">
             <summary>
             管道队列，用于处理生产者已经产出，消费者还没有就绪的情况
+            <para/>也可以通过（bool isEnd,T value）元组，来实现终止信号
+            </summary>
+            <typeparam name="T"></typeparam>
+            <remarks>
+            线程同步上下文由Task机制保证，无需额外处理
+            SynchronizationContext callbackContext;
+            public bool UseSynchronizationContext { get; set; } = true;
+            </remarks>
+        </member>
+        <member name="M:Megumin.IPipe`1.ReadAsync">
+            <summary>
+            当队列中有元素时返回。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Megumin.IValuePipe`1">
+            <summary>
+            <inheritdoc cref="T:Megumin.IPipe`1"/>
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:Megumin.IPipeQueue`1.ReadAsync">
+        <member name="M:Megumin.IValuePipe`1.ReadAsync">
             <summary>
             当队列中有元素时返回。
             </summary>
