@@ -12,9 +12,11 @@ public class TestLog : MonoBehaviour
 
     [Enum2String(typeof(TestEnum))]
     public string TestEnumField;
+    [Indent]
     public Color TestColor;
     // Start is called before the first frame update
     [HelpBox("teststeete")]
+    [Indent]
     [Path(IsFolder = false, Exetension = "txt")]
     public string path;
     public HSVColor HSVColor;
