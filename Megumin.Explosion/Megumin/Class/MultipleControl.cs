@@ -123,7 +123,8 @@ namespace Megumin
         /// 取消控制
         /// </summary>
         /// <param name="key"></param>
-        public V Cancel(K key)
+        /// <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
+        public V Cancel(K key, V value = default)
         {
             Controllers.Remove(key);
             ApplyValue();
