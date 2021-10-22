@@ -96,24 +96,35 @@ namespace UnityEditor.Megumin
                         current = Enum.GetNames(type)?[0];
                     }
 
-                    object currentEnum = Enum.Parse(type, current, true);
-                    var result = EditorGUI.EnumPopup(valuePosition, overrideName, (Enum)currentEnum);
-                    property.stringValue = result.ToString();
+                    if (Enum.TryParse(type, current, true, out var currentEnum))
+                    {
+                        var result = EditorGUI.EnumPopup(valuePosition, overrideName, (Enum)currentEnum);
+                        property.stringValue = result.ToString();
+                    }
+                    else
+                    {
+                        DrawWarning(property, label, valuePosition, overrideName, type, current);
+                    }
                 }
                 catch (Exception)
                 {
-                    label.tooltip += $"{nameof(Enum2StringAttribute)}失效！\n当前值: {current} 无法解析为枚举类型: {type.Name}";
-                    label.text = $"??? " + overrideName;
-                    var old = GUI.color;
-                    GUI.color = warning;
-                    EditorGUI.PropertyField(valuePosition, property, label);
-                    GUI.color = old;
+                    DrawWarning(property, label, valuePosition, overrideName, type, current);
                 }
             }
             else
             {
                 EditorGUI.HelpBox(valuePosition, $"{overrideName}标记显示类型必须是enum", MessageType.Error);
             }
+        }
+
+        static void DrawWarning(SerializedProperty property, GUIContent label, Rect valuePosition, string overrideName, Type type, string current)
+        {
+            label.tooltip += $"{nameof(Enum2StringAttribute)}失效！\n当前值: {current} 无法解析为枚举类型: {type.Name}";
+            label.text = $"??? " + overrideName;
+            var old = GUI.color;
+            GUI.color = warning;
+            EditorGUI.PropertyField(valuePosition, property, label);
+            GUI.color = old;
         }
     }
 }
