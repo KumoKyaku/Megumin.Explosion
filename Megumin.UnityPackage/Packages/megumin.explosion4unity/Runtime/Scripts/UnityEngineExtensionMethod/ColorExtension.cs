@@ -11,9 +11,15 @@ public static class ColorExtension_E574E5EC
     /// <param name="color"></param>
     /// <param name="target"></param>
     /// <returns></returns>
-    public static string Html<T>(this in Color color, T target)
+    public static string Html<T>(this in Color color, T target, bool force = false)
     {
-        return $"<color=#{ColorUtility.ToHtmlStringRGBA(color)}>{target}</color>";
+        return target.ToString().Html(color, force);
+    }
+
+    /// <inheritdoc cref="Html(string, in Color, bool)"/>
+    public static string HtmlColor<T>(this T target, in Color color, bool force = false)
+    {
+        return target.ToString().Html(color, force);
     }
 
     /// <summary>
@@ -22,9 +28,19 @@ public static class ColorExtension_E574E5EC
     /// <param name="orignal"></param>
     /// <param name="color"></param>
     /// <returns></returns>
-    public static string Html(this string orignal, in Color color)
+    /// <remarks>通常仅编辑器有效,运行时原样返回,因为编辑器支持颜色,运行时可能会输出到日志文件里.</remarks>
+    public static string Html(this string orignal, in Color color, bool force = false)
     {
-        return $"<color=#{ColorUtility.ToHtmlStringRGBA(color)}>{orignal}</color>";
+
+#if UNITY_EDITOR
+        force = true;
+#endif
+        var result = orignal;
+        if (force)
+        {
+            result = $"<color=#{ColorUtility.ToHtmlStringRGBA(color)}>{result}</color>";
+        }
+        return result;
     }
 }
 

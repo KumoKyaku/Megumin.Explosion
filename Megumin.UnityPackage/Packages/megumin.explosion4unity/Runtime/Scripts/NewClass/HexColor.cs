@@ -168,9 +168,20 @@ namespace UnityEngine
         /// <param name="color"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public string Html<T>(T target)
+        public string Html<T>(T target, bool force = false)
         {
-            return $"<color=#{ColorUtility.ToHtmlStringRGBA(this)}>{target}</color>";
+            //为了保证单独文件拿到其他地方可用.
+            //return target.ToString().Html(color, force);
+
+#if UNITY_EDITOR
+            force = true;
+#endif
+            var result = target.ToString();
+            if (force)
+            {
+                result = $"<color=#{ColorUtility.ToHtmlStringRGBA(this)}>{result}</color>";
+            }
+            return result;
         }
 
         public override string ToString()
