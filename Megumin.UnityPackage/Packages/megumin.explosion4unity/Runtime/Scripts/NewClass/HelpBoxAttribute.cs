@@ -14,24 +14,93 @@ namespace Megumin
 
     public class HelpBoxAttribute : PropertyAttribute
     {
-        /// <summary>
-        /// 当语言不匹配时是否显示
-        /// </summary>
-        public static bool ShowOnLocalization = false;
-        public static bool AutoTranlate = false;
-        /// <summary>
-        /// TODO
-        /// </summary>
+
+#if HELPBOX_DISABLE
+        public static bool Enable = false;
+#else
         public static bool Enable = true;
+#endif
 
-        public string text;
-        public HelpBoxMessageType messageType;
+        /// <summary>
+        /// TODO:调用webAPI翻译.
+        /// </summary>
+        public static bool AutoTranlate = false;
 
-        public HelpBoxAttribute(string text, HelpBoxMessageType messageType = HelpBoxMessageType.None)
+        public static Dictionary<string, Dictionary<SystemLanguage, string>> Translation { get; }
+            = new Dictionary<string, Dictionary<SystemLanguage, string>>();
+
+        Dictionary<SystemLanguage, string> MyTranslation = new Dictionary<SystemLanguage, string>();
+        public HelpBoxMessageType MessageType { get; set; }
+
+        public string Text
         {
-            this.text = text;
-            this.messageType = messageType;
+            get
+            {
+                if (Application.systemLanguage == Language)
+                {
+                    return text;
+                }
+                else
+                {
+                    if (MyTranslation.TryGetValue(Application.systemLanguage, out var ret))
+                    {
+                        return ret;
+                    }
+                    else if (Translation.TryGetValue(text, out var dic))
+                    {
+                        if (dic.TryGetValue(Application.systemLanguage, out ret))
+                        {
+                            return ret;
+                        }
+                        else
+                        {
+                            //Todo :调用翻译api.
+                            return text;
+                        }
+                    }
+                }
+                return text;
+            }
+            set => text = value;
         }
+
+        protected SystemLanguage Language = SystemLanguage.ChineseSimplified;
+
+        public string EnglishText
+        {
+            get => englishText;
+            set
+            {
+                englishText = value;
+                MyTranslation[SystemLanguage.English] = value;
+            }
+        }
+
+        private string text;
+        private string englishText;
+
+        public HelpBoxAttribute(string text,
+                                HelpBoxMessageType messageType = HelpBoxMessageType.None,
+                                SystemLanguage textLanguage = SystemLanguage.ChineseSimplified)
+        {
+            this.Text = text;
+            Language = textLanguage;
+            MyTranslation[textLanguage] = text;
+            this.MessageType = messageType;
+        }
+
+        //// 不是有效的特性参数类型
+        //public HelpBoxAttribute(string text, KV[] tranlate, HelpBoxMessageType messageType = HelpBoxMessageType.None)
+        //{
+        //    this.text = text;
+        //    this.MessageType = messageType;
+        //}
+
+        //public struct KV
+        //{
+        //    public SystemLanguage SystemLanguage { get; set; }
+        //    public string text { get; set; }
+        //}
     }
 }
 
@@ -50,18 +119,29 @@ namespace UnityEditor.Megumin
 
         public override float GetHeight()
         {
-            var helpBoxAttribute = attribute as HelpBoxAttribute;
-            if (helpBoxAttribute == null) return base.GetHeight();
-            var helpBoxStyle = (GUI.skin != null) ? GUI.skin.GetStyle("helpbox") : null;
-            if (helpBoxStyle == null) return base.GetHeight();
-            return Mathf.Max(14f, helpBoxStyle.CalcHeight(new GUIContent(helpBoxAttribute.text), EditorGUIUtility.currentViewWidth) + 4);
+            if (HelpBoxAttribute.Enable)
+            {
+                var helpBoxAttribute = attribute as HelpBoxAttribute;
+                if (helpBoxAttribute == null) return base.GetHeight();
+                var helpBoxStyle = (GUI.skin != null) ? GUI.skin.GetStyle("helpbox") : null;
+                if (helpBoxStyle == null) return base.GetHeight();
+                return Mathf.Max(14f, helpBoxStyle.CalcHeight(new GUIContent(helpBoxAttribute.Text), EditorGUIUtility.currentViewWidth) + 4);
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public override void OnGUI(Rect position)
         {
             var helpBoxAttribute = attribute as HelpBoxAttribute;
-            if (helpBoxAttribute == null) return;
-            EditorGUI.HelpBox(position, helpBoxAttribute.text, GetMessageType(helpBoxAttribute.messageType));
+            if (helpBoxAttribute == null || HelpBoxAttribute.Enable == false)
+            {
+                return;
+            }
+
+            EditorGUI.HelpBox(position, helpBoxAttribute.Text, GetMessageType(helpBoxAttribute.MessageType));
         }
 
         private MessageType GetMessageType(HelpBoxMessageType helpBoxMessageType)

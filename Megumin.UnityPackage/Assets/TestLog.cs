@@ -15,7 +15,7 @@ public class TestLog : MonoBehaviour
     [Indent]
     public Color TestColor;
     // Start is called before the first frame update
-    [HelpBox("teststeete")]
+    [HelpBox("帮助",textLanguage: SystemLanguage.ChineseSimplified, EnglishText = "help")]
     [Indent]
     [Path(IsFolder = false, Exetension = "txt")]
     public string path;
