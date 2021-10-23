@@ -14,6 +14,15 @@ namespace Megumin
 
     public class HelpBoxAttribute : PropertyAttribute
     {
+        /// <summary>
+        /// 当语言不匹配时是否显示
+        /// </summary>
+        public static bool ShowOnLocalization = false;
+        public static bool AutoTranlate = false;
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public static bool Enable = true;
 
         public string text;
         public HelpBoxMessageType messageType;
