@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace UnityEngine
 {
-    public class MeguminUtility4Unity
+    public static class MeguminUtility4Unity
     {
         public static string ProjectPath { get; } = GetProjectFolderPath("");
         public static string PackagesPath { get; } = GetProjectFolderPath("Packages");
@@ -45,6 +45,71 @@ namespace UnityEngine
         {
             UnityEngine.Debug.LogError($"{funcName} NotImplemented.    [Instead throw Exception]");
         }
+
+        ///// <summary>
+        ///// 编译需要 Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo
+        ///// AOT模式下运行会报错,但是可以编译
+        ///// </summary>
+        ///// <typeparam name="T"></typeparam>
+        ///// <param name="value"></param>
+        ///// <param name="name"></param>
+        ///// <returns></returns>
+        //public static bool TryGetName<T>(this T value, out string name)
+        //{
+        //    name = null;
+        //    try
+        //    {
+        //        dynamic d = value;
+        //        name = d.Name;
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+
+        //    if (string.IsNullOrEmpty(name))
+        //    {
+        //        try
+        //        {
+        //            dynamic d = value;
+        //            name = d.name;
+        //            return true;
+        //        }
+        //        catch (Exception)
+        //        {
+        //        }
+        //    }
+        //    return false;
+        //}
+
+        ///// <inheritdoc cref="TryGetName{T}(T, out string)"/>
+        //public static bool TryGetDisplayName<T>(this T value, out string name)
+        //{
+        //    name = null;
+        //    try
+        //    {
+        //        dynamic d = value;
+        //        name = d.DisplayName;
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+
+        //    if (string.IsNullOrEmpty(name))
+        //    {
+        //        try
+        //        {
+        //            dynamic d = value;
+        //            name = d.displayName;
+        //            return true;
+        //        }
+        //        catch (Exception)
+        //        {
+        //        }
+        //    }
+        //    return false;
+        //}
     }
 }
 
