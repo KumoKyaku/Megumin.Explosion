@@ -535,6 +535,16 @@
             <param name="value"></param>
             <returns></returns>
         </member>
+        <member name="M:Megumin.Utility.ToStringReflection``1(System.Type,``0,System.Nullable{System.Reflection.BindingFlags})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="type"></param>
+            <param name="value"></param>
+            <param name="flags">允许设定<see cref="F:System.Reflection.BindingFlags.NonPublic"/></param>
+            <returns></returns>
+        </member>
         <member name="T:Megumin.Utility2">
             <summary>
             因为由扩展方法和静态方法重名

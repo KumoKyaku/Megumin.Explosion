@@ -11,6 +11,10 @@ namespace Megumin
     /// <remarks>MeguminUtility名字太长,即时Utility和别的命名空间Utility冲突,使用全名称限定就可以了.</remarks>
     public static class Utility
     {
+        public static string ToStringReflection(Type type)
+        {
+            return ToStringReflection<object>(type, null);
+        }
 
         /// <summary>
         /// 通过反射获得属性值字符串
@@ -21,6 +25,19 @@ namespace Megumin
         public static string ToStringReflection<T>(T value = default)
         {
             Type type = typeof(T);
+            return ToStringReflection(type, value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
+        /// <param name="flags">允许设定<see cref="BindingFlags.NonPublic"/></param>
+        /// <returns></returns>
+        public static string ToStringReflection<T>(Type type, T value, BindingFlags? flags = null)
+        {
             string detail = "";
             if (value.TryGetName(out var instanName))
             {
@@ -36,21 +53,32 @@ namespace Megumin
             {
                 detail += "ValueType";
             }
-            else
+
+            detail += "       \n";
             {
-                detail += "       \n";
+                BindingFlags staticflag = BindingFlags.Public | BindingFlags.Static;
+                if (flags.HasValue)
                 {
-                    detail += "Static:   \n";
-                    detail += ToStringReflectionFieldProperties(type, "    ", BindingFlags.Public | BindingFlags.Static, value);
+                    staticflag |= flags.Value;
                 }
 
-                if (value != null)
-                {
-                    detail += "       \n";
-                    detail += "Instance:   \n";
-                    detail += ToStringReflectionFieldProperties(type, "    ", BindingFlags.Public | BindingFlags.Instance, value);
-                }
+                detail += "Static:   \n";
+                detail += ToStringReflectionFieldProperties(type, "    ", staticflag, value);
             }
+
+            if (value != null)
+            {
+                BindingFlags instanceflag = BindingFlags.Public | BindingFlags.Instance;
+                if (flags.HasValue)
+                {
+                    instanceflag |= flags.Value;
+                }
+
+                detail += "       \n";
+                detail += "Instance:   \n";
+                detail += ToStringReflectionFieldProperties(type, "    ", instanceflag, value);
+            }
+
             return detail;
         }
 
