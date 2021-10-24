@@ -19,6 +19,7 @@ namespace Megumin
 
         public int FontSize = 18;
         public Color FontColor = Color.white;
+        public Vector2 Size = new Vector2(400, 200);
         public Vector3 Offset = Vector3.zero;
         [Range(-1, 1)]
         public float ScreenOffsetX = 0f;
@@ -87,7 +88,8 @@ namespace Megumin
                         var rect = new Rect(pos.x + (Screen.width * ScreenOffsetX),
                                             Screen.height - pos.y + (Screen.height * ScreenOffsetY),
                                             400,
-                                            400);
+                                            200);
+                        rect.size = Size;
 
                         if (UseStyle)
                         {
