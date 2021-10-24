@@ -118,6 +118,12 @@ namespace Megumin
         {
             OpenURL("https://github.com/0x3f3f3f3f/UnityRuntimeSceneGizmo");
         }
+
+        [MenuItem("Tools/Link/NaughtyAttributes")]
+        static void NaughtyAttributes()
+        {
+            OpenURL("https://github.com/dbrizov/NaughtyAttributes#installation");
+        }
     }
 
     partial class Link
