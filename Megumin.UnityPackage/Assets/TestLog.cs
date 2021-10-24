@@ -1,4 +1,5 @@
 ﻿using Megumin;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,8 @@ public class TestLog : MonoBehaviour
     public string teststr = "TestStr";
     [ColorSpacer(30, 3, 100, 1, 0, 0)]
     public string ret = "";
-
+    //[OnValueChanged]
+    public int IntValue;
     [Enum2String(typeof(TestEnum))]
     public string TestEnumField;
     [Indent]
@@ -19,9 +21,13 @@ public class TestLog : MonoBehaviour
     [Indent]
     [Path(IsFolder = false, Exetension = "txt")]
     public string path;
+    //[ReadOnlyInInspector]
+    //[OnValueChanged]
     public HSVColor HSVColor;
     public Megumin.Overridable<string> overridable = new Megumin.Overridable<string>("test");
     public Enableable<string> Enableable = new Enableable<string>(false, "可开关字段");
+    //[OnValueChanged(CallBackName = "OnValueChangeTest1")]
+    public STest STest;
     void Start()
     {
         string message = ColorUtility.ToHtmlStringRGBA(Color.green);
@@ -102,6 +108,34 @@ public class TestLog : MonoBehaviour
     {
         Aaa,
         Bbb,
+    }
+
+    private void OnValidate()
+    {
+        
+    }
+
+    public void OnValueChangeTest1()
+    {
+        Debug.LogError($"OnValueChangeTest1 {STest.intb}");
+    }
+}
+
+[Serializable]
+public class STest
+{
+    //[OnValueChanged(CallBackName = "OnValueChangeTest2")]
+    public int inta;
+    public int intb;
+
+    public void OnValueChangeTest2()
+    {
+        Debug.LogError($"OnValueChangeTest2 {inta}");
+    }
+
+    public void OnValidate()
+    {
+        Debug.LogError($"OnValidate {inta}");
     }
 }
 

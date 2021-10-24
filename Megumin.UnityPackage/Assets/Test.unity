@@ -260,14 +260,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   teststr: TestStr
   ret: 
+  IntValue: 55
   TestEnumField: ccc
   TestColor: {r: 0, g: 0, b: 0, a: 0}
   path: 
   HSVColor:
-    Hue: 0
+    Hue: 0.178
     Saturation: 1
     Value: 2
-    Alpha: 1
+    Alpha: 0.415
   overridable:
     defaultValue: test
     IsOverride: 0
@@ -275,6 +276,9 @@ MonoBehaviour:
   Enableable:
     Enabled: 0
     Value: "\u53EF\u5F00\u5173\u5B57\u6BB5"
+  STest:
+    inta: 151
+    intb: 1234568
   Optionsss: Tset22
 --- !u!1001 &2934216655231609562
 PrefabInstance:
