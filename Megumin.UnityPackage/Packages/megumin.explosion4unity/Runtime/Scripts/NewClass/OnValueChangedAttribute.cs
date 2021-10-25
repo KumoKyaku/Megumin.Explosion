@@ -24,6 +24,7 @@ namespace UnityEditor.Megumin
     using System;
     using UnityEditor;
 
+    [Obsolete]
     [CustomPropertyDrawer(typeof(OnValueChangedAttribute))]
     internal sealed class OnValueChangedAttributeDrawer : PropertyDrawer
     {

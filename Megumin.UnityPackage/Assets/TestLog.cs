@@ -14,6 +14,7 @@ public class TestLog : MonoBehaviour
     public int IntValue;
 
     public Enableable<int> IntValue2 = new Enableable<int>(false, 20);
+    public EnableFrame IntValue3 = new EnableFrame() { Enabled = false, Value = 30 };
     [FrameAndTime]
     public int FrameCount = 20;
     [Enum2String(typeof(TestEnum))]
@@ -152,4 +153,11 @@ public class ConstTest
     [Alias("别名")]
     [Alias("别名测试")]
     public const string aa = "Tset22";
+}
+
+[Serializable]
+public class EnableFrame : Enableable
+{
+    [FrameAndTime]
+    public int Value;
 }

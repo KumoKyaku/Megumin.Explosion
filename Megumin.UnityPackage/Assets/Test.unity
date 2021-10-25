@@ -262,8 +262,11 @@ MonoBehaviour:
   ret: 
   IntValue: 55
   IntValue2:
-    Enabled: 1
+    Enabled: 0
     Value: 0
+  IntValue3:
+    Enabled: 0
+    Value: 30
   FrameCount: 40
   TestEnumField: ccc
   Iint:
@@ -281,7 +284,7 @@ MonoBehaviour:
     IsOverride: 0
     MyOverrideValue: "\u53EF\u91CD\u5199\u9ED8\u8BA4\u503C\u5B57\u6BB5"
   Enableable:
-    Enabled: 1
+    Enabled: 0
     Value: "\u53EF\u5F00\u5173\u5B57\u6BB5"
   STest:
     inta: 151
