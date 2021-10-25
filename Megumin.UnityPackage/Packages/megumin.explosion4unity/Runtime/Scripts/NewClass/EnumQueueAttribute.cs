@@ -9,6 +9,7 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Field)]
     public class EnumQueueAttribute : PropertyAttribute
     {
+        public bool KeepDynamicValue { get; set; }
         public Type Type { get; set; }
 
         public EnumQueueAttribute(Type type)
@@ -56,6 +57,10 @@ namespace UnityEditor.Megumin
                         names2[i] = names[i];
                         values2[i] = values[i];
                     }
+
+                    names2[values.Length] = "MaxValue";
+                    //最后一个值初始为离0较远的值,防止0冲突.最小值不能Abs.
+                    values2[values.Length] = int.MaxValue;
                 }
 
                 float popWidth = 80 + (int)(position.width / 5);
@@ -82,12 +87,15 @@ namespace UnityEditor.Megumin
                     }
                     else
                     {
-                        //找到最近枚举
-                        var delta = currentQueue - v;
-                        if (Math.Abs(delta) < Math.Abs(min))
+                        if (i < count)
                         {
-                            nearIndex = i;
-                            min = delta;
+                            //找到最近枚举,只查找枚举值,忽略最后一个动态值.
+                            var delta = currentQueue - v;
+                            if (Math.Abs(delta) < Math.Abs(min))
+                            {
+                                nearIndex = i;
+                                min = delta;
+                            }
                         }
                     }
                 }
@@ -105,17 +113,26 @@ namespace UnityEditor.Megumin
                     {
                         names2[count] = $"{names[nearIndex]}{min}";
                     }
+                    values2[count] = currentQueue;
 
                     newIndex = EditorGUI.Popup(popRect, index, names2);
                 }
                 else
                 {
-                    newIndex = EditorGUI.Popup(popRect, index, names);
+                    if (index == count || attri.KeepDynamicValue)
+                    {
+                        newIndex = EditorGUI.Popup(popRect, index, names2);
+                    }
+                    else
+                    {
+                        //是某个枚举值是不显示最后一个动态值
+                        newIndex = EditorGUI.Popup(popRect, index, names);
+                    }
                 }
 
                 if (newIndex != index)
                 {
-                    currentQueue = (int)Enum.Parse(enumType, names[newIndex]);
+                    currentQueue = values2[newIndex]; //越界 (int)Enum.Parse(enumType, names[newIndex]);
                     property.intValue = currentQueue;
                 }
 
