@@ -5,15 +5,13 @@ namespace Megumin
 {
     /// <summary>
     /// 使用做闭右开区间可以大大减小逻辑复杂度
+    /// 和<see cref="EnableableAttribute"/>一起使用时不要继承Scope,因为同一时刻只能有PropertyDrawer生效.
     /// </summary>
     [Serializable]
     public class Scope
     {
-        [UnityEngine.Serialization.FormerlySerializedAs("Active")]
-        public bool Enabled = true;
         public bool IsDurationMode = false;
 
-        [Space]
         [Tooltip("闭区间")]
         [FrameAndTime]
         public int Start;
@@ -43,47 +41,61 @@ namespace UnityEditor.Megumin
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUI.GetPropertyHeight(property, label, true);
+            return base.GetPropertyHeight(property, label) * 4 + 6;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var s = property.FindPropertyRelative("Start");
-            var du = property.FindPropertyRelative("Duration");
-            var end = property.FindPropertyRelative("End");
+            var startP = property.FindPropertyRelative("Start");
+            var durationP = property.FindPropertyRelative("Duration");
+            var endp = property.FindPropertyRelative("End");
+            var isDurationModeP = property.FindPropertyRelative("IsDurationMode");
 
-            var isdu = property.FindPropertyRelative("IsDurationMode");
-            var isdumode = isdu.boolValue;
-            var olddu = du.intValue;
-            var oldend = end.intValue;
+            //是不是持续时间模式
+            var isdumode = isDurationModeP.boolValue;
+            var oldstart = startP.intValue;
+            var olddu = durationP.intValue;
+            var oldend = endp.intValue;
 
-            EditorGUI.PropertyField(position, property, label, true);
-            var start = s.intValue;
+            var rect = position;
+            rect.height = EditorGUIUtility.singleLineHeight;
+            EditorGUI.PropertyField(rect, isDurationModeP);
+            rect.y += 20;
+            EditorGUI.PropertyField(rect, startP);
 
+            rect.y += 20;
+            using (new EditorGUI.DisabledScope(!isdumode))
+            {
+                EditorGUI.PropertyField(rect, durationP);
+            }
+
+            rect.y += 20;
+            using (new EditorGUI.DisabledScope(isdumode))
+            {
+                EditorGUI.PropertyField(rect, endp);
+            }
+
+            var newstart = startP.intValue;
             if (isdumode)
             {
-                var newdu = du.intValue;
-                if (olddu != newdu)
+                endp.intValue = oldend;
+
+                var newdu = durationP.intValue;
+                if (oldstart != newstart
+                    || olddu != newdu)
                 {
-                    //Debug.LogError($"old:{olddu}--new:{newdu}");
-                    end.intValue = start + newdu;
-                }
-                else
-                {
-                    end.intValue = oldend;
+                    endp.intValue = newstart + newdu;
                 }
             }
             else
             {
-                var newend = end.intValue;
-                if (oldend != newend)
+                durationP.intValue = olddu;
+
+                var newend = endp.intValue;
+                if (oldstart != newstart
+                    || oldend != newend)
                 {
-                    //Debug.LogError($"old:{oldend}--new:{newend}");
-                    du.intValue = newend - start;
-                }
-                else
-                {
-                    du.intValue = olddu;
+                    durationP.intValue = newend - newstart;
                 }
             }
         }
