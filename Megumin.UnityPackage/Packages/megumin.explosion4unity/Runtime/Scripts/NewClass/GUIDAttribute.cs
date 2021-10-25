@@ -36,34 +36,34 @@ namespace UnityEditor.Megumin
                 buttonPosition.width = 80;
                 buttonPosition.x += position.width - 80;
 
-                GUI.enabled = false;
-                EditorGUI.PropertyField(propertyPosition, property, label);
-
                 var leftPosotion = buttonPosition;
                 leftPosotion.width = 40;
                 var rightPosition = buttonPosition;
                 rightPosition.width = 40;
                 rightPosition.x += 40;
 
-                string current = property.stringValue;
-
-                if (string.IsNullOrEmpty(current))
+                using (new EditorGUI.DisabledScope(true))
                 {
-                    current = GUID.Generate().ToString();
-                    property.stringValue = current;
-                }
+                    EditorGUI.PropertyField(propertyPosition, property, label);
 
-                GUI.enabled = true;
+
+                    string current = property.stringValue;
+
+                    if (string.IsNullOrEmpty(current))
+                    {
+                        current = GUID.Generate().ToString();
+                        property.stringValue = current;
+                    }
+                }
 
                 if (GUI.Button(leftPosotion, "GUID", left))
                 {
-                    if (EditorUtility.DisplayDialog("GUID","确定生成新的GUID吗","OK","Cancel"))
+                    //TODO:没法用二次提示
+                    //if (EditorUtility.DisplayDialog("GUID", "确定生成新的GUID吗", "OK", "Cancel"))
                     {
                         property.stringValue = GUID.Generate().ToString();
                     }
                 }
-
-                GUI.enabled = true;
 
                 if (GUI.Button(rightPosition, "Copy", right))
                 {

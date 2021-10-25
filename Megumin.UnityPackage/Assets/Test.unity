@@ -261,7 +261,14 @@ MonoBehaviour:
   teststr: TestStr
   ret: 
   IntValue: 55
+  IntValue2:
+    Enabled: 1
+    Value: 0
+  FrameCount: 40
   TestEnumField: ccc
+  Iint:
+    _int: 2147483647
+  guid: 80b5cd36bf4bd5f4d8557822c3ad6bdc
   TestColor: {r: 0, g: 0, b: 0, a: 0}
   path: 
   HSVColor:
@@ -274,7 +281,7 @@ MonoBehaviour:
     IsOverride: 0
     MyOverrideValue: "\u53EF\u91CD\u5199\u9ED8\u8BA4\u503C\u5B57\u6BB5"
   Enableable:
-    Enabled: 0
+    Enabled: 1
     Value: "\u53EF\u5F00\u5173\u5B57\u6BB5"
   STest:
     inta: 151

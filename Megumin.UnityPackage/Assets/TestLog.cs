@@ -12,12 +12,19 @@ public class TestLog : MonoBehaviour
     public string ret = "";
     //[OnValueChanged]
     public int IntValue;
+
+    public Enableable<int> IntValue2 = new Enableable<int>(false, 20);
+    [FrameAndTime]
+    public int FrameCount = 20;
     [Enum2String(typeof(TestEnum))]
     public string TestEnumField;
+    public iint Iint;
+    [GUID]
+    public string guid;
     [Indent]
     public Color TestColor;
     // Start is called before the first frame update
-    [HelpBox("帮助",textLanguage: SystemLanguage.ChineseSimplified, EnglishText = "help")]
+    [HelpBox("帮助", textLanguage: SystemLanguage.ChineseSimplified, EnglishText = "help")]
     [Indent]
     [Path(IsFolder = false, Exetension = "txt")]
     public string path;
@@ -63,7 +70,7 @@ public class TestLog : MonoBehaviour
     {
         foreach (var item in HexColor.GetAllStaticColor())
         {
-            bool ret1 =  ColorUtility.TryParseHtmlString(item.Item2.ToString(), out var color);
+            bool ret1 = ColorUtility.TryParseHtmlString(item.Item2.ToString(), out var color);
             bool ret2 = MeguminColorUtility.TryParseHtmlString(item.Item2.ToString(), out var color2);
             if (color.Equals(color2))
             {
@@ -95,10 +102,10 @@ public class TestLog : MonoBehaviour
     [EditorButton]
     public void TestArgs(Loger loger)
     {
-        
+
     }
 
-    [EditorButton]
+    [EditorButton(true)]
     public void Test2(int? loger)
     {
 
@@ -112,7 +119,7 @@ public class TestLog : MonoBehaviour
 
     private void OnValidate()
     {
-        
+
     }
 
     public void OnValueChangeTest1()

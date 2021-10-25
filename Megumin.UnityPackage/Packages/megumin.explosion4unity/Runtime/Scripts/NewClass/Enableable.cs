@@ -9,6 +9,7 @@ namespace Megumin
     /// 可启用的
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <see cref="Nullable{T}"/>无法序列化,不能写成特性.
     [Serializable]
     public class Enableable<T>
     {
@@ -17,6 +18,11 @@ namespace Megumin
         public bool Enabled = true;
         [SerializeField]
         public T Value;
+
+        /// <summary>
+        /// <inheritdoc cref="Nullable{T}.HasValue"/>
+        /// </summary>
+        public bool HasValue => Enabled;
 
         public Enableable(bool enabled = true, T def = default)
         {
@@ -69,9 +75,9 @@ namespace UnityEditor.Megumin
             SerializedProperty toggle = property.FindPropertyRelative("Enabled");
             toggle.boolValue = GUI.Toggle(togglePosition, toggle.boolValue, GUIContent.none);
 
-            GUI.enabled = toggle.boolValue;
+            EditorGUI.BeginDisabledGroup(!toggle.boolValue);
             EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("Value"), label, true);
-            GUI.enabled = true;
+            EditorGUI.EndDisabledGroup();
         }
     }
 }

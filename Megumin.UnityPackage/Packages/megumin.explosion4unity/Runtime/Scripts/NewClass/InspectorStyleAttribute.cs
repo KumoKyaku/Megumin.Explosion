@@ -28,12 +28,7 @@ namespace UnityEditor.Megumin
         {
             InspectorStyleAttribute style = attribute as InspectorStyleAttribute;
 
-            EditorGUI.DisabledGroupScope disabledGroup = null;
-            if (style.ReadOnly == true)
-            {
-                disabledGroup = new EditorGUI.DisabledGroupScope(true);
-            }
-
+            EditorGUI.BeginDisabledGroup(style.ReadOnly);
             var oldColor = GUI.color;
             if (ColorUtility.TryParseHtmlString(style.Color, out var color))
             {
@@ -41,9 +36,8 @@ namespace UnityEditor.Megumin
             }
 
             EditorGUI.PropertyField(position, property, label);
-
             GUI.color = oldColor;
-            disabledGroup?.Dispose();
+            EditorGUI.EndDisabledGroup();
         }
     }
 }

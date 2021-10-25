@@ -33,16 +33,16 @@ public class EditorButtonAttribute : PropertyAttribute
     /// <para/>false:仅运行模式有效.
     /// </summary>
     /// <value></value>
-    public bool ExecuteAlways { get; set; } = true;
+    public bool OnlyPlaying { get; set; } = false;
 
     public EditorButtonAttribute(string buttonName = null)
     {
         ButtonName = buttonName;
     }
 
-    public EditorButtonAttribute(bool executeAlways)
+    public EditorButtonAttribute(bool onlyPlaying)
     {
-        ExecuteAlways = executeAlways;
+        OnlyPlaying = onlyPlaying;
     }
 }
 
@@ -280,16 +280,16 @@ namespace UnityEditor
             if (isNullable)
             {
                 var curNull = currentValue != null;
-                GUI.enabled = curNull;
 
+                EditorGUI.BeginDisabledGroup(!curNull);
                 if (drawer != null)
                 {
                     if (currentValue == null)
                         currentValue = GetDefaultValue(parameterInfo);
                     paramValue = drawer.Invoke(parameterInfo, currentValue);
                 }
+                EditorGUI.EndDisabledGroup();
 
-                GUI.enabled = true;
                 var newNull = EditorGUILayout.Toggle(curNull);
                 if (!newNull)
                 {
@@ -378,22 +378,24 @@ namespace UnityEditor
             return sb.ToString();
         }
 
-        public static void DrawButtonforMethod(Object target, MethodInfo methodInfo, EditorButtonState state, bool executeAlways)
+        public static void DrawButtonforMethod(Object target, MethodInfo methodInfo, EditorButtonState state, bool onlyPlaying)
         {
             ///方法绘制间隔
             EditorGUILayout.Space(1);
 
             EditorGUILayout.BeginHorizontal();
 
-            GUI.enabled = methodInfo.GetParameters().Length > 0;
-            var foldoutRect = EditorGUILayout.GetControlRect(GUILayout.Width(10.0f));
-            state.opened = EditorGUI.Foldout(foldoutRect, state.opened, "");
+            using (new EditorGUI.DisabledScope(methodInfo.GetParameters().Length <= 0))
+            {
+                var foldoutRect = EditorGUILayout.GetControlRect(GUILayout.Width(10.0f));
+                state.opened = EditorGUI.Foldout(foldoutRect, state.opened, "");
+            }
 
-            GUI.enabled = executeAlways || Application.isPlaying;
+            EditorGUI.BeginDisabledGroup(onlyPlaying && !Application.isPlaying);
             string buttonName = MethodDisplayName(methodInfo);
             bool clicked = GUILayout.Button(buttonName, GUILayout.ExpandWidth(true));
+            EditorGUI.EndDisabledGroup();
 
-            GUI.enabled = true;
             EditorGUILayout.EndHorizontal();
 
             if (state.opened)
@@ -411,7 +413,7 @@ namespace UnityEditor
 
             if (clicked)
             {
-                if (executeAlways || Application.isPlaying)
+                if (onlyPlaying || Application.isPlaying)
                 {
                     object returnVal = methodInfo.Invoke(target, state.parameters);
 
@@ -474,7 +476,7 @@ namespace UnityEditor
         {
             foreach (var draw in list)
             {
-                DrawButtonforMethod(editor.target, draw.Method, draw.State, draw.Attribute.ExecuteAlways);
+                DrawButtonforMethod(editor.target, draw.Method, draw.State, draw.Attribute.OnlyPlaying);
             }
         }
 
@@ -513,7 +515,7 @@ namespace UnityEditor
 #else
 [ExcludeFromObjectFactory]
 [CanEditMultipleObjects]
-//[CustomEditor(typeof(Object), true)]
+[CustomEditor(typeof(Object), true)]
 #endif
 public class EditorButton : Editor
 {

@@ -124,6 +124,12 @@ namespace Megumin
         {
             OpenURL("https://github.com/dbrizov/NaughtyAttributes#installation");
         }
+
+        [MenuItem("Tools/Link/GUI.Scope")]
+        static void GUIScope()
+        {
+            OpenURL("https://hacchi-man.hatenablog.com/entry/2019/12/20/002444");
+        }
     }
 
     partial class Link

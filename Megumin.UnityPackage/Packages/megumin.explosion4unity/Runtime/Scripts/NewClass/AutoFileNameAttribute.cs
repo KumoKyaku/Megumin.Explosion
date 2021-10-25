@@ -37,9 +37,10 @@ namespace UnityEditor.Megumin
                     property.stringValue = fileName;
                 }
 
-                GUI.enabled = false;
-                EditorGUI.PropertyField(propertyPosition, property, label);
-                GUI.enabled = true;
+                using(new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUI.PropertyField(propertyPosition, property, label);
+                }
 
                 if (GUI.Button(buttonPosition, "Copy"))
                 {

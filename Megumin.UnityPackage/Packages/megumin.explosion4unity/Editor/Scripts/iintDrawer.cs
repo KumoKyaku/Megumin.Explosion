@@ -32,19 +32,21 @@ namespace Megumin
 
             iint value = p.intValue;
 
-            GUI.enabled = !value.IsNegativeInfinity;
-            if (GUI.Button(leftPosotion, "- ∞", left))
+            using (new EditorGUI.DisabledScope(value.IsNegativeInfinity))
             {
-                p.intValue = iint.NegativeInfinity;
+                if (GUI.Button(leftPosotion, "- ∞", left))
+                {
+                    p.intValue = iint.NegativeInfinity;
+                }
             }
 
-            GUI.enabled = !value.IsPositiveInfinity;
-            if (GUI.Button(rightPosition, "+ ∞", right))
+            using (new EditorGUI.DisabledScope(value.IsPositiveInfinity))
             {
-                p.intValue = iint.PositiveInfinity;
+                if (GUI.Button(rightPosition, "+ ∞", right))
+                {
+                    p.intValue = iint.PositiveInfinity;
+                }
             }
-
-            GUI.enabled = true;
         }
     }
 

@@ -6,6 +6,9 @@ using System;
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// 值向固定值靠近
+    /// </summary>
     public class SnapAttribute : PropertyAttribute
     {
         public double Value { get; set; } = 1;

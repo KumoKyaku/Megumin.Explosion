@@ -116,26 +116,29 @@ namespace UnityEditor.Megumin
                             {
                                 //帧数输入模式
                                 EditorGUI.PropertyField(propertyPosition, property, label);
-                                GUI.enabled = false;
-                                switch (attri.ShowMode)
+                                using (new EditorGUI.DisabledGroupScope(true))
                                 {
-                                    case FrameAndTimeAttribute.TimeUnit.Second:
-                                        EditorGUI.FloatField(exShow, time);
-                                        break;
-                                    case FrameAndTimeAttribute.TimeUnit.Millisecond:
-                                        EditorGUI.IntField(exShow, mstime);
-                                        break;
-                                    default:
-                                        break;
+                                    switch (attri.ShowMode)
+                                    {
+                                        case FrameAndTimeAttribute.TimeUnit.Second:
+                                            EditorGUI.FloatField(exShow, time);
+                                            break;
+                                        case FrameAndTimeAttribute.TimeUnit.Millisecond:
+                                            EditorGUI.IntField(exShow, mstime);
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 }
-                                GUI.enabled = true;
                             }
                             else
                             {
                                 //时间输入模式
-                                GUI.enabled = false;
-                                EditorGUI.PropertyField(propertyPosition, property, label);
-                                GUI.enabled = true;
+
+                                using (new EditorGUI.DisabledGroupScope(true))
+                                {
+                                    EditorGUI.PropertyField(propertyPosition, property, label);
+                                }
 
                                 switch (attri.ShowMode)
                                 {
@@ -167,9 +170,11 @@ namespace UnityEditor.Megumin
                             if (isInputFrameMode)
                             {
                                 //帧数输入模式
-                                GUI.enabled = false;
-                                EditorGUI.PropertyField(propertyPosition, property, label);
-                                GUI.enabled = true;
+                                using (new EditorGUI.DisabledGroupScope(true))
+                                {
+                                    EditorGUI.PropertyField(propertyPosition, property, label);
+                                }
+
                                 frame = EditorGUI.IntField(exShow, frame);
                                 mstime = (int)((float)frame * 1000 / rate + 0.5f);
                                 property.intValue = mstime;
@@ -177,11 +182,11 @@ namespace UnityEditor.Megumin
                             else
                             {
                                 //时间输入模式
-                                GUI.enabled = true;
                                 EditorGUI.PropertyField(propertyPosition, property, label);
-                                GUI.enabled = false;
-                                EditorGUI.IntField(exShow, frame);
-                                GUI.enabled = true;
+                                using (new EditorGUI.DisabledGroupScope(true))
+                                {
+                                    EditorGUI.IntField(exShow, frame);
+                                }
                             }
                         }
                         break;
