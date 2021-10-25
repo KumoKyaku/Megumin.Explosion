@@ -22,6 +22,32 @@ namespace Megumin
         [Tooltip("开区间")]
         [FrameAndTime]
         public int End;
+
+        public bool InScope(int current)
+        {
+            if (current >= Start)
+            {
+                if (current < End)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool InScope(long current)
+        {
+            if (current >= Start)
+            {
+                if (current < End)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
 
