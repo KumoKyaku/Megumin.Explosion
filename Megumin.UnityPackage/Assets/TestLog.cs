@@ -22,6 +22,8 @@ public class TestLog : MonoBehaviour
     public iint Iint;
     [GUID]
     public string guid;
+    [GUID]
+    public List<string> Guidlist;
     [Indent]
     public Color TestColor;
     // Start is called before the first frame update

@@ -24,11 +24,17 @@ namespace UnityEditor.Megumin
     {
         static GUIStyle left = new GUIStyle("minibuttonleft");
         static GUIStyle right = new GUIStyle("minibuttonright");
-
+        string needNewPath = null;
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType == SerializedPropertyType.String)
             {
+                if (needNewPath == property.propertyPath && !string.IsNullOrEmpty(needNewPath))
+                {
+                    needNewPath = null;
+                    property.stringValue = GUID.Generate().ToString();
+                }
+
                 var propertyPosition = position;
                 propertyPosition.width -= 86;
 
@@ -58,11 +64,12 @@ namespace UnityEditor.Megumin
 
                 if (GUI.Button(leftPosotion, "GUID", left))
                 {
-                    //TODO:没法用二次提示
-                    //if (EditorUtility.DisplayDialog("GUID", "确定生成新的GUID吗", "OK", "Cancel"))
+                    if (EditorUtility.DisplayDialog("GUID", "确定生成新的GUID吗", "OK", "Cancel"))
                     {
-                        property.stringValue = GUID.Generate().ToString();
+                        needNewPath = property.propertyPath;
+                        //property.stringValue = GUID.Generate().ToString();不生效,改用needNewPath.
                     }
+                    GUIUtility.ExitGUI();
                 }
 
                 if (GUI.Button(rightPosition, "Copy", right))
