@@ -11,14 +11,15 @@ namespace Megumin.Test
     /// 测试两个未同步的设备DateTimeOffset.UtcNow的误差.
     /// </summary>
     /// <remarks>
-    /// 结论:
+    /// 结论:<para/>
     /// 同一台设备两个不同程序取得utc时间居然也不同,差2-3个1/60秒.可能是运行时不同导致的.
     /// 编辑器和MONO打包差别比较大,平局在2个1/60秒左右.
     /// 俩个IL2CPP的没有有差别,完全一致.和mono打包有时有区别,很多时候没区别.
     /// <para/>
-    /// 同一个设备的DateTimeOffset.UtcNow不能保证一致.看来联机同步时间是必须的.
+    /// 在不同设备下进行测试,并拍照片对比.
+    /// 时间有时能差2秒以上.最少也会差2个1/60秒.
     /// <para/>
-    /// TODO:在不同设备下进行测试,并拍照片对比.
+    /// 同一个设备的DateTimeOffset.UtcNow不能保证一致.看来联机同步时间是必须的.
     /// </remarks>
     public class DateTimeOffsetTest : MonoBehaviour
     {
