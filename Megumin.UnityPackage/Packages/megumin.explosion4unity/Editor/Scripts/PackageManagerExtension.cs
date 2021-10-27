@@ -147,19 +147,21 @@ namespace Megumin
                 current = packageInfo;
                 //button.SetEnabled(false);
                 bool isGit = current?.source == UnityEditor.PackageManager.PackageSource.Git;
-                bool isInLocalPackage = !current?.resolvedPath.StartsWith(MeguminUtility4Unity.PackagesPath) ?? false;
-                bool isInLiraryCache = !current?.resolvedPath.StartsWith(MeguminUtility4Unity.LibraryPackageCachePath) ?? false;
+                bool? isInLocal = current?.resolvedPath.StartsWith(MeguminUtility4Unity.PackagesPath);
+                bool canMove2Local = !isInLocal ?? false;
+                bool? isInLibrary = current?.resolvedPath.StartsWith(MeguminUtility4Unity.LibraryPackageCachePath);
+                bool canMove2Cache = !isInLibrary ?? false;
 
-                detail.text = $"[isGit : {isGit}]    [isInLocalPackage : {isInLocalPackage}]    [isInLiraryCache : {isInLiraryCache}]";
+                detail.text = $"[Git : {isGit}]    [InLocalPackage : {isInLocal ?? false}]    [InLiraryCache : {isInLibrary ?? false}]";
 
                 if (current != null)
                 {
-                    Debug.Log(current.displayName + "    " + MeguminUtility.Detail(current));
+                    Debug.Log(current.displayName + "    " + Utility.ToStringReflection(current));
                 }
 
                 opengit.SetEnabled(isGit);
-                move2Local.SetEnabled(isInLocalPackage);
-                move2Cache.SetEnabled(isInLiraryCache);
+                move2Local.SetEnabled(canMove2Local);
+                move2Cache.SetEnabled(canMove2Cache);
             }
 
             public void OnPackageAddedOrUpdated(UnityEditor.PackageManager.PackageInfo packageInfo)
