@@ -26,10 +26,12 @@ public class TestLog : MonoBehaviour
     public List<string> Guidlist;
     [Indent]
     public Color TestColor;
+    public List<Loger> Loggers;
+    public List<Test12345> Test12345s;
     // Start is called before the first frame update
     [HelpBox("帮助", textLanguage: SystemLanguage.ChineseSimplified, EnglishText = "help")]
     [Indent]
-    [Path(IsFolder = false, Exetension = "txt")]
+    [Path(IsFolder = true, Exetension = "txt")]
     public string path;
     //[ReadOnlyInInspector]
     //[OnValueChanged]
@@ -162,4 +164,18 @@ public class EnableFrame : Enableable
 {
     [FrameAndTime]
     public int Value;
+}
+
+[Serializable]
+public class Test12345
+{
+    [ContextMenuItem("Reset12345", "Reset")]
+    public Mesh mesh;
+
+
+    public void Reset()
+    {
+        mesh = null;
+        Debug.LogError("reset");
+    }
 }

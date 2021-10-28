@@ -23,6 +23,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
     int index = 0;
     Type[] SupportTypes;
     HashSet<Type> allTypes;
+    SaveTask saveTask = null;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
@@ -89,6 +90,33 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
         var rightPosition = buttonPosition;
         rightPosition.width = 40;
         rightPosition.x += 40;
+
+        if (saveTask != null)
+        {
+            var T = saveTask.T;
+            var TName = saveTask.TName;
+            var instancePath = saveTask.instancePath;
+            saveTask = null;
+
+            ScriptableObject instance = null;
+            if (T != null)
+            {
+                instance = ScriptableObject.CreateInstance(T);
+            }
+            else
+            {
+                instance = ScriptableObject.CreateInstance(TName);
+            }
+
+            if (instancePath.StartsWith(MeguminUtility4Unity.ProjectPath))
+            {
+                instancePath = instancePath.Replace(MeguminUtility4Unity.ProjectPath, "");
+            }
+
+            AssetDatabase.CreateAsset(instance, instancePath);
+            AssetDatabase.Refresh();
+            property.objectReferenceValue = instance;
+        }
 
         var obj = property.objectReferenceValue;
         if (obj)
@@ -197,34 +225,23 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                 if (GUI.Button(rightPosition, "Save", right))
                 {
                     var (T, TName) = CalTargetType();
-                    ScriptableObject instance = null;
-                    if (T != null)
-                    {
-                        instance = ScriptableObject.CreateInstance(T);
-                    }
-                    else
-                    {
-                        instance = ScriptableObject.CreateInstance(TName);
-                    }
-
-
                     string dir = GetDir(property);
-                    var fileName = $"{property.serializedObject.targetObject.name}_{instance.GetType().Name}";
+                    var fileName = $"{property.serializedObject.targetObject.name}_{TName}";
                     fileName = fileName.AutoFileName(dir, ".asset");
                     var instancePath = EditorUtility.SaveFilePanel("Create", dir, fileName, "asset");
                     instancePath = Path.GetFullPath(instancePath);
-
-                    if (instancePath.StartsWith(MeguminUtility4Unity.ProjectPath))
-                    {
-                        instancePath = instancePath.Replace(MeguminUtility4Unity.ProjectPath, "");
-                    }
-
-                    AssetDatabase.CreateAsset(instance, instancePath);
-                    AssetDatabase.Refresh();
-                    property.objectReferenceValue = instance;
+                    saveTask = new SaveTask() { instancePath = instancePath, T = T, TName = TName };
+                    GUIUtility.ExitGUI();
                 }
             }
         }
+    }
+
+    class SaveTask
+    {
+        public Type T;
+        public string TName;
+        public string instancePath;
     }
 
     private static void CreateInstance(SerializedProperty property, string type)

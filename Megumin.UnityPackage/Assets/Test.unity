@@ -277,7 +277,12 @@ MonoBehaviour:
   - 3b6cbaf1c85cce343b1f6a64cb37a6ee
   - 266a0883bd3a03f4ca9e372967e70483
   TestColor: {r: 0, g: 0, b: 0, a: 0}
-  path: 
+  Loggers:
+  - {fileID: 11400000, guid: 8dda040d6cbc7754582cfd5a3d2dcdac, type: 2}
+  Test12345s:
+  - mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  - mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  path: W:/Git/Megumin.Explosion/Megumin.UnityPackage/Logs
   HSVColor:
     Hue: 0.178
     Saturation: 1

@@ -16,7 +16,7 @@ public class Enum2StringTest : MonoBehaviour
     void Awake()
     {
 #if UNITY_EDITOR
-        string detail = Megumin.MeguminUtility.Detail<UnityEditor.EditorApplication>();
+        string detail = Utility.ToStringReflection<UnityEditor.EditorApplication>();
         Debug.LogError(detail);
 #endif
     }
