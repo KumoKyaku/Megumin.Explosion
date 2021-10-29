@@ -298,6 +298,7 @@ MonoBehaviour:
   STest:
     inta: 151
     intb: 1234568
+  SaveAsset: {fileID: 11400000, guid: c6930315ef3e77f4ea45af1032878fca, type: 2}
   Optionsss: Tset22
 --- !u!1001 &2934216655231609562
 PrefabInstance:

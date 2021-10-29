@@ -40,6 +40,7 @@ public class TestLog : MonoBehaviour
     public Enableable<string> Enableable = new Enableable<string>(false, "可开关字段");
     //[OnValueChanged(CallBackName = "OnValueChangeTest1")]
     public STest STest;
+    public SaveAsset SaveAsset;
     void Start()
     {
         string message = ColorUtility.ToHtmlStringRGBA(Color.green);

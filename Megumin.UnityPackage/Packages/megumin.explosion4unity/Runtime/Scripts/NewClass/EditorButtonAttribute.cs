@@ -413,7 +413,7 @@ namespace UnityEditor
 
             if (clicked)
             {
-                if (onlyPlaying || Application.isPlaying)
+                if (!onlyPlaying || Application.isPlaying)
                 {
                     object returnVal = methodInfo.Invoke(target, state.parameters);
 
