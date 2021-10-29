@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
-using UnityEditor;
 
-public class SaveAsset : ScriptableObject,ISerializationCallbackReceiver
+public class SaveAsset : ScriptableObject, ISerializationCallbackReceiver
 {
     [HideInInspector]
     public List<Mesh> Meshs;
@@ -25,7 +24,9 @@ public class SaveAsset : ScriptableObject,ISerializationCallbackReceiver
                     if (item.mesh)
                     {
                         Meshs.Add(item.mesh);
-                        AssetDatabase.AddObjectToAsset(item.mesh, this);
+#if UNITY_EDITOR
+                        UnityEditor.AssetDatabase.AddObjectToAsset(item.mesh, this);
+#endif
                     }
                 }
             }
@@ -43,7 +44,9 @@ public class SaveAsset : ScriptableObject,ISerializationCallbackReceiver
                 {
                     if (mesh)
                     {
-                        AssetDatabase.RemoveObjectFromAsset(mesh);
+#if UNITY_EDITOR
+                        UnityEditor.AssetDatabase.RemoveObjectFromAsset(mesh);
+#endif
                     }
                     return true;
                 }
@@ -53,9 +56,10 @@ public class SaveAsset : ScriptableObject,ISerializationCallbackReceiver
 
     public void OnAfterDeserialize()
     {
-        
+
     }
 
+#if UNITY_EDITOR
     [EditorButton]
     public void TestAdd()
     {
@@ -65,10 +69,10 @@ public class SaveAsset : ScriptableObject,ISerializationCallbackReceiver
             count = Meshs.Count;
         }
         var mesh = new Mesh() { name = $"test{count}" };
-        AssetDatabase.AddObjectToAsset(mesh, this);
-        EditorUtility.SetDirty(this);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
+        UnityEditor.AssetDatabase.AddObjectToAsset(mesh, this);
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.AssetDatabase.SaveAssets();
+        UnityEditor.AssetDatabase.Refresh();
 
         if (Meshs == null)
         {
@@ -80,14 +84,17 @@ public class SaveAsset : ScriptableObject,ISerializationCallbackReceiver
             WarpClasses = new List<WarpClass>();
         }
         WarpClasses.Add(new WarpClass() { mesh = mesh });
-        EditorUtility.SetDirty(this);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.AssetDatabase.SaveAssets();
+        UnityEditor.AssetDatabase.Refresh();
     }
+#endif
+
+
 }
 
 [Serializable]
-public class WarpClass 
+public class WarpClass
 {
     public Mesh mesh;
 }
