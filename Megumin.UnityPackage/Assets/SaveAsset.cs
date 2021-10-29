@@ -7,9 +7,9 @@ using UnityEditor;
 
 public class SaveAsset : ScriptableObject,ISerializationCallbackReceiver
 {
-    public List<WarpClass> WarpClasses;
     [HideInInspector]
     public List<Mesh> Meshs;
+    public List<WarpClass> WarpClasses;
     public void OnBeforeSerialize()
     {
         if (WarpClasses != null)
@@ -59,7 +59,27 @@ public class SaveAsset : ScriptableObject,ISerializationCallbackReceiver
     [EditorButton]
     public void TestAdd()
     {
-        WarpClasses.Add(new WarpClass() { mesh = new Mesh() { name = $"test{WarpClasses.Count}"} });
+        var count = 0;
+        if (Meshs != null)
+        {
+            count = Meshs.Count;
+        }
+        var mesh = new Mesh() { name = $"test{count}" };
+        AssetDatabase.AddObjectToAsset(mesh, this);
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        if (Meshs == null)
+        {
+            Meshs = new List<Mesh>();
+        }
+        Meshs.Add(mesh);
+        if (WarpClasses == null)
+        {
+            WarpClasses = new List<WarpClass>();
+        }
+        WarpClasses.Add(new WarpClass() { mesh = mesh });
         EditorUtility.SetDirty(this);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
