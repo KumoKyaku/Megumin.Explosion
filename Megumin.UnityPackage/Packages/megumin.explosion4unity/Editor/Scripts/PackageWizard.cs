@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PackageWizard : EditorWindow
 {
-    const float k_WindowWidth = 500f;
+    const float k_WindowWidth = 600f;
     const float k_MaxWindowHeight = 800f;
     const float k_ScreenSizeWindowBuffer = 50f;
 
@@ -15,19 +15,26 @@ public class PackageWizard : EditorWindow
     {
         PackageWizard wizard = GetWindow<PackageWizard>(true, "Package Wizard", true);
 
+        wizard.minSize = new Vector2(k_WindowWidth, 400);
+
         Vector2 position = Vector2.zero;
         SceneView sceneView = SceneView.lastActiveSceneView;
-        if (sceneView != null)
-            position = new Vector2(sceneView.position.x, sceneView.position.y);
-        wizard.position = new Rect(position.x + k_ScreenSizeWindowBuffer, position.y + k_ScreenSizeWindowBuffer, k_WindowWidth, Mathf.Min(Screen.currentResolution.height - k_ScreenSizeWindowBuffer, k_MaxWindowHeight));
 
+        if (sceneView != null)
+        {
+            position = new Vector2(sceneView.position.x, sceneView.position.y);
+        }
+
+        wizard.position = new Rect(position.x + k_ScreenSizeWindowBuffer, position.y + k_ScreenSizeWindowBuffer, k_WindowWidth, Mathf.Min(Screen.currentResolution.height - k_ScreenSizeWindowBuffer, k_MaxWindowHeight));
         wizard.Show();
     }
 
     readonly GUIContent m_NameContent = new GUIContent("PackageName");
-    string InputPackageName = "";
+    string InputPackageName = "TestPackage";
     bool CreateRuntimeAsmdef = true;
     bool CreateEditorAsmdef = false;
+    string NameExtension = "com.megumin";
+
 
     void OnGUI()
     {
@@ -37,6 +44,13 @@ public class PackageWizard : EditorWindow
         CreateRuntimeAsmdef = EditorGUILayout.Toggle("CreateRuntimeAsmdef", CreateRuntimeAsmdef);
         CreateEditorAsmdef = EditorGUILayout.Toggle("CreateEditorAsmdef", CreateEditorAsmdef);
 
+        if (EditorGUILayout.LinkButton("Start with <domain-name-extension>.<company-name> (for example, \"com.example\" \"net.example\")"))
+        {
+            Application.OpenURL("https://docs.unity3d.com/2020.3/Documentation/Manual/cus-naming.html");
+        }
+        NameExtension = EditorGUILayout.TextField("NameExtension", NameExtension);
+
+        EditorGUILayout.Separator();
         if (GUILayout.Button("Create", GUILayout.Width(60f)))
         {
             CreatePackageFolder(path);
@@ -83,7 +97,7 @@ public class PackageWizard : EditorWindow
             string packageInfo =
 $@"
 {{
-    ""name"": ""{InputPackageName.ToLower()}"",
+    ""name"": ""{NameExtension.ToLower()}.{InputPackageName.ToLower()}"",
     ""displayName"": ""{InputPackageName}"",
     
     ""version"": ""0.0.1"",

@@ -11,10 +11,11 @@ namespace UnityEngine
     public sealed class EnableableAttribute : PropertyAttribute
     {
         public string Path { get; set; } = "Enabled";
-
-        public EnableableAttribute(string path = "Enabled")
+        public bool Value { get; set; } = true;
+        public EnableableAttribute(string path = "Enabled", bool value = true)
         {
             Path = path;
+            Value = value;
         }
     }
 }
@@ -53,13 +54,15 @@ namespace UnityEditor.Megumin
                 valuePosition.width -= 20;
 
                 toggle.boolValue = GUI.Toggle(togglePosition, toggle.boolValue, GUIContent.none);
-                EditorGUI.BeginDisabledGroup(!toggle.boolValue);
+                var isGray = toggle.boolValue != (attribute as EnableableAttribute).Value;
+                EditorGUI.BeginDisabledGroup(isGray);
                 EditorGUI.PropertyField(valuePosition, property, label, true);
                 EditorGUI.EndDisabledGroup();
             }
             else
             {
                 EditorGUI.PropertyField(position, property, label, true);
+                Debug.LogWarning($"EnableableAttribute 没有找到{name}属性,没有生效");
             }
         }
     }

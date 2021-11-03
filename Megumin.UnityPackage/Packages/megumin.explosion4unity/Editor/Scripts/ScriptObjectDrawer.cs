@@ -8,9 +8,13 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
+/// <summary>
+/// 增加new,clone两个按钮.对Material无效.
+/// </summary>
 #if DISABLE_SCROBJ_DRAWER
 
 #else
+//[CustomPropertyDrawer(typeof(Material), true)]
 [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
 public class ScriptObjectDrawer_8F11D385 : PropertyDrawer

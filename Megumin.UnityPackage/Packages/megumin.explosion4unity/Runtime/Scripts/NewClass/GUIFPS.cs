@@ -27,15 +27,18 @@ namespace Megumin
 
         void Update()
         {
-            frame++;
-            float time = Time.realtimeSinceStartup - oldTime;
-            if (time >= INTERVAL)
+            if (Application.isPlaying)
             {
-                frameRate = frame / time;
-                Content = $"FPS : {frameRate:0.0}"; ;
-                frameRateStr = Content;
-                oldTime = Time.realtimeSinceStartup;
-                frame = 0;
+                frame++;
+                float time = Time.realtimeSinceStartup - oldTime;
+                if (time >= INTERVAL)
+                {
+                    frameRate = frame / time;
+                    Content = $"FPS : {frameRate:0.0}"; ;
+                    frameRateStr = Content;
+                    oldTime = Time.realtimeSinceStartup;
+                    frame = 0;
+                }
             }
         }
 
