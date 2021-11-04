@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -107,6 +108,20 @@ public static partial class MeguminEditorUtility
         var type = assembly.GetType("UnityEditor.SyncVS");
         var sync = type.GetMethod("SyncSolution");
         sync.Invoke(null, new object[0]);
+    }
+
+    public static Type FindCustomEditorTypeByType(Type type, bool multiEdit, bool log = true)
+    {
+        var t = typeof(ArrayUtility).Assembly.GetTypes().First(t => t.Name == "CustomEditorAttributes");
+        var m = t.GetMethod("FindCustomEditorTypeByType", BindingFlags.Static | BindingFlags.NonPublic);
+        var res = m.Invoke(null, new object[] { type, multiEdit });
+        var restype = res as Type;
+        if (restype != null && log)
+        {
+            Debug.Log($"{type.FullName} : [CustomEditorType:{restype.FullName}--Assembly:{restype.Assembly.FullName}]");
+        }
+
+        return restype;
     }
 }
 

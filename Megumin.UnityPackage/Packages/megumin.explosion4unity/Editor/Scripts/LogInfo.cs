@@ -30,6 +30,16 @@ namespace Megumin
         {
             Debug.Log(Utility.ToStringReflection<SystemInfo>());
         }
+
+        [MenuItem("Tools/LogInfo/ActiveCustomEditorType")]
+        static void LogActiveCustomEditorType()
+        {
+            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(Object), false);
+            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(Component), false);
+            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(Behaviour), false);
+            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(MonoBehaviour), false);
+            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(ScriptableObject), false);
+        }
     }
 }
 

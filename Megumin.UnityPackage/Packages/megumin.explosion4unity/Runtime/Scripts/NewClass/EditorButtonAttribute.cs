@@ -513,10 +513,13 @@ namespace UnityEditor
 #if DISABLE_EDITORBUTTONATTRIBUTE
 
 #else
+
+/// <summary>
+/// 
+/// </summary>
 [ExcludeFromObjectFactory]
 [CanEditMultipleObjects]
-[CustomEditor(typeof(Object), true)]
-#endif
+[CustomEditor(typeof(UnityEngine.Object), true, isFallback = false)]
 public class EditorButton : Editor
 {
     public override void OnInspectorGUI()
@@ -525,6 +528,31 @@ public class EditorButton : Editor
         this.DrawInspectorMethods();
     }
 }
+
+/// <summary>
+/// isFallback 是true 会被其他 [CustomEditor(typeof(UnityEngine.Object))]抢占,恶性竞争
+/// </summary>
+[ExcludeFromObjectFactory]
+[CanEditMultipleObjects]
+[CustomEditor(typeof(Component), true, isFallback = false)]
+public class ComponentEditorButton : EditorButton { }
+
+[ExcludeFromObjectFactory]
+[CanEditMultipleObjects]
+[CustomEditor(typeof(Behaviour), true, isFallback = true)]
+public class BehaviourEditorButton : EditorButton { }
+
+[ExcludeFromObjectFactory]
+[CanEditMultipleObjects]
+[CustomEditor(typeof(MonoBehaviour), true, isFallback = true)]
+public class MonoBehaviourEditorButton : EditorButton { }
+
+[ExcludeFromObjectFactory]
+[CanEditMultipleObjects]
+[CustomEditor(typeof(ScriptableObject), true, isFallback = false)]
+public class ScriptableObjectButton : EditorButton { }
+
+#endif
 
 #endif
 
