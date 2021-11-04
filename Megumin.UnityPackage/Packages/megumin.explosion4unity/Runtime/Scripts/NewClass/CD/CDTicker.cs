@@ -15,6 +15,8 @@ namespace Megumin
     [DefaultExecutionOrder(-999)]
     public class CDTicker : MonoBehaviour, ICDTicker<float>
     {
+        private static CDTicker instance;
+
         public bool CheckNow(float stamp, float perSpan, out float next)
         {
             var delta = Now - stamp;
@@ -25,10 +27,34 @@ namespace Megumin
 
         public float Now { get; private set; }
 
-        public static CDTicker Instance => IUnitySingleton<CDTicker>.Instance;
+        public static CDTicker Instance
+        {
+            get
+            {
+                if (instance)
+                {
+                    return instance;
+                }
+                else
+                {
+                    instance = UniSingleton.CreateSingleton<CDTicker>();
+                    return instance;
+                }
+            }
+        }
+
         private void Awake()
         {
-            IUnitySingleton<CDTicker>.TrySetInstance(this);
+            if (instance)
+            {
+                if (instance != this)
+                {
+                    Destroy(this);
+                    return;
+                }
+            }
+
+            instance = this;
         }
 
         private void FixedUpdate()
