@@ -46,11 +46,29 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                 {
                     for (int i = 0; i < ab.Support.Length; i++)
                     {
-                        var type = ab.Support[i];
-                        if (ab.AllowAbstract || !type.IsAbstract)
+                        void TryAddType(Type type)
                         {
+                            if (!ab.AllowInterface && type.IsInterface)
+                            {
+                                return;
+                            }
+
+                            if (!ab.AllowAbstract && type.IsAbstract)
+                            {
+                                return;
+                            }
+
+                            if (!ab.AllowGenericType && type.IsGenericType)
+                            {
+                                return;
+                            }
+
                             allTypes.Add(type);
                         }
+
+                        var type = ab.Support[i];
+
+                        TryAddType(type);
 
                         if (ab.IncludeChildInSameAssembly)
                         {
@@ -59,10 +77,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
                             {
                                 if (type.IsAssignableFrom(item))
                                 {
-                                    if (ab.AllowAbstract || !item.IsAbstract)
-                                    {
-                                        allTypes.Add(item);
-                                    }
+                                    TryAddType(item);
                                 }
                             }
                         }

@@ -51,18 +51,30 @@ namespace Megumin
         public Type[] Support { get; set; }
 
         /// <summary>
-        /// 是否包含其他程序集的子类型
+        /// 是否包含其他程序集的子类型,默认false,暂时没有支持.
         /// </summary>
         public bool IncludeChildInOtherAssembly { get; set; } = false;
+
         /// <summary>
-        /// 是否包含同一程序集的子类型
+        /// 是否包含同一程序集的子类型,默认true
         /// </summary>
         /// <remarks></remarks>
-        public bool IncludeChildInSameAssembly { get; set; } = false;
+        public bool IncludeChildInSameAssembly { get; set; } = true;
+
         /// <summary>
-        /// 是否允许抽象类型
+        /// 是否允许抽象类型,默认false
         /// </summary>
-        public bool AllowAbstract { get; set; } = true;
+        public bool AllowAbstract { get; set; } = false;
+
+        /// <summary>
+        /// 是否允许接口类型,默认false
+        /// </summary>
+        public bool AllowInterface { get; set; } = false;
+
+        /// <summary>
+        /// 是否允许泛型类型,默认true
+        /// </summary>
+        public bool AllowGenericType { get; set; } = true;
 
         public SupportTypesAttribute(params Type[] types)
         {
