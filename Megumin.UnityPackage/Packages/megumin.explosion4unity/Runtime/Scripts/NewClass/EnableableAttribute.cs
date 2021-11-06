@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,8 @@ namespace UnityEngine
     /// <summary>
     /// 指定一个bool属性为开启关闭Toggle
     /// </summary>
-    [System.AttributeUsage(System.AttributeTargets.Field)]
+    /// <remarks>标记在class上并没有作用</remarks>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Class)]
     public sealed class EnableableAttribute : PropertyAttribute
     {
         public string Path { get; set; } = "Enabled";

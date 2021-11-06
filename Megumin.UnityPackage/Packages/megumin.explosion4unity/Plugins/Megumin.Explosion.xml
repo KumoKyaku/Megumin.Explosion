@@ -180,18 +180,28 @@
         </member>
         <member name="P:Megumin.SupportTypesAttribute.IncludeChildInOtherAssembly">
             <summary>
-            是否包含其他程序集的子类型
+            是否包含其他程序集的子类型,默认false,暂时没有支持.
             </summary>
         </member>
         <member name="P:Megumin.SupportTypesAttribute.IncludeChildInSameAssembly">
             <summary>
-            是否包含同一程序集的子类型
+            是否包含同一程序集的子类型,默认true
             </summary>
             <remarks></remarks>
         </member>
         <member name="P:Megumin.SupportTypesAttribute.AllowAbstract">
             <summary>
-            是否允许抽象类型
+            是否允许抽象类型,默认false
+            </summary>
+        </member>
+        <member name="P:Megumin.SupportTypesAttribute.AllowInterface">
+            <summary>
+            是否允许接口类型,默认false
+            </summary>
+        </member>
+        <member name="P:Megumin.SupportTypesAttribute.AllowGenericType">
+            <summary>
+            是否允许泛型类型,默认true
             </summary>
         </member>
         <member name="T:Megumin.GenarateNameAttribute">
@@ -471,6 +481,7 @@
         <member name="T:Megumin.QueuePipe`1">
             <summary>
             <inheritdoc cref="T:Megumin.IPipe`1"/>
+            <para></para>这是个简单的实现,更复杂使用微软官方实现<see cref="!:System.Threading.Channels.Channel.CreateBounded&lt;T&gt;(int)"/>
             </summary>
             <typeparam name="T"></typeparam>
         </member>
