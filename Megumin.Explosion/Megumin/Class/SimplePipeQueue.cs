@@ -88,6 +88,7 @@ namespace Megumin
 
     /// <summary>
     /// <inheritdoc cref="IPipe{T}"/>
+    /// <para></para>这是个简单的实现,更复杂使用微软官方实现<see cref="System.Threading.Channels.Channel.CreateBounded{T}(int)"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class QueuePipe<T> : Queue<T>, IPipe<T>
