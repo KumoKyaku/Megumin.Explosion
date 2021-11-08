@@ -9,7 +9,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 
 /// <summary>
-/// 增加new,clone两个按钮.对Material无效.
+/// 增加new,clone两个按钮.对Material无效.想增加SubAsset功能,但是发现没有必要.
 /// </summary>
 #if DISABLE_SCROBJ_DRAWER
 

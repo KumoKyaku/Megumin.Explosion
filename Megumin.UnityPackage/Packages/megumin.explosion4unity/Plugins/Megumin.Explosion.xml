@@ -318,13 +318,11 @@
             <param name="value"></param>
             <returns></returns>
         </member>
-        <member name="T:Megumin.MultipleControl`2">
+        <member name="T:Megumin.IMultipleControlable`2">
             <summary>
             多重值控制器。
-            不提供默认值访问，也不保存默认值。会导致过渡设计。
+            [不提供默认值访问，也不保存默认值。会导致过渡设计。] 后来证明需要访问,加上了!!!
             </summary>
-            <typeparam name="K"></typeparam>
-            <typeparam name="V"></typeparam>
             <remarks>
             用例：当前声音100，
             A功能需要将声音压低为20，A功能结束后恢复原音量。
@@ -340,37 +338,130 @@
             控制器从所有想要控制值的列表中选出想要的值。
             <para></para>
             用例2：多个功能想要黑屏Loading。只要有一个功能还需要Loading，那么Loading就不该消失。
+            <para></para>
+            用例3: 多个地方各自不同禁用某些物品使用,类型是FlagEnum,每处禁用的物品类型有重叠,
+            这时用一个枚举值来存共有哪些禁用,就无法实现需求.
             </remarks>
         </member>
-        <member name="F:Megumin.MultipleControl`2.SortLinq">
-            <summary>
-            排序用Linq表达式
-            </summary>
-        </member>
-        <member name="E:Megumin.MultipleControl`2.OnValueChanged">
-            <summary>
-            值发生改变
-            </summary>
-        </member>
-        <member name="F:Megumin.MultipleControl`2.DefaultKey">
-            <summary>
-            默认值Key
-            </summary>
-        </member>
-        <member name="P:Megumin.MultipleControl`2.Current">
+        <member name="P:Megumin.IMultipleControlable`2.Current">
             <summary>
             当前值
             </summary>
         </member>
-        <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1,Megumin.OnValueChanged{`1})">
+        <member name="P:Megumin.IMultipleControlable`2.CurrentKey">
+            <summary>
+            当前值的Key,可能为无效值,看计算方式.
+            </summary>
+        </member>
+        <member name="P:Megumin.IMultipleControlable`2.DefaultKey">
+            <summary>
+            默认值Key
+            </summary>
+        </member>
+        <member name="P:Megumin.IMultipleControlable`2.DefaultValue">
+            <summary>
+            默认值
+            </summary>
+            <remarks>有必要存在,有的需求要设定的值可能就是默认值取反</remarks>
+        </member>
+        <member name="E:Megumin.IMultipleControlable`2.OnValueChanged">
+            <summary>
+            值发生改变
+            </summary>
+        </member>
+        <member name="E:Megumin.IMultipleControlable`2.OnValueChangedKV">
+            <summary>
+            值发生改变
+            </summary>
+        </member>
+        <member name="M:Megumin.IMultipleControlable`2.Control(`0,`1)">
+            <summary>
+            开始控制
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Megumin.IMultipleControlable`2.Cancel(`0,`1)">
+            <summary>
+            取消控制
+            </summary>
+            <param name="key"></param>
+            <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
+        </member>
+        <member name="M:Megumin.IMultipleControlable`2.CancelAll">
+            <summary>
+            取消除默认值以外的所有控制
+            </summary>
+        </member>
+        <member name="T:Megumin.MultipleControlBase`3">
+            <inheritdoc cref="T:Megumin.IMultipleControlable`2"/>
+            <summary>
+            多重值控制器。
+            [不提供默认值访问，也不保存默认值。会导致过渡设计。] 后来证明需要访问,加上了!!!
+            </summary>
+            <typeparam name="K"></typeparam>
+            <typeparam name="V"></typeparam>
+            <typeparam name="C">构造中使用参数类型,初始化排序缓存时使用的参数</typeparam>
+        </member>
+        <member name="F:Megumin.MultipleControlBase`3.Controllers">
+            <summary>
+            TODO,使用最大堆最小堆优化
+            </summary>
+        </member>
+        <member name="M:Megumin.MultipleControlBase`3.#ctor(`0,`1,Megumin.OnValueChanged{System.ValueTuple{`0,`1}},Megumin.OnValueChanged{`1},`2)">
             <summary>
             
             </summary>
-            <param name="defaultKey">默认key</param>
-            <param name="defaultValue">默认值</param>
+            <param name="defaultKey"></param>
+            <param name="defaultValue"></param>
+            <param name="onValueChangedKV"></param>
             <param name="onValueChanged"></param>
+            <param name="init"></param>
         </member>
-        <member name="M:Megumin.MultipleControl`2.InitSortLinq">
+        <member name="M:Megumin.MultipleControlBase`3.InitInCtor(`2)">
+            <summary>
+            构造函数中间调用的虚方法,用于初始化排序字段,在第一次<see cref="M:Megumin.MultipleControlBase`3.ApplyValue"/>前调用.
+            <para>不需要排序的或者计算方式不需要缓存的,可以忽略这个函数.</para>
+            这个主要作用用来初始化排序的linq表达式.
+            </summary>
+        </member>
+        <member name="M:Megumin.MultipleControlBase`3.ApplyValue">
+            <summary>
+            应用值
+            </summary>
+        </member>
+        <member name="M:Megumin.MultipleControlBase`3.CalNewValue">
+            <summary>
+            计算新的值, 返回值也可以用KeyValuePair,没什么区别.
+            </summary>
+            <returns></returns>
+            <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
+        </member>
+        <member name="M:Megumin.MultipleControlBase`3.op_Implicit(Megumin.MultipleControlBase{`0,`1,`2})~`1">
+            <summary>
+            返回当前值
+            </summary>
+            <param name="multipleControl"></param>
+        </member>
+        <member name="T:Megumin.MultipleControl`2">
+            <inheritdoc/>
+        </member>
+        <member name="F:Megumin.MultipleControl`2.SortLinqKV">
+            <summary>
+            排序用Linq表达式
+            </summary>
+        </member>
+        <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1,Megumin.OnValueChanged{System.ValueTuple{`0,`1}},Megumin.OnValueChanged{`1},System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="defaultKey"></param>
+            <param name="defaultValue"></param>
+            <param name="onValueChangedKV"></param>
+            <param name="onValueChanged"></param>
+            <param name="ascending">true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。</param>
+        </member>
+        <member name="M:Megumin.MultipleControl`2.InitSortLinq(System.Boolean)">
             <summary>
             初始化值计算
             </summary>
@@ -382,40 +473,14 @@
             </summary>
             <param name="ascending"></param>
         </member>
-        <member name="M:Megumin.MultipleControl`2.Control(`0,`1)">
+        <member name="M:Megumin.MultipleControl`2.CalNewValue">
             <summary>
-            开始控制
+            计算新的值, 返回值也可以用KeyValuePair,没什么区别.
             </summary>
-            <param name="key"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:Megumin.MultipleControl`2.Cancel(`0,`1)">
-            <summary>
-            取消控制
-            </summary>
-            <param name="key"></param>
-            <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
-        </member>
-        <member name="M:Megumin.MultipleControl`2.CancelAll">
-            <summary>
-            取消除默认值以外的所有控制
-            </summary>
-        </member>
-        <member name="M:Megumin.MultipleControl`2.ApplyValue">
-            <summary>
-            应用值
-            </summary>
-        </member>
-        <member name="M:Megumin.MultipleControl`2.op_Implicit(Megumin.MultipleControl{`0,`1})~`1">
-            <summary>
-            返回当前值
-            </summary>
-            <param name="multipleControl"></param>
+            <returns></returns>
+            <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
         </member>
         <member name="T:Megumin.MultipleControl`1">
-            <inheritdoc/>
-        </member>
-        <member name="M:Megumin.MultipleControl`1.#ctor(System.Object,`0,Megumin.OnValueChanged{`0})">
             <inheritdoc/>
         </member>
         <member name="T:Megumin.ActiveControl">
@@ -424,8 +489,34 @@
             </summary>
             <remarks>处理黑屏，碰撞盒开闭</remarks>
         </member>
-        <member name="M:Megumin.ActiveControl.#ctor(System.Object,System.Boolean,Megumin.OnValueChanged{System.Boolean})">
+        <member name="M:Megumin.ActiveControl.#ctor(System.Object,System.Boolean,Megumin.OnValueChanged{System.ValueTuple{System.Object,System.Boolean}},Megumin.OnValueChanged{System.Boolean},System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="defaultHandle"></param>
+            <param name="defaultValue"></param>
+            <param name="onValueChangedKV"></param>
+            <param name="onValueChanged"></param>
+            <param name="ascending">默认false,任意一个开启就开启,true,任意一个关闭就关闭.</param>
+        </member>
+        <member name="T:Megumin.MultipleControlEnum`1">
+            <summary>
+            用于FlagEnum,最好用枚举类型实现一次.
+            性能有些额外损失,至少每次计算都要Tostring,甚至装箱一次,不确定.<see cref="M:Megumin.MultipleControlEnum`1.CalNewValue"/>.
+            </summary>
             <inheritdoc/>
+            <typeparam name="V"></typeparam>
+        </member>
+        <member name="M:Megumin.MultipleControlEnum`1.CalNewValue">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Megumin.MultipleControlKeypadSudoku">
+            <summary>
+            枚举示例<see cref="M:Megumin.MultipleControlKeypadSudoku.CalNewValue"/>. FlagEnum排序没有意义,使用|运算.
+            </summary>
         </member>
         <member name="T:Megumin.NotInitException">
             <summary>

@@ -321,45 +321,40 @@ namespace Megumin
     }
 
     /// <summary>
-    /// 枚举示例<see cref="CalNewValue"/>. FlagEnum排序没有意义,使用|运算.
+    /// 用于FlagEnum,最好用枚举类型实现一次.
+    /// 性能有些额外损失,至少每次计算都要Tostring,甚至装箱一次,不确定.<see cref="CalNewValue"/>.
     /// </summary>
-    public sealed class MultipleControlKeypadSudoku : MultipleControlBase<object, KeypadSudoku, bool>
-    {
-        public MultipleControlKeypadSudoku(object defaultKey,
-                                           KeypadSudoku defaultValue,
-                                           OnValueChanged<(object, KeypadSudoku)> onValueChangedKV = null,
-                                           OnValueChanged<KeypadSudoku> onValueChanged = null,
-                                           bool init = false) : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
-        {
-        }
-
-        protected override (object Key, KeypadSudoku Value) CalNewValue()
-        {
-            var V = DefaultValue;
-            foreach (var item in Controllers)
-            {
-                V |= item.Value;
-            }
-
-            return (null, V);
-        }
-    }
-
-    public sealed class MultipleControlEnum<V> : MultipleControlBase<object, V, bool>
+    /// <inheritdoc/>
+    /// <typeparam name="V"></typeparam>
+    public class MultipleControlEnum<V> : MultipleControlBase<object, V, bool>
         where V : struct, Enum, IConvertible
     {
-        public MultipleControlEnum(object defaultKey, V defaultValue, OnValueChanged<(object, V)> onValueChangedKV = null, OnValueChanged<V> onValueChanged = null, bool init = false) : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
+        public MultipleControlEnum(object defaultKey,
+                                   V defaultValue,
+                                   OnValueChanged<(object, V)> onValueChangedKV = null,
+                                   OnValueChanged<V> onValueChanged = null,
+                                   bool init = false)
+            : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
         {
+
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected override (object Key, V Value) CalNewValue()
         {
-            int a = DefaultValue.ToInt32(null);
+            int temp = DefaultValue.ToInt32(null);
+
             foreach (var item in Controllers)
             {
-                a = a | item.Value.ToInt32(null);
+                var b = item.Value.ToInt32(null);
+                temp |= b;
             }
-            return (null, (V)(object)a);
+
+            var res = (V)Enum.Parse(typeof(V), temp.ToString());
+            return (null, res);
         }
 
         /// <summary>
@@ -398,6 +393,32 @@ namespace Megumin
         //        return Unsafe.As<ulong, T>(ref x);
         //    }
         //}
+    }
+
+    /// <summary>
+    /// 枚举示例<see cref="CalNewValue"/>. FlagEnum排序没有意义,使用|运算.
+    /// </summary>
+    public sealed class MultipleControlKeypadSudoku : MultipleControlBase<object, KeypadSudoku, bool>
+    {
+        public MultipleControlKeypadSudoku(object defaultKey,
+                                           KeypadSudoku defaultValue,
+                                           OnValueChanged<(object, KeypadSudoku)> onValueChangedKV = null,
+                                           OnValueChanged<KeypadSudoku> onValueChanged = null,
+                                           bool init = false)
+            : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
+        {
+        }
+
+        protected override (object Key, KeypadSudoku Value) CalNewValue()
+        {
+            var V = DefaultValue;
+            foreach (var item in Controllers)
+            {
+                V |= item.Value;
+            }
+
+            return (null, V);
+        }
     }
 }
 
