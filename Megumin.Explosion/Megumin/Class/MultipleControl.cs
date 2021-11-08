@@ -73,7 +73,7 @@ namespace Megumin
         /// <param name="defaultValue"></param>
         /// <param name="onValueChanged"></param>
         /// <param name="onValueChangedKV"></param>
-        /// <param name="ascending"></param>
+        /// <param name="ascending">true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。</param>
         public MultipleControl(K defaultKey,
                                V defaultValue,
                                OnValueChanged<V> onValueChanged = null,
@@ -171,7 +171,7 @@ namespace Megumin
         {
             var old = Current;
             var oldK = CurrentKey;
-            var result = SortLinqKV.FirstOrDefault();
+            var result = CalNewValue();
             Current = result.Value;
             CurrentKey = result.Key;
 
@@ -184,6 +184,17 @@ namespace Megumin
             {
                 OnValueChangedKV?.Invoke((CurrentKey, Current), (oldK, old));
             }
+        }
+
+        /// <summary>
+        /// 计算新的值, 返回值也可以用KeyValuePair,没什么区别.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
+        protected virtual (K Key, V Value) CalNewValue()
+        {
+            var result = SortLinqKV.FirstOrDefault();
+            return (result.Key, result.Value);
         }
 
         /// <summary>
