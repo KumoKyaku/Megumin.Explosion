@@ -34,7 +34,8 @@ public class PackageWizard : EditorWindow
     bool CreateRuntimeAsmdef = true;
     bool CreateEditorAsmdef = false;
     string NameExtension = "com.megumin";
-
+    bool AutoRootNamespace = true;
+    string RootNamespace = null;
 
     void OnGUI()
     {
@@ -49,6 +50,17 @@ public class PackageWizard : EditorWindow
             Application.OpenURL("https://docs.unity3d.com/2020.3/Documentation/Manual/cus-naming.html");
         }
         NameExtension = EditorGUILayout.TextField("NameExtension", NameExtension);
+
+        AutoRootNamespace = EditorGUILayout.Toggle("AutoRootNamespace", AutoRootNamespace);
+        if (AutoRootNamespace)
+        {
+            RootNamespace = $"Megumin.GameFramework.{InputPackageName}";
+            EditorGUILayout.LabelField("RootNamespace", RootNamespace);
+        }
+        else
+        {
+            RootNamespace = EditorGUILayout.TextField("RootNamespace", RootNamespace);
+        }
 
         EditorGUILayout.Separator();
         if (GUILayout.Button("Create", GUILayout.Width(60f)))
@@ -135,7 +147,7 @@ $@"
                 string runtimeasmdef =
 $@"{{
     ""name"": ""{InputPackageName}"",
-    ""rootNamespace"": """",
+    ""rootNamespace"": ""{RootNamespace}"",
     ""references"": [],
     ""includePlatforms"": [],
     ""excludePlatforms"": [],
@@ -170,10 +182,16 @@ $@"{{
 
             if (CreateEditorAsmdef)
             {
+                var editorNamespace = RootNamespace;
+                if (!string.IsNullOrEmpty(editorNamespace))
+                {
+                    editorNamespace = $"{editorNamespace}.Editor";
+                }
+
                 string editorasmdef =
 $@"{{
     ""name"": ""{InputPackageName}.Editor"",
-    ""rootNamespace"": """",
+    ""rootNamespace"": ""{editorNamespace}"",
     ""references"": [
         ""{(CreateRuntimeAsmdef ? InputPackageName : "")}""
     ],

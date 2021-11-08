@@ -191,6 +191,24 @@ namespace UnityEngine
             Debug.Log(func);
             return func;
         }
+
+        /// <summary>
+        /// UnityEditor或DEBUG中使用Add添加,发生key冲突直接报错.
+        /// Runtime中使用索引添加,尽量让程序不崩溃.
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="pairs"></param>
+        /// <param name="k"></param>
+        /// <param name="v"></param>
+        public static void UnityAdd<K, V>(this IDictionary<K, V> pairs, K k, V v)
+        {
+#if UNITY_EDITOR || DEBUG
+            pairs.Add(k, v);
+#else
+            pairs[k] = v;
+#endif
+        }
     }
 }
 
