@@ -6,10 +6,8 @@ namespace Megumin
 {
     /// <summary>
     /// 多重值控制器。
-    /// 不提供默认值访问，也不保存默认值。会导致过渡设计。
+    /// [不提供默认值访问，也不保存默认值。会导致过渡设计。] 后来证明需要访问,加上了!!!
     /// </summary>
-    /// <typeparam name="K"></typeparam>
-    /// <typeparam name="V"></typeparam>
     /// <remarks>
     /// 用例：当前声音100，
     /// A功能需要将声音压低为20，A功能结束后恢复原音量。
@@ -25,44 +23,79 @@ namespace Megumin
     /// 控制器从所有想要控制值的列表中选出想要的值。
     /// <para></para>
     /// 用例2：多个功能想要黑屏Loading。只要有一个功能还需要Loading，那么Loading就不该消失。
+    /// <para></para>
+    /// 用例3: 多个地方各自不同禁用某些物品使用,类型是FlagEnum,每处禁用的物品类型有重叠,
+    /// 这时用一个枚举值来存共有哪些禁用,就无法实现需求.
     /// </remarks>
-    public class MultipleControl<K, V>
-        where V : IEquatable<V>
+    public interface IMultipleControlable<K, V>
+    {
+        /// <summary>
+        /// 当前值
+        /// </summary>
+        V Current { get; }
+        /// <summary>
+        /// 当前值的Key,可能为无效值,看计算方式.
+        /// </summary>
+        K CurrentKey { get; }
+
+        /// <summary>
+        /// 默认值Key
+        /// </summary>
+        K DefaultKey { get; }
+        /// <summary>
+        /// 默认值
+        /// </summary>
+        /// <remarks>有必要存在,有的需求要设定的值可能就是默认值取反</remarks>
+        V DefaultValue { get; }
+
+        /// <summary>
+        /// 值发生改变
+        /// </summary>
+        event OnValueChanged<V> OnValueChanged;
+
+        /// <summary>
+        /// 值发生改变
+        /// </summary>
+        event OnValueChanged<(K, V)> OnValueChangedKV;
+
+        /// <summary>
+        /// 开始控制
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        V Control(K key, V value);
+        /// <summary>
+        /// 取消控制
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
+        V Cancel(K key, V value = default);
+        /// <summary>
+        /// 取消除默认值以外的所有控制
+        /// </summary>
+        V CancelAll();
+    }
+
+    /// <inheritdoc cref="IMultipleControlable{K, V}"/>
+    /// <summary>
+    /// 多重值控制器。
+    /// [不提供默认值访问，也不保存默认值。会导致过渡设计。] 后来证明需要访问,加上了!!!
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    /// <typeparam name="C">构造中使用参数类型,初始化排序缓存时使用的参数</typeparam>
+    public abstract class MultipleControlBase<K, V, C> : IMultipleControlable<K, V>
     {
         /// <summary>
         /// TODO,使用最大堆最小堆优化
         /// </summary>
         protected readonly Dictionary<K, V> Controllers = new Dictionary<K, V>();
-
-        /// <summary>
-        /// 排序用Linq表达式
-        /// </summary>
-        protected IEnumerable<KeyValuePair<K, V>> SortLinqKV;
-
-
-        /// <summary>
-        /// 值发生改变
-        /// </summary>
         public event OnValueChanged<V> OnValueChanged;
-
-        /// <summary>
-        /// 值发生改变
-        /// </summary>
         public event OnValueChanged<(K, V)> OnValueChangedKV;
-
-        /// <summary>
-        /// 默认值Key
-        /// </summary>
-        public readonly K DefaultKey;
-        /// <summary>
-        /// 默认值
-        /// </summary>
-        /// <remarks>有必要存在,有的需求要设定的值可能就是默认值取反</remarks>
-        public readonly V DefaultValue;
-
-        /// <summary>
-        /// 当前值
-        /// </summary>
+        protected readonly K defaultKey;
+        protected readonly V defaultValue;
+        public K DefaultKey => defaultKey;
+        public V DefaultValue => defaultValue;
         public V Current { get; private set; }
         public K CurrentKey { get; private set; }
 
@@ -71,19 +104,19 @@ namespace Megumin
         /// </summary>
         /// <param name="defaultKey"></param>
         /// <param name="defaultValue"></param>
-        /// <param name="onValueChanged"></param>
         /// <param name="onValueChangedKV"></param>
-        /// <param name="ascending">true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。</param>
-        public MultipleControl(K defaultKey,
+        /// <param name="onValueChanged"></param>
+        /// <param name="init"></param>
+        public MultipleControlBase(K defaultKey,
                                V defaultValue,
-                               OnValueChanged<V> onValueChanged = null,
                                OnValueChanged<(K, V)> onValueChangedKV = null,
-                               bool ascending = true)
+                               OnValueChanged<V> onValueChanged = null,
+                               C init = default)
         {
-            DefaultKey = defaultKey;
-            DefaultValue = defaultValue;
+            this.defaultKey = defaultKey;
+            this.defaultValue = defaultValue;
             Controllers[defaultKey] = defaultValue;
-            InitSortLinq(ascending);
+            InitInCtor(init);
 
             if (onValueChanged != null)
             {
@@ -99,41 +132,16 @@ namespace Megumin
         }
 
         /// <summary>
-        /// 初始化值计算
+        /// 构造函数中间调用的虚方法,用于初始化排序字段,在第一次<see cref="ApplyValue"/>前调用.
+        /// <para>不需要排序的或者计算方式不需要缓存的,可以忽略这个函数.</para>
+        /// 这个主要作用用来初始化排序的linq表达式.
         /// </summary>
-        /// <remarks>默认根据值升序,应用第一个值，也就是结果最小的</remarks>
-        protected virtual void InitSortLinq(bool ascending = true)
+        protected virtual void InitInCtor(C init)
         {
-            if (ascending)
-            {
-                SortLinqKV = from kv in Controllers
-                             orderby kv.Value ascending
-                             select kv;
-            }
-            else
-            {
-                SortLinqKV = from kv in Controllers
-                             orderby kv.Value descending
-                             select kv;
-            }
+
         }
 
-        /// <summary>
-        /// true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。
-        /// </summary>
-        /// <param name="ascending"></param>
-        public V ReInitSortLinq(bool ascending = true)
-        {
-            InitSortLinq(ascending);
-            ApplyValue();
-            return Current;
-        }
 
-        /// <summary>
-        /// 开始控制
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public V Control(K key, V value)
         {
             Controllers[key] = value;
@@ -141,11 +149,7 @@ namespace Megumin
             return Current;
         }
 
-        /// <summary>
-        /// 取消控制
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
+
         public V Cancel(K key, V value = default)
         {
             Controllers.Remove(key);
@@ -153,9 +157,6 @@ namespace Megumin
             return Current;
         }
 
-        /// <summary>
-        /// 取消除默认值以外的所有控制
-        /// </summary>
         public V CancelAll()
         {
             Controllers.Clear();
@@ -191,19 +192,90 @@ namespace Megumin
         /// </summary>
         /// <returns></returns>
         /// <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
-        protected virtual (K Key, V Value) CalNewValue()
-        {
-            var result = SortLinqKV.FirstOrDefault();
-            return (result.Key, result.Value);
-        }
+        protected abstract (K Key, V Value) CalNewValue();
 
         /// <summary>
         /// 返回当前值
         /// </summary>
         /// <param name="multipleControl"></param>
-        public static implicit operator V(MultipleControl<K, V> multipleControl)
+        public static implicit operator V(MultipleControlBase<K, V, C> multipleControl)
         {
             return multipleControl.Current;
+        }
+    }
+
+    ///<inheritdoc/>
+    public class MultipleControl<K, V> : MultipleControlBase<K, V, bool>
+        where V : IEquatable<V>
+    {
+        /// <summary>
+        /// 排序用Linq表达式
+        /// </summary>
+        protected IEnumerable<KeyValuePair<K, V>> SortLinqKV;
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="defaultKey"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="onValueChangedKV"></param>
+        /// <param name="onValueChanged"></param>
+        /// <param name="ascending">true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。</param>
+        public MultipleControl(K defaultKey,
+                               V defaultValue,
+                               OnValueChanged<(K, V)> onValueChangedKV = null,
+                               OnValueChanged<V> onValueChanged = null,
+                               bool ascending = true)
+            : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, ascending)
+        {
+        }
+
+        protected override void InitInCtor(bool init)
+        {
+            InitSortLinq(init);
+        }
+
+        /// <summary>
+        /// 初始化值计算
+        /// </summary>
+        /// <remarks>默认根据值升序,应用第一个值，也就是结果最小的</remarks>
+        protected virtual void InitSortLinq(bool ascending = true)
+        {
+            if (ascending)
+            {
+                SortLinqKV = from kv in Controllers
+                             orderby kv.Value ascending
+                             select kv;
+            }
+            else
+            {
+                SortLinqKV = from kv in Controllers
+                             orderby kv.Value descending
+                             select kv;
+            }
+        }
+
+        /// <summary>
+        /// true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。
+        /// </summary>
+        /// <param name="ascending"></param>
+        public V ReInitSortLinq(bool ascending = true)
+        {
+            InitSortLinq(ascending);
+            ApplyValue();
+            return Current;
+        }
+
+        /// <summary>
+        /// 计算新的值, 返回值也可以用KeyValuePair,没什么区别.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
+        protected override (K Key, V Value) CalNewValue()
+        {
+            var result = SortLinqKV.FirstOrDefault();
+            return (result.Key, result.Value);
         }
     }
 
@@ -214,10 +286,10 @@ namespace Megumin
     {
         public MultipleControl(object defaultHandle,
                                V defaultValue,
-                               OnValueChanged<V> onValueChanged = null,
                                OnValueChanged<(object, V)> onValueChangedKV = null,
+                               OnValueChanged<V> onValueChanged = null,
                                bool ascending = true)
-            : base(defaultHandle, defaultValue, onValueChanged, onValueChangedKV, ascending)
+            : base(defaultHandle, defaultValue, onValueChangedKV, onValueChanged, ascending)
         {
 
         }
@@ -234,21 +306,99 @@ namespace Megumin
         /// </summary>
         /// <param name="defaultHandle"></param>
         /// <param name="defaultValue"></param>
-        /// <param name="onValueChanged"></param>
         /// <param name="onValueChangedKV"></param>
+        /// <param name="onValueChanged"></param>
         /// <param name="ascending">默认false,任意一个开启就开启,true,任意一个关闭就关闭.</param>
         public ActiveControl(object defaultHandle,
                              bool defaultValue,
-                             OnValueChanged<bool> onValueChanged = null,
                              OnValueChanged<(object, bool)> onValueChangedKV = null,
+                             OnValueChanged<bool> onValueChanged = null,
                              bool ascending = false)
-            : base(defaultHandle, defaultValue, onValueChanged, onValueChangedKV, ascending)
+            : base(defaultHandle, defaultValue, onValueChangedKV, onValueChanged, ascending)
         {
 
         }
     }
 
+    /// <summary>
+    /// 枚举示例<see cref="CalNewValue"/>. FlagEnum排序没有意义,使用|运算.
+    /// </summary>
+    public sealed class MultipleControlKeypadSudoku : MultipleControlBase<object, KeypadSudoku, bool>
+    {
+        public MultipleControlKeypadSudoku(object defaultKey,
+                                           KeypadSudoku defaultValue,
+                                           OnValueChanged<(object, KeypadSudoku)> onValueChangedKV = null,
+                                           OnValueChanged<KeypadSudoku> onValueChanged = null,
+                                           bool init = false) : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
+        {
+        }
 
+        protected override (object Key, KeypadSudoku Value) CalNewValue()
+        {
+            var V = DefaultValue;
+            foreach (var item in Controllers)
+            {
+                V |= item.Value;
+            }
+
+            return (null, V);
+        }
+    }
+
+    public sealed class MultipleControlEnum<V> : MultipleControlBase<object, V, bool>
+        where V : struct, Enum, IConvertible
+    {
+        public MultipleControlEnum(object defaultKey, V defaultValue, OnValueChanged<(object, V)> onValueChangedKV = null, OnValueChanged<V> onValueChanged = null, bool init = false) : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
+        {
+        }
+
+        protected override (object Key, V Value) CalNewValue()
+        {
+            int a = DefaultValue.ToInt32(null);
+            foreach (var item in Controllers)
+            {
+                a = a | item.Value.ToInt32(null);
+            }
+            return (null, (V)(object)a);
+        }
+
+        /// <summary>
+        /// https://github.com/dotnet/runtime/issues/14084
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enum"></param>
+        /// <param name="flag"></param>
+        /// <param name="on"></param>
+        /// <returns></returns>
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //internal static T SetFlag<T>(this T @enum, T flag, bool on) where T : struct, Enum
+        //{
+        //    if (Unsafe.SizeOf<T>() == 1)
+        //    {
+        //        byte x = (byte)((Unsafe.As<T, byte>(ref @enum) & ~Unsafe.As<T, byte>(ref flag))
+        //            | (-Unsafe.As<bool, byte>(ref on) & Unsafe.As<T, byte>(ref flag)));
+        //        return Unsafe.As<byte, T>(ref x);
+        //    }
+        //    else if (Unsafe.SizeOf<T>() == 2)
+        //    {
+        //        var x = (short)((Unsafe.As<T, short>(ref @enum) & ~Unsafe.As<T, short>(ref flag))
+        //            | (-Unsafe.As<bool, byte>(ref on) & Unsafe.As<T, short>(ref flag)));
+        //        return Unsafe.As<short, T>(ref x);
+        //    }
+        //    else if (Unsafe.SizeOf<T>() == 4)
+        //    {
+        //        uint x = (Unsafe.As<T, uint>(ref @enum) & ~Unsafe.As<T, uint>(ref flag))
+        //           | ((uint)-Unsafe.As<bool, byte>(ref on) & Unsafe.As<T, uint>(ref flag));
+        //        return Unsafe.As<uint, T>(ref x);
+        //    }
+        //    else
+        //    {
+        //        ulong x = (Unsafe.As<T, ulong>(ref @enum) & ~Unsafe.As<T, ulong>(ref flag))
+        //           | ((ulong)-(long)Unsafe.As<bool, byte>(ref on) & Unsafe.As<T, ulong>(ref flag));
+        //        return Unsafe.As<ulong, T>(ref x);
+        //    }
+        //}
+    }
 }
 
 
