@@ -29,17 +29,26 @@ namespace Megumin
     public class MultipleControl<K, V>
         where V : IEquatable<V>
     {
+        /// <summary>
+        /// TODO,使用最大堆最小堆优化
+        /// </summary>
         protected readonly Dictionary<K, V> Controllers = new Dictionary<K, V>();
 
         /// <summary>
         /// 排序用Linq表达式
         /// </summary>
-        protected IEnumerable<V> SortLinq;
+        protected IEnumerable<KeyValuePair<K, V>> SortLinqKV;
+
 
         /// <summary>
         /// 值发生改变
         /// </summary>
         public event OnValueChanged<V> OnValueChanged;
+
+        /// <summary>
+        /// 值发生改变
+        /// </summary>
+        public event OnValueChanged<(K, V)> OnValueChangedKV;
 
         /// <summary>
         /// 默认值Key
@@ -50,24 +59,34 @@ namespace Megumin
         /// 当前值
         /// </summary>
         public V Current { get; private set; }
+        public K CurrentKey { get; private set; }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="defaultKey">默认key</param>
-        /// <param name="defaultValue">默认值</param>
+        /// <param name="defaultKey"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="onValueChanged"></param>
+        /// <param name="onValueChangedKV"></param>
+        /// <param name="ascending"></param>
         public MultipleControl(K defaultKey,
                                V defaultValue,
-                               OnValueChanged<V> onValueChanged = null)
+                               OnValueChanged<V> onValueChanged = null,
+                               OnValueChanged<(K, V)> onValueChangedKV = null,
+                               bool ascending = true)
         {
             DefaultKey = defaultKey;
             Controllers[defaultKey] = defaultValue;
-            InitSortLinq();
+            InitSortLinq(ascending);
 
             if (onValueChanged != null)
             {
                 OnValueChanged += onValueChanged;
+            }
+
+            if (onValueChangedKV != null)
+            {
+                OnValueChangedKV += onValueChangedKV;
             }
 
             ApplyValue();
@@ -77,11 +96,20 @@ namespace Megumin
         /// 初始化值计算
         /// </summary>
         /// <remarks>默认根据值升序,应用第一个值，也就是结果最小的</remarks>
-        protected virtual void InitSortLinq()
+        protected virtual void InitSortLinq(bool ascending = true)
         {
-            SortLinq = from kv in Controllers
-                       orderby kv.Value ascending
-                       select kv.Value;
+            if (ascending)
+            {
+                SortLinqKV = from kv in Controllers
+                             orderby kv.Value ascending
+                             select kv;
+            }
+            else
+            {
+                SortLinqKV = from kv in Controllers
+                             orderby kv.Value descending
+                             select kv;
+            }
         }
 
         /// <summary>
@@ -90,19 +118,7 @@ namespace Megumin
         /// <param name="ascending"></param>
         public V ReInitSortLinq(bool ascending = true)
         {
-            if (ascending)
-            {
-                SortLinq = from kv in Controllers
-                           orderby kv.Value ascending
-                           select kv.Value;
-            }
-            else
-            {
-                SortLinq = from kv in Controllers
-                           orderby kv.Value descending
-                           select kv.Value;
-            }
-
+            InitSortLinq(ascending);
             ApplyValue();
             return Current;
         }
@@ -149,12 +165,19 @@ namespace Megumin
         protected virtual void ApplyValue()
         {
             var old = Current;
-            var result = SortLinq.FirstOrDefault();
-            Current = result;
+            var oldK = CurrentKey;
+            var result = SortLinqKV.FirstOrDefault();
+            Current = result.Value;
+            CurrentKey = result.Key;
 
             if (!old.Equals(result))
             {
-                OnValueChanged?.Invoke(result, old);
+                OnValueChanged?.Invoke(Current, old);
+            }
+
+            if (!old.Equals(result) || !oldK.Equals(CurrentKey))
+            {
+                OnValueChangedKV?.Invoke((CurrentKey, Current), (oldK, old));
             }
         }
 
@@ -169,14 +192,16 @@ namespace Megumin
     }
 
     ///<inheritdoc/>
+    [Obsolete("Use MultipleControl<K, V> instead.")]
     public class MultipleControl<V> : MultipleControl<object, V>
         where V : IEquatable<V>
     {
-        ///<inheritdoc/>
         public MultipleControl(object defaultHandle,
-                                     V defaultValue,
-                                     OnValueChanged<V> onValueChanged = null)
-            : base(defaultHandle, defaultValue, onValueChanged)
+                               V defaultValue,
+                               OnValueChanged<V> onValueChanged = null,
+                               OnValueChanged<(object, V)> onValueChangedKV = null,
+                               bool ascending = true)
+            : base(defaultHandle, defaultValue, onValueChanged, onValueChangedKV, ascending)
         {
 
         }
@@ -186,22 +211,24 @@ namespace Megumin
     /// 开启关闭控制，只有有个一个控制源开启，结果就是开启
     /// </summary>
     /// <remarks>处理黑屏，碰撞盒开闭</remarks>
-    public class ActiveControl : MultipleControl<bool>
+    public class ActiveControl : MultipleControl<object, bool>
     {
-        ///<inheritdoc/>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="defaultHandle"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="onValueChanged"></param>
+        /// <param name="onValueChangedKV"></param>
+        /// <param name="ascending">默认false,任意一个开启就开启,true,任意一个关闭就关闭.</param>
         public ActiveControl(object defaultHandle,
                              bool defaultValue,
-                             OnValueChanged<bool> onValueChanged = null)
-            : base(defaultHandle, defaultValue, onValueChanged)
+                             OnValueChanged<bool> onValueChanged = null,
+                             OnValueChanged<(object, bool)> onValueChangedKV = null,
+                             bool ascending = false)
+            : base(defaultHandle, defaultValue, onValueChanged, onValueChangedKV, ascending)
         {
-        }
 
-        protected override void InitSortLinq()
-        {
-            //bool true 是1 false 是 0，所以需要降序排列
-            SortLinq = from kv in Controllers
-                       orderby kv.Value descending
-                       select kv.Value;
         }
     }
 
