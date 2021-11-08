@@ -54,6 +54,11 @@ namespace Megumin
         /// 默认值Key
         /// </summary>
         public readonly K DefaultKey;
+        /// <summary>
+        /// 默认值
+        /// </summary>
+        /// <remarks>有必要存在,有的需求要设定的值可能就是默认值取反</remarks>
+        public readonly V DefaultValue;
 
         /// <summary>
         /// 当前值
@@ -76,6 +81,7 @@ namespace Megumin
                                bool ascending = true)
         {
             DefaultKey = defaultKey;
+            DefaultValue = defaultValue;
             Controllers[defaultKey] = defaultValue;
             InitSortLinq(ascending);
 
@@ -152,9 +158,8 @@ namespace Megumin
         /// </summary>
         public V CancelAll()
         {
-            var defaultValue = Controllers[DefaultKey];
             Controllers.Clear();
-            Controllers[DefaultKey] = defaultValue;
+            Controllers[DefaultKey] = DefaultValue;
             ApplyValue();
             return Current;
         }
