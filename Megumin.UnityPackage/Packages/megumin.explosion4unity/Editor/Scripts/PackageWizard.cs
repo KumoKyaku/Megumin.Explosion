@@ -34,8 +34,8 @@ public class PackageWizard : EditorWindow
     bool CreateRuntimeAsmdef = true;
     bool CreateEditorAsmdef = false;
     string NameExtension = "com.megumin";
-    bool AutoRootNamespace = true;
-    string RootNamespace = null;
+    bool AutoFullName = true;
+    string FullName = null;
 
     void OnGUI()
     {
@@ -51,15 +51,16 @@ public class PackageWizard : EditorWindow
         }
         NameExtension = EditorGUILayout.TextField("NameExtension", NameExtension);
 
-        AutoRootNamespace = EditorGUILayout.Toggle("AutoRootNamespace", AutoRootNamespace);
-        if (AutoRootNamespace)
+        EditorGUILayout.HelpBox("FullName用于创建asmdef程序集文件名,name和rootNamespace。", MessageType.Info);
+        AutoFullName = EditorGUILayout.Toggle("AutoFullName", AutoFullName);
+        if (AutoFullName)
         {
-            RootNamespace = $"Megumin.GameFramework.{InputPackageName}";
-            EditorGUILayout.LabelField("RootNamespace", RootNamespace);
+            FullName = $"Megumin.GameFramework.{InputPackageName}";
+            EditorGUILayout.LabelField("FullName", FullName);
         }
         else
         {
-            RootNamespace = EditorGUILayout.TextField("RootNamespace", RootNamespace);
+            FullName = EditorGUILayout.TextField("FullName", FullName);
         }
 
         EditorGUILayout.Separator();
@@ -146,8 +147,8 @@ $@"
             {
                 string runtimeasmdef =
 $@"{{
-    ""name"": ""{InputPackageName}"",
-    ""rootNamespace"": ""{RootNamespace}"",
+    ""name"": ""{FullName}"",
+    ""rootNamespace"": ""{FullName}"",
     ""references"": [],
     ""includePlatforms"": [],
     ""excludePlatforms"": [],
@@ -160,7 +161,7 @@ $@"{{
     ""noEngineReferences"": false
 }}";
 
-                File.WriteAllText(path + "/Runtime" + $"/{InputPackageName}.asmdef", runtimeasmdef);
+                File.WriteAllText(path + "/Runtime" + $"/{FullName}.asmdef", runtimeasmdef);
 
                 //无法找到构造函数
                 //AssemblyDefinitionAsset assembly =
@@ -182,7 +183,7 @@ $@"{{
 
             if (CreateEditorAsmdef)
             {
-                var editorNamespace = RootNamespace;
+                var editorNamespace = FullName;
                 if (!string.IsNullOrEmpty(editorNamespace))
                 {
                     editorNamespace = $"{editorNamespace}.Editor";
@@ -190,10 +191,10 @@ $@"{{
 
                 string editorasmdef =
 $@"{{
-    ""name"": ""{InputPackageName}.Editor"",
+    ""name"": ""{editorNamespace}"",
     ""rootNamespace"": ""{editorNamespace}"",
     ""references"": [
-        ""{(CreateRuntimeAsmdef ? InputPackageName : "")}""
+        ""{(CreateRuntimeAsmdef ? FullName : "")}""
     ],
     ""includePlatforms"": [],
     ""excludePlatforms"": [],
@@ -206,7 +207,7 @@ $@"{{
     ""noEngineReferences"": false
 }}";
 
-                File.WriteAllText(path + "/Editor" + $"/{InputPackageName}.Editor.asmdef", editorasmdef);
+                File.WriteAllText(path + "/Editor" + $"/{editorNamespace}.Editor.asmdef", editorasmdef);
             }
         }
 
