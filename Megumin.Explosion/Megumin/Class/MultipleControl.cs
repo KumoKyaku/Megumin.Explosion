@@ -51,12 +51,12 @@ namespace Megumin
         /// <summary>
         /// 值发生改变
         /// </summary>
-        event OnValueChanged<V> OnValueChanged;
+        event OnValueChanged<V> ValueChanged;
 
         /// <summary>
         /// 值发生改变
         /// </summary>
-        event OnValueChanged<(K, V)> OnValueChangedKV;
+        event OnValueChanged<(K, V)> ValueChangedKV;
 
         /// <summary>
         /// 开始控制
@@ -90,14 +90,14 @@ namespace Megumin
         /// TODO,使用最大堆最小堆优化
         /// </summary>
         protected readonly Dictionary<K, V> Controllers = new Dictionary<K, V>();
-        public event OnValueChanged<V> OnValueChanged;
-        public event OnValueChanged<(K, V)> OnValueChangedKV;
+        public event OnValueChanged<V> ValueChanged;
+        public event OnValueChanged<(K, V)> ValueChangedKV;
         protected readonly K defaultKey;
         protected readonly V defaultValue;
         public K DefaultKey => defaultKey;
         public V DefaultValue => defaultValue;
-        public V Current { get; private set; }
-        public K CurrentKey { get; private set; }
+        public V Current { get; protected set; }
+        public K CurrentKey { get; protected set; }
 
         /// <summary>
         /// 
@@ -120,12 +120,12 @@ namespace Megumin
 
             if (onValueChanged != null)
             {
-                OnValueChanged += onValueChanged;
+                ValueChanged += onValueChanged;
             }
 
             if (onValueChangedKV != null)
             {
-                OnValueChangedKV += onValueChangedKV;
+                ValueChangedKV += onValueChangedKV;
             }
 
             ApplyValue();
@@ -178,13 +178,28 @@ namespace Megumin
 
             if (!old.Equals(result))
             {
-                OnValueChanged?.Invoke(Current, old);
+                OnValueChanged(Current, old);
             }
 
             if (!old.Equals(result) || !oldK.Equals(CurrentKey))
             {
-                OnValueChangedKV?.Invoke((CurrentKey, Current), (oldK, old));
+                OnValueChangedKV((CurrentKey, Current), (oldK, old));
             }
+        }
+
+        protected void OnValueChanged(V newValue, V oldValue)
+        {
+            ValueChanged?.Invoke(newValue, oldValue);
+        }
+
+        /// <summary>
+        /// 包装一下,不然子类不能调用. Event不带On,方法带On.
+        /// </summary>
+        /// <param name="newValue"></param>
+        /// <param name="oldValue"></param>
+        protected void OnValueChangedKV((K, V) newValue, (K, V) oldValue)
+        {
+            ValueChangedKV?.Invoke(newValue, oldValue);
         }
 
         /// <summary>
@@ -325,25 +340,24 @@ namespace Megumin
     /// 性能有些额外损失,至少每次计算都要Tostring,甚至装箱一次,不确定.<see cref="CalNewValue"/>.
     /// </summary>
     /// <inheritdoc/>
+    /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class MultipleControlEnum<V> : MultipleControlBase<object, V, bool>
+    public class MultipleControlEnum<K, V> : MultipleControlBase<K, V, bool>
         where V : struct, Enum, IConvertible
     {
-        public MultipleControlEnum(object defaultKey,
+        public MultipleControlEnum(K defaultKey,
                                    V defaultValue,
-                                   OnValueChanged<(object, V)> onValueChangedKV = null,
+                                   OnValueChanged<(K, V)> onValueChangedKV = null,
                                    OnValueChanged<V> onValueChanged = null,
-                                   bool init = false)
-            : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
+                                   bool init = false) : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
         {
-
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        protected override (object Key, V Value) CalNewValue()
+        protected override (K Key, V Value) CalNewValue()
         {
             int temp = DefaultValue.ToInt32(null);
 
@@ -354,7 +368,7 @@ namespace Megumin
             }
 
             var res = (V)Enum.Parse(typeof(V), temp.ToString());
-            return (null, res);
+            return (default, res);
         }
 
         /// <summary>
@@ -418,6 +432,63 @@ namespace Megumin
             }
 
             return (null, V);
+        }
+    }
+
+    /// <summary>
+    /// 并集. //TODO,没啥办法判断值改变,索性每次计算都调用回调.
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    public class MultipleControlCollection<K, V> : MultipleControlBase<K, ICollection<V>, bool>
+    {
+        HashSet<V> keys = new HashSet<V>();
+        /// <summary>
+        /// TODO,控制交集并集
+        /// </summary>
+        bool func = false;
+        public MultipleControlCollection(K defaultKey,
+                                         ICollection<V> defaultValue,
+                                         OnValueChanged<(K, ICollection<V>)> onValueChangedKV = null,
+                                         OnValueChanged<ICollection<V>> onValueChanged = null,
+                                         bool init = false) : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, init)
+        {
+
+        }
+
+        protected override void InitInCtor(bool init)
+        {
+            func = init;
+        }
+
+        protected override void ApplyValue()
+        {
+            var old = Current;
+            var oldK = CurrentKey;
+            var result = CalNewValue();
+            Current = result.Value;
+            CurrentKey = result.Key;
+
+            //TODO,没啥办法判断值改变,索性每次计算都调用回调.
+            OnValueChanged(Current, old);
+            OnValueChangedKV((CurrentKey, Current), (oldK, old));
+        }
+
+        /// <summary>
+        /// 去并集
+        /// </summary>
+        /// <returns></returns>
+        protected override (K Key, ICollection<V> Value) CalNewValue()
+        {
+            keys.Clear();
+            foreach (var item in Controllers)
+            {
+                foreach (var ele in item.Value)
+                {
+                    keys.Add(ele);
+                }
+            }
+            return (default, keys);
         }
     }
 }
