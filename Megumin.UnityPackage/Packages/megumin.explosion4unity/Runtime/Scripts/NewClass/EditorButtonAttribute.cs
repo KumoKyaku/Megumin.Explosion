@@ -95,6 +95,7 @@ namespace UnityEditor
             {typeof(Vector3),DrawVector3Parameter},
             {typeof(Vector2),DrawVector2Parameter},
             {typeof(Quaternion),DrawQuaternionParameter},
+            {typeof(Enum),DrawEnumParameter},
             {typeof(DateTime),DrawDateTimeParameter},
             {typeof(DateTimeOffset),DrawDateTimeOffsetParameter},
             {typeof(TimeSpan),DrawTimeSpanParameter}
@@ -172,6 +173,13 @@ namespace UnityEditor
             return Quaternion.Euler(EditorGUILayout.Vector3Field("", ((Quaternion)val).eulerAngles));
         }
 
+        private static object DrawEnumParameter(ParameterInfo parameter, object val)
+        {
+            var v = Enum.Parse(parameter.ParameterType, val.ToString());
+            var res = EditorGUILayout.EnumFlagsField((Enum)v);
+            return res;
+        }
+
         static object DrawTimeSpanParameter(ParameterInfo parameterInfo, object val)
         {
             TimeSpan span = (TimeSpan)val;
@@ -211,6 +219,13 @@ namespace UnityEditor
             if (TypeDrawer.TryGetValue(parameterType, out drawer))
             {
                 return (drawer, isnullable);
+            }
+            else
+            {
+                if (parameterType.IsEnum)
+                {
+                    return (DrawEnumParameter, isnullable);
+                }
             }
 
             return default;

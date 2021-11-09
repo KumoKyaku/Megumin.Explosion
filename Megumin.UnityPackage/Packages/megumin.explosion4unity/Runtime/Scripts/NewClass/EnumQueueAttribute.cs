@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace UnityEngine
 {
-    [AttributeUsage(AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter)]
     public class EnumQueueAttribute : PropertyAttribute
     {
         public bool KeepDynamicValue { get; set; }
