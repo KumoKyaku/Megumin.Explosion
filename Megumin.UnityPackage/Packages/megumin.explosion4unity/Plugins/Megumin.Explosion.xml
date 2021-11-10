@@ -460,7 +460,7 @@
         </member>
         <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1,Megumin.OnValueChanged{System.ValueTuple{`0,`1}},Megumin.OnValueChanged{`1},System.Boolean)">
             <summary>
-            
+            构造函数
             </summary>
             <param name="defaultKey"></param>
             <param name="defaultValue"></param>

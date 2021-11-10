@@ -79,8 +79,9 @@ public class PackageWizard : EditorWindow
         }
 
         GUILayout.Space(5);
-        EditorGUILayout.HelpBox("创建完成后Editor切换到后台，再切换回来，" +
-            "触发package导入，没有找到如何自动导入。", MessageType.Info);
+        //通过打开文件夹除非工程刷新
+        //EditorGUILayout.HelpBox("创建完成后Editor切换到后台，再切换回来，" +
+        //    "触发package导入，没有找到如何自动导入。", MessageType.Info);
     }
 
     private static void RefreshAsset()
@@ -196,7 +197,9 @@ $@"{{
     ""references"": [
         ""{(CreateRuntimeAsmdef ? FullName : "")}""
     ],
-    ""includePlatforms"": [],
+    ""includePlatforms"": [
+        ""Editor""
+    ],
     ""excludePlatforms"": [],
     ""allowUnsafeCode"": true,
     ""overrideReferences"": false,
@@ -207,7 +210,7 @@ $@"{{
     ""noEngineReferences"": false
 }}";
 
-                File.WriteAllText(path + "/Editor" + $"/{editorNamespace}.Editor.asmdef", editorasmdef);
+                File.WriteAllText(path + "/Editor" + $"/{editorNamespace}.asmdef", editorasmdef);
             }
         }
 

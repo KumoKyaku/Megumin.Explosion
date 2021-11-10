@@ -230,7 +230,7 @@ namespace Megumin
 
 
         /// <summary>
-        /// 
+        /// 构造函数
         /// </summary>
         /// <param name="defaultKey"></param>
         /// <param name="defaultValue"></param>
