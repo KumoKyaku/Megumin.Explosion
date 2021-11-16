@@ -108,7 +108,7 @@ public class TestLog : MonoBehaviour
     [EditorButton]
     public void TestArgs(Loger loger)
     {
-
+        //MeguminEditorUtility.FindCustomEditorTypeByType(typeof(TestScriptObject), false);
     }
 
     [EditorButton(true)]
@@ -132,6 +132,8 @@ public class TestLog : MonoBehaviour
     {
         Debug.LogError($"OnValueChangeTest1 {STest.intb}");
     }
+
+    public TestScriptObject TestScriptObject;
 }
 
 [Serializable]

@@ -4,9 +4,23 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using UnityEngine;
+
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine;
+#endif
+
+/// <summary>
+/// 在面板绘制new clone 按钮
+/// </summary>
+public interface INewCloneButton
+{
+
+}
+
+
+#if UNITY_EDITOR
 
 /// <summary>
 /// 增加new,clone两个按钮.对Material无效.想增加SubAsset功能,但是发现没有必要.
@@ -17,12 +31,17 @@ using UnityEngine;
 //[CustomPropertyDrawer(typeof(Material), true)]
 [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
-public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
+[CustomPropertyDrawer(typeof(INewCloneButton), true)]
+public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
 {
     static GUIStyle left = new GUIStyle("minibuttonleft");
     static GUIStyle right = new GUIStyle("minibuttonright");
     static Regex typeRegex = new Regex(@"^PPtr\<\$(.*)>$");
 
+    /// <summary>
+    /// clone时使用父路径还是克隆对象路径.
+    /// </summary>
+    public static int PathMode = 0;
     string[] SupportNames;
     int index = 0;
     Type[] SupportTypes;
@@ -150,15 +169,22 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
             if (GUI.Button(rightPosition, "Clone", right))
             {
                 var clone = ScriptableObject.Instantiate(obj);
-                var path = AssetDatabase.GetAssetPath(obj);
-                var oriName = Path.GetFileNameWithoutExtension(path);
+                if (PathMode == 0)
+                {
+                    var path = AssetDatabase.GetAssetPath(obj);
+                    var oriName = Path.GetFileNameWithoutExtension(path);
 
-                var newFileName = oriName.FileNameAddOne();
-                path = path.ReplaceFileName(newFileName);
+                    var newFileName = oriName.FileNameAddOne();
+                    path = path.ReplaceFileName(newFileName);
 
-                AssetDatabase.CreateAsset(clone, path);
-                AssetDatabase.Refresh();
-                property.objectReferenceValue = clone;
+                    AssetDatabase.CreateAsset(clone, path);
+                    AssetDatabase.Refresh();
+                    property.objectReferenceValue = clone;
+                }
+                else
+                {
+                    CreateInstanceAsset(property, clone);
+                }
             }
         }
         else
@@ -276,7 +302,7 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
     }
 
     const string Root = @"Assets";
-    private static void CreateInstanceAsset(SerializedProperty property, ScriptableObject instance)
+    private static void CreateInstanceAsset(SerializedProperty property, UnityEngine.Object instance)
     {
         string dir = GetDir(property);
 
@@ -318,5 +344,8 @@ public class ScriptObjectDrawer_8F11D385 : PropertyDrawer
         return dir;
     }
 }
+
+
+#endif
 
 
