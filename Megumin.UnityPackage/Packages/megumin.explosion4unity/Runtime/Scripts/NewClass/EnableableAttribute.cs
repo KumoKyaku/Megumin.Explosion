@@ -40,9 +40,19 @@ namespace UnityEditor.Megumin
         {
             var name = (attribute as EnableableAttribute).Path;
             SerializedProperty toggle = null;
+            SerializedObject objectReferenceValueSerializedObject = null;
             if (!string.IsNullOrEmpty(name))
             {
-                toggle = property.FindPropertyRelative(name); ;
+                toggle = property.FindPropertyRelative(name);
+                if (toggle == null)
+                {
+                    var obj = property.objectReferenceValue;
+                    if (obj)
+                    {
+                        objectReferenceValueSerializedObject = new SerializedObject(obj);
+                        toggle = objectReferenceValueSerializedObject.FindProperty(name);
+                    }
+                }
             }
 
             if (toggle != null)
@@ -56,6 +66,7 @@ namespace UnityEditor.Megumin
                 valuePosition.width -= 20;
 
                 toggle.boolValue = GUI.Toggle(togglePosition, toggle.boolValue, GUIContent.none);
+                objectReferenceValueSerializedObject?.ApplyModifiedProperties();
                 var isGray = toggle.boolValue != (attribute as EnableableAttribute).Value;
                 EditorGUI.BeginDisabledGroup(isGray);
                 EditorGUI.PropertyField(valuePosition, property, label, true);
