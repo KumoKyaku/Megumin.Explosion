@@ -137,7 +137,7 @@ public class TestLog : MonoBehaviour
 }
 
 [Serializable]
-public class STest
+public class STest:INewCloneButton
 {
     //[OnValueChanged(CallBackName = "OnValueChangeTest2")]
     public int inta;

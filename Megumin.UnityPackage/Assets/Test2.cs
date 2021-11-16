@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Test2 : MonoBehaviour
 {
-    //public STest STest;
+    public STest STest;
     public TestScriptObject TestScriptObject;
 }
