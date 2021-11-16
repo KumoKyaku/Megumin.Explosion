@@ -38,6 +38,11 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
     static GUIStyle right = new GUIStyle("minibuttonright");
     static Regex typeRegex = new Regex(@"^PPtr\<\$(.*)>$");
 
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    {
+        return EditorGUI.GetPropertyHeight(property, label);
+    }
+
     /// <summary>
     /// clone时使用父路径还是克隆对象路径.
     /// </summary>
@@ -129,6 +134,17 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
         rightPosition.width = 40;
         rightPosition.x += 40;
 
+        if (!property.type.StartsWith("PPtr"))
+        {
+            EditorGUI.PropertyField(position, property, label, true);
+            return;
+        }
+
+        DrawPPtrType(property, label, propertyPosition, leftPosotion, rightPosition);
+    }
+
+    protected void DrawPPtrType(SerializedProperty property, GUIContent label, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
+    {
         if (saveTask != null)
         {
             var T = saveTask.T;
