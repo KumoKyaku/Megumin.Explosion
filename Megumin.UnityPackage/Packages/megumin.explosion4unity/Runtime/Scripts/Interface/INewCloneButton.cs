@@ -323,19 +323,28 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
         string dir = GetDir(property);
 
         var ex = ".asset";
-        var path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}", ex);
+        var path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}",
+                                      ex,
+                                      EditorSettings.gameObjectNamingScheme.ToString(),
+                                      EditorSettings.gameObjectNamingDigits);
 
         AssetDatabase.CreateAsset(instance, path);
         AssetDatabase.Refresh();
         property.objectReferenceValue = instance;
     }
 
-    private static string GetDir(SerializedProperty property)
+    /// <summary>
+    /// 取得对象在资源路径.
+    /// 如果是场景中的对象,取得prefab和变体的资源路径.
+    /// </summary>
+    /// <param name="object"></param>
+    /// <returns></returns>
+    public static string GetPathFixed(UnityEngine.Object @object)
     {
-        var path = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
+        var path = AssetDatabase.GetAssetPath(@object);
         if (string.IsNullOrEmpty(path))
         {
-            var root = PrefabUtility.GetOutermostPrefabInstanceRoot(property.serializedObject.targetObject);
+            var root = PrefabUtility.GetOutermostPrefabInstanceRoot(@object);
             if (root)
             {
                 var ori = PrefabUtility.GetCorrespondingObjectFromSource(root);
@@ -343,6 +352,18 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
             }
         }
 
+        return path;
+    }
+
+    /// <summary>
+    /// 安全处理对象路径.
+    /// 如果路径为空,返回当前场景的资源路径.
+    /// 如果场景为保存,返回根路径.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static string SafeObjectDir(string path)
+    {
         string dir = Root;
         if (!string.IsNullOrEmpty(path))
         {
@@ -358,6 +379,12 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
         }
 
         return dir;
+    }
+
+    private static string GetDir(SerializedProperty property)
+    {
+        var path = GetPathFixed(property.serializedObject.targetObject);
+        return SafeObjectDir(path);
     }
 }
 

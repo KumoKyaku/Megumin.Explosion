@@ -6,9 +6,9 @@ namespace System.IO
 {
     public static class PathExtension_0728441477D842BE8399395F75CA8BB9
     {
-        public static string CreateFileName(this DirectoryInfo directory, string fileName, string ex)
+        public static string CreateFileName(this DirectoryInfo directory, string fileName, string ex, string namingScheme = "SpaceParenthesis", int namingDigits = 1)
         {
-            return directory.FullName.CreateFileName(fileName, ex);
+            return directory.FullName.CreateFileName(fileName, ex, namingScheme, namingDigits);
         }
 
         public static string AddOne(this FileInfo file)

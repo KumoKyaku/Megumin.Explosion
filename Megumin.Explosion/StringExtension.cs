@@ -329,18 +329,21 @@ namespace System.IO
             var result = EndNumber.Match(fileName);
             if (result.Success)
             {
-                var number = int.Parse(result.Groups[1].Value);
+                var oriStr = result.Groups[1].Value;
+                var number = int.Parse(oriStr);
                 var f = fileName.Substring(0, fileName.Length - result.Value.Length);
-                f += (number + 1);
+                f += (number + 1).ToString().PadLeft(oriStr.Length, oriStr[0]);
                 return f;
             }
 
             var result2 = EndNumber2.Match(fileName);
             if (result2.Success)
             {
-                var number = int.Parse(result2.Groups[1].Value);
+                var oriStr = result2.Groups[1].Value;
+                var number = int.Parse(oriStr);
                 var f = fileName.Substring(0, fileName.Length - result2.Value.Length);
-                f += $"({number + 1})";
+                var numStr = (number + 1).ToString().PadLeft(oriStr.Length, oriStr[0]);
+                f += $"({numStr})";
                 return f;
             }
 
@@ -372,8 +375,10 @@ namespace System.IO
         /// <param name="dir"></param>
         /// <param name="fileName"></param>
         /// <param name="ex">需要前面有 . </param>
+        /// <param name="namingScheme">数字后缀模式支持SpaceParenthesis Dot Underscore</param>
+        /// <param name="namingDigits">数字长度,不足填充0</param>
         /// <returns></returns>
-        public static string CreateFileName(this string dir, string fileName, string ex)
+        public static string CreateFileName(this string dir, string fileName, string ex, string namingScheme = "SpaceParenthesis", int namingDigits = 1)
         {
             var path = Path.Combine(dir, $"{fileName}{ex}");
             if (!File.Exists(path))
@@ -384,7 +389,21 @@ namespace System.IO
             int cloneCount = 1;
             do
             {
-                path = Path.Combine(dir, $"{fileName} ({cloneCount}){ex}");
+                var countStr = cloneCount.ToString().PadLeft(namingDigits, '0');
+                var namingSchemeStr = $" ({countStr})";
+                switch (namingScheme)
+                {
+                    case "Dot":
+                        namingSchemeStr = $".{countStr}";
+                        break;
+                    case "Underscore":
+                        namingSchemeStr = $"_{countStr}";
+                        break;
+                    default:
+                        break;
+                }
+
+                path = Path.Combine(dir, $"{fileName}{namingSchemeStr}{ex}");
                 cloneCount++;
             } while (File.Exists(path));
             return path;
