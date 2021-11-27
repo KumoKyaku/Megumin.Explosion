@@ -43,13 +43,15 @@
             <param name="fileName"></param>
             <returns></returns>
         </member>
-        <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.CreateFileName(System.String,System.String,System.String)">
+        <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.CreateFileName(System.String,System.String,System.String,System.String,System.Int32)">
             <summary>
             fileName 如果存在，自增
             </summary>
             <param name="dir"></param>
             <param name="fileName"></param>
             <param name="ex">需要前面有 . </param>
+            <param name="namingScheme">数字后缀模式支持SpaceParenthesis Dot Underscore</param>
+            <param name="namingDigits">数字长度,不足填充0</param>
             <returns></returns>
         </member>
         <!-- Badly formed XML comment ignored for member "T:System.Megumin.Class.ExcuteGraph`1" -->

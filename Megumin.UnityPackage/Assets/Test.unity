@@ -186,6 +186,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1b102e4af7dd46929c7d305827f8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  STest:
+    inta: 0
+    intb: 0
   TestScriptObject: {fileID: 0}
 --- !u!1 &2022781342
 GameObject:
@@ -339,6 +342,7 @@ MonoBehaviour:
   - c22cf2b2537ebed42898a00af810edc1
   - 3b6cbaf1c85cce343b1f6a64cb37a6ee
   - 266a0883bd3a03f4ca9e372967e70483
+  areaMask: -2147483645
   TestColor: {r: 0, g: 0, b: 0, a: 0}
   Loggers:
   - {fileID: 11400000, guid: 8dda040d6cbc7754582cfd5a3d2dcdac, type: 2}

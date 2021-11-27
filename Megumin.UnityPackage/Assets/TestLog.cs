@@ -24,6 +24,8 @@ public class TestLog : MonoBehaviour
     public string guid;
     [GUID]
     public List<string> Guidlist;
+    [AreaMask]
+    public int areaMask;
     [Indent]
     public Color TestColor;
     public List<Loger> Loggers;

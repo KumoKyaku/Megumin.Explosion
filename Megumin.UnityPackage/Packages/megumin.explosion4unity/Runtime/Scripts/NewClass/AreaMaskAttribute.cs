@@ -5,7 +5,7 @@ using UnityEngine;
 namespace UnityEngine
 {
     /// <summary>
-    /// every = int.max 第32位是符号位，有bug不能用
+    /// int正负没有意义,这是一个按位标记.
     /// </summary>
     public class AreaMaskAttribute : PropertyAttribute
     {
@@ -19,67 +19,57 @@ namespace UnityEditor.Megumin
     [CustomPropertyDrawer(typeof(AreaMaskAttribute))]
     internal sealed class AreaMaskDrawer : PropertyDrawer
     {
-        static string[] buildin = new string[31]
-        {
-            "Build-in 0",
-            "Build-in 1",
-            "Build-in 2",
-            "User 3",
-            "User 4",
-            "User 5",
-            "User 6",
-            "User 7",
-            "User 8",
-            "User 9",
-            "User 10",
-            "User 11",
-            "User 12",
-            "User 13",
-            "User 14",
-            "User 15",
-            "User 16",
-            "User 17",
-            "User 18",
-            "User 19",
-            "User 20",
-            "User 21",
-            "User 22",
-            "User 23",
-            "User 24",
-            "User 25",
-            "User 26",
-            "User 27",
-            "User 28",
-            "User 29",
-            "User 30",
-        };
-
-        public bool inputmode = false;
         static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);
+        /// <summary>
+        /// 从 <see cref="NavMeshAgentInspector"/> 复制. 修改了int溢出bug.
+        /// <see cref="NavMeshComponentsGUIUtility.AreaPopup"/> 不能多选.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType == SerializedPropertyType.Integer)
             {
+                var propertyPosition = position;
+                propertyPosition.width -= 86;
+
+                var buttonPosition = position;
+                buttonPosition.width = 80;
+                buttonPosition.x += position.width - 80;
+
+                //Initially needed data
                 var areaNames = GameObjectUtility.GetNavMeshAreaNames();
-                var currentMask = property.intValue;
+                var currentMask = property.longValue;
                 var compressedMask = 0;
-                for (var i = 0; i < areaNames.Length; i++)
+
+                if ((currentMask & 0xffffffff) == 0xffffffff)
                 {
-                    var areaIndex = GameObjectUtility.GetNavMeshAreaFromName(areaNames[i]);
-                    if (((1 << areaIndex) & currentMask) != 0)
-                        compressedMask = compressedMask | (1 << i);
+                    compressedMask = ~0;
                 }
+                else
+                {
+                    //Need to find the index as the list of names will compress out empty areas
+                    for (var i = 0; i < areaNames.Length; i++)
+                    {
+                        var areaIndex = GameObjectUtility.GetNavMeshAreaFromName(areaNames[i]);
+                        if (((1 << areaIndex) & currentMask) != 0)
+                            compressedMask = compressedMask | (1 << i);
+                    }
+                }
+
+                EditorGUI.BeginProperty(propertyPosition, GUIContent.none, property);
 
                 EditorGUI.BeginChangeCheck();
                 EditorGUI.showMixedValue = property.hasMultipleDifferentValues;
-                var areaMask = EditorGUI.MaskField(position, label, compressedMask, areaNames, EditorStyles.layerMaskField);
+                var areaMask = EditorGUI.MaskField(propertyPosition, label, compressedMask, areaNames, EditorStyles.layerMaskField);
                 EditorGUI.showMixedValue = false;
 
                 if (EditorGUI.EndChangeCheck())
                 {
                     if (areaMask == ~0)
                     {
-                        property.intValue = -1;
+                        property.longValue = ~0L;
                     }
                     else
                     {
@@ -93,8 +83,16 @@ namespace UnityEditor.Megumin
                                 newMask = newMask | (uint)(1 << GameObjectUtility.GetNavMeshAreaFromName(areaNames[i]));
                             }
                         }
-                        property.intValue = (int)newMask;
+
+                        ///修复int类型可能的溢出bug,最高位为1时.
+                        property.longValue = (int)newMask;
                     }
+                }
+                EditorGUI.EndProperty();
+
+                if (GUI.Button(buttonPosition, "Settings"))
+                {
+                    UnityEditor.AI.NavMeshEditorHelpers.OpenAreaSettings();
                 }
             }
             else
