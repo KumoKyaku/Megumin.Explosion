@@ -15,6 +15,8 @@ public class ExplosionSettingProvider : SettingsProvider
         {
             InspectorNavigation.Register();
         }
+
+        ClonePathModeSetting.PathMode = ClonePathMode.value;
     }
 
 
@@ -34,8 +36,6 @@ public class ExplosionSettingProvider : SettingsProvider
         public Value(string key, T value)
             : base(ExplosionSettingProvider.settings, key, value, SettingsScope.User)
         { }
-
-
     }
 
     class SymbolValue : Value<bool>
@@ -87,6 +87,9 @@ public class ExplosionSettingProvider : SettingsProvider
     static SymbolValue DISABLE_SCROBJ_DRAWER = new SymbolValue("DISABLE_SCROBJ_DRAWER", false);
     static SymbolValue DISABLE_EDITORBUTTONATTRIBUTE = new SymbolValue("DISABLE_EDITORBUTTONATTRIBUTE", false);
 
+    static Value<ClonePathModeSetting.ClonePathMode> ClonePathMode
+        = new Value<ClonePathModeSetting.ClonePathMode>("ClonePathMode", ClonePathModeSetting.ClonePathMode.ParentPath);
+
     public override void OnGUI(string searchContext)
     {
         base.OnGUI(searchContext);
@@ -108,6 +111,13 @@ public class ExplosionSettingProvider : SettingsProvider
 
         DISABLE_SCROBJ_DRAWER.DrawSymbol(searchContext);
         DISABLE_EDITORBUTTONATTRIBUTE.DrawSymbol(searchContext);
+
+        var pathModeOld = ClonePathMode.value;
+        ClonePathMode.value = (ClonePathModeSetting.ClonePathMode)EditorGUILayout.EnumPopup(ClonePathMode.key, ClonePathMode.value);
+        if (pathModeOld != ClonePathMode.value)
+        {
+            ClonePathModeSetting.PathMode = ClonePathMode.value;
+        }
 
         if (GUILayout.Button("Foward"))
         {

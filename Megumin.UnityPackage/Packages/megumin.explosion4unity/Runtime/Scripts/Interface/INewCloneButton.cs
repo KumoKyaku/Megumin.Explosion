@@ -22,6 +22,20 @@ public interface INewCloneButton
 
 #if UNITY_EDITOR
 
+public static class ClonePathModeSetting
+{
+    public enum ClonePathMode
+    {
+        ReferencePath = 0,
+        ParentPath = 1,
+    }
+
+    /// <summary>
+    /// clone时使用父路径还是克隆对象路径.
+    /// </summary>
+    public static ClonePathMode PathMode { get; set; } = ClonePathMode.ParentPath;
+}
+
 /// <summary>
 /// 增加new,clone两个按钮.对Material无效.想增加SubAsset功能,但是发现没有必要.
 /// </summary>
@@ -42,11 +56,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
     {
         return EditorGUI.GetPropertyHeight(property, label);
     }
-
-    /// <summary>
-    /// clone时使用父路径还是克隆对象路径.
-    /// </summary>
-    public static int PathMode = 0;
+    
     string[] SupportNames;
     int index = 0;
     Type[] SupportTypes;
@@ -185,7 +195,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
             if (GUI.Button(rightPosition, "Clone", right))
             {
                 var clone = ScriptableObject.Instantiate(obj);
-                if (PathMode == 0)
+                if (ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.ReferencePath)
                 {
                     var path = AssetDatabase.GetAssetPath(obj);
                     var oriName = Path.GetFileNameWithoutExtension(path);

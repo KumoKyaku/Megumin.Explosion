@@ -48,6 +48,21 @@ namespace Megumin
 
             return false;
         }
+
+        public void Scale(double scale)
+        {
+            Start = (int)(Start * scale);
+            if (IsDurationMode)
+            {
+                Duration = (int)(Duration * scale + 0.5f);
+                End = Start + Duration;
+            }
+            else
+            {
+                End = (int)(End * scale);
+                Duration = End - Start;
+            }
+        }
     }
 }
 

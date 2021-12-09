@@ -138,7 +138,7 @@ public partial class InspectorNavigation
         //Debug.Log($"Back {Selection.instanceIDs[0]}");
     }
 
-    [Shortcut("InspectorNavigation Circle", KeyCode.Tab)]
+    //[Shortcut("InspectorNavigation Circle", KeyCode.Tab)] //冲突
     [Shortcut("InspectorNavigationKeypad Circle", KeyCode.KeypadPlus)]
     public static void Circle()
     {
