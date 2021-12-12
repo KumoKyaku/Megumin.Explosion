@@ -86,6 +86,53 @@ public static class MonoBehaviourExtension_DA182CC20A33453FA684CD22CE5B97DC
         return com;
     }
 
+    public static bool ToggleActive(this Component monoBehaviour)
+    {
+        if (monoBehaviour)
+        {
+            var res = !monoBehaviour.gameObject.activeSelf;
+            monoBehaviour.gameObject.SetActive(res);
+            return res;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Reset方法中查找
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="behaviour"></param>
+    /// <param name="monoBehaviour"></param>
+    /// <param name="force"></param>
+    /// <param name="findChildren"></param>
+    /// <param name="findParent"></param>
+    public static void ResetFind<T>(this MonoBehaviour behaviour,
+                                    ref T monoBehaviour,
+                                    bool force = false,
+                                    bool findChildren = true,
+                                    bool findParent = true)
+        where T : Component
+    {
+        if (behaviour)
+        {
+            if (!monoBehaviour || force)
+            {
+                monoBehaviour = behaviour.GetComponent<T>();
+
+                if (!monoBehaviour && findChildren)
+                {
+                    monoBehaviour = behaviour.GetComponentInChildren<T>();
+                }
+
+                if (!monoBehaviour && findParent)
+                {
+                    monoBehaviour = behaviour.GetComponentInParent<T>();
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// MonoBehaviour自身和继承的属性名字列表
     /// </summary>

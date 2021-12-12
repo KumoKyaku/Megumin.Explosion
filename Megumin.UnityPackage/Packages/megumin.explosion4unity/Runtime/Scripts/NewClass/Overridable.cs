@@ -33,6 +33,11 @@ namespace Megumin
             this.defaultValue = defaultValue;
         }
 
+        public void SetDefaultValue(T value)
+        {
+            this.defaultValue = value;
+        }
+
         public T Value
         {
             get
