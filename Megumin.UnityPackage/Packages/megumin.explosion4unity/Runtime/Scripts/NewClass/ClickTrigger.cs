@@ -4,17 +4,22 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEngine.EventSystems.EventTrigger;
 
-public class ClickTrigger : MonoBehaviour, IPointerClickHandler,IPointerDownHandler
+namespace Megumin 
 {
-    public TriggerEvent PointerClick;
-
-    public void OnPointerClick(PointerEventData eventData)
+    public class ClickTrigger : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
     {
-        PointerClick?.Invoke(eventData);
+        public TriggerEvent PointerClick;
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            PointerClick?.Invoke(eventData);
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+
+        }
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        
-    }
 }
+

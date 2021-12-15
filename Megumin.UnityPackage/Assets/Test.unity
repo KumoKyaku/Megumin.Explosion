@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 1309913112}
   - component: {fileID: 1309913111}
   - component: {fileID: 1309913113}
+  - component: {fileID: 1309913114}
   m_Layer: 0
   m_Name: Info
   m_TagString: Untagged
@@ -190,6 +191,34 @@ MonoBehaviour:
     inta: 0
     intb: 0
   TestScriptObject: {fileID: 0}
+--- !u!114 &1309913114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309913110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1252305ae0a0aa46a3066fabdc31b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LeftClick: 1
+  RightClick: 1
+  DoubleClick: 0
+  delta: 0.5
+  PointerClick:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLeftClick:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRightClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2022781342
 GameObject:
   m_ObjectHideFlags: 0
