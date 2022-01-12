@@ -1,7 +1,31 @@
 {
-    "m_Name": "Settings",
-    "m_Path": "ProjectSettings/Packages/com.unity.settings-manager-examples/Settings.json",
     "m_Dictionary": {
-        "m_DictionaryValues": []
+        "m_DictionaryValues": [
+            {
+                "type": "System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "key": "general.conditionalValue",
+                "value": "{\"m_Value\":5}"
+            },
+            {
+                "type": "UnityEditor.SettingsManagement.Examples.FooClass, Unity.Settings.Example, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                "key": "general.foo",
+                "value": "{\"m_Value\":{\"intValue\":42,\"stringValue\":\"I'm some text\"}}"
+            },
+            {
+                "type": "UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                "key": "general.favoriteColor",
+                "value": "{\"m_Value\":{\"r\":1.0,\"g\":0.0,\"b\":1.0,\"a\":1.0}}"
+            },
+            {
+                "type": "UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                "key": "general.vector2Value",
+                "value": "{\"m_Value\":{\"x\":2.0,\"y\":4.0}}"
+            },
+            {
+                "type": "UnityEditor.StaticEditorFlags, UnityEditor.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+                "key": "general.editorFlags",
+                "value": "{\"m_Value\":4}"
+            }
+        ]
     }
 }
