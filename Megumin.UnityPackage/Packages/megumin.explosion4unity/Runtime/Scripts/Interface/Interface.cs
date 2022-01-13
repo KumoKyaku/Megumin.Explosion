@@ -41,3 +41,22 @@ namespace UnityEngine
         void StopCoroutine(string methodName);
     }
 }
+
+namespace Megumin
+{
+    //酌情移动到dll中
+
+
+
+    public interface IDisplayNameable
+    {
+        string DisplayName { get; }
+    }
+
+    public interface IIndexable<out T>
+    {
+        T Index { get; }
+    }
+}
+
+
