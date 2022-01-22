@@ -382,7 +382,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
         else
         {
             var scene = EditorSceneManager.GetActiveScene();
-            if (scene.path != null)
+            if (!string.IsNullOrEmpty( scene.path))
             {
                 dir = Path.GetDirectoryName(scene.path);
             }
