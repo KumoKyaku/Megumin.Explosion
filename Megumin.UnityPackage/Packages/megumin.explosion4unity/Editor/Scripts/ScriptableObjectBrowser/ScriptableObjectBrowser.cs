@@ -22,7 +22,7 @@ namespace MyNamespace
 		private static GUIStyle _buttonStyle;
 		public static string FindAssetsFilter = "";
 		public static string[] FindAssetsFolders = new string[0];
-
+		public static bool OnlyFolderAssets = true;
 		public static GUIStyle ButtonStyle
 		{
 			get
@@ -63,7 +63,7 @@ namespace MyNamespace
 		private static void ShowWindow()
 		{
 			FindAssetsFilter = "t:ScriptableObject";
-			FindAssetsFolders = new string[] { "Assets/ScriptableObjects" };
+			FindAssetsFolders = new string[] { "Assets" };
 			GetWindow<ScriptableObjectBrowser>("Scriptable Objects");
 		}
 
@@ -71,18 +71,40 @@ namespace MyNamespace
 		public static void ProjectOpen()
 		{
 			FindAssetsFilter = "t:ScriptableObject";
-			FindAssetsFolders = new string[] { "Assets" };
+			var fs = GetSelectionFolders();
+			FindAssetsFolders = fs.ToArray();
 			GetWindow<ScriptableObjectBrowser>("Scriptable Objects");
-			//var a = Selection.activeContext;
-			//Debug.LogError($"打印选中文件夹");
-		}
+        }
+
+		public static List<string> GetSelectionFolders()
+        {
+			List<string> list = new List<string>();
+            Object[] items = Selection.GetFiltered<Object>(SelectionMode.Assets);
+            foreach (var item in items)
+            {
+				var path = AssetDatabase.GetAssetPath(item);
+				if (string.IsNullOrEmpty(path))
+				{
+					continue;
+				}
+
+				if (System.IO.Directory.Exists(path))
+				{
+					list.Add(path);
+				}
+			}
+			return list;
+        }
 
 		private void OnGUI()
 		{
 			if (_showingTypes)
 			{
+				GUILayout.BeginHorizontal();
 				GUILayout.Label("Scriptable Object Types", EditorStyles.largeLabel);
-
+				GUILayout.FlexibleSpace();
+				OnlyFolderAssets = GUILayout.Toggle(OnlyFolderAssets, new GUIContent(nameof(OnlyFolderAssets)));
+				GUILayout.EndHorizontal();
 				if (GUILayout.Button("Refresh List"))
 				{
 					GetTypes();
@@ -198,6 +220,15 @@ namespace MyNamespace
 			for (int i = 0; i < GUIDs.Length; i++)
 			{
 				string path = AssetDatabase.GUIDToAssetPath(GUIDs[i]);
+
+                if (OnlyFolderAssets)
+                {
+                    if (!FindAssetsFolders.Any(dir => path.Contains(dir)))
+                    {
+                        continue;
+                    }
+                }
+                
 				var SO = AssetDatabase.LoadAssetAtPath(path, typeof(ScriptableObject)) as ScriptableObject;
 				_assets.Add(path, SO);
 			}
