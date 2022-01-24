@@ -20,6 +20,8 @@ namespace MyNamespace
 		private int _lastAssetIndex;
 		private bool _showingTypes = true;
 		private static GUIStyle _buttonStyle;
+		public static string FindAssetsFilter = "";
+		public static string[] FindAssetsFolders = new string[0];
 
 		public static GUIStyle ButtonStyle
 		{
@@ -60,7 +62,19 @@ namespace MyNamespace
 		[MenuItem("Tools/Scriptable Object Browser")]
 		private static void ShowWindow()
 		{
+			FindAssetsFilter = "t:ScriptableObject";
+			FindAssetsFolders = new string[] { "Assets/ScriptableObjects" };
 			GetWindow<ScriptableObjectBrowser>("Scriptable Objects");
+		}
+
+		[MenuItem("Assets/Open Scriptable Object Browser", false, 20)]
+		public static void ProjectOpen()
+		{
+			FindAssetsFilter = "t:ScriptableObject";
+			FindAssetsFolders = new string[] { "Assets" };
+			GetWindow<ScriptableObjectBrowser>("Scriptable Objects");
+			//var a = Selection.activeContext;
+			//Debug.LogError($"打印选中文件夹");
 		}
 
 		private void OnGUI()
@@ -149,8 +163,8 @@ namespace MyNamespace
 		/// </summary>
 		private void GetTypes()
 		{
-			string[] GUIDs = AssetDatabase.FindAssets("t:ScriptableObject",
-				new string[] { "Assets/ScriptableObjects" });
+			string[] GUIDs = AssetDatabase.FindAssets(FindAssetsFilter,
+				FindAssetsFolders);
 			ScriptableObject[] SOs = new ScriptableObject[GUIDs.Length];
 
 			for (int i = 0; i < GUIDs.Length; i++)
