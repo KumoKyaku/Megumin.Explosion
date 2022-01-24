@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using static System.Environment;
@@ -7,6 +8,18 @@ namespace Megumin
 {
     internal static class DirectoryUtility
     {
+        [MenuItem("Tools/Path/Log Selection Folders")]
+        public static void LogSelectionFolders()
+        {
+            var fs = GetSelectionFolders();
+            var dirs = "";
+            foreach (var item in fs)
+            {
+                dirs += $"{item}  |  ";
+            }
+            Debug.Log($"{dirs}");
+        }
+
         [MenuItem("Tools/Path/Log Environment SpecialFolder")]
         static void LogEnvironmentSpecialFolder()
         {
@@ -77,6 +90,24 @@ namespace Megumin
             System.Diagnostics.Process.Start(dir);
         }
 
+        public static List<string> GetSelectionFolders()
+        {
+            List<string> list = new List<string>();
+            Object[] items = Selection.GetFiltered<Object>(SelectionMode.Assets);
+            foreach (var item in items)
+            {
+                var path = AssetDatabase.GetAssetPath(item);
+                if (string.IsNullOrEmpty(path))
+                {
+                    continue;
+                }
 
+                if (System.IO.Directory.Exists(path))
+                {
+                    list.Add(path);
+                }
+            }
+            return list;
+        }
     }
 }

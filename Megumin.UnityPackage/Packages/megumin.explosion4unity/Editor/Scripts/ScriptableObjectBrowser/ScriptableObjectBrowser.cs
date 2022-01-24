@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace MyNamespace
+namespace Megumin
 {
 	/// <summary>
 	/// 
