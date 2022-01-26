@@ -47,12 +47,15 @@ public class PackageWizard : EditorWindow
         CreateRuntimeAsmdef = EditorGUILayout.Toggle("CreateRuntimeAsmdef", CreateRuntimeAsmdef);
         CreateEditorAsmdef = EditorGUILayout.Toggle("CreateEditorAsmdef", CreateEditorAsmdef);
 
+        EditorGUILayout.Separator();
+        EditorGUILayout.HelpBox("NameExtension用于包全名前缀,自动变为小写.", MessageType.Info);
         if (EditorGUILayout.LinkButton("Start with <domain-name-extension>.<company-name> (for example, \"com.example\" \"net.example\")"))
         {
             Application.OpenURL("https://docs.unity3d.com/2020.3/Documentation/Manual/cus-naming.html");
         }
         NameExtension = EditorGUILayout.TextField("NameExtension", NameExtension);
 
+        EditorGUILayout.Separator();
         EditorGUILayout.HelpBox("FullName用于创建asmdef程序集文件名,name和rootNamespace。", MessageType.Info);
         AutoFullName = EditorGUILayout.Toggle("AutoFullName", AutoFullName);
         if (AutoFullName)
@@ -74,8 +77,16 @@ public class PackageWizard : EditorWindow
 
         if (GUILayout.Button("Delete", GUILayout.Width(60f)))
         {
-            Directory.Delete(path, true);
-            RefreshAsset();
+            if (Directory.Exists(path))
+            {
+                if (EditorUtility.DisplayDialog("删除确认",
+                                                "确定要删除本地包么?\n操作不可恢复,请做好备份或使用版本工具.",
+                                                "确定", "取消"))
+                {
+                    Directory.Delete(path, true);
+                    RefreshAsset();
+                }
+            }
         }
 
         GUILayout.FlexibleSpace();
@@ -122,9 +133,9 @@ public class PackageWizard : EditorWindow
             CreatePackageInfoFile(path);
 
             CreateRuntimeAsmdefFile(path);
-
-            CreateEditorAsmdefFile(path);
         }
+
+        CreateEditorAsmdefFile(path);
 
         CreateReadmeFile(path);
 
@@ -279,13 +290,27 @@ $@"{{
     {
         if (CreateEditorAsmdef)
         {
+            var dir = path + "/Editor";
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(path);
+            }
+
             var editorNamespace = FullName;
             if (!string.IsNullOrEmpty(editorNamespace))
             {
                 editorNamespace = $"{editorNamespace}.Editor";
             }
 
-            string editorasmdef =
+            var filePath = path + "/Editor" + $"/{editorNamespace}.asmdef";
+
+            if (File.Exists(filePath))
+            {
+                Debug.LogWarning($"{editorNamespace}.asmdef exists");
+            }
+            else
+            {
+                string editorasmdef =
 $@"{{
     ""name"": ""{editorNamespace}"",
     ""rootNamespace"": ""{editorNamespace}"",
@@ -305,7 +330,8 @@ $@"{{
     ""noEngineReferences"": false
 }}";
 
-            File.WriteAllText(path + "/Editor" + $"/{editorNamespace}.asmdef", editorasmdef);
+                File.WriteAllText(filePath, editorasmdef);
+            }
         }
     }
 }
