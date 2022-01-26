@@ -36,6 +36,8 @@ public class PackageWizard : EditorWindow
     string NameExtension = "com.megumin";
     bool AutoFullName = true;
     string FullName = null;
+    bool CreateReadme = true;
+    bool CreateChangeLog = true;
 
     void OnGUI()
     {
@@ -64,6 +66,21 @@ public class PackageWizard : EditorWindow
         }
 
         EditorGUILayout.Separator();
+        CreateReadme = EditorGUILayout.Toggle(nameof(CreateReadme), CreateReadme);
+        CreateChangeLog = EditorGUILayout.Toggle(nameof(CreateChangeLog), CreateChangeLog);
+
+        EditorGUILayout.Separator();
+        EditorGUILayout.BeginHorizontal();
+
+        if (GUILayout.Button("Delete", GUILayout.Width(60f)))
+        {
+            Directory.Delete(path, true);
+            RefreshAsset();
+        }
+
+        GUILayout.FlexibleSpace();
+        GUILayout.Space(5);
+
         if (GUILayout.Button("Create", GUILayout.Width(60f)))
         {
             CreatePackageFolder(path);
@@ -71,13 +88,7 @@ public class PackageWizard : EditorWindow
             Close();
         }
 
-        GUILayout.Space(5);
-        if (GUILayout.Button("Delete", GUILayout.Width(60f)))
-        {
-            Directory.Delete(path, true);
-            RefreshAsset();
-        }
-
+        EditorGUILayout.EndHorizontal();
         GUILayout.Space(5);
         //通过打开文件夹除非工程刷新
         //EditorGUILayout.HelpBox("创建完成后Editor切换到后台，再切换回来，" +
@@ -100,7 +111,6 @@ public class PackageWizard : EditorWindow
         if (Directory.Exists(path))
         {
             Debug.LogError($"包已存在");
-            return;
         }
         else
         {
@@ -108,7 +118,86 @@ public class PackageWizard : EditorWindow
             Directory.CreateDirectory(path + "/Editor");
             Directory.CreateDirectory(path + "/Runtime");
             Directory.CreateDirectory(path + "/Tests");
-            string packageInfo =
+
+            CreatePackageInfoFile(path);
+
+            CreateRuntimeAsmdefFile(path);
+
+            CreateEditorAsmdefFile(path);
+        }
+
+        CreateReadmeFile(path);
+
+        CreateChangeLogFile(path);
+    }
+
+    private void CreateChangeLogFile(string path)
+    {
+        if (CreateChangeLog)
+        {
+            var filepath = Path.Combine(path, "CHANGELOG.md");
+            if (File.Exists(filepath))
+            {
+                Debug.LogWarning("CHANGELOG.md exists");
+            }
+            else
+            {
+                var dataStr = System.DateTimeOffset.Now.ToString("yyyy-MM-dd");
+                string fileStr =
+$@"# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+<!--
+## [Unreleased] - YYYY-MM-NN
+
+### Added   
+### Changed  
+### Deprecated  
+### Removed  
+### Fixed  
+### Security  
+-->
+
+---
+
+## [Unreleased] - YYYY-MM-NN
+
+## [0.0.1] - {dataStr}
+PackageWizard Fast Created.
+
+";
+                File.WriteAllText(filepath, fileStr);
+            }
+        }
+    }
+
+    private void CreateReadmeFile(string path)
+    {
+        if (CreateReadme)
+        {
+            var filepath = Path.Combine(path, "README.md");
+            if (File.Exists(filepath))
+            {
+                Debug.LogWarning("README.md exists");
+            }
+            else
+            {
+                string readmeStr =
+$@"# {InputPackageName}
+PackageWizard Fast Created.
+
+";
+                File.WriteAllText(filepath, readmeStr);
+            }
+        }
+    }
+
+    private void CreatePackageInfoFile(string path)
+    {
+        string packageInfo =
 $@"
 {{
     ""name"": ""{NameExtension.ToLower()}.{InputPackageName.ToLower()}"",
@@ -142,11 +231,14 @@ $@"
 
 ";
 
-            File.WriteAllText(path + "/package.json", packageInfo);
+        File.WriteAllText(path + "/package.json", packageInfo);
+    }
 
-            if (CreateRuntimeAsmdef)
-            {
-                string runtimeasmdef =
+    private void CreateRuntimeAsmdefFile(string path)
+    {
+        if (CreateRuntimeAsmdef)
+        {
+            string runtimeasmdef =
 $@"{{
     ""name"": ""{FullName}"",
     ""rootNamespace"": ""{FullName}"",
@@ -162,35 +254,38 @@ $@"{{
     ""noEngineReferences"": false
 }}";
 
-                File.WriteAllText(path + "/Runtime" + $"/{FullName}.asmdef", runtimeasmdef);
+            File.WriteAllText(path + "/Runtime" + $"/{FullName}.asmdef", runtimeasmdef);
 
-                //无法找到构造函数
-                //AssemblyDefinitionAsset assembly =
-                //    System.Activator.CreateInstance(typeof(AssemblyDefinitionAsset),
-                //    BindingFlags.NonPublic| BindingFlags.Instance,
-                //    runtimeasmdef)
-                //    as AssemblyDefinitionAsset;
+            //无法找到构造函数
+            //AssemblyDefinitionAsset assembly =
+            //    System.Activator.CreateInstance(typeof(AssemblyDefinitionAsset),
+            //    BindingFlags.NonPublic| BindingFlags.Instance,
+            //    runtimeasmdef)
+            //    as AssemblyDefinitionAsset;
 
-                //CreateAsset无法创建.asmdef
-                //TextAsset asset = new TextAsset(runtimeasmdef);
-                //AssetDatabase.CreateAsset(asset, path + "/Runtime" + $"/{InputPackageName}.asmdef");
-                //AssetDatabase.Refresh();
+            //CreateAsset无法创建.asmdef
+            //TextAsset asset = new TextAsset(runtimeasmdef);
+            //AssetDatabase.CreateAsset(asset, path + "/Runtime" + $"/{InputPackageName}.asmdef");
+            //AssetDatabase.Refresh();
 
-                //无法取得guid
-                //AssetDatabase.ImportAsset(path + "/Runtime" + $"/{InputPackageName}.asmdef");
-                //var guid = AssetDatabase.GUIDFromAssetPath(path + "/Runtime" + $"/{InputPackageName}.asmdef");
-                //Debug.Log(guid);
+            //无法取得guid
+            //AssetDatabase.ImportAsset(path + "/Runtime" + $"/{InputPackageName}.asmdef");
+            //var guid = AssetDatabase.GUIDFromAssetPath(path + "/Runtime" + $"/{InputPackageName}.asmdef");
+            //Debug.Log(guid);
+        }
+    }
+
+    private void CreateEditorAsmdefFile(string path)
+    {
+        if (CreateEditorAsmdef)
+        {
+            var editorNamespace = FullName;
+            if (!string.IsNullOrEmpty(editorNamespace))
+            {
+                editorNamespace = $"{editorNamespace}.Editor";
             }
 
-            if (CreateEditorAsmdef)
-            {
-                var editorNamespace = FullName;
-                if (!string.IsNullOrEmpty(editorNamespace))
-                {
-                    editorNamespace = $"{editorNamespace}.Editor";
-                }
-
-                string editorasmdef =
+            string editorasmdef =
 $@"{{
     ""name"": ""{editorNamespace}"",
     ""rootNamespace"": ""{editorNamespace}"",
@@ -210,11 +305,8 @@ $@"{{
     ""noEngineReferences"": false
 }}";
 
-                File.WriteAllText(path + "/Editor" + $"/{editorNamespace}.asmdef", editorasmdef);
-            }
+            File.WriteAllText(path + "/Editor" + $"/{editorNamespace}.asmdef", editorasmdef);
         }
-
-
     }
 }
 
