@@ -24,8 +24,8 @@ namespace System
         /// <para/>虽然调用后list被赋值为null，但不能保证没有其他引用指向当前list，尤其小心被保存在Linq语句中的引用。
         /// </summary>
         /// <param name="element">使用ref 来保证list被置为null,防止出现数据错误.</param>
-        /// <param name="safeCheck">安全检查,检测最大保留个数,数据结构检测重复元素,有性能开销</param>
-        void Return(ref T element, bool safeCheck = false);
+        /// <param name="forceSafeCheck">安全检查,检测最大保留个数,数据结构检测重复元素,有性能开销</param>
+        void Return(ref T element, bool forceSafeCheck = false);
 
         /// <summary>
         /// 自动归还句柄,推荐使用using语法
@@ -34,12 +34,15 @@ namespace System
         {
             T element;
             IPoolCore<T> poolCore;
+            public bool ForceSafeCheck;
+
             public T Element => element;
 
-            internal ReturnHandle(T value, IPoolCore<T> pool)
+            internal ReturnHandle(T value, IPoolCore<T> pool, bool forceSafeCheck = false)
             {
                 element = value;
                 poolCore = pool;
+                this.ForceSafeCheck = forceSafeCheck;
             }
 
             /// <summary>
@@ -49,7 +52,7 @@ namespace System
             {
                 if (poolCore != null && element != null)
                 {
-                    poolCore.Return(ref element);
+                    poolCore.Return(ref element, ForceSafeCheck);
                 }
                 element = default;
                 poolCore = null;
@@ -64,9 +67,10 @@ namespace System
         /// <summary>
         /// 使用using自动归还
         /// </summary>
-        /// <param name="element"></param>
         /// <returns></returns>
-        ReturnHandle Rent(out T element);
+        /// <param name="element"></param>
+        /// <param name="forceSafeCheck"></param>
+        ReturnHandle Rent(out T element, bool forceSafeCheck = false);
     }
 
     public abstract class PoolCoreBase<T> : IPoolCore<T>
@@ -82,22 +86,22 @@ namespace System
         /// </summary>
         internal protected Func<T, bool> PreReturnPush;
         public int CountAll { get; protected set; }
-
+        public bool SafeCheck { get; set; } = false;
         /// <summary>
         /// 池中最大保留元素个数,默认为10
         /// </summary>
         public static int MaxSize { get; set; } = 10;
 
-        public IPoolCore<T>.ReturnHandle Rent(out T element)
+        public IPoolCore<T>.ReturnHandle Rent(out T element, bool forceSafeCheck = false)
         {
             var e = Rent();
-            IPoolCore<T>.ReturnHandle handle = new IPoolCore<T>.ReturnHandle(e, this);
+            IPoolCore<T>.ReturnHandle handle = new IPoolCore<T>.ReturnHandle(e, this, forceSafeCheck);
             element = e;
             return handle;
         }
 
         public abstract T Rent();
-        public abstract void Return(ref T element, bool safeCheck = false);
+        public abstract void Return(ref T element, bool forceSafeCheck = false);
     }
 
     public class StackPoolCore<T> : PoolCoreBase<T>
@@ -152,9 +156,9 @@ namespace System
             return element;
         }
 
-        public override void Return(ref T element, bool safeCheck = false)
+        public override void Return(ref T element, bool forceSafeCheck = false)
         {
-            if (safeCheck)
+            if (forceSafeCheck || SafeCheck)
             {
                 if (stack.Count > 0)
                 {
@@ -186,6 +190,12 @@ namespace System
                 CountAll--;
             }
             element = default;
+        }
+
+        public void Clear()
+        {
+            stack.Clear();
+            CountAll = 0;
         }
     }
 
@@ -241,9 +251,9 @@ namespace System
             return element;
         }
 
-        public override void Return(ref T element, bool safeCheck = false)
+        public override void Return(ref T element, bool forceSafeCheck = false)
         {
-            if (safeCheck)
+            if (forceSafeCheck || SafeCheck)
             {
                 if (stack.Count > 0)
                 {
@@ -277,7 +287,11 @@ namespace System
             element = default;
         }
 
-
+        public void Clear()
+        {
+            stack.Clear();
+            CountAll = 0;
+        }
     }
 
     [Obsolete("Template", true)]
@@ -299,12 +313,12 @@ namespace System
         }
 
         /// <summary>
-        /// <inheritdoc cref="IPoolCore{T}.Rent(out T)"/>
+        /// <inheritdoc cref="IPoolCore{T}.Rent(out T, bool)"/>
         /// </summary>
         /// <returns></returns>
-        public static IPoolCore<T>.ReturnHandle Rent(out T element)
+        public static IPoolCore<T>.ReturnHandle Rent(out T element, bool forceSafeCheck = false)
         {
-            return poolCore.Rent(out element);
+            return poolCore.Rent(out element, forceSafeCheck);
         }
 
         /// <summary>
@@ -314,6 +328,11 @@ namespace System
         public static void Return(ref T element, bool safeCheck = false)
         {
             poolCore.Return(ref element, safeCheck);
+        }
+
+        public static void Clear()
+        {
+            poolCore.Clear();
         }
     }
 

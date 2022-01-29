@@ -15,7 +15,22 @@ namespace Megumin
         /// <summary>
         /// 不要继承静态自动,父类和子类共有可能存在隐藏bug
         /// </summary>
-        public static readonly StackPoolCore<List<T>> poolCore = new StackPoolCore<List<T>>();
+        public static readonly StackPoolCore<List<T>> poolCore
+            = new StackPoolCore<List<T>>(
+                postRentPop: static list =>
+                {
+                    if (list == null || list.Count != 0)
+                    {
+                        return false;
+                    }
+                    return true;
+                },
+                null,
+                onReturn: static list =>
+                {
+                    list?.Clear();
+                },
+                null);
 
         /// <summary>
         /// <inheritdoc cref="IPoolCore{T}.Rent()"/>
@@ -36,12 +51,17 @@ namespace Megumin
         }
 
         /// <summary>
-        /// <inheritdoc cref="IPoolCore{T}.Rent(out T)"/>
+        /// <inheritdoc cref="IPoolCore{T}.Rent(out T, bool)"/>
         /// </summary>
         /// <returns></returns>
-        public static IPoolCore<List<T>>.ReturnHandle Rent(out List<T> element)
+        public static IPoolCore<List<T>>.ReturnHandle Rent(out List<T> element, bool forceSafeCheck = false)
         {
-            return poolCore.Rent(out element);
+            return poolCore.Rent(out element, forceSafeCheck);
+        }
+
+        public static void Clear()
+        {
+            poolCore.Clear();
         }
     }
 
@@ -56,7 +76,21 @@ namespace Megumin
         /// 不要继承静态自动,父类和子类共有可能存在隐藏bug
         /// </summary>
         public static readonly ConcurrentStackPoolCore<List<T>> poolCore
-             = new ConcurrentStackPoolCore<List<T>>();
+             = new ConcurrentStackPoolCore<List<T>>(
+                postRentPop: static list =>
+                {
+                    if (list == null || list.Count != 0)
+                    {
+                        return false;
+                    }
+                    return true;
+                },
+                null,
+                onReturn: static list =>
+                {
+                    list?.Clear();
+                },
+                null);
 
         /// <summary>
         /// <inheritdoc cref="IPoolCore{T}.Rent()"/>
@@ -77,12 +111,17 @@ namespace Megumin
         }
 
         /// <summary>
-        /// <inheritdoc cref="IPoolCore{T}.Rent(out T)"/>
+        /// <inheritdoc cref="IPoolCore{T}.Rent(out T, bool)"/>
         /// </summary>
         /// <returns></returns>
-        public static IPoolCore<List<T>>.ReturnHandle Rent(out List<T> element)
+        public static IPoolCore<List<T>>.ReturnHandle Rent(out List<T> element, bool forceSafeCheck = false)
         {
-            return poolCore.Rent(out element);
+            return poolCore.Rent(out element, forceSafeCheck);
+        }
+
+        public static void Clear()
+        {
+            poolCore.Clear();
         }
     }
 }
