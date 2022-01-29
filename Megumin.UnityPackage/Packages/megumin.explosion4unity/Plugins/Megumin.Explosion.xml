@@ -84,6 +84,82 @@
             为每个节点分配一个位置编号，位置不同，相同的函数成功失败后执行的逻辑可能不同.
             </summary>
         </member>
+        <member name="T:System.IPoolCore`1">
+            <summary>
+            对象池核心容器 
+            参考了UnityEngine.Rendering.ObjectPool,并做了优化.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:System.IPoolCore`1.Rent">
+            <summary>
+            从池中租用一个元素
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:System.IPoolCore`1.Return(`0@,System.Boolean)">
+            <summary>
+            将一个元素返回池,调用者需要保证归还后不在使用当前list
+            <para/>虽然调用后list被赋值为null，但不能保证没有其他引用指向当前list，尤其小心被保存在Linq语句中的引用。
+            </summary>
+            <param name="element">使用ref 来保证list被置为null,防止出现数据错误.</param>
+            <param name="safeCheck">安全检查,检测最大保留个数,数据结构检测重复元素,有性能开销</param>
+        </member>
+        <member name="T:System.IPoolCore`1.ReturnHandle">
+            <summary>
+            自动归还句柄,推荐使用using语法
+            </summary>
+        </member>
+        <member name="M:System.IPoolCore`1.ReturnHandle.Dispose">
+            <summary>
+            Disposable pattern implementation.
+            </summary>
+        </member>
+        <member name="M:System.IPoolCore`1.Rent(`0@)">
+            <summary>
+            使用using自动归还
+            </summary>
+            <param name="element"></param>
+            <returns></returns>
+        </member>
+        <member name="F:System.PoolCoreBase`1.PostRentPop">
+            <summary>
+            在Pop后一刻调用,如果返回false,则构造新元素.
+            </summary>
+        </member>
+        <member name="F:System.PoolCoreBase`1.PreReturnPush">
+            <summary>
+            在Push前一刻调用,如果返回false,则不Push.
+            </summary>
+        </member>
+        <member name="P:System.PoolCoreBase`1.MaxSize">
+            <summary>
+            池中最大保留元素个数,默认为10
+            </summary>
+        </member>
+        <member name="F:System.Pool`1.poolCore">
+            <summary>
+            不要继承静态自动,父类和子类共有可能存在隐藏bug
+            </summary>
+        </member>
+        <member name="M:System.Pool`1.Rent">
+            <summary>
+            <inheritdoc cref="M:System.IPoolCore`1.Rent"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:System.Pool`1.Rent(`0@)">
+            <summary>
+            <inheritdoc cref="M:System.IPoolCore`1.Rent(`0@)"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:System.Pool`1.Return(`0@,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:System.IPoolCore`1.Return(`0@,System.Boolean)"/>
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414">
             <summary>
             IPAddressExtension
@@ -289,23 +365,63 @@
         </member>
         <member name="T:Megumin.ListPool`1">
             <summary>
+            线程不安全List池
+            </summary>
+            <typeparam name="T"></typeparam>
+            <remarks>内部使用<see cref="T:System.Collections.Generic.Stack`1"/>实现</remarks>
+        </member>
+        <member name="F:Megumin.ListPool`1.poolCore">
+            <summary>
+            不要继承静态自动,父类和子类共有可能存在隐藏bug
+            </summary>
+        </member>
+        <member name="M:Megumin.ListPool`1.Rent">
+            <summary>
+            <inheritdoc cref="M:System.IPoolCore`1.Rent"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.ListPool`1.Return(System.Collections.Generic.List{`0}@,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:System.IPoolCore`1.Return(`0@,System.Boolean)"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.ListPool`1.Rent(System.Collections.Generic.List{`0}@)">
+            <summary>
+            <inheritdoc cref="M:System.IPoolCore`1.Rent(`0@)"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Megumin.ConcurrentListPool`1">
+            <summary>
             线程安全List池
             </summary>
             <typeparam name="T"></typeparam>
             <remarks>内部使用<see cref="T:System.Collections.Concurrent.ConcurrentStack`1"/>实现</remarks>
         </member>
-        <member name="P:Megumin.ListPool`1.MaxSize">
+        <member name="F:Megumin.ConcurrentListPool`1.poolCore">
             <summary>
-            默认容量10
+            不要继承静态自动,父类和子类共有可能存在隐藏bug
             </summary>
         </member>
-        <member name="M:Megumin.ListPool`1.Return(System.Collections.Generic.List{`0}@)">
+        <member name="M:Megumin.ConcurrentListPool`1.Rent">
             <summary>
-            调用者需要保证归还后不在使用当前list
-            <para/>虽然调用后list被赋值为null，但不能保证没有其他引用指向当前list，尤其小心被保存在Linq语句中的引用。
+            <inheritdoc cref="M:System.IPoolCore`1.Rent"/>
             </summary>
-            <param name="list"></param>
-            <remarks>使用ref 来保证list被置为null,防止出现数据错误.</remarks>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.ConcurrentListPool`1.Return(System.Collections.Generic.List{`0}@,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:System.IPoolCore`1.Return(`0@,System.Boolean)"/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.ConcurrentListPool`1.Rent(System.Collections.Generic.List{`0}@)">
+            <summary>
+            <inheritdoc cref="M:System.IPoolCore`1.Rent(`0@)"/>
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Megumin.MeguminUtility">
             <summary>
@@ -494,7 +610,8 @@
         </member>
         <member name="T:Megumin.ActiveControl">
             <summary>
-            开启关闭控制，只有有个一个控制源开启，结果就是开启
+            开启关闭控制，默认只要有个一个控制源为true，结果就是true.
+            <para>可以将ascending参数设置为true,改为 只要有个一个源为false,结果就是false.</para>
             </summary>
             <remarks>处理黑屏，碰撞盒开闭</remarks>
         </member>
@@ -506,7 +623,7 @@
             <param name="defaultValue"></param>
             <param name="onValueChangedKV"></param>
             <param name="onValueChanged"></param>
-            <param name="ascending">默认false,任意一个开启就开启,true,任意一个关闭就关闭.</param>
+            <param name="ascending">默认false,降序排列,true=1排在false=0前面,结果为第一个值.任意一个true结果就true</param>
         </member>
         <member name="T:Megumin.MultipleControlEnum`2">
             <summary>

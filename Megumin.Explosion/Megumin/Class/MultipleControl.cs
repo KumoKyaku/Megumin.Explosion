@@ -311,7 +311,8 @@ namespace Megumin
     }
 
     /// <summary>
-    /// 开启关闭控制，只有有个一个控制源开启，结果就是开启
+    /// 开启关闭控制，默认只要有个一个控制源为true，结果就是true.
+    /// <para>可以将ascending参数设置为true,改为 只要有个一个源为false,结果就是false.</para>
     /// </summary>
     /// <remarks>处理黑屏，碰撞盒开闭</remarks>
     public class ActiveControl : MultipleControl<object, bool>
@@ -323,7 +324,7 @@ namespace Megumin
         /// <param name="defaultValue"></param>
         /// <param name="onValueChangedKV"></param>
         /// <param name="onValueChanged"></param>
-        /// <param name="ascending">默认false,任意一个开启就开启,true,任意一个关闭就关闭.</param>
+        /// <param name="ascending">默认false,降序排列,true=1排在false=0前面,结果为第一个值.任意一个true结果就true</param>
         public ActiveControl(object defaultHandle,
                              bool defaultValue,
                              OnValueChanged<(object, bool)> onValueChangedKV = null,

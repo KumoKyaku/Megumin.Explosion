@@ -79,9 +79,8 @@ public static class GameObjectExtension_044A46672EEE4ED5BDE291E8DEC3012E
 
         if (gameObject)
         {
-            using (var handle = ListPool<T>.RentAutoReturn())
+            using (ListPool<T>.Rent(out var list))
             {
-                var list = handle.List;
                 gameObject.GetComponentsInChildren(true, list);
                 foreach (var item in list)
                 {
@@ -120,9 +119,8 @@ public static class GameObjectExtension_044A46672EEE4ED5BDE291E8DEC3012E
 
         if (gameObject)
         {
-            using (var handle = ListPool<T>.RentAutoReturn())
+            using (ListPool<T>.Rent(out var list))
             {
-                var list = handle.List;
                 gameObject.GetComponentsInParent(true, list);
                 foreach (var item in list)
                 {
