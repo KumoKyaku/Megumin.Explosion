@@ -31,6 +31,8 @@ namespace Megumin
         /// 全局显示开关
         /// </summary>
         public static Pref<bool> GlobalToggle;
+        public readonly static ActiveControl ActiveControl = new ActiveControl(new object(), true, ascending: true);
+
         [ReadOnlyInInspector]
         public string cacheText;
 
@@ -76,7 +78,7 @@ namespace Megumin
         void OnGUI()
         {
             InitGlobalToggle();
-            if (ShowOnRuntime && Camera.main && GlobalToggle)
+            if (ShowOnRuntime && Camera.main && GlobalToggle && ActiveControl.Current)
             {
                 var pos = Camera.main.WorldToScreenPoint(transform.position + Offset);
                 if (pos.z > 0)
