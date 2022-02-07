@@ -89,7 +89,7 @@ namespace Megumin
     /// </summary>
     public interface IVisibleable
     {
-        bool Visible {  get; set; }
+        bool Visible { get; set; }
     }
 
     /// <summary>
@@ -201,5 +201,21 @@ namespace Megumin
     public interface IExitable
     {
         void Exit();
+    }
+
+    /// <summary>
+    /// F1帮助相关
+    /// </summary>
+    public interface IF1able
+    {
+        void OnF1(object option = null);
+    }
+
+    /// <summary>
+    /// todo 调试相关
+    /// </summary>
+    public interface IDebugable
+    {
+        void OnDebugKey(ConsoleKey key = ConsoleKey.F1);
     }
 }

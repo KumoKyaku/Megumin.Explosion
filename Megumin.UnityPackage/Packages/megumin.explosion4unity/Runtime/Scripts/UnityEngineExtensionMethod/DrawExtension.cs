@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class DrawExtension_95DA6E62
+public static partial class DrawExtension_95DA6E62
 {
     /// <summary>
     /// 在游戏中绘制一个mesh
@@ -198,5 +198,25 @@ public static class DrawExtension_95DA6E62
 }
 
 
+public partial class DrawExtension_95DA6E62
+{
+    /// <summary>
+    /// 不知道为什么不起作用
+    /// </summary>
+    /// <param name="sprite"></param>
+    /// <param name="position"></param>
+    public static void GizmoDraw(this Sprite sprite, Vector3 position)
+    {
+#if UNITY_EDITOR
+        position = UnityEditor.SceneView.lastActiveSceneView.camera.WorldToScreenPoint(position);
+#endif
+        Rect dstRect = new Rect(position.x,
+                                 position.y,
+                                 500,
+                                 500);
 
+        Gizmos.DrawGUITexture(dstRect,
+                             sprite.texture);
+    }
+}
 

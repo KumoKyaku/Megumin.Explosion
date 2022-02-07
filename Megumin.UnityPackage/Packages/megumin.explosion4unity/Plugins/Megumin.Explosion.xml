@@ -295,6 +295,17 @@
             Dynamic
             </summary>
         </member>
+        <member name="T:Megumin.OnF1Attribute">
+            <summary>
+            在unity中,仅编辑器有效,回调标记的方法
+            </summary>
+        </member>
+        <member name="T:Megumin.OnKeyAttribute">
+            <summary>
+            <para>todo, 现在仅部分按键有效 </para>
+            在unity中,仅编辑器有效,回调标记的方法
+            </summary>
+        </member>
         <member name="T:Megumin.CDTimer`1">
             <inheritdoc cref="T:Megumin.IUseable`1"/>
         </member>
@@ -1125,6 +1136,16 @@
         <member name="P:Megumin.IVersionable.Version">
             <summary>
             当前版本
+            </summary>
+        </member>
+        <member name="T:Megumin.IF1able">
+            <summary>
+            F1帮助相关
+            </summary>
+        </member>
+        <member name="T:Megumin.IDebugable">
+            <summary>
+            todo 调试相关
             </summary>
         </member>
         <member name="T:Megumin.IPipe`1">

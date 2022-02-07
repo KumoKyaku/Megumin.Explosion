@@ -105,6 +105,25 @@ namespace Megumin
         public string PostfixType { get; set; } = "None";
         public string Postfix { get; set; }
     }
+
+    /// <summary>
+    /// 在unity中,仅编辑器有效,回调标记的方法
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, Inherited = true)]
+    public class OnF1Attribute : Attribute
+    {
+
+    }
+
+    /// <summary>
+    /// <para>todo, 现在仅部分按键有效 </para>
+    /// 在unity中,仅编辑器有效,回调标记的方法
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    public class OnKeyAttribute : Attribute
+    {
+        public ConsoleKey Key { get; set; }
+    }
 }
 
 
