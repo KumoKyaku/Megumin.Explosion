@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -124,6 +125,8 @@ namespace Megumin
             foreach (var item in fields)
             {
                 detail += retract + "    " + item.Name + "  :  " + item.GetValue(value)?.ToString() + "\n";
+
+                detail += LogListDic(retract + "        ", item.GetValue(value));
             }
 
             detail += retract + "Propertie:   \n";
@@ -132,6 +135,36 @@ namespace Megumin
             foreach (var item in props)
             {
                 detail += retract + "    " + item.Name + ":    " + item.GetValue(value)?.ToString() + "\n";
+
+                detail += LogListDic(retract + "        ", item.GetValue(value));
+            }
+
+            return detail;
+        }
+
+        /// <summary>
+        /// 打印详细集合
+        /// </summary>
+        /// <param name="retract"></param>
+        /// <param name="fo"></param>
+        /// <returns></returns>
+        public static string LogListDic(string retract, object fo)
+        {
+            string detail = "";
+            if (fo is IList list)
+            {
+                foreach (var item in list)
+                {
+                    detail += retract + item.GetType().Name + "  :  " + item?.ToString() + "\n";
+                }
+            }
+
+            if (fo is IDictionary dictionary)
+            {
+                foreach (IDictionaryEnumerator item in dictionary)
+                {
+                    detail += retract + item.Key.ToString() + "  :  " + item.Value.ToString() + "\n";
+                }
             }
 
             return detail;

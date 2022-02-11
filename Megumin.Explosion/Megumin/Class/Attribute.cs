@@ -109,7 +109,7 @@ namespace Megumin
     /// <summary>
     /// 在unity中,仅编辑器有效,回调标记的方法
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, Inherited = true)]
+    [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class OnF1Attribute : Attribute
     {
 
@@ -119,7 +119,7 @@ namespace Megumin
     /// <para>todo, 现在仅部分按键有效 </para>
     /// 在unity中,仅编辑器有效,回调标记的方法
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class OnKeyAttribute : Attribute
     {
         public ConsoleKey Key { get; set; }
