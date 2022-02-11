@@ -21,10 +21,15 @@ namespace Megumin
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
+        /// <param name="actualType">true通过value取得实际类型,默认false取得泛型类型,T可能是接口类型</param>
         /// <returns></returns>
-        public static string ToStringReflection<T>(T value = default)
+        public static string ToStringReflection<T>(T value = default, bool actualType = false)
         {
             Type type = typeof(T);
+            if (actualType && value != null)
+            {
+                type = value.GetType();
+            }
             return ToStringReflection(type, value);
         }
 
@@ -134,7 +139,7 @@ namespace Megumin
     }
 
     /// <summary>
-    /// 因为由扩展方法和静态方法重名
+    /// 因为由扩展方法和静态方法重名, this扩展不能有默认值,
     /// </summary>
     public static class Utility2
     {
@@ -143,10 +148,11 @@ namespace Megumin
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
+        /// <param name="actualType">true通过value取得实际类型,默认false取得泛型类型,T可能是接口类型</param>
         /// <returns></returns>
-        public static string ToStringReflection<T>(this T value)
+        public static string ToStringReflection<T>(this T value, bool actualType = false)
         {
-            return Utility.ToStringReflection(value);
+            return Utility.ToStringReflection(value, actualType);
         }
     }
 }
