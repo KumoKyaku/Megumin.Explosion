@@ -21,6 +21,7 @@ using UnityEditor;
 /// this.DrawInspectorMethods
 /// 
 /// <para></para><see cref="EditorGUIMethod.DrawInspectorMethods"/>
+/// <para>在自定义Serializable类型方法中无效,无法显示在面板</para>
 /// </summary>
 [System.AttributeUsage(System.AttributeTargets.Method)]
 public class EditorButtonAttribute : PropertyAttribute
