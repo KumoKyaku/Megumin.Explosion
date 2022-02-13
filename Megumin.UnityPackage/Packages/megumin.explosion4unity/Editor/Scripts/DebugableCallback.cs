@@ -47,6 +47,124 @@ namespace Megumin
             }
         }
 
+        public static void ObjectOnF1(object item)
+        {
+            if (item is IF1able f1Able)
+            {
+                f1Able?.OnF1();
+            }
+
+            {
+                //控制台Log字段
+                var fields = from f in item.GetType().GetFields((BindingFlags)(-1))
+                             let attrs = f.GetCustomAttributes(typeof(OnF1Attribute), true)
+                             where attrs.Length > 0
+                             select f;
+                foreach (var field in fields)
+                {
+                    var fv = field.GetValue(item);
+                    Debug.Log(fv.ToStringReflection(true));
+                }
+            }
+
+            {
+                //控制台Log属性
+                var props = from p in item.GetType().GetProperties((BindingFlags)(-1))
+                            let attrs = p.GetCustomAttributes(typeof(OnF1Attribute), true)
+                            where attrs.Length > 0
+                            select p;
+                foreach (var property in props)
+                {
+                    var pv = property.GetValue(item);
+                    Debug.Log(pv.ToStringReflection(true));
+                }
+            }
+
+            {
+                //反射调用方法
+                var methods = from m in item.GetType().GetMethods((BindingFlags)(-1))
+                              let attrs = m.GetCustomAttributes(typeof(OnF1Attribute), true)
+                              where attrs.Length > 0
+                              select m;
+
+                foreach (var method in methods)
+                {
+                    method.Invoke(item, null);
+                }
+            }
+        }
+
+        public static void ObjectOnKey(object item, ConsoleKey key)
+        {
+            {
+                //控制台Log字段
+                var fields = from f in item.GetType().GetFields((BindingFlags)(-1))
+                             let attrs = f.GetCustomAttributes(typeof(OnKeyAttribute), true)
+                             where attrs.Length > 0
+                             select (f, attrs);
+
+                foreach (var kv in fields)
+                {
+                    if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
+                    {
+                        var fv = kv.f.GetValue(item);
+                        Debug.Log(fv.ToStringReflection(true));
+                    }
+                }
+            }
+
+            {
+                //控制台Log属性
+                var props = from p in item.GetType().GetProperties((BindingFlags)(-1))
+                            let attrs = p.GetCustomAttributes(typeof(OnKeyAttribute), true)
+                            where attrs.Length > 0
+                            select (p, attrs);
+
+                foreach (var kv in props)
+                {
+                    if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
+                    {
+                        var fv = kv.p.GetValue(item);
+                        Debug.Log(fv.ToStringReflection(true));
+                    }
+                }
+            }
+
+            {
+                //反射调用方法
+                var methods = from m in item.GetType().GetMethods((BindingFlags)(-1))
+                              let attrs = m.GetCustomAttributes(typeof(OnKeyAttribute), true)
+                              where attrs.Length > 0
+                              select (m, attrs);
+
+                foreach (var kv in methods)
+                {
+                    if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
+                    {
+                        var method = kv.m;
+                        method.Invoke(item, null);
+                    }
+                }
+            }
+        }
+
+        public static void OnKey(ConsoleKey key)
+        {
+            if (Selection.activeGameObject)
+            {
+                var comps = Selection.activeGameObject.GetComponents<MonoBehaviour>();
+                foreach (var item in comps)
+                {
+                    ObjectOnKey(item, key);
+                }
+            }
+
+            if (Selection.activeObject is ScriptableObject obj)
+            {
+                ObjectOnKey(obj, key);
+            }
+        }
+
         [Shortcut("MeguminDebug/" + nameof(OnF1), KeyCode.F1)]
         public static void OnF1()
         {
@@ -55,50 +173,13 @@ namespace Megumin
                 var comps = Selection.activeGameObject.GetComponents<MonoBehaviour>();
                 foreach (var item in comps)
                 {
-                    if (item is IF1able f1Able)
-                    {
-                        f1Able?.OnF1();
-                    }
-
-                    {
-                        //控制台Log字段
-                        var fields = from f in item.GetType().GetFields((BindingFlags)(-1))
-                                     let attrs = f.GetCustomAttributes(typeof(OnF1Attribute), true)
-                                     where attrs.Length > 0
-                                     select f;
-                        foreach (var field in fields)
-                        {
-                            var fv = field.GetValue(item);
-                            Debug.Log(fv.ToStringReflection(true));
-                        }
-                    }
-
-                    {
-                        //控制台Log属性
-                        var props = from p in item.GetType().GetProperties((BindingFlags)(-1))
-                                    let attrs = p.GetCustomAttributes(typeof(OnF1Attribute), true)
-                                    where attrs.Length > 0
-                                    select p;
-                        foreach (var property in props)
-                        {
-                            var pv = property.GetValue(item);
-                            Debug.Log(pv.ToStringReflection(true));
-                        }
-                    }
-
-                    {
-                        //反射调用方法
-                        var methods = from m in item.GetType().GetMethods((BindingFlags)(-1))
-                                      let attrs = m.GetCustomAttributes(typeof(OnF1Attribute), true)
-                                      where attrs.Length > 0
-                                      select m;
-
-                        foreach (var method in methods)
-                        {
-                            method.Invoke(item, null);
-                        }
-                    }
+                    ObjectOnF1(item);
                 }
+            }
+
+            if (Selection.activeObject is ScriptableObject obj)
+            {
+                ObjectOnF1(obj);
             }
 
             OnKey(ConsoleKey.F1);
@@ -116,66 +197,6 @@ namespace Megumin
             OnKey(ConsoleKey.F4);
         }
 
-        public static void OnKey(ConsoleKey key)
-        {
-            if (Selection.activeGameObject)
-            {
-                var comps = Selection.activeGameObject.GetComponents<MonoBehaviour>();
-                foreach (var item in comps)
-                {
-                    {
-                        //控制台Log字段
-                        var fields = from f in item.GetType().GetFields((BindingFlags)(-1))
-                                     let attrs = f.GetCustomAttributes(typeof(OnKeyAttribute), true)
-                                     where attrs.Length > 0
-                                     select (f, attrs);
-
-                        foreach (var kv in fields)
-                        {
-                            if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
-                            {
-                                var fv = kv.f.GetValue(item);
-                                Debug.Log(fv.ToStringReflection(true));
-                            }
-                        }
-                    }
-
-                    {
-                        //控制台Log属性
-                        var props = from p in item.GetType().GetProperties((BindingFlags)(-1))
-                                    let attrs = p.GetCustomAttributes(typeof(OnKeyAttribute), true)
-                                    where attrs.Length > 0
-                                    select (p, attrs);
-
-                        foreach (var kv in props)
-                        {
-                            if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
-                            {
-                                var fv = kv.p.GetValue(item);
-                                Debug.Log(fv.ToStringReflection(true));
-                            }
-                        }
-                    }
-
-                    {
-                        //反射调用方法
-                        var methods = from m in item.GetType().GetMethods((BindingFlags)(-1))
-                                      let attrs = m.GetCustomAttributes(typeof(OnKeyAttribute), true)
-                                      where attrs.Length > 0
-                                      select (m, attrs);
-
-                        foreach (var kv in methods)
-                        {
-                            if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
-                            {
-                                var method = kv.m;
-                                method.Invoke(item, null);
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
 }
