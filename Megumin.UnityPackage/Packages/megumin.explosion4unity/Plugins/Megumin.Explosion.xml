@@ -786,12 +786,13 @@
             </summary>
             <remarks>MeguminUtility名字太长,即时Utility和别的命名空间Utility冲突,使用全名称限定就可以了.</remarks>
         </member>
-        <member name="M:Megumin.Utility.ToStringReflection``1(``0)">
+        <member name="M:Megumin.Utility.ToStringReflection``1(``0,System.Boolean)">
             <summary>
             通过反射获得属性值字符串
             </summary>
             <typeparam name="T"></typeparam>
             <param name="value"></param>
+            <param name="actualType">true通过value取得实际类型,默认false取得泛型类型,T可能是接口类型</param>
             <returns></returns>
         </member>
         <member name="M:Megumin.Utility.ToStringReflection``1(System.Type,``0,System.Nullable{System.Reflection.BindingFlags})">
@@ -804,17 +805,26 @@
             <param name="flags">允许设定<see cref="F:System.Reflection.BindingFlags.NonPublic"/></param>
             <returns></returns>
         </member>
+        <member name="M:Megumin.Utility.LogListDic(System.String,System.Object)">
+            <summary>
+            打印详细集合
+            </summary>
+            <param name="retract"></param>
+            <param name="fo"></param>
+            <returns></returns>
+        </member>
         <member name="T:Megumin.Utility2">
             <summary>
-            因为由扩展方法和静态方法重名
+            因为由扩展方法和静态方法重名, this扩展不能有默认值,
             </summary>
         </member>
-        <member name="M:Megumin.Utility2.ToStringReflection``1(``0)">
+        <member name="M:Megumin.Utility2.ToStringReflection``1(``0,System.Boolean)">
             <summary>
             通过反射获得属性值字符串,一般用于打印到控制台.
             </summary>
             <typeparam name="T"></typeparam>
             <param name="value"></param>
+            <param name="actualType">true通过value取得实际类型,默认false取得泛型类型,T可能是接口类型</param>
             <returns></returns>
         </member>
         <member name="T:Megumin.UtilTime">
