@@ -51,6 +51,17 @@ namespace Megumin
             OpenURL("https://bitbucket.org/UnityUIExtensions/unity-ui-extensions/src/release/");
         }
 
+        [MenuItem("Tools/Link/Unity-UI-UIEffect")]
+        static void Unity_UI_UIEffect()
+        {
+            OpenURL("https://github.com/mob-sakai/UIEffect");
+        }
+
+        [MenuItem("Tools/Link/Unity-QianMo-X-PostProcessing-Library")]
+        static void Unity_QianMo_X_PostProcessing_Library()
+        {
+            OpenURL("https://github.com/QianMo/X-PostProcessing-Library");
+        }
 
         [MenuItem("Tools/Link/IconList")]
         static void IconList()
