@@ -86,10 +86,12 @@ public class ExplosionSettingProvider : SettingsProvider
     static Value<bool> Nagetive = new Value<bool>("InspectorNavigation", true);
     static SymbolValue DISABLE_SCROBJ_DRAWER = new SymbolValue("DISABLE_SCROBJ_DRAWER", false);
     static SymbolValue DISABLE_EDITORBUTTONATTRIBUTE = new SymbolValue("DISABLE_EDITORBUTTONATTRIBUTE", false);
+    static SymbolValue DISABLE_MEGUMIN_PROPERTYDRWAER = new SymbolValue(nameof(DISABLE_MEGUMIN_PROPERTYDRWAER), false);
 
     static Value<ClonePathModeSetting.ClonePathMode> ClonePathMode
         = new Value<ClonePathModeSetting.ClonePathMode>("ClonePathMode", ClonePathModeSetting.ClonePathMode.ParentPath);
 
+    public GUIStyle TipStype => EditorStyles.helpBox;
     public override void OnGUI(string searchContext)
     {
         base.OnGUI(searchContext);
@@ -109,15 +111,27 @@ public class ExplosionSettingProvider : SettingsProvider
             }
         }
 
+        EditorGUILayout.BeginFoldoutHeaderGroup(true, "new clone 按钮");
+        EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField($"用于关闭ScriptObject 的new clone 按钮.", TipStype);
         DISABLE_SCROBJ_DRAWER.DrawSymbol(searchContext);
-        DISABLE_EDITORBUTTONATTRIBUTE.DrawSymbol(searchContext);
 
+        EditorGUILayout.LabelField($"new clone 按钮新对象的默认路径.", TipStype);
         var pathModeOld = ClonePathMode.value;
         ClonePathMode.value = (ClonePathModeSetting.ClonePathMode)EditorGUILayout.EnumPopup(ClonePathMode.key, ClonePathMode.value);
         if (pathModeOld != ClonePathMode.value)
         {
             ClonePathModeSetting.PathMode = ClonePathMode.value;
         }
+        EditorGUILayout.EndFoldoutHeaderGroup();
+
+        EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField($"用于关闭EditorButton,提高编辑器性能", TipStype);
+        DISABLE_EDITORBUTTONATTRIBUTE.DrawSymbol(searchContext);
+
+        EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField($"用于关闭所有特性PropertyDrawer,提高编辑器性能", TipStype);
+        DISABLE_MEGUMIN_PROPERTYDRWAER.DrawSymbol(searchContext);
 
         if (GUILayout.Button("Foward"))
         {

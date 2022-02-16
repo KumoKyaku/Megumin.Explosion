@@ -28,7 +28,9 @@ namespace UnityEngine
 
 #if UNITY_EDITOR
 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [UnityEditor.CustomPropertyDrawer(typeof(ColorSpacerAttribute))]
+#endif
     public class ColorSpacerDrawer : UnityEditor.DecoratorDrawer
     {
         ColorSpacerAttribute colorSpacer

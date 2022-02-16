@@ -113,7 +113,9 @@ namespace UnityEditor.Megumin
     using UnityEditor;
     using global::Megumin;
 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(HelpBoxAttribute))]
+#endif
     public class HelpBoxAttributeDrawer : DecoratorDrawer
     {
 

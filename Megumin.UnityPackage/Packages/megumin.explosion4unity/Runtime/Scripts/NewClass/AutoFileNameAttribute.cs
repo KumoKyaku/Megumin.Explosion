@@ -16,7 +16,9 @@ namespace UnityEditor.Megumin
 {
     using UnityEditor;
 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(AutoFileNameAttribute))]
+#endif
     internal sealed class AutoFileNameAttributeDrawer : PropertyDrawer
     {
         static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);

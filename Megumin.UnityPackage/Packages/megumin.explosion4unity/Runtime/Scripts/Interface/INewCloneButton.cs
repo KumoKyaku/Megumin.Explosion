@@ -39,13 +39,14 @@ public static class ClonePathModeSetting
 /// <summary>
 /// 增加new,clone两个按钮.对Material无效.想增加SubAsset功能,但是发现没有必要.
 /// </summary>
-#if DISABLE_SCROBJ_DRAWER
-
-#else
+/// 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
+#if !DISABLE_SCROBJ_DRAWER
 //[CustomPropertyDrawer(typeof(Material), true)]
 [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
 [CustomPropertyDrawer(typeof(INewCloneButton), true)]
+#endif
 public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
 {
     static GUIStyle left = new GUIStyle("minibuttonleft");
@@ -56,7 +57,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
     {
         return EditorGUI.GetPropertyHeight(property, label);
     }
-    
+
     string[] SupportNames;
     int index = 0;
     Type[] SupportTypes;
@@ -382,7 +383,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
         else
         {
             var scene = EditorSceneManager.GetActiveScene();
-            if (!string.IsNullOrEmpty( scene.path))
+            if (!string.IsNullOrEmpty(scene.path))
             {
                 dir = Path.GetDirectoryName(scene.path);
             }

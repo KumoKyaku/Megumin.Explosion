@@ -16,7 +16,9 @@
 
 #if UNITY_EDITOR
 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [UnityEditor.CustomPropertyDrawer(typeof(IndentAttribute))]
+#endif
     public class IndentAttributeAttributeDrawer : UnityEditor.PropertyDrawer
     {
         public override float GetPropertyHeight(UnityEditor.SerializedProperty property, GUIContent label)

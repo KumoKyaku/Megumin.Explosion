@@ -60,7 +60,10 @@ namespace UnityEngine
 
 namespace UnityEditor.Megumin
 {
+
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(FrameAndTimeAttribute), true)]
+#endif
     internal sealed class Frame2TimeDrawer : PropertyDrawer
     {
         public bool inputmode = false;

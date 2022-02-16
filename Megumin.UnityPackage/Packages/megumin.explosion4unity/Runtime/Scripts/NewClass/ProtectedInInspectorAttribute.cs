@@ -11,7 +11,9 @@
 
 #if UNITY_EDITOR
 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [UnityEditor.CustomPropertyDrawer(typeof(ProtectedInInspectorAttribute))]
+#endif
     public class ProtectedInInspectorAttributeDrawer : UnityEditor.PropertyDrawer
     {
         public bool check = false;

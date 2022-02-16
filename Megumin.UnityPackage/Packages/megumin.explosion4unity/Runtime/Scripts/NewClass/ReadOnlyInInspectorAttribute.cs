@@ -11,7 +11,9 @@
 
 #if UNITY_EDITOR
 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [UnityEditor.CustomPropertyDrawer(typeof(ReadOnlyInInspectorAttribute))]
+#endif
     public class LockedInInspectorAttributeDrawer : UnityEditor.PropertyDrawer
     {
         public override float GetPropertyHeight(UnityEditor.SerializedProperty property, GUIContent label)

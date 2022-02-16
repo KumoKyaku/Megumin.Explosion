@@ -24,7 +24,10 @@ namespace UnityEngine
 
 namespace UnityEditor.Megumin
 {
+
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(EnumQueueAttribute))]
+#endif
     internal sealed class EnumQueueDrawer : PropertyDrawer
     {
         string[] names = null;

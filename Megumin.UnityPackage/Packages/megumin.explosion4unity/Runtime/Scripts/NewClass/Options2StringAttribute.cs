@@ -75,7 +75,10 @@ namespace UnityEngine
 
 namespace UnityEditor.Megumin
 {
+
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(Options2StringAttribute))]
+#endif
     internal sealed class Options2StringDrawer : PropertyDrawer
     {
         public bool UseEnum = true;

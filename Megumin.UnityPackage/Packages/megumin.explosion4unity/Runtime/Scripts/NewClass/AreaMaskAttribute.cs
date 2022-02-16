@@ -16,7 +16,10 @@ namespace UnityEngine
 
 namespace UnityEditor.Megumin
 {
+
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(AreaMaskAttribute))]
+#endif
     internal sealed class AreaMaskDrawer : PropertyDrawer
     {
         static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);

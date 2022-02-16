@@ -80,7 +80,9 @@ namespace UnityEditor.Megumin
     using global::Megumin;
     using UnityEditor;
 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(Enableable), true)]
+#endif
     internal sealed class EnableableDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)

@@ -12,7 +12,8 @@ public class TestLog : MonoBehaviour
     public string ret = "";
     //[OnValueChanged]
     public int IntValue;
-
+    [ReadOnlyInInspector]
+    public int ReadOnlyIntValue = 9999;
     public Enableable<int> IntValue2 = new Enableable<int>(false, 20);
     public EnableFrame IntValue3 = new EnableFrame() { Enabled = false, Value = 30 };
     [FrameAndTime]

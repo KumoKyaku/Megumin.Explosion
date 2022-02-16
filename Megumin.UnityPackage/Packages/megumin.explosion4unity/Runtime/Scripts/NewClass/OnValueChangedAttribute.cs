@@ -25,7 +25,9 @@ namespace UnityEditor.Megumin
     using UnityEditor;
 
     [Obsolete]
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(OnValueChangedAttribute))]
+#endif
     internal sealed class OnValueChangedAttributeDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)

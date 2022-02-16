@@ -18,7 +18,9 @@ namespace UnityEditor.Megumin
 {
     using UnityEditor;
 
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(PathAttribute))]
+#endif
     internal sealed class PathAttributeDrawer : PropertyDrawer
     {
         string m_Path = null;
