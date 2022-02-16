@@ -745,6 +745,33 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:Megumin.ThreadSwitcher">
+            <summary>
+            通用线程切换器
+            </summary>
+        </member>
+        <member name="F:Megumin.ThreadSwitcher.WaitQueue">
+            <summary>
+            可以合并Source来提高性能,但是会遇到异步后续出现异常的情况,比较麻烦.
+            所以每个Switch调用处使用不同的source,安全性更好
+            </summary>
+        </member>
+        <member name="M:Megumin.ThreadSwitcher.Tick">
+            <summary>
+            由指定线程调用,回调其他线程需要切换到这个线程的方法
+            <para>保证先await 后Tick, 不然 await会发现Task同步完成,无法切换线程.</para>
+            <para><see cref="P:System.Threading.Tasks.Task.Status"/>无法指示是否被await </para>
+            </summary>
+        </member>
+        <member name="M:Megumin.ThreadSwitcher.Switch">
+            <summary>
+            通用性高,但是用到TaskCompletionSource和异步各种中间对象和异步机制.
+            性能开销大不如明确的类型和回调接口.
+            <para>异步后续在<see cref="M:Megumin.ThreadSwitcher.Tick"/>线程调用</para>
+            </summary>
+            <returns></returns>
+            <remarks>BUG,无法保证先await 后Tick</remarks>
+        </member>
         <member name="T:Megumin.Threshold`1">
             <summary>
             阈
