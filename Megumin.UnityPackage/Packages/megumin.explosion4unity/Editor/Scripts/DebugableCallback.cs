@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using System.Linq;
 using System.Reflection;
 using UnityEditor.ShortcutManagement;
 using System;
+
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace Megumin
 {
     [InitializeOnLoad]
     public class DebugableCallback
     {
-        static bool Enable = false;
+        //static bool Enable = false;
 
         [InitializeOnLoadMethod]
         public static void Register()
@@ -26,8 +29,10 @@ namespace Megumin
             //            InputSystem.onEvent += InputSystem_onEvent;
             //#endif
 
-            Enable = true;
+            //Enable = true;
         }
+
+#if ENABLE_INPUT_SYSTEM
 
         private unsafe static void InputSystem_onEvent(UnityEngine.InputSystem.LowLevel.InputEventPtr arg1,
                                             InputDevice arg2)
@@ -46,6 +51,8 @@ namespace Megumin
                 }
             }
         }
+
+#endif
 
         public static void ObjectOnF1(object item)
         {
