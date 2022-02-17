@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,6 +11,9 @@ using UnityEngine.InputSystem;
 
 namespace Megumin
 {
+    /// <summary>
+    /// 提交事件触发,点击,按键等
+    /// </summary>
     public class SubmitTrigger : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
     {
 
@@ -54,6 +57,14 @@ namespace Megumin
         public void OnPointerDown(PointerEventData eventData)
         {
 
+        }
+
+        /// <summary>
+        /// 等效触发,用于按键回调
+        /// </summary>
+        public void EquivalentTrigger()
+        {
+            PointerClick?.Invoke(null);
         }
     }
 }
