@@ -14,7 +14,7 @@ namespace Megumin
         /// <summary>
         /// 只关心区域,不在乎子对象,避免重复触发
         /// </summary>
-        public bool AreaMode = false;
+        public bool AreaMode = true;
         public bool ShowDebugLog = false;
 
         [Space]
