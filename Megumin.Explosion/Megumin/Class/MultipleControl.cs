@@ -56,7 +56,7 @@ namespace Megumin
         /// <summary>
         /// 值发生改变
         /// </summary>
-        event OnValueChanged<(K, V)> ValueChangedKV;
+        event OnValueChanged<(K Key, V Value)> ValueChangedKV;
 
         /// <summary>
         /// 开始控制
@@ -91,7 +91,7 @@ namespace Megumin
         /// </summary>
         protected readonly Dictionary<K, V> Controllers = new Dictionary<K, V>();
         public event OnValueChanged<V> ValueChanged;
-        public event OnValueChanged<(K, V)> ValueChangedKV;
+        public event OnValueChanged<(K Key, V Value)> ValueChangedKV;
         protected readonly K defaultKey;
         protected readonly V defaultValue;
         public K DefaultKey => defaultKey;

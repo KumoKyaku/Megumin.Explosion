@@ -745,6 +745,24 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="M:Megumin.DefaultThreadSwitcher.Tick">
+            <summary>
+            <inheritdoc cref="M:Megumin.ThreadSwitcher.Tick"/>
+            </summary>
+        </member>
+        <member name="M:Megumin.DefaultThreadSwitcher.Switch(System.Action)">
+            <summary>
+            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch(System.Action)"/>
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Megumin.DefaultThreadSwitcher.Switch(System.Int32)">
+            <summary>
+            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch(System.Int32)"/>
+            </summary>
+            <param name="safeMillisecondsDelay"></param>
+            <returns></returns>
+        </member>
         <member name="T:Megumin.ThreadSwitcher">
             <summary>
             通用线程切换器
@@ -759,15 +777,25 @@
         <member name="M:Megumin.ThreadSwitcher.Tick">
             <summary>
             由指定线程调用,回调其他线程需要切换到这个线程的方法
-            <para>保证先await 后Tick, 不然 await会发现Task同步完成,无法切换线程.</para>
-            <para><see cref="P:System.Threading.Tasks.Task.Status"/>无法指示是否被await </para>
             </summary>
         </member>
-        <member name="M:Megumin.ThreadSwitcher.Switch">
+        <member name="M:Megumin.ThreadSwitcher.Switch(System.Action)">
+            <summary>
+            切换执行线程
+            <seealso cref="M:Megumin.ThreadSwitcher.Switch(System.Int32)"/>
+            </summary>
+            <param name="action"></param>
+            <remarks>线程切换过程中闭包几乎无法避免, 除非明确回调函数参数类型.
+            <para>对于性能敏感区域,可以写特定代码消除闭包. 参考 megumin.net</para>
+            </remarks>
+        </member>
+        <member name="M:Megumin.ThreadSwitcher.Switch(System.Int32)">
             <summary>
             通用性高,但是用到TaskCompletionSource和异步各种中间对象和异步机制.
             性能开销大不如明确的类型和回调接口.
             <para>异步后续在<see cref="M:Megumin.ThreadSwitcher.Tick"/>线程调用</para>
+            <para>保证返回值先await 后Tick, 不然 await会发现Task同步完成,无法切换线程.</para>
+            <para><see cref="P:System.Threading.Tasks.Task.Status"/>无法指示是否被await </para>
             </summary>
             <returns></returns>
             <remarks>BUG,无法保证先await 后Tick</remarks>
