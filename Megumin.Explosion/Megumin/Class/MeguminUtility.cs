@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Runtime.CompilerServices;
 
 namespace Megumin
 {
@@ -24,6 +25,10 @@ namespace Megumin
         void Test()
         {
             LinkedList<int> list = new LinkedList<int>();
+            unsafe
+            {
+                //Unsafe.Read<LeftOrRight>(default);
+            }
         }
     }
 }
