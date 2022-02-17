@@ -51,12 +51,18 @@ namespace Megumin
         /// <summary>
         /// 值发生改变
         /// </summary>
+        [Obsolete("Use ValueChangedKV")]
         event OnValueChanged<V> ValueChanged;
 
         /// <summary>
-        /// 值发生改变
+        /// 仅当值发生改变
         /// </summary>
         event OnValueChanged<(K Key, V Value)> ValueChangedKV;
+
+        /// <summary>
+        /// 当前键值任一发生改变
+        /// </summary>
+        event OnValueChanged<(K Key, V Value)> KeyValueChanged;
 
         /// <summary>
         /// 开始控制
@@ -90,8 +96,11 @@ namespace Megumin
         /// TODO,使用最大堆最小堆优化
         /// </summary>
         protected readonly Dictionary<K, V> Controllers = new Dictionary<K, V>();
+        [Obsolete("Use ValueChangedKV")]
         public event OnValueChanged<V> ValueChanged;
         public event OnValueChanged<(K Key, V Value)> ValueChangedKV;
+        public event OnValueChanged<(K Key, V Value)> KeyValueChanged;
+
         protected readonly K defaultKey;
         protected readonly V defaultValue;
         public K DefaultKey => defaultKey;
@@ -166,7 +175,7 @@ namespace Megumin
         }
 
         /// <summary>
-        /// 应用值
+        /// 应用值,使用<see cref="EqualityComparer{T}"/>比较是否发生改变,优化了装箱.
         /// </summary>
         protected virtual void ApplyValue()
         {
@@ -176,14 +185,27 @@ namespace Megumin
             Current = result.Value;
             CurrentKey = result.Key;
 
-            if (!old.Equals(result))
+            bool flagV = EqualityComparer<V>.Default.Equals(old, result.Value);
+            //if (old is IEquatable<V> oe)
+            //{
+            //    //转成接口必然装箱
+            //    flagV = oe.Equals(Current);
+            //}
+            //else
+            //{
+            //    //Equals方法两个对象都要装箱
+            //    flagV = Equals(old, Current);
+            //}
+
+            if (!flagV)
             {
-                OnValueChanged(Current, old);
+                OnValueChanged(result.Value, old);
+                OnValueChangedKV((result.Key, result.Value), (oldK, old));
             }
 
-            if (!old.Equals(result) || !oldK.Equals(CurrentKey))
+            if (!flagV || !EqualityComparer<K>.Default.Equals(oldK, result.Key))
             {
-                OnValueChangedKV((CurrentKey, Current), (oldK, old));
+                OnKeyValueChanged((result.Key, result.Value), (oldK, old));
             }
         }
 
@@ -200,6 +222,11 @@ namespace Megumin
         protected void OnValueChangedKV((K, V) newValue, (K, V) oldValue)
         {
             ValueChangedKV?.Invoke(newValue, oldValue);
+        }
+
+        protected void OnKeyValueChanged((K, V) newValue, (K, V) oldValue)
+        {
+            KeyValueChanged?.Invoke(newValue, oldValue);
         }
 
         /// <summary>
@@ -333,6 +360,32 @@ namespace Megumin
             : base(defaultHandle, defaultValue, onValueChangedKV, onValueChanged, ascending)
         {
 
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// 重写比较方法提高了性能
+        /// </summary>
+        protected override void ApplyValue()
+        {
+            var old = Current;
+            var oldK = CurrentKey;
+            var result = CalNewValue();
+            Current = result.Value;
+            CurrentKey = result.Key;
+
+            bool flagV = old == result.Value;
+
+            if (!flagV)
+            {
+                OnValueChanged(result.Value, old);
+                OnValueChangedKV((result.Key, result.Value), (oldK, old));
+            }
+
+            if (!flagV || Equals(oldK, result.Key))
+            {
+                OnKeyValueChanged((result.Key, result.Value), (oldK, old));
+            }
         }
     }
 
@@ -471,8 +524,9 @@ namespace Megumin
             CurrentKey = result.Key;
 
             //TODO,没啥办法判断值改变,索性每次计算都调用回调.
-            OnValueChanged(Current, old);
-            OnValueChangedKV((CurrentKey, Current), (oldK, old));
+            OnValueChanged(result.Value, old);
+            OnValueChangedKV((result.Key, result.Value), (oldK, old));
+            OnKeyValueChanged((result.Key, result.Value), (oldK, old));
         }
 
         /// <summary>

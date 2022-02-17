@@ -501,7 +501,12 @@
         </member>
         <member name="E:Megumin.IMultipleControlable`2.ValueChangedKV">
             <summary>
-            值发生改变
+            仅当值发生改变
+            </summary>
+        </member>
+        <member name="E:Megumin.IMultipleControlable`2.KeyValueChanged">
+            <summary>
+            当前键值任一发生改变
             </summary>
         </member>
         <member name="M:Megumin.IMultipleControlable`2.Control(`0,`1)">
@@ -557,7 +562,7 @@
         </member>
         <member name="M:Megumin.MultipleControlBase`3.ApplyValue">
             <summary>
-            应用值
+            应用值,使用<see cref="T:System.Collections.Generic.EqualityComparer`1"/>比较是否发生改变,优化了装箱.
             </summary>
         </member>
         <member name="M:Megumin.MultipleControlBase`3.OnValueChangedKV(System.ValueTuple{`0,`1},System.ValueTuple{`0,`1})">
