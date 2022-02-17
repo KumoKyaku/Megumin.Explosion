@@ -20,5 +20,10 @@ namespace Megumin
         [Obsolete("Use ToStringReflection Instead.")]
         public static string Detail<T>(T value = default)
             => value.ToStringReflection();
+
+        void Test()
+        {
+            LinkedList<int> list = new LinkedList<int>();
+        }
     }
 }
