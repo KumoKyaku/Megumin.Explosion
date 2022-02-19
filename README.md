@@ -27,6 +27,8 @@ Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explos
 - Package wizard，一键生成包目录结构.  
   ![image-20210921185844394](README.assets/image-20210921185844394.png)  
 - Inspector导航，支持鼠标侧键切换最近选中对象。
+- 设置编辑器内置图标。  
+  ![SetIcon-min](README.assets/SetIcon-min.gif)
 - Link，一些常用插件链接。  
   ![image-20210921185911351](README.assets/image-20210921185911351.png)
 - ScriptObjectDrawer，ScriptObject面版增加new和clone两个按钮。
