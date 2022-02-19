@@ -22,9 +22,9 @@ namespace Megumin
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        /// <param name="actualType">true通过value取得实际类型,默认false取得泛型类型,T可能是接口类型</param>
+        /// <param name="actualType">默认true通过value取得实际类型,false取得泛型类型,T可能是接口类型</param>
         /// <returns></returns>
-        public static string ToStringReflection<T>(T value = default, bool actualType = false)
+        public static string ToStringReflection<T>(T value = default, bool actualType = true)
         {
             Type type = typeof(T);
             if (actualType && value != null)
@@ -181,9 +181,9 @@ namespace Megumin
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        /// <param name="actualType">true通过value取得实际类型,默认false取得泛型类型,T可能是接口类型</param>
+        /// <param name="actualType">默认true通过value取得实际类型,false取得泛型类型,T可能是接口类型</param>
         /// <returns></returns>
-        public static string ToStringReflection<T>(this T value, bool actualType = false)
+        public static string ToStringReflection<T>(this T value, bool actualType = true)
         {
             return Utility.ToStringReflection(value, actualType);
         }
