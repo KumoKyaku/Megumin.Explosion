@@ -82,13 +82,21 @@ namespace UnityEngine
     public partial struct HexColor
     {
         public string hexCode;
-        public HexColor(string hex)
+        public HexColor(string hex, bool throwEx = false)
         {
             if (hex.StartsWith("#"))
             {
                 if (hex.Length != 9 && hex.Length != 7)
                 {
-                    throw new ArgumentException("格式不对");
+                    if (throwEx)
+                    {
+                        throw new ArgumentException("格式不对");
+                    }
+                    else
+                    {
+                        Debug.LogError($"{hex} can't parse to hexcolor!");
+                        hex = "#000000FF";
+                    }
                 }
             }
             else
@@ -99,7 +107,15 @@ namespace UnityEngine
                 }
                 else
                 {
-                    throw new ArgumentException("格式不对");
+                    if (throwEx)
+                    {
+                        throw new ArgumentException("格式不对");
+                    }
+                    else
+                    {
+                        Debug.LogError($"{hex} can't parse to hexcolor!");
+                        hex = "#000000FF";
+                    }
                 }
             }
 
@@ -721,4 +737,80 @@ namespace UnityEngine
         public static readonly Color 退出 = HexColor.DarkSpringGreen;
     }
 }
+
+#if UNITY_EDITOR
+
+namespace UnityEditor.Megumin
+{
+    using global::Megumin;
+    using UnityEditor;
+
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
+    [CustomPropertyDrawer(typeof(HexColor), true)]
+#endif
+    internal sealed class HexColorDrawer : PropertyDrawer
+    {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (property.isExpanded)
+            {
+                return EditorGUI.GetPropertyHeight(property, true) + 18;
+            }
+            else
+            {
+                return EditorGUI.GetPropertyHeight(property, true);
+            }
+        }
+
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            EditorGUI.PropertyField(position, property, label, true);
+            if (property.isExpanded)
+            {
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    var p = position;
+                    p.y += 40;
+                    p.height = 18;
+
+                    var hexP = property.FindPropertyRelative("hexCode");
+                    Color color = Color.white;
+                    try
+                    {
+                        color = new HexColor(hexP.stringValue, true);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                    var newColor = EditorGUI.ColorField(p, "Color", color);
+                    if (newColor != color)
+                    {
+                        HexColor n = newColor;
+                        hexP.stringValue = n.hexCode;
+                    }
+                }
+            }
+            else
+            {
+                var p = position;
+                p.height = 18;
+
+                var hexP = property.FindPropertyRelative("hexCode");
+                Color color = Color.white;
+                try
+                {
+                    color = new HexColor(hexP.stringValue, true);
+                }
+                catch (Exception)
+                {
+
+                }
+                EditorGUI.ColorField(p, "   ", color);
+            }
+        }
+    }
+}
+
+#endif
 
