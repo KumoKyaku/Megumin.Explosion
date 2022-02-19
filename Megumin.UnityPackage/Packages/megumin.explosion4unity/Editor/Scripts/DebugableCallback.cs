@@ -56,9 +56,23 @@ namespace Megumin
 
         public static void ObjectOnF1(object item)
         {
+            if (item == null)
+            {
+                return;
+            }
+
             if (item is IF1able f1Able)
             {
                 f1Able?.OnF1();
+            }
+
+            {
+                //控制台Log对象
+                var hasFlag = item.GetType().GetCustomAttributes(typeof(OnF1Attribute), false).Length > 0;
+                if (hasFlag)
+                {
+                    Debug.Log(item.ToStringReflection(true));
+                }
             }
 
             {
@@ -103,6 +117,20 @@ namespace Megumin
 
         public static void ObjectOnKey(object item, ConsoleKey key)
         {
+            if (item == null)
+            {
+                return;
+            }
+
+            {
+                //控制台Log对象
+                var attris = item.GetType().GetCustomAttributes(typeof(OnKeyAttribute), false);
+                if (attris.Any(a => a is OnKeyAttribute ok && ok.Key == key))
+                {
+                    Debug.Log(item.ToStringReflection(true));
+                }
+            }
+
             {
                 //控制台Log字段
                 var fields = from f in item.GetType().GetFields((BindingFlags)(-1))
