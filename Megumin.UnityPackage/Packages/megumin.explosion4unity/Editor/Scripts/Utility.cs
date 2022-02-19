@@ -10,6 +10,47 @@ using UnityEngine;
 public static partial class MeguminEditorUtility
 {
     /// <summary>
+    /// 查找所有内置Icon https://assetstore.unity.com/packages/tools/utilities/unity-internal-icons-70496
+    /// </summary>
+    public static List<(GUIContent icon, GUIContent name)> FindIcons()
+    {
+        List<(GUIContent icon, GUIContent name)> _icons
+            = new List<(GUIContent icon, GUIContent name)>();
+        _icons.Clear();
+
+        Texture2D[] t = Resources.FindObjectsOfTypeAll<Texture2D>();
+        foreach (Texture2D x in t)
+        {
+            if (x.name.Length == 0)
+                continue;
+
+            if (x.hideFlags != HideFlags.HideAndDontSave && x.hideFlags != (HideFlags.HideInInspector | HideFlags.HideAndDontSave))
+                continue;
+
+            if (!EditorUtility.IsPersistent(x))
+                continue;
+
+            /* This is the *only* way I have found to confirm the icons are indeed unity builtin. Unfortunately
+             * it uses LogError instead of LogWarning or throwing an Exception I can catch. So make it shut up. */
+            Debug.unityLogger.logEnabled = false;
+            GUIContent gc = EditorGUIUtility.IconContent(x.name);
+            Debug.unityLogger.logEnabled = true;
+
+            if (gc == null)
+                continue;
+            if (gc.image == null)
+                continue;
+
+            _icons.Add((gc, new GUIContent(x.name)));
+        }
+
+        _icons.Sort();
+        Resources.UnloadUnusedAssets();
+        System.GC.Collect();
+        return _icons;
+    }
+
+    /// <summary>
     /// https://github.com/halak/unity-editor-icons/blob/master/Assets/Editor/IconMiner.cs#L149
     /// </summary>
     /// <returns></returns>
