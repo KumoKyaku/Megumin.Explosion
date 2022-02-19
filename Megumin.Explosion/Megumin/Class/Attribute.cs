@@ -123,6 +123,15 @@ namespace Megumin
     public class OnKeyAttribute : Attribute
     {
         public ConsoleKey Key { get; set; }
+
+        public OnKeyAttribute()
+        {
+        }
+
+        public OnKeyAttribute(ConsoleKey key)
+        {
+            Key = key;
+        }
     }
 }
 

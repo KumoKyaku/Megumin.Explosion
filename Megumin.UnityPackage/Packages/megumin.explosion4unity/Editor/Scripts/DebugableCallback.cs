@@ -232,6 +232,41 @@ namespace Megumin
             OnKey(ConsoleKey.F4);
         }
 
+        [Shortcut("MeguminDebug/" + nameof(OnF5), KeyCode.F5)]
+        public static void OnF5()
+        {
+            OnKey(ConsoleKey.F5);
+        }
+
+        [Shortcut("MeguminDebug/" + nameof(OnF6), KeyCode.F6)]
+        public static void OnF6()
+        {
+            OnKey(ConsoleKey.F6);
+        }
+
+        [Shortcut("MeguminDebug/" + nameof(OnF7), KeyCode.F7)]
+        public static void OnF7()
+        {
+            OnKey(ConsoleKey.F7);
+        }
+
+        [Shortcut("MeguminDebug/" + nameof(OnF8), KeyCode.F8)]
+        public static void OnF8()
+        {
+            OnKey(ConsoleKey.F8);
+        }
+
+        //[Shortcut("MeguminDebug/" + nameof(OnBackQuote), KeyCode.BackQuote)]
+        //public static void OnBackQuote()
+        //{
+        //    OnKey(ConsoleKey.Oem3);
+        //}
+
+        //[Shortcut("MeguminDebug/" + nameof(OnApplications), KeyCode.RightApple)]
+        //public static void OnApplications()
+        //{
+        //    OnKey(ConsoleKey.Applications);
+        //}
     }
 
 }

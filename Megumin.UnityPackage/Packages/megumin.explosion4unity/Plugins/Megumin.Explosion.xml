@@ -642,6 +642,12 @@
             <param name="onValueChanged"></param>
             <param name="ascending">默认false,降序排列,true=1排在false=0前面,结果为第一个值.任意一个true结果就true</param>
         </member>
+        <member name="M:Megumin.ActiveControl.ApplyValue">
+            <summary>
+            <inheritdoc/>
+            重写比较方法提高了性能
+            </summary>
+        </member>
         <member name="T:Megumin.MultipleControlEnum`2">
             <summary>
             用于FlagEnum,最好用枚举类型实现一次.
@@ -852,7 +858,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="value"></param>
-            <param name="actualType">true通过value取得实际类型,默认false取得泛型类型,T可能是接口类型</param>
+            <param name="actualType">默认true通过value取得实际类型,false取得泛型类型,T可能是接口类型</param>
             <returns></returns>
         </member>
         <member name="M:Megumin.Utility.ToStringReflection``1(System.Type,``0,System.Nullable{System.Reflection.BindingFlags})">
@@ -884,7 +890,7 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="value"></param>
-            <param name="actualType">true通过value取得实际类型,默认false取得泛型类型,T可能是接口类型</param>
+            <param name="actualType">默认true通过value取得实际类型,false取得泛型类型,T可能是接口类型</param>
             <returns></returns>
         </member>
         <member name="T:Megumin.UtilTime">

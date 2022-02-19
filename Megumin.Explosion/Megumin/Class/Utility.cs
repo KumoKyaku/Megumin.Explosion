@@ -124,9 +124,15 @@ namespace Megumin
 
             foreach (var item in fields)
             {
-                detail += retract + "    " + item.Name + "  :  " + item.GetValue(value)?.ToString() + "\n";
-
-                detail += LogListDic(retract + "        ", item.GetValue(value));
+                try
+                {
+                    detail += $"{retract}    {item.Name}  :  {item.GetValue(value)?.ToString()}\n";
+                    detail += LogListDic(retract + "        ", item.GetValue(value));
+                }
+                catch (Exception e)
+                {
+                    detail += $"{retract}    {item.Name}  :  {e.GetType().Name}|{e.Message}\n";
+                }
             }
 
             detail += retract + "Propertie:   \n";
@@ -134,9 +140,15 @@ namespace Megumin
 
             foreach (var item in props)
             {
-                detail += retract + "    " + item.Name + ":    " + item.GetValue(value)?.ToString() + "\n";
-
-                detail += LogListDic(retract + "        ", item.GetValue(value));
+                try
+                {
+                    detail += $"{retract}    {item.Name}:    {item.GetValue(value)?.ToString()}\n";
+                    detail += LogListDic(retract + "        ", item.GetValue(value));
+                }
+                catch (Exception e)
+                {
+                    detail += $"{retract}    {item.Name}  :  {e.GetType().Name}|{e.Message}\n";
+                }
             }
 
             return detail;
@@ -151,20 +163,27 @@ namespace Megumin
         public static string LogListDic(string retract, object fo)
         {
             string detail = "";
-            if (fo is IList list)
+            try
             {
-                foreach (var item in list)
+                if (fo is IList list)
                 {
-                    detail += retract + item.GetType().Name + "  :  " + item?.ToString() + "\n";
+                    foreach (var item in list)
+                    {
+                        detail += retract + item.GetType().Name + "  :  " + item?.ToString() + "\n";
+                    }
+                }
+
+                if (fo is IDictionary dictionary)
+                {
+                    foreach (IDictionaryEnumerator item in dictionary)
+                    {
+                        detail += retract + item.Key.ToString() + "  :  " + item.Value.ToString() + "\n";
+                    }
                 }
             }
-
-            if (fo is IDictionary dictionary)
+            catch (Exception e)
             {
-                foreach (IDictionaryEnumerator item in dictionary)
-                {
-                    detail += retract + item.Key.ToString() + "  :  " + item.Value.ToString() + "\n";
-                }
+                detail += $"{retract}    {e.GetType().Name}|{e.Message}\n";
             }
 
             return detail;

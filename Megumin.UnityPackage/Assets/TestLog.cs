@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[OnKey(ConsoleKey.Oem3)]
+[OnKey(Key = System.ConsoleKey.F5)]
 public class TestLog : MonoBehaviour
 {
     [InspectorStyle(ReadOnly = true, Color = "#00FF00FF")]
