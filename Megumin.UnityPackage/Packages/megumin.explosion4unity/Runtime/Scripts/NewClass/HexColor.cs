@@ -754,7 +754,7 @@ namespace UnityEditor.Megumin
         {
             if (property.isExpanded)
             {
-                return EditorGUI.GetPropertyHeight(property, true) + 18;
+                return EditorGUI.GetPropertyHeight(property, true) + 20;
             }
             else
             {
