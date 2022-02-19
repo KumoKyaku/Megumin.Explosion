@@ -31,6 +31,7 @@ public class TestLog : MonoBehaviour
     public int areaMask;
     [Indent]
     public Color TestColor;
+    public HexColor HexColor;
     public List<Loger> Loggers;
     public List<Test12345> Test12345s;
     // Start is called before the first frame update

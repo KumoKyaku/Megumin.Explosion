@@ -5,6 +5,9 @@ using Megumin;
 
 namespace Megumin
 {
+    /// <summary>
+    /// 用于在编辑器标记一个对象.
+    /// </summary>
     [ExecuteAlways]
     public class DebugMeshRenderer : MonoBehaviour
     {

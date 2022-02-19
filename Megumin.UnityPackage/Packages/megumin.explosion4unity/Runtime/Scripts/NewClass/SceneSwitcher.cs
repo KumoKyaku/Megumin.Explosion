@@ -8,75 +8,79 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-public class SceneSwitcher : MonoBehaviour
+namespace Megumin
 {
+    public class SceneSwitcher : MonoBehaviour
+    {
 
 #if UNITY_EDITOR
-    [Header("Editor")]
-    public SceneAsset TargetScene;
-    public OpenSceneMode OpenSceneMode = OpenSceneMode.Single;
-    public Megumin.Enableable<KeyCode> Key = new Megumin.Enableable<KeyCode>(true, KeyCode.F4);
+        [Header("Editor")]
+        public SceneAsset TargetScene;
+        public OpenSceneMode OpenSceneMode = OpenSceneMode.Single;
+        public Megumin.Enableable<KeyCode> Key = new Megumin.Enableable<KeyCode>(true, KeyCode.F4);
 #endif
 
-    [Space]
-    [Header("Runtime")]
-    [ReadOnlyInInspector]
-    public string SceneName = "SampleScene";
-    public LoadSceneMode LoadSceneMode = LoadSceneMode.Single;
-    public bool Log = true;
+        [Space]
+        [Header("Runtime")]
+        [ReadOnlyInInspector]
+        public string SceneName = "SampleScene";
+        public LoadSceneMode LoadSceneMode = LoadSceneMode.Single;
+        public bool Log = true;
 
-    [Space]
-    public UnityEvent<string, LoadSceneMode> OnLoaded;
+        [Space]
+        public UnityEvent<string, LoadSceneMode> OnLoaded;
 
-    public void Switch()
-    {
-        StartCoroutine(InnerSwitch());
-    }
-
-    IEnumerator InnerSwitch()
-    {
-        yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode);
-        if (Log)
+        public void Switch()
         {
-            Debug.Log($"Load {SceneName} Scene Success".Html(LogColor.成功));
+            StartCoroutine(InnerSwitch());
         }
-        OnLoaded?.Invoke(SceneName, LoadSceneMode);
-    }
+
+        IEnumerator InnerSwitch()
+        {
+            yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode);
+            if (Log)
+            {
+                Debug.Log($"Load {SceneName} Scene Success".Html(LogColor.成功));
+            }
+            OnLoaded?.Invoke(SceneName, LoadSceneMode);
+        }
 
 #if UNITY_EDITOR
-    [EditorButton]
-    void EditorSwitch()
-    {
-        if (!Application.isPlaying)
+        [EditorButton]
+        void EditorSwitch()
         {
-            var path = AssetDatabase.GetAssetPath(TargetScene);
-            EditorSceneManager.OpenScene(path, OpenSceneMode);
-            GameObject game = GameObject.Find("SceneSwitch");
-            if (game)
+            if (!Application.isPlaying)
             {
-                Selection.activeGameObject = game;
+                var path = AssetDatabase.GetAssetPath(TargetScene);
+                EditorSceneManager.OpenScene(path, OpenSceneMode);
+                GameObject game = GameObject.Find("SceneSwitch");
+                if (game)
+                {
+                    Selection.activeGameObject = game;
+                }
             }
         }
-    }
 
-    private void Update()
-    {
-        if (Key.Enabled && Input.GetKeyDown(Key))
+        private void Update()
         {
-            Switch();
+            if (Key.Enabled && Input.GetKeyDown(Key))
+            {
+                Switch();
+            }
         }
-    }
 
-    private void OnValidate()
-    {
-        if (TargetScene)
+        private void OnValidate()
         {
-            SceneName = TargetScene.name;
+            if (TargetScene)
+            {
+                SceneName = TargetScene.name;
+            }
         }
-    }
 
 #endif
+    }
 }
+
 
 
 

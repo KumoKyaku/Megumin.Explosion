@@ -356,6 +356,7 @@ MonoBehaviour:
   teststr: TestStr
   ret: 
   IntValue: 55
+  ReadOnlyIntValue: 9999
   IntValue2:
     Enabled: 0
     Value: 0
@@ -373,6 +374,8 @@ MonoBehaviour:
   - 266a0883bd3a03f4ca9e372967e70483
   areaMask: -2147483645
   TestColor: {r: 0, g: 0, b: 0, a: 0}
+  HexColor:
+    hexCode: 
   Loggers:
   - {fileID: 11400000, guid: 8dda040d6cbc7754582cfd5a3d2dcdac, type: 2}
   Test12345s:
@@ -402,6 +405,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2934216654910737505, guid: a404c80f01a01d145aac8258e5749c44,
@@ -475,4 +479,5 @@ PrefabInstance:
       value: GameObject
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: a404c80f01a01d145aac8258e5749c44, type: 3}
