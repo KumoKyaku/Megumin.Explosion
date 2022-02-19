@@ -375,7 +375,7 @@ MonoBehaviour:
   areaMask: -2147483645
   TestColor: {r: 0, g: 0, b: 0, a: 0}
   HexColor:
-    hexCode: 
+    hexCode: '#E5761BD2'
   Loggers:
   - {fileID: 11400000, guid: 8dda040d6cbc7754582cfd5a3d2dcdac, type: 2}
   Test12345s:
@@ -417,6 +417,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934216654910737516, guid: a404c80f01a01d145aac8258e5749c44,
+        type: 3}
+      propertyPath: Orignal.b
+      value: 0.22530259
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934216654910737516, guid: a404c80f01a01d145aac8258e5749c44,
+        type: 3}
+      propertyPath: Orignal.g
+      value: 0.4370984
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934216654910737516, guid: a404c80f01a01d145aac8258e5749c44,
+        type: 3}
+      propertyPath: Orignal.r
+      value: 0.5754717
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934216654910737516, guid: a404c80f01a01d145aac8258e5749c44,
+        type: 3}
+      propertyPath: OrignalString
+      value: '#936F39FF'
       objectReference: {fileID: 0}
     - target: {fileID: 2934216654910737517, guid: a404c80f01a01d145aac8258e5749c44,
         type: 3}

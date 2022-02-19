@@ -20,6 +20,8 @@ namespace Megumin
         public Color ParsedColor = Color.green;
         public bool ParseResult = true;
 
+        [Space(20)]
+        public HexColor Debug = HexColor.BarnRed;
 
         void OnValidate()
         {
