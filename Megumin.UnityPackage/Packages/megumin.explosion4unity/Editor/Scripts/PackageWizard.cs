@@ -40,6 +40,11 @@ namespace Megumin
         string FullName = null;
         bool CreateReadme = true;
         bool CreateChangeLog = true;
+        /// <summary>
+        /// 不要创建Lisence文件，用户应该从其他地方复制过来。
+        /// </summary>
+        bool CreateLicense = false;
+        bool CreateThirdPartyNotices = true;
 
         void OnGUI()
         {
@@ -73,6 +78,11 @@ namespace Megumin
             EditorGUILayout.Separator();
             CreateReadme = EditorGUILayout.Toggle(nameof(CreateReadme), CreateReadme);
             CreateChangeLog = EditorGUILayout.Toggle(nameof(CreateChangeLog), CreateChangeLog);
+            using (new EditorGUI.DisabledScope(true))
+            {
+                CreateLicense = EditorGUILayout.Toggle(nameof(CreateLicense), CreateLicense);
+            }
+            CreateThirdPartyNotices = EditorGUILayout.Toggle(nameof(CreateThirdPartyNotices), CreateThirdPartyNotices);
 
             EditorGUILayout.Separator();
             EditorGUILayout.BeginHorizontal();
@@ -142,6 +152,30 @@ namespace Megumin
             CreateReadmeFile(path);
 
             CreateChangeLogFile(path);
+
+            CreateCreateThirdPartyNoticesFile(path);
+        }
+
+        private void CreateCreateThirdPartyNoticesFile(string path)
+        {
+            if (CreateThirdPartyNotices)
+            {
+                var filepath = Path.Combine(path, "ThirdPartyNotices.md");
+                if (File.Exists(filepath))
+                {
+                    Debug.LogWarning("ThirdPartyNotices.md exists");
+                }
+                else
+                {
+                    string fileStr =
+$@"This package contains third-party software components governed by the license(s) indicated below:
+---------
+
+
+";
+                    File.WriteAllText(filepath, fileStr);
+                }
+            }
         }
 
         private void CreateChangeLogFile(string path)
