@@ -116,7 +116,7 @@ public class ExplosionSettingProvider : SettingsProvider
         EditorGUILayout.LabelField($"用于关闭ScriptObject 的new clone 按钮.", TipStype);
         DISABLE_SCROBJ_DRAWER.DrawSymbol(searchContext);
 
-        EditorGUILayout.LabelField($"new clone 按钮新对象的默认路径.", TipStype);
+        EditorGUILayout.LabelField($"new clone 按钮新对象的默认路径。 按住Alt临时进入SubAsset模式。", TipStype);
         var pathModeOld = ClonePathMode.value;
         ClonePathMode.value = (ClonePathModeSetting.ClonePathMode)EditorGUILayout.EnumPopup(ClonePathMode.key, ClonePathMode.value);
         if (pathModeOld != ClonePathMode.value)

@@ -36,11 +36,13 @@
             <param name="newFileName"></param>
             <returns></returns>
         </member>
-        <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.FileNameAddOne(System.String)">
+        <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.FileNameAddOne(System.String,System.String,System.Int32)">
             <summary>
             如果文件命以数字或者括号数字结尾，则数字加一
             </summary>
             <param name="fileName"></param>
+            <param name="namingScheme">数字后缀模式支持SpaceParenthesis Dot Underscore</param>
+            <param name="namingDigits">数字长度,不足填充0</param>
             <returns></returns>
         </member>
         <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.CreateFileName(System.String,System.String,System.String,System.String,System.Int32)">

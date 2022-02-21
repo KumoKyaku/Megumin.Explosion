@@ -323,8 +323,10 @@ namespace System.IO
         /// 如果文件命以数字或者括号数字结尾，则数字加一
         /// </summary>
         /// <param name="fileName"></param>
+        /// <param name="namingScheme">数字后缀模式支持SpaceParenthesis Dot Underscore</param>
+        /// <param name="namingDigits">数字长度,不足填充0</param>
         /// <returns></returns>
-        public static string FileNameAddOne(this string fileName)
+        public static string FileNameAddOne(this string fileName, string namingScheme = "SpaceParenthesis", int namingDigits = 1)
         {
             var result = EndNumber.Match(fileName);
             if (result.Success)
@@ -347,11 +349,11 @@ namespace System.IO
                 return f;
             }
 
-            fileName += " (1)";
+            fileName += CreateNamePostfix(1, namingScheme, namingDigits);
             return fileName;
         }
 
-        public static string AutoFileName(this string fileName, string dir, string ex)
+        public static string AutoFileName(this string fileName, string dir, string ex, string namingScheme = "SpaceParenthesis", int namingDigits = 1)
         {
             var path = Path.Combine(dir, $"{fileName}{ex}");
             if (!File.Exists(path))
@@ -359,11 +361,11 @@ namespace System.IO
                 return fileName;
             }
 
-            string newFName = fileName.FileNameAddOne();
+            string newFName = fileName.FileNameAddOne(namingScheme, namingDigits);
             path = Path.Combine(dir, $"{newFName}{ex}");
             while (File.Exists(path))
             {
-                newFName = newFName.FileNameAddOne();
+                newFName = newFName.FileNameAddOne(namingScheme, namingDigits);
                 path = Path.Combine(dir, $"{newFName}{ex}");
             }
             return newFName;
@@ -389,25 +391,33 @@ namespace System.IO
             int cloneCount = 1;
             do
             {
-                var countStr = cloneCount.ToString().PadLeft(namingDigits, '0');
-                var namingSchemeStr = $" ({countStr})";
-                switch (namingScheme)
-                {
-                    case "Dot":
-                        namingSchemeStr = $".{countStr}";
-                        break;
-                    case "Underscore":
-                        namingSchemeStr = $"_{countStr}";
-                        break;
-                    default:
-                        break;
-                }
-
+                var namingSchemeStr = CreateNamePostfix(cloneCount, namingScheme, namingDigits);
                 path = Path.Combine(dir, $"{fileName}{namingSchemeStr}{ex}");
                 cloneCount++;
             } while (File.Exists(path));
             return path;
         }
+
+        public static string CreateNamePostfix(int count, string namingScheme = "SpaceParenthesis", int namingDigits = 1)
+        {
+            var countStr = count.ToString().PadLeft(namingDigits, '0');
+            var namingSchemeStr = $" ({countStr})";
+            switch (namingScheme)
+            {
+                case "Dot":
+                    namingSchemeStr = $".{countStr}";
+                    break;
+                case "Underscore":
+                    namingSchemeStr = $"_{countStr}";
+                    break;
+                default:
+                    break;
+            }
+
+            return namingSchemeStr;
+        }
+
+
     }
 }
 

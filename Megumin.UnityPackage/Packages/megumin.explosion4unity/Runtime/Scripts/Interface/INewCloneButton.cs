@@ -28,6 +28,10 @@ public static class ClonePathModeSetting
     {
         ReferencePath = 0,
         ParentPath = 1,
+        /// <summary>
+        /// 或者按住Alt键创建，自动进入SubAsset模式。
+        /// </summary>
+        SubAsset = 2,
     }
 
     /// <summary>
@@ -196,7 +200,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
             if (GUI.Button(rightPosition, "Clone", right))
             {
                 var clone = ScriptableObject.Instantiate(obj);
-                if (ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.ReferencePath)
+                if (!Event.current.alt && ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.ReferencePath)
                 {
                     var path = AssetDatabase.GetAssetPath(obj);
                     var oriName = Path.GetFileNameWithoutExtension(path);
@@ -283,6 +287,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
 
                 if (GUI.Button(leftPosotion, "New", left))
                 {
+                    // 识别是不是按住Alt，进入subAsset模式。
                     var (T, TName) = CalTargetType();
                     if (T != null)
                     {
@@ -299,10 +304,15 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
                     var (T, TName) = CalTargetType();
                     string dir = GetDir(property);
                     var fileName = $"{property.serializedObject.targetObject.name}_{TName}";
-                    fileName = fileName.AutoFileName(dir, ".asset");
+                    fileName = fileName.AutoFileName(dir, ".asset",
+                                      EditorSettings.gameObjectNamingScheme.ToString(),
+                                      EditorSettings.gameObjectNamingDigits);
                     var instancePath = EditorUtility.SaveFilePanel("Create", dir, fileName, "asset");
-                    instancePath = Path.GetFullPath(instancePath);
-                    saveTask = new SaveTask() { instancePath = instancePath, T = T, TName = TName };
+                    if (!string.IsNullOrEmpty(instancePath))
+                    {
+                        instancePath = Path.GetFullPath(instancePath);
+                        saveTask = new SaveTask() { instancePath = instancePath, T = T, TName = TName };
+                    }
                     GUIUtility.ExitGUI();
                 }
             }
@@ -333,6 +343,19 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
     {
         string dir = GetDir(property);
 
+        if (Event.current.alt || ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.SubAsset)
+        {
+            var success = CreateSubAsset(property, instance, dir);
+            if (success)
+            {
+                return;
+            }
+            else
+            {
+                Debug.LogError($"创建SubAsset失败，使用普通模式创建。");
+            }
+        }
+
         var ex = ".asset";
         var path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}",
                                       ex,
@@ -342,6 +365,40 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
         AssetDatabase.CreateAsset(instance, path);
         AssetDatabase.Refresh();
         property.objectReferenceValue = instance;
+    }
+
+    public static bool CreateSubAsset(SerializedProperty property, UnityEngine.Object instance, string dir)
+    {
+        try
+        {
+            AssetDatabase.AddObjectToAsset(instance, property.serializedObject.targetObject);
+            var ex = ".asset";
+            var path = dir.CreateFileName($"{instance.GetType().Name}",
+                                          ex,
+                                          EditorSettings.gameObjectNamingScheme.ToString(),
+                                          EditorSettings.gameObjectNamingDigits);
+
+            var tempName = Path.GetFileNameWithoutExtension(path);
+
+            string assetPath = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
+            var allAsset = AssetDatabase.LoadAllAssetsAtPath(assetPath);
+            while (allAsset.Any(a => a.name == tempName))
+            {
+                tempName = tempName.FileNameAddOne(EditorSettings.gameObjectNamingScheme.ToString(),
+                                          EditorSettings.gameObjectNamingDigits);
+            }
+            instance.name = tempName;
+            //AssetDatabase.ImportAsset(assetPath);
+            property.objectReferenceValue = instance;
+            property.serializedObject.targetObject.AssetDataSetDirty();
+            AssetDatabase.SaveAssetIfDirty(property.serializedObject.targetObject);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /// <summary>
