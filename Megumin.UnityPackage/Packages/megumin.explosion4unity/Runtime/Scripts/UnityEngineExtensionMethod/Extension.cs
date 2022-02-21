@@ -209,6 +209,50 @@ namespace UnityEngine
             pairs[k] = v;
 #endif
         }
+
+        /// <summary>
+        /// 获取文件创建时间
+        /// </summary>
+        /// <param name="object"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public static DateTime GetCreationTimeUtc(this UnityEngine.Object @object)
+        {
+#if UNITY_EDITOR
+            return GetFileInfo(@object).CreationTime;
+#endif
+            throw new NotImplementedException();
+        }
+
+        public static FileInfo GetFileInfo(this UnityEngine.Object @object)
+        {
+#if UNITY_EDITOR
+            var file = new FileInfo(GetAbsoluteFilePath(@object));
+            return file;
+#endif
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 获取文件绝对路径
+        /// </summary>
+        /// <param name="object"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public static string GetAbsoluteFilePath(this UnityEngine.Object @object)
+        {
+#if UNITY_EDITOR
+            var path = AssetDatabase.GetAssetPath(@object);
+            var mfp = AssetDatabase.GetTextMetaFilePathFromAssetPath(path);
+            //Debug.Log(mfp);
+            var fp = AssetDatabase.GetAssetPathFromTextMetaFilePath(mfp);
+            //Debug.Log(fp);
+            var gp = Path.Combine(MeguminUtility4Unity.ProjectPath, fp);
+            //Debug.Log(gp);
+            return gp;
+#endif
+            throw new NotImplementedException();
+        }
     }
 }
 
