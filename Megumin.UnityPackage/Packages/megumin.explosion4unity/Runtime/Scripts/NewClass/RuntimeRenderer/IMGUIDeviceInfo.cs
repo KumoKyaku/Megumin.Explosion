@@ -11,36 +11,39 @@ namespace Megumin
     public class FPSCounter
     {
         private float oldTime;
-        private int frame = 0;
         public float INTERVAL = 0.5f;
         private int lastFrameCount;
 
-        public static int FPS { get; protected set; } = 0;
-        public static string FPSString { get; protected set; } = "FPS : 0";
-
-        public static readonly FPSCounter Instance = new FPSCounter();
+        public int FPS { get; protected set; } = 0;
+        public string FPSString { get; protected set; } = "FPS : 0";
+        public string Format = "FPS : 0";
+        public static readonly FPSCounter Default = new FPSCounter();
         private FPSCounter() { }
 
-        public void Update()
+        /// <summary>
+        /// retur FPSString.
+        /// </summary>
+        /// <returns></returns>
+        public string Update()
         {
             if (Application.isPlaying)
             {
-                if (Time.frameCount != lastFrameCount)
-                {
-                    //一帧计数一次
+                float realtimeSinceStartup = Time.realtimeSinceStartup;
+                float deltaTime = realtimeSinceStartup - oldTime;
 
-                    frame++;
-                    float time = Time.realtimeSinceStartup - oldTime;
-                    if (time >= INTERVAL)
-                    {
-                        ///小数没有意义
-                        FPS = (int)(frame / time + 0.5f); //四舍五入,免得显示59帧.
-                        FPSString = $"FPS : {FPS}";
-                        oldTime = Time.realtimeSinceStartup;
-                        frame = 0;
-                    }
+                if (deltaTime >= INTERVAL)
+                {
+                    int frameCount = Time.renderedFrameCount;
+                    //Debug.Log(frameCount);
+                    var frame = frameCount - lastFrameCount;
+                    ///小数没有意义
+                    FPS = (int)(frame / deltaTime + 0.5f); //四舍五入,免得显示59帧.
+                    FPSString = FPS.ToString(Format);   // string.Format(Format, FPS);
+                    oldTime = realtimeSinceStartup;
+                    lastFrameCount = frameCount;
                 }
             }
+            return FPSString;
         }
     }
 
@@ -54,6 +57,9 @@ namespace Megumin
 
         [Space]
         public bool FPS = true;
+        [SerializeField]
+        [Indent]
+        private float INTERVAL = 0.5f;
         bool TMP = false;
         bool VRM = false;
         public bool DELAY = false;
@@ -70,9 +76,15 @@ namespace Megumin
         public string INDStr { get; set; } = $"IND: 25 MS";
 
         string now = DateTimeOffset.Now.ToString("t");
+
+        private void Start()
+        {
+            FPSCounter.Default.INTERVAL = INTERVAL;
+        }
+
         private void Update()
         {
-            FPSCounter.Instance.Update();
+            FPSCounter.Default.Update();
             now = DateTimeOffset.Now.ToString("t");
         }
 
@@ -88,7 +100,7 @@ namespace Megumin
             GUILayout.BeginHorizontal();
             if (FPS)
             {
-                GUILayout.Label(FPSCounter.FPSString, mystyle);
+                GUILayout.Label(FPSCounter.Default.FPSString, mystyle);
             }
 
             if (TMP)
