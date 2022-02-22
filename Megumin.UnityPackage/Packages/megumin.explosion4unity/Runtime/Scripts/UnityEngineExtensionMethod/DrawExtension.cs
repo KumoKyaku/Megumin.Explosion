@@ -120,6 +120,50 @@ public static partial class DrawExtension_95DA6E62
         mesh.Draw(matri, material);
     }
 
+    public static void DrawLine(this Transform from, Transform to, Material material = default)
+    {
+        if (from)
+        {
+            from.DrawPoint(material);
+        }
+
+        if (to)
+        {
+            to.DrawPoint(material);
+        }
+
+        if (from && to)
+        {
+            from.position.DrawLineWithoutEndPoint(to.position, material);
+        }
+    }
+
+    public static void DrawLine(this Vector3 from, Vector3 to, Material material = default)
+    {
+        from.DrawPoint(material);
+        to.DrawPoint(material);
+        DrawLineWithoutEndPoint(from, to, material);
+    }
+
+    public static void DrawLineWithoutEndPoint(this Vector3 from, Vector3 to, Material material = default)
+    {
+        const float weight = 0.05f;
+        var pos = (from + to) / 2;
+        var foward = to - from;
+        var q = Quaternion.identity;
+        if (foward != Vector3.zero)
+        {
+            q = Quaternion.LookRotation(foward);
+        }
+        Vector3 size = new Vector3(weight, weight, Vector3.Distance(from, to));
+        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Cube);
+        var matri = Matrix4x4.TRS(pos, q, size);
+        mesh.Draw(matri, material);
+    }
+
+
+
+
 
 
 
