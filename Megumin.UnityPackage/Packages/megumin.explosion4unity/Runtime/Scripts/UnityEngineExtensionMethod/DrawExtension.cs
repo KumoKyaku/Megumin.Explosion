@@ -13,7 +13,7 @@ public static partial class DrawExtension_95DA6E62
     /// <param name="material"></param>
     public static void Draw(this Mesh mesh, Matrix4x4 matri, Material material)
     {
-        if (mesh && material)
+        if (mesh)
         {
             Graphics.DrawMesh(mesh,
                           matri,
@@ -30,7 +30,11 @@ public static partial class DrawExtension_95DA6E62
         }
         else
         {
-            Debug.LogWarning($"mesh:{mesh} material:{material} 有参数为null");
+#if UNITY_EDITOR
+            Debug.LogError($"mesh:{mesh} 参数为null");
+#else
+            Debug.LogWarning($"mesh:{mesh} 参数为null");
+#endif
         }
     }
 
@@ -103,11 +107,24 @@ public static partial class DrawExtension_95DA6E62
         mesh.Draw(matri, material);
     }
 
+    public static void DrawPoint(this Transform transform, Material material = default, Vector3 offset = default)
+    {
+        (transform.position + offset).DrawPoint(material);
+    }
+
+    public static void DrawPoint(this Vector3 position, Material material = default)
+    {
+        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Sphere);
+        var size = 0.15f * Vector3.one;
+        var matri = Matrix4x4.TRS(position, Quaternion.identity, size);
+        mesh.Draw(matri, material);
+    }
 
 
 
 
-    public static void GizmoDraw(this Mesh mesh, Matrix4x4 matri, Color color,bool isWire = false)
+
+    public static void GizmoDraw(this Mesh mesh, Matrix4x4 matri, Color color, bool isWire = false)
     {
         var oldColor = Gizmos.color;
         var oldMatrix = Gizmos.matrix;
