@@ -141,6 +141,12 @@ namespace Megumin
         {
             OpenURL("https://hacchi-man.hatenablog.com/entry/2019/12/20/002444");
         }
+
+        [MenuItem("Tools/Link/SubAssetEditor")]
+        static void SubAssetEditor()
+        {
+            OpenURL("https://github.com/mob-sakai/SubAssetEditor");
+        }
     }
 
     partial class Link
