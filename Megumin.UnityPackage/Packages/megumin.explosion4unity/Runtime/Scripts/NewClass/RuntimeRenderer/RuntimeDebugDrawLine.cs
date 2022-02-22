@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Megumin
 {
-    public class RuntimeDebugDrawLine2 : MonoBehaviour
+    public class RuntimeDebugDrawLine : MonoBehaviour
     {
         public Transform From;
         public Transform To;
