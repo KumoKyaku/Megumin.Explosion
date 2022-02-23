@@ -372,8 +372,10 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
         try
         {
             AssetDatabase.AddObjectToAsset(instance, property.serializedObject.targetObject);
+
+            //虽然是子对象，名字还是要带上父名字。其他位置选择SO资源的时候，能看见子对象却看不见父，不是全名不方便。
             var ex = ".asset";
-            var path = dir.CreateFileName($"{instance.GetType().Name}",
+            var path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}",
                                           ex,
                                           EditorSettings.gameObjectNamingScheme.ToString(),
                                           EditorSettings.gameObjectNamingDigits);
