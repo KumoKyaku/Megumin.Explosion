@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 
 namespace Megumin
 {
@@ -61,6 +62,16 @@ namespace Megumin
             }
 
             detail += "       \n";
+
+            detail += ToStringReflectionFieldPropertiesStatic(type, value, flags);
+            detail += ToStringReflectionFieldPropertiesInstance(type, value, flags);
+
+            return detail;
+        }
+
+        public static string ToStringReflectionFieldPropertiesStatic<T>(Type type, T value, BindingFlags? flags)
+        {
+            var detail = "";
             {
                 BindingFlags staticflag = BindingFlags.Public | BindingFlags.Static;
                 if (flags.HasValue)
@@ -72,6 +83,12 @@ namespace Megumin
                 detail += ToStringReflectionFieldProperties(type, "    ", staticflag, value);
             }
 
+            return detail;
+        }
+
+        public static string ToStringReflectionFieldPropertiesInstance<T>(Type type, T value, BindingFlags? flags = null)
+        {
+            var detail = "";
             if (value != null)
             {
                 BindingFlags instanceflag = BindingFlags.Public | BindingFlags.Instance;
@@ -88,9 +105,47 @@ namespace Megumin
             return detail;
         }
 
-        internal static bool TryGetName<T>(this T value, out string name)
+        /// <summary>
+        /// 反射拿名字
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static bool TryGetName<T>(this T value, out string name)
         {
             name = null;
+            if (value != null)
+            {
+                var ms = value.GetType().GetMembers((BindingFlags)(-1)).OrderBy(m => m.Name.Length);
+                foreach (var item in ms)
+                {
+                    if (String.Equals(item.Name, "Name", StringComparison.CurrentCultureIgnoreCase)
+                        || String.Equals(item.Name, "DisplayName", StringComparison.CurrentCultureIgnoreCase)
+                        || String.Equals(item.Name, "FriendlyName", StringComparison.CurrentCultureIgnoreCase)
+                        )
+                    {
+                        if (item is FieldInfo field)
+                        {
+                            var temp = field.GetValue(value);
+                            if (temp is string v)
+                            {
+                                name = v;
+                                return true;
+                            }
+                        }
+                        else if (item is PropertyInfo property)
+                        {
+                            var temp = property.GetValue(value);
+                            if (temp is string v)
+                            {
+                                name = v;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
             //try
             //{
             //    dynamic d = value;
