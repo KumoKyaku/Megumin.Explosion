@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 1309913111}
   - component: {fileID: 1309913113}
   - component: {fileID: 1309913114}
+  - component: {fileID: 1309913115}
   m_Layer: 0
   m_Name: Info
   m_TagString: Untagged
@@ -157,6 +158,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fontSize: 14
   FPS: 1
+  INTERVAL: 0.5
   DELAY: 0
   INDELAY: 0
   Time: 1
@@ -219,6 +221,21 @@ MonoBehaviour:
   OnRightClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1309913115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309913110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa8cdffbc07dd354b86ebd1989612743, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  F1: F1
+  F1Prop: 2.5
+  OnKeyF5: 5
 --- !u!1 &2022781342
 GameObject:
   m_ObjectHideFlags: 0

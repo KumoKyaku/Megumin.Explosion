@@ -888,6 +888,15 @@
             <param name="flags">允许设定<see cref="F:System.Reflection.BindingFlags.NonPublic"/></param>
             <returns></returns>
         </member>
+        <member name="M:Megumin.Utility.TryGetName``1(``0,System.String@)">
+            <summary>
+            反射拿名字
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="value"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
         <member name="M:Megumin.Utility.LogListDic(System.String,System.Object)">
             <summary>
             打印详细集合

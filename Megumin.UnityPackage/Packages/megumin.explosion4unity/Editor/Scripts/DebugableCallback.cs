@@ -54,6 +54,33 @@ namespace Megumin
 
 #endif
 
+        public static void Reflection(object item, MemberInfo m)
+        {
+            if (m is FieldInfo field)
+            {
+                //控制台Log字段
+                var fv = field.GetValue(item);
+                Debug.Log($"FieldName  :  {field.Name}    {fv.ToStringReflection(true)}");
+            }
+            else if (m is PropertyInfo property)
+            {
+                //控制台Log属性
+                var pv = property.GetValue(item);
+                Debug.Log($"PropertyName  :  {property.Name}    {pv.ToStringReflection(true)}");
+            }
+            else if (m is MethodInfo method)
+            {
+                //反射调用方法
+                method.Invoke(item, null);
+            }
+        }
+
+        static readonly BindingFlags CheckFlag
+            = BindingFlags.Public
+            | BindingFlags.NonPublic
+            | BindingFlags.Instance
+            | BindingFlags.Static;
+
         public static void ObjectOnF1(object item)
         {
             if (item == null)
@@ -76,41 +103,14 @@ namespace Megumin
             }
 
             {
-                //控制台Log字段
-                var fields = from f in item.GetType().GetFields((BindingFlags)(-1))
-                             let attrs = f.GetCustomAttributes(typeof(OnF1Attribute), true)
-                             where attrs.Length > 0
-                             select f;
-                foreach (var field in fields)
-                {
-                    var fv = field.GetValue(item);
-                    Debug.Log(fv.ToStringReflection(true));
-                }
-            }
-
-            {
-                //控制台Log属性
-                var props = from p in item.GetType().GetProperties((BindingFlags)(-1))
-                            let attrs = p.GetCustomAttributes(typeof(OnF1Attribute), true)
-                            where attrs.Length > 0
-                            select p;
-                foreach (var property in props)
-                {
-                    var pv = property.GetValue(item);
-                    Debug.Log(pv.ToStringReflection(true));
-                }
-            }
-
-            {
-                //反射调用方法
-                var methods = from m in item.GetType().GetMethods((BindingFlags)(-1))
+                var members = from m in item.GetType().GetMembers(CheckFlag)
                               let attrs = m.GetCustomAttributes(typeof(OnF1Attribute), true)
                               where attrs.Length > 0
                               select m;
 
-                foreach (var method in methods)
+                foreach (var m in members)
                 {
-                    method.Invoke(item, null);
+                    Reflection(item, m);
                 }
             }
         }
@@ -132,52 +132,17 @@ namespace Megumin
             }
 
             {
-                //控制台Log字段
-                var fields = from f in item.GetType().GetFields((BindingFlags)(-1))
-                             let attrs = f.GetCustomAttributes(typeof(OnKeyAttribute), true)
-                             where attrs.Length > 0
-                             select (f, attrs);
-
-                foreach (var kv in fields)
-                {
-                    if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
-                    {
-                        var fv = kv.f.GetValue(item);
-                        Debug.Log(fv.ToStringReflection(true));
-                    }
-                }
-            }
-
-            {
-                //控制台Log属性
-                var props = from p in item.GetType().GetProperties((BindingFlags)(-1))
-                            let attrs = p.GetCustomAttributes(typeof(OnKeyAttribute), true)
-                            where attrs.Length > 0
-                            select (p, attrs);
-
-                foreach (var kv in props)
-                {
-                    if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
-                    {
-                        var fv = kv.p.GetValue(item);
-                        Debug.Log(fv.ToStringReflection(true));
-                    }
-                }
-            }
-
-            {
-                //反射调用方法
-                var methods = from m in item.GetType().GetMethods((BindingFlags)(-1))
+                var members = from m in item.GetType().GetMembers(CheckFlag)
                               let attrs = m.GetCustomAttributes(typeof(OnKeyAttribute), true)
                               where attrs.Length > 0
                               select (m, attrs);
 
-                foreach (var kv in methods)
+                foreach (var kv in members)
                 {
+                    var m = kv.m;
                     if (kv.attrs.Any(a => a is OnKeyAttribute ok && ok.Key == key))
                     {
-                        var method = kv.m;
-                        method.Invoke(item, null);
+                        Reflection(item, m);
                     }
                 }
             }

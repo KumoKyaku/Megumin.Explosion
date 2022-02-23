@@ -46,19 +46,32 @@ namespace Megumin
         public static string ToStringReflection<T>(Type type, T value, BindingFlags? flags = null)
         {
             string detail = "";
-            if (value.TryGetName(out var instanName))
+            detail += $"Type  :  {type.Name}";
+
+            if (value is string str)
             {
-                detail += $"{type.Name }    {instanName}\n";
-            }
-            else
-            {
-                detail += type.Name + "\n";
+                detail += $"    {str}";
+                return detail;
             }
 
+            if (type.IsPrimitive)
+            {
+                detail += $"    {value}";
+                return detail;
+            }
 
             if (type.IsValueType)
             {
-                detail += "ValueType";
+                detail += "    ValueType";
+            }
+
+            if (value.TryGetName(out var instanName))
+            {
+                detail += $"    {instanName}\n";
+            }
+            else
+            {
+                detail += "\n";
             }
 
             detail += "       \n";
@@ -117,7 +130,11 @@ namespace Megumin
             name = null;
             if (value != null)
             {
-                var ms = value.GetType().GetMembers((BindingFlags)(-1)).OrderBy(m => m.Name.Length);
+                var ms = value.GetType().GetMembers(
+                    BindingFlags.Public
+                    | BindingFlags.Instance
+                    | BindingFlags.NonPublic).OrderBy(m => m.Name.Length);
+
                 foreach (var item in ms)
                 {
                     if (String.Equals(item.Name, "Name", StringComparison.CurrentCultureIgnoreCase)
