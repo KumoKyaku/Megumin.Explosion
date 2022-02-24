@@ -24,6 +24,17 @@ namespace UnityEngine
             // so we pass as 3 floats and make the object here
             this.lineColor = new Color(r, g, b);
         }
+
+        public ColorSpacerAttribute(float spaceHeight, float lineHeight, float lineWidth, string hexColor)
+        {
+            this.spaceHeight = spaceHeight;
+            this.lineHeight = lineHeight;
+            this.lineWidth = lineWidth;
+
+            // unfortunately we can't pass a color through as a Color object
+            // so we pass as 3 floats and make the object here
+            this.lineColor = new HexColor(hexColor);
+        }
     }
 
 #if UNITY_EDITOR
