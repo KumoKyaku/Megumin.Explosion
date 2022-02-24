@@ -1467,6 +1467,13 @@
             <param name="orignal"></param>
             <param name="multiple">倍数</param>
         </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.SnapRound(System.Int32@,System.Double)">
+            <summary>
+            就近舍入  四舍六入五近偶
+            </summary>
+            <param name="orignal"></param>
+            <param name="multiple"></param>
+        </member>
         <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.SnapFloor(System.Int32@,System.Double)">
             <summary>
             
@@ -1480,6 +1487,13 @@
             </summary>
             <param name="orignal"></param>
             <param name="multiple">倍数</param>
+        </member>
+        <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.SnapRound(System.Double@,System.Double)">
+            <summary>
+            就近舍入  四舍六入五近偶
+            </summary>
+            <param name="orignal"></param>
+            <param name="multiple"></param>
         </member>
         <member name="M:StructExtension_28FDB7156FD24F39B5EA39D95892E328.SnapFloor(System.Double@,System.Double)">
             <summary>

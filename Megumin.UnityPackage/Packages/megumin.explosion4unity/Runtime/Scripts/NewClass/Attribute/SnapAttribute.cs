@@ -51,13 +51,13 @@ namespace UnityEditor.Megumin
                     if (property.propertyType == SerializedPropertyType.Integer)
                     {
                         var ret = property.intValue;
-                        ret.SnapCeil(snapAttribute.Value);
+                        ret.SnapRound(snapAttribute.Value);
                         property.intValue = ret;
                     }
                     else if (property.propertyType == SerializedPropertyType.Float)
                     {
                         double ret = property.floatValue;
-                        ret.SnapCeil(snapAttribute.Value);
+                        ret.SnapRound(snapAttribute.Value);
                         property.floatValue = (float)ret;
                     }
                 }

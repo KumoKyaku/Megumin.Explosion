@@ -130,7 +130,26 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
         }
         else
         {
-            orignal = (int)(((int)(orignal / multiple) + 1) * multiple);
+            var scale = Math.Ceiling(orignal / multiple);
+            orignal = (int)(scale * multiple);
+        }
+    }
+
+    /// <summary>
+    /// 就近舍入  四舍六入五近偶
+    /// </summary>
+    /// <param name="orignal"></param>
+    /// <param name="multiple"></param>
+    public static void SnapRound(this ref int orignal, double multiple = 1)
+    {
+        if (orignal % multiple == 0)
+        {
+
+        }
+        else
+        {
+            var scale = Math.Round(orignal / multiple);
+            orignal = (int)(scale * multiple);
         }
     }
 
@@ -147,7 +166,8 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
         }
         else
         {
-            orignal = (int)((int)(orignal / multiple) * multiple);
+            var scale = Math.Floor(orignal / multiple);
+            orignal = (int)(scale * multiple);
         }
     }
 
@@ -165,7 +185,26 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
         }
         else
         {
-            orignal = ((int)(orignal / multiple) + 1) * multiple;
+            var scale = Math.Ceiling(orignal / multiple);
+            orignal = ((int)scale) * multiple;
+        }
+    }
+
+    /// <summary>
+    /// 就近舍入  四舍六入五近偶
+    /// </summary>
+    /// <param name="orignal"></param>
+    /// <param name="multiple"></param>
+    public static void SnapRound(this ref double orignal, double multiple = 1)
+    {
+        if (orignal % multiple == 0)
+        {
+
+        }
+        else
+        {
+            var scale = Math.Round(orignal / multiple);
+            orignal = ((int)scale) * multiple;
         }
     }
 
@@ -182,7 +221,8 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
         }
         else
         {
-            orignal = ((int)(orignal / multiple) * multiple);
+            var scale = Math.Floor(orignal / multiple);
+            orignal = ((int)scale) * multiple;
         }
     }
 

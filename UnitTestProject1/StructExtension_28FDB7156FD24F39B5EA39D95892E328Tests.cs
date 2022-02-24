@@ -19,14 +19,58 @@ namespace Tests
             string s2 = a.ToBinaryString();
             Assert.AreEqual("00001111000011110000111100001111", s2);
         }
-    }
-}
 
-namespace System.Tests
-{
-    [TestClass()]
-    public class StructExtension_28FDB7156FD24F39B5EA39D95892E328Tests
-    {
+        [TestMethod()]
+        public void SnapRoundTest()
+        {
+            int a = 6;
+            int b = 5;
+
+            a = 1;
+            a.SnapRound(b);
+            Assert.AreEqual(0, a);
+
+            a = 2;
+            a.SnapRound(b);
+            Assert.AreEqual(0, a);
+
+            a = 3;
+            a.SnapRound(b);
+            Assert.AreEqual(5, a);
+
+            a = 6;
+            a.SnapRound(b);
+            Assert.AreEqual(5, a);
+
+            a = 9;
+            a.SnapRound(b);
+            Assert.AreEqual(10, a);
+
+            a = -1;
+            a.SnapRound(b);
+            Assert.AreEqual(0, a);
+
+            a = -2;
+            a.SnapRound(b);
+            Assert.AreEqual(0, a);
+
+            a = -3;
+            a.SnapRound(b);
+            Assert.AreEqual(-5, a);
+
+            a = -5;
+            a.SnapRound(b);
+            Assert.AreEqual(-5, a);
+
+            a = -6;
+            a.SnapRound(b);
+            Assert.AreEqual(-5, a);
+
+            a = -9;
+            a.SnapRound(b);
+            Assert.AreEqual(-10, a);
+        }
+
         [TestMethod()]
         public void SnapCeilTest()
         {
@@ -35,10 +79,33 @@ namespace System.Tests
             a.SnapCeil(b);
             Assert.AreEqual(10, a);
 
+            a = 1;
+            a.SnapCeil(b);
+            Assert.AreEqual(5, a);
+
+            a = -1;
+            a.SnapCeil(b);
+            Assert.AreEqual(0, a);
+
+            a = -6;
+            a.SnapCeil(b);
+            Assert.AreEqual(-5, a);
+
             a = 9;
             a.SnapFloor(b);
             Assert.AreEqual(5, a);
 
+            a = 1;
+            a.SnapFloor(b);
+            Assert.AreEqual(0, a);
+
+            a = -1;
+            a.SnapFloor(b);
+            Assert.AreEqual(-5, a);
+
+            a = -6;
+            a.SnapFloor(b);
+            Assert.AreEqual(-10, a);
 
             double da = 6.2f;
             double db = 1.5f;
