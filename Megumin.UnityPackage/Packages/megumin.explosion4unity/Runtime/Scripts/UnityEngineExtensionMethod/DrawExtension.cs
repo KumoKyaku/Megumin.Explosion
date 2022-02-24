@@ -107,65 +107,6 @@ public static partial class DrawExtension_95DA6E62
         mesh.Draw(matri, material);
     }
 
-    public static void DrawPoint(this Transform transform, Material material = default, Vector3 offset = default)
-    {
-        (transform.position + offset).DrawPoint(material);
-    }
-
-    public static void DrawPoint(this Vector3 position, Material material = default)
-    {
-        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Sphere);
-        var size = 0.15f * Vector3.one;
-        var matri = Matrix4x4.TRS(position, Quaternion.identity, size);
-        mesh.Draw(matri, material);
-    }
-
-    public static void DrawLine(this Transform from, Transform to, Material material = default)
-    {
-        if (from)
-        {
-            from.DrawPoint(material);
-        }
-
-        if (to)
-        {
-            to.DrawPoint(material);
-        }
-
-        if (from && to)
-        {
-            from.position.DrawLineWithoutEndPoint(to.position, material);
-        }
-    }
-
-    public static void DrawLine(this Vector3 from, Vector3 to, Material material = default)
-    {
-        from.DrawPoint(material);
-        to.DrawPoint(material);
-        DrawLineWithoutEndPoint(from, to, material);
-    }
-
-    public static void DrawLineWithoutEndPoint(this Vector3 from, Vector3 to, Material material = default)
-    {
-        const float weight = 0.05f;
-        var pos = (from + to) / 2;
-        var foward = to - from;
-        var q = Quaternion.identity;
-        if (foward != Vector3.zero)
-        {
-            q = Quaternion.LookRotation(foward);
-        }
-        Vector3 size = new Vector3(weight, weight, Vector3.Distance(from, to));
-        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Cube);
-        var matri = Matrix4x4.TRS(pos, q, size);
-        mesh.Draw(matri, material);
-    }
-
-
-
-
-
-
 
 
     public static void GizmoDraw(this Mesh mesh, Matrix4x4 matri, Color color, bool isWire = false)
@@ -280,4 +221,114 @@ public partial class DrawExtension_95DA6E62
                              sprite.texture);
     }
 }
+
+partial class DrawExtension_95DA6E62
+{
+    //绘制点线
+    public static Material DefaultUnlitColor { get; set; }
+    public static Dictionary<Color, Material> Cache { get; }
+        = new Dictionary<Color, Material>();
+
+    static DrawExtension_95DA6E62()
+    {
+        try
+        {
+            DefaultUnlitColor = new Material(Shader.Find("Unlit/Color"));
+            DefaultUnlitColor.color = Color.red;
+            // 有SRP Batcher  Enable GPU Instancing 可以不用开启. 
+            // 保险起见还是开着,反正有没有坏处.
+            DefaultUnlitColor.enableInstancing = true;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError(e);
+        }
+    }
+
+    public static Material GetCacheDebugMat(in Color color)
+    {
+        if (!Cache.TryGetValue(color, out var mat))
+        {
+            if (DefaultUnlitColor)
+            {
+                mat = UnityEngine.Object.Instantiate(DefaultUnlitColor);
+                mat.color = color;
+                Cache.Add(color, mat);
+            }
+        }
+        return mat;
+    }
+
+    public static void DrawPoint(this Transform transform, Material material = default, Vector3 offset = default)
+    {
+        (transform.position + offset).DrawPoint(material);
+    }
+
+    public static void DrawPoint(this Vector3 position, Material material = default)
+    {
+        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Sphere);
+        var size = 0.15f * Vector3.one;
+        var matri = Matrix4x4.TRS(position, Quaternion.identity, size);
+        mesh.Draw(matri, material);
+    }
+
+    public static void DrawPoint(this Vector3 position, in Color color)
+    {
+        DrawPoint(position, GetCacheDebugMat(color));
+    }
+
+    public static void DrawLine(this Transform from, Transform to, Material material = default)
+    {
+        if (from)
+        {
+            from.DrawPoint(material);
+        }
+
+        if (to)
+        {
+            to.DrawPoint(material);
+        }
+
+        if (from && to)
+        {
+            from.position.DrawLineWithoutEndPoint(to.position, material);
+        }
+    }
+
+    public static void DrawLine(this Vector3 from, Vector3 to, Material material = default)
+    {
+        from.DrawPoint(material);
+        to.DrawPoint(material);
+        DrawLineWithoutEndPoint(from, to, material);
+    }
+
+    public static void DrawLine(this Vector3 from, Vector3 to, in Color color)
+    {
+        DrawLine(from, to, GetCacheDebugMat(color));
+    }
+
+    public static void DrawLineWithoutEndPoint(this Vector3 from, Vector3 to, Material material = default)
+    {
+        const float weight = 0.05f;
+        var pos = (from + to) / 2;
+        var foward = to - from;
+        var q = Quaternion.identity;
+        if (foward != Vector3.zero)
+        {
+            q = Quaternion.LookRotation(foward);
+        }
+        Vector3 size = new Vector3(weight, weight, Vector3.Distance(from, to));
+        var mesh = PrimitiveMesh.GetUnityPrimitiveMesh(PrimitiveType.Cube);
+        var matri = Matrix4x4.TRS(pos, q, size);
+        mesh.Draw(matri, material);
+    }
+
+    public static void DrawLineWithoutEndPoint(this Vector3 from, Vector3 to, in Color color)
+    {
+        DrawLineWithoutEndPoint(from, to, GetCacheDebugMat(color));
+    }
+}
+
+
+
 

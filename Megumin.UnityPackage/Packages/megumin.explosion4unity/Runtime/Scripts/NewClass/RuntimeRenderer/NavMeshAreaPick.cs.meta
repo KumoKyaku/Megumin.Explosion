@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 4d926e331671a994fbd6f185952b56f8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - Camera: {instanceID: 0}
+  - PointMat: {fileID: 2100000, guid: 9d79d7ab93e01bd479b888a5d285db11, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

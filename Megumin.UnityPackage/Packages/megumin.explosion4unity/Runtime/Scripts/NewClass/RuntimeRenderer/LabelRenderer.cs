@@ -8,6 +8,9 @@ namespace Megumin
     [ExecuteAlways]
     public class LabelRenderer : MonoBehaviour
     {
+        [ProtectedInInspector]
+        public Camera Camera;
+
         public bool ShowOnRuntime = true;
         public bool UseStyle = false;
 
@@ -43,11 +46,26 @@ namespace Megumin
 
         void Start()
         {
+            if (!Camera)
+            {
+                Camera = GetComponent<Camera>();
+            }
+
+            if (!Camera)
+            {
+                Camera = Camera.main;
+            }
+
             InitGlobalToggle();
         }
 
         private void Update()
         {
+            if (!Camera)
+            {
+                Camera = Camera.main;
+            }
+
             cacheText = CalText();
         }
 
@@ -78,9 +96,9 @@ namespace Megumin
         void OnGUI()
         {
             InitGlobalToggle();
-            if (ShowOnRuntime && Camera.main && GlobalToggle && ActiveControl.Current)
+            if (ShowOnRuntime && Camera && GlobalToggle && ActiveControl.Current)
             {
-                var pos = Camera.main.WorldToScreenPoint(transform.position + Offset);
+                var pos = Camera.WorldToScreenPoint(transform.position + Offset);
                 if (pos.z > 0)
                 {
                     string text = cacheText;
