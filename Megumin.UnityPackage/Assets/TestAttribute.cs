@@ -39,6 +39,9 @@ public class TestAttribute : MonoBehaviour
     [Indent]
     public string Indent = "IndentTest";
 
+    //[Member2String(nameof(ReadOnlyInInspector))]
+    public string Member2String = "Member2String";
+
     [Options2String(typeof(ConstTest))]
     public string Option2String;
 

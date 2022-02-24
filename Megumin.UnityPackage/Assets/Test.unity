@@ -286,12 +286,13 @@ MonoBehaviour:
     Enabled: 0
     Test: 1
   Enum2String: Lerp
-  EnumQueue: 8
-  FrameAndTime: 150
-  GUID: 3f26a5c0c69f7ac44b8bd7c04e04c866
+  EnumQueue: 0
+  FrameAndTime: 0
+  GUID: 251c4025cb601db4b8b51fb3812af159
   Indent: IndentTest
+  Member2String: Member2String
   Option2String: Tset22
-  Path: W:/Git/Megumin.Explosion/Megumin.UnityPackage/Assets/Enum
+  Path: 
   ProtectedInInspector:
   - ProtectedInInspector1
   - ProtectedInInspector2

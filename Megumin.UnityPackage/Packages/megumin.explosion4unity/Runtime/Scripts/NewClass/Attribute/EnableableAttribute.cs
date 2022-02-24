@@ -13,6 +13,9 @@ namespace UnityEngine
     public sealed class EnableableAttribute : PropertyAttribute
     {
         public string Path { get; set; } = "Enabled";
+        /// <summary>
+        /// 用于反转开闭。
+        /// </summary>
         public bool Value { get; set; } = true;
         public EnableableAttribute(string path = "Enabled", bool value = true)
         {
