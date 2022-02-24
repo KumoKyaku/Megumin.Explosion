@@ -7,7 +7,9 @@ using Megumin;
 
 namespace UnityEngine
 {
-    [Obsolete("暂时没法实现")]
+    /// <summary>
+    /// 暂时没法实现
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public class Member2StringAttribute : PropertyAttribute
     {
@@ -80,15 +82,15 @@ namespace UnityEditor.Megumin
             
             return;
 
-            var pv = refProp.objectReferenceValue;
-            if ((object)pv is List<string> ls)
-            {
+            //var pv = refProp.objectReferenceValue;
+            //if ((object)pv is List<string> ls)
+            //{
 
-            }
-            else
-            {
-                EditorGUI.PropertyField(valuePosition, property, label);
-            }
+            //}
+            //else
+            //{
+            //    EditorGUI.PropertyField(valuePosition, property, label);
+            //}
         }
     }
 }

@@ -11,6 +11,34 @@ using System.Reflection;
 using UnityEditor;
 #endif
 
+#if false && COMPATIBILITY_NaughtyAttributes //兼容NaughtyAttributes特性库
+
+/// <summary>
+/// 兼容后不支持参数而且控制台日志太多
+/// </summary>
+public class EditorButtonAttribute : NaughtyAttributes.ButtonAttribute
+{
+    public int order { get; set; }
+    public string ButtonName => Text;
+    public bool UseTypeFullName { get; set; }
+    public bool OnlyPlaying { get; set; } = false;
+    public EditorButtonAttribute(string buttonName = null) : base(buttonName)
+    {
+
+    }
+
+    public EditorButtonAttribute(bool onlyPlaying) :
+        base(null,
+             onlyPlaying ?
+        NaughtyAttributes.EButtonEnableMode.Playmode
+        : NaughtyAttributes.EButtonEnableMode.Always)
+    {
+        OnlyPlaying = onlyPlaying;
+    }
+}
+
+#else
+
 //从 https://github.com/miguel12345/EditorButton 修改
 //支持ScrpitObject
 
@@ -46,6 +74,11 @@ public class EditorButtonAttribute : PropertyAttribute
         OnlyPlaying = onlyPlaying;
     }
 }
+
+
+
+#endif
+
 
 ///Editor
 
@@ -526,7 +559,7 @@ namespace UnityEditor
 
 #if UNITY_EDITOR
 
-#if DISABLE_EDITORBUTTONATTRIBUTE
+#if DISABLE_EDITORBUTTONATTRIBUTE || COMPATIBILITY_NaughtyAttributes
 
 #else
 
