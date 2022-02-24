@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Megumin;
+using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using static UnityEngine.Networking.UnityWebRequest;
 namespace UnityEditor.UI
 {
     using UnityEditor;
+    using UnityEditor.Megumin;
 
     [CustomEditor(typeof(UrlImage), true)]
     public class UrlImageEditor : ImageEditor

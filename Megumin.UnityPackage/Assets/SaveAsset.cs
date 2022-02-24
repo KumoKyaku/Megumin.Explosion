@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using Megumin;
 
 public class SaveAsset : ScriptableObject, ISerializationCallbackReceiver
 {

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     public class AutoFileNameAttribute : PropertyAttribute
     {

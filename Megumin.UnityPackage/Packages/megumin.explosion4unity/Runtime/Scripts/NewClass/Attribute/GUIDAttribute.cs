@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// 将string字段添加GUID功能.

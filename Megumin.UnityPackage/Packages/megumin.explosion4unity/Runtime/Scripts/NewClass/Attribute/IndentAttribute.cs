@@ -1,4 +1,7 @@
-﻿namespace UnityEngine
+﻿using UnityEngine;
+using Megumin;
+
+namespace Megumin
 {
     /// <summary>
     /// 缩进

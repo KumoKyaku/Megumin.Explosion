@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// 很多情况不工作,处理不了UndoRedo,没有Odin的好用.

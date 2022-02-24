@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class Options2StringAttribute : PropertyAttribute

@@ -6,85 +6,92 @@ using System.Collections.Generic;
 using System.Collections;
 using Object = UnityEngine.Object;
 using System.Reflection;
+using Megumin;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
+namespace Megumin
+{
+
 #if false && COMPATIBILITY_NaughtyAttributes //兼容NaughtyAttributes特性库
 
-/// <summary>
-/// 兼容后不支持参数而且控制台日志太多
-/// </summary>
-public class EditorButtonAttribute : NaughtyAttributes.ButtonAttribute
-{
-    public int order { get; set; }
-    public string ButtonName => Text;
-    public bool UseTypeFullName { get; set; }
-    public bool OnlyPlaying { get; set; } = false;
-    public EditorButtonAttribute(string buttonName = null) : base(buttonName)
+    /// <summary>
+    /// 兼容后不支持参数而且控制台日志太多
+    /// </summary>
+    public class EditorButtonAttribute : NaughtyAttributes.ButtonAttribute
     {
+        public int order { get; set; }
+        public string ButtonName => Text;
+        public bool UseTypeFullName { get; set; }
+        public bool OnlyPlaying { get; set; } = false;
+        public EditorButtonAttribute(string buttonName = null) : base(buttonName)
+        {
 
-    }
+        }
 
-    public EditorButtonAttribute(bool onlyPlaying) :
-        base(null,
-             onlyPlaying ?
-        NaughtyAttributes.EButtonEnableMode.Playmode
-        : NaughtyAttributes.EButtonEnableMode.Always)
-    {
-        OnlyPlaying = onlyPlaying;
+        public EditorButtonAttribute(bool onlyPlaying) :
+            base(null,
+                 onlyPlaying ?
+            NaughtyAttributes.EButtonEnableMode.Playmode
+            : NaughtyAttributes.EButtonEnableMode.Always)
+        {
+            OnlyPlaying = onlyPlaying;
+        }
     }
-}
 
 #else
 
-//从 https://github.com/miguel12345/EditorButton 修改
-//支持ScrpitObject
+    //从 https://github.com/miguel12345/EditorButton 修改
+    //支持ScrpitObject
 
-/// <summary> 
-/// 绘制代码在 <see cref="EditorGUIMethod"/> 中
-/// <para></para>自定义Editor中想要支持这个特性，
-/// <para></para>请在<see cref="Editor.OnInspectorGUI"/>中调用
-/// this.DrawInspectorMethods
-/// 
-/// <para></para><see cref="EditorGUIMethod.DrawInspectorMethods"/>
-/// <para>在自定义Serializable类型方法中无效,无法显示在面板</para>
-/// </summary>
-[System.AttributeUsage(System.AttributeTargets.Method)]
-public class EditorButtonAttribute : PropertyAttribute
-{
-    public string ButtonName { get; set; }
-    public bool UseTypeFullName { get; set; }
-
-    /// <summary>
-    /// <para/>true :编辑模式运行模式都有效.
-    /// <para/>false:仅运行模式有效.
+    /// <summary> 
+    /// 绘制代码在 <see cref="EditorGUIMethod"/> 中
+    /// <para></para>自定义Editor中想要支持这个特性，
+    /// <para></para>请在<see cref="Editor.OnInspectorGUI"/>中调用
+    /// this.DrawInspectorMethods
+    /// 
+    /// <para></para><see cref="EditorGUIMethod.DrawInspectorMethods"/>
+    /// <para>在自定义Serializable类型方法中无效,无法显示在面板</para>
     /// </summary>
-    /// <value></value>
-    public bool OnlyPlaying { get; set; } = false;
-
-    public EditorButtonAttribute(string buttonName = null)
+    [System.AttributeUsage(System.AttributeTargets.Method)]
+    public class EditorButtonAttribute : PropertyAttribute
     {
-        ButtonName = buttonName;
-    }
+        public string ButtonName { get; set; }
+        public bool UseTypeFullName { get; set; }
 
-    public EditorButtonAttribute(bool onlyPlaying)
-    {
-        OnlyPlaying = onlyPlaying;
+        /// <summary>
+        /// <para/>true :编辑模式运行模式都有效.
+        /// <para/>false:仅运行模式有效.
+        /// </summary>
+        /// <value></value>
+        public bool OnlyPlaying { get; set; } = false;
+
+        public EditorButtonAttribute(string buttonName = null)
+        {
+            ButtonName = buttonName;
+        }
+
+        public EditorButtonAttribute(bool onlyPlaying)
+        {
+            OnlyPlaying = onlyPlaying;
+        }
     }
-}
 
 
 
 #endif
+
+}
+
 
 
 ///Editor
 
 #if UNITY_EDITOR
 
-namespace UnityEditor
+namespace UnityEditor.Megumin
 {
     ///<summary>
     ///一旦脚本有其他自定义Editor，那么EditorButtonAttribute就失效了，
@@ -557,51 +564,57 @@ namespace UnityEditor
 
 #endif
 
+namespace UnityEditor.Megumin
+{
+
 #if UNITY_EDITOR
 
 #if DISABLE_EDITORBUTTONATTRIBUTE || COMPATIBILITY_NaughtyAttributes
 
 #else
 
-/// <summary>
-/// 
-/// </summary>
-[ExcludeFromObjectFactory]
-[CanEditMultipleObjects]
-[CustomEditor(typeof(UnityEngine.Object), true, isFallback = false)]
-public class EditorButton : Editor
-{
-    public override void OnInspectorGUI()
+    /// <summary>
+    /// 
+    /// </summary>
+    [ExcludeFromObjectFactory]
+    [CanEditMultipleObjects]
+    [CustomEditor(typeof(UnityEngine.Object), true, isFallback = false)]
+    public class EditorButton : Editor
     {
-        base.OnInspectorGUI();
-        this.DrawInspectorMethods();
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            this.DrawInspectorMethods();
+        }
     }
+
+    /// <summary>
+    /// isFallback 是true 会被其他 [CustomEditor(typeof(UnityEngine.Object))]抢占,恶性竞争
+    /// </summary>
+    [ExcludeFromObjectFactory]
+    [CanEditMultipleObjects]
+    [CustomEditor(typeof(Component), true, isFallback = false)]
+    public class ComponentEditorButton : EditorButton { }
+
+    [ExcludeFromObjectFactory]
+    [CanEditMultipleObjects]
+    [CustomEditor(typeof(Behaviour), true, isFallback = true)]
+    public class BehaviourEditorButton : EditorButton { }
+
+    [ExcludeFromObjectFactory]
+    [CanEditMultipleObjects]
+    [CustomEditor(typeof(MonoBehaviour), true, isFallback = true)]
+    public class MonoBehaviourEditorButton : EditorButton { }
+
+    [ExcludeFromObjectFactory]
+    [CanEditMultipleObjects]
+    [CustomEditor(typeof(ScriptableObject), true, isFallback = false)]
+    public class ScriptableObjectButton : EditorButton { }
+
+#endif
+
+#endif
+
+
 }
-
-/// <summary>
-/// isFallback 是true 会被其他 [CustomEditor(typeof(UnityEngine.Object))]抢占,恶性竞争
-/// </summary>
-[ExcludeFromObjectFactory]
-[CanEditMultipleObjects]
-[CustomEditor(typeof(Component), true, isFallback = false)]
-public class ComponentEditorButton : EditorButton { }
-
-[ExcludeFromObjectFactory]
-[CanEditMultipleObjects]
-[CustomEditor(typeof(Behaviour), true, isFallback = true)]
-public class BehaviourEditorButton : EditorButton { }
-
-[ExcludeFromObjectFactory]
-[CanEditMultipleObjects]
-[CustomEditor(typeof(MonoBehaviour), true, isFallback = true)]
-public class MonoBehaviourEditorButton : EditorButton { }
-
-[ExcludeFromObjectFactory]
-[CanEditMultipleObjects]
-[CustomEditor(typeof(ScriptableObject), true, isFallback = false)]
-public class ScriptableObjectButton : EditorButton { }
-
-#endif
-
-#endif
 

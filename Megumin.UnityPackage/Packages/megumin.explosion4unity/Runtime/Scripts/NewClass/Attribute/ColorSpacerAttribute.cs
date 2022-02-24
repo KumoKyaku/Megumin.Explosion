@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// https://docs.unity3d.com/ScriptReference/DecoratorDrawer.html

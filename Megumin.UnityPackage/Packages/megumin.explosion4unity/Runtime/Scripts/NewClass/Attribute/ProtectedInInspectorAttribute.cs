@@ -1,4 +1,7 @@
-﻿namespace UnityEngine
+﻿using Megumin;
+using UnityEngine;
+
+namespace Megumin
 {
     /// <summary>
     /// 在检视面板中保护,只有先勾选才能修改

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// 简单设置在面版中的样式

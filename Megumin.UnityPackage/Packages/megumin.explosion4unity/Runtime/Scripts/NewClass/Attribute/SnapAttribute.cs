@@ -4,7 +4,7 @@ using UnityEngine;
 using Megumin;
 using System;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// 值向固定值靠近

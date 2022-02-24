@@ -1,7 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// 将枚举保存为字符串

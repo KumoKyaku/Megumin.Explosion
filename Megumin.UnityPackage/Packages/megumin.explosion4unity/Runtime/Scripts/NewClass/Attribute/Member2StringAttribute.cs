@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// 暂时没法实现

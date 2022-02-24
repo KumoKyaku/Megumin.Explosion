@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter)]
     public class EnumQueueAttribute : PropertyAttribute

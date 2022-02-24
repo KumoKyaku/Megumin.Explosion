@@ -1,4 +1,7 @@
-﻿namespace UnityEngine
+﻿using Megumin;
+using UnityEngine;
+
+namespace Megumin
 {
     /// <summary>
     /// 让字段在编辑器中只读，防止被错误的修改

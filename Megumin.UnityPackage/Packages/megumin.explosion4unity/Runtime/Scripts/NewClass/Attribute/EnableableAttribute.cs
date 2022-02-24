@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Megumin;
 
-namespace UnityEngine
+namespace Megumin
 {
     /// <summary>
     /// 指定一个bool属性为开启关闭Toggle
