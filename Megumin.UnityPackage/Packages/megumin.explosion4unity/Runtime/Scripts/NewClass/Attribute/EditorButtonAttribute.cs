@@ -569,7 +569,7 @@ namespace UnityEditor.Megumin
 
 #if UNITY_EDITOR
 
-#if DISABLE_EDITORBUTTONATTRIBUTE || COMPATIBILITY_NaughtyAttributes
+#if DISABLE_EDITORBUTTONATTRIBUTE
 
 #else
 
