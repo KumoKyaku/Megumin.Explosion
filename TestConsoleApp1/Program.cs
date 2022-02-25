@@ -17,14 +17,14 @@ namespace MyApp // Note: actual namespace depends on the project name.
                 {
                     Console.WriteLine($"DefaultThreadSwitcher.Tick----------CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
                     DefaultThreadSwitcher.Tick();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(1);
                 }
             });
 
             threada.Start();
             Thread threadb = new Thread(() =>
             {
-                Console.WriteLine($"Press F1 Test ThreadSwitcher.Switch2.        CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
+                Console.WriteLine($"Press F1 Test ThreadSwitcher.Switch.        CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
                 Console.WriteLine($"Press F2 Test ThreadSwitcher.Switch3MaxWait. CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
                 while (true)
                 {
@@ -32,7 +32,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
                     if (key.Key == ConsoleKey.F1)
                     {
-                        TestSwitch2();
+                        TestSwitch();
                     }
                     else if (key.Key == ConsoleKey.F2)
                     {
@@ -46,18 +46,21 @@ namespace MyApp // Note: actual namespace depends on the project name.
             Console.ReadLine();
         }
 
-        private static async void TestSwitch2()
+        static int TestCount = 1;
+        private static async void TestSwitch()
         {
-            Console.WriteLine($"    切换线程Switch2测试Pre.       CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
-            await DefaultThreadSwitcher.Switch2();
-            Console.WriteLine($"        切换线程Switch2测试Post.  CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
+            var id = TestCount++;
+            Console.WriteLine($"    切换线程Switch测试[{id}]-Pre.       CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
+            await DefaultThreadSwitcher.Switch();
+            Console.WriteLine($"        切换线程Switch测试[{id}]-Post.  CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
         }
 
         private static async void TestSwitch3()
         {
-            Console.WriteLine($"    切换线程Switch3MaxWait测试Pre.       CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
+            var id = TestCount++;
+            Console.WriteLine($"    切换线程Switch3MaxWait测试[{id}]-Pre.       CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
             await DefaultThreadSwitcher.Switch3MaxWait();
-            Console.WriteLine($"        切换线程Switch3MaxWait测试Post.  CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
+            Console.WriteLine($"        切换线程Switch3MaxWait测试[{id}]-Post.  CurrentThreadID:{Thread.CurrentThread.ManagedThreadId} -- {DateTimeOffset.Now.Millisecond}");
         }
     }
 }

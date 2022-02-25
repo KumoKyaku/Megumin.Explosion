@@ -773,6 +773,11 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:Megumin.DefaultThreadSwitcher">
+            <summary>
+            <inheritdoc cref="T:Megumin.ThreadSwitcher"/>
+            </summary>
+        </member>
         <member name="M:Megumin.DefaultThreadSwitcher.Tick">
             <summary>
             <inheritdoc cref="M:Megumin.ThreadSwitcher.Tick"/>
@@ -784,14 +789,14 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Megumin.DefaultThreadSwitcher.Switch(System.Int32)">
-            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch(System.Int32)"/>
-        </member>
-        <member name="M:Megumin.DefaultThreadSwitcher.Switch2">
+        <member name="M:Megumin.DefaultThreadSwitcher.Switch">
             <summary>
-            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch2"/>
+            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch"/>
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Megumin.DefaultThreadSwitcher.Switch1(System.Int32)">
+            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch1(System.Int32)"/>
         </member>
         <member name="M:Megumin.DefaultThreadSwitcher.Switch3MaxWait(System.Int32)">
             <summary>
@@ -802,12 +807,9 @@
         <member name="T:Megumin.ThreadSwitcher">
             <summary>
             通用线程切换器
-            </summary>
-        </member>
-        <member name="F:Megumin.ThreadSwitcher.WaitQueue">
-            <summary>
-            可以合并Source来提高性能,但是会遇到异步后续出现异常的情况,比较麻烦.
-            所以每个Switch调用处使用不同的source,安全性更好
+            <para/>异步后续在<see cref="M:Megumin.ThreadSwitcher.Tick"/>线程调用。
+            <para/>通用性高,但是用到TaskCompletionSource和异步各种中间对象和异步机制.
+            <para/>性能开销大,不如明确的类型和回调接口<see cref="M:Megumin.ThreadSwitcher.Switch(System.Action)"/>.
             </summary>
         </member>
         <member name="M:Megumin.ThreadSwitcher.Tick">
@@ -818,51 +820,61 @@
         <member name="M:Megumin.ThreadSwitcher.Switch(System.Action)">
             <summary>
             切换执行线程
-            <seealso cref="M:Megumin.ThreadSwitcher.Switch(System.Int32)"/>
+            <seealso cref="M:Megumin.ThreadSwitcher.Switch"/>
             </summary>
             <param name="action"></param>
             <remarks>线程切换过程中闭包几乎无法避免, 除非明确回调函数参数类型.
             <para>对于性能敏感区域,可以写特定代码消除闭包. 参考 megumin.net</para>
             </remarks>
         </member>
-        <member name="M:Megumin.ThreadSwitcher.Switch(System.Int32)">
+        <member name="T:Megumin.ThreadSwitcher.SwitcherSource">
             <summary>
-            通用性高,但是用到TaskCompletionSource和异步各种中间对象和异步机制.
-            性能开销大不如明确的类型和回调接口.
-            <para>异步后续在<see cref="M:Megumin.ThreadSwitcher.Tick"/>线程调用</para>
+            切换线程专用Soucre，不建议保留引用，请直接await。
+            </summary>
+        </member>
+        <member name="M:Megumin.ThreadSwitcher.Switch">
+            <summary>
+            使用特殊异步source切换线程。
+            <para/>source只有await 执行后，才会入队<see cref="F:Megumin.ThreadSwitcher.WaitQueue"/>
+            </summary>
+            <remarks></remarks>
+            <returns></returns>
+        </member>
+        <member name="F:Megumin.ThreadSwitcher.WaitQueue1">
+            <summary>
+            可以合并Source来提高性能,但是会遇到异步后续出现异常的情况,比较麻烦.
+            所以每个Switch调用处使用不同的source,安全性更好
+            </summary>
+        </member>
+        <member name="M:Megumin.ThreadSwitcher.Switch1(System.Int32)">
+            <summary>
             <para>保证返回值先await 后Tick, 不然 await会发现Task同步完成,无法切换线程.</para>
             <para><see cref="P:System.Threading.Tasks.Task.Status"/>无法指示是否被await </para>
             </summary>
             <returns></returns>
             <remarks>BUG,无法保证先await 后Tick</remarks>
         </member>
-        <member name="T:Megumin.ThreadSwitcher.SwitcherSource">
+        <member name="T:Megumin.ThreadSwitcher.SwitcherSource3">
             <summary>
             切换线程专用Soucre，不要保留引用，请直接await。
             </summary>
         </member>
-        <member name="P:Megumin.ThreadSwitcher.SwitcherSource.IsAwaiting">
+        <member name="P:Megumin.ThreadSwitcher.SwitcherSource3.IsAwaiting">
             <summary>
             表示调用线程已经进入异步await
             </summary>
         </member>
-        <member name="P:Megumin.ThreadSwitcher.SwitcherSource.MaxWaitMilliseconds">
+        <member name="P:Megumin.ThreadSwitcher.SwitcherSource3.MaxWaitMilliseconds">
             <summary>
             最大等待轮询时间，超出这个时间将不在同步完成。失去切换线程的作用。
             </summary>
-        </member>
-        <member name="M:Megumin.ThreadSwitcher.Switch2">
-            <summary>
-            使用特殊异步source切换线程，请直接await。否则会阻塞所有线程切换功能。
-            </summary>
-            <remarks></remarks>
-            <returns></returns>
         </member>
         <member name="M:Megumin.ThreadSwitcher.Switch3MaxWait(System.Int32)">
             <summary>
             使用特殊异步source切换线程，请直接await。
             如果没有await，经过<paramref name="maxWaitMilliseconds"/>后将会被完成，失去切换线程的作用，
             但不会阻塞线程切换器。
+            <para/>source会立即入队<see cref="F:Megumin.ThreadSwitcher.WaitQueue3"/>
             </summary>
             <returns></returns>
         </member>
