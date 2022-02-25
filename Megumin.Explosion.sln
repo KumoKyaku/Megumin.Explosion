@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28606.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Megumin.Explosion", "Megumin.Explosion\Megumin.Explosion.csproj", "{919DF62A-88E4-4C86-993C-06BB31B649DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{0DD1341A-B368-48BE-A48B-4251D379AFFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleApp1", "TestConsoleApp1\TestConsoleApp1.csproj", "{DC1EE455-E6DA-4CE8-8E2D-13C629C0C242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0DD1341A-B368-48BE-A48B-4251D379AFFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DD1341A-B368-48BE-A48B-4251D379AFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DD1341A-B368-48BE-A48B-4251D379AFFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC1EE455-E6DA-4CE8-8E2D-13C629C0C242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC1EE455-E6DA-4CE8-8E2D-13C629C0C242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC1EE455-E6DA-4CE8-8E2D-13C629C0C242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC1EE455-E6DA-4CE8-8E2D-13C629C0C242}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

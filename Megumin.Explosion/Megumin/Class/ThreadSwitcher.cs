@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Megumin
@@ -28,15 +29,29 @@ namespace Megumin
             Default.Switch(action);
         }
 
-        /// <summary>
         /// <inheritdoc cref="ThreadSwitcher.Switch(int)"/>
-        /// </summary>
-        /// <param name="safeMillisecondsDelay"></param>
-        /// <returns></returns>
         [Obsolete("严重bug,无法实现预定功能. 无法保证先await 后 Tick", false)]
         public static ConfiguredValueTaskAwaitable Switch(int safeMillisecondsDelay = 0)
         {
             return Default.Switch(safeMillisecondsDelay);
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="ThreadSwitcher.Switch2"/>
+        /// </summary>
+        /// <returns></returns>
+        public static ThreadSwitcher.SwitcherSource Switch2()
+        {
+            return Default.Switch2();
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="ThreadSwitcher.Switch3MaxWait"/>
+        /// </summary>
+        /// <returns></returns>
+        public static ThreadSwitcher.SwitcherSource Switch3MaxWait(int maxWaitMilliseconds = 100)
+        {
+            return Default.Switch3MaxWait(maxWaitMilliseconds);
         }
     }
 
@@ -51,8 +66,8 @@ namespace Megumin
         /// 可以合并Source来提高性能,但是会遇到异步后续出现异常的情况,比较麻烦.
         /// 所以每个Switch调用处使用不同的source,安全性更好
         /// </summary>
-        readonly ConcurrentQueue<TaskCompletionSource<int>> WaitQueue = new ConcurrentQueue<TaskCompletionSource<int>>();
-        readonly ConcurrentQueue<Action> actions = new ConcurrentQueue<Action>();
+        protected readonly ConcurrentQueue<TaskCompletionSource<int>> WaitQueue = new ConcurrentQueue<TaskCompletionSource<int>>();
+        protected readonly ConcurrentQueue<Action> actions = new ConcurrentQueue<Action>();
 
         /// <summary>
         /// 由指定线程调用,回调其他线程需要切换到这个线程的方法
@@ -68,6 +83,10 @@ namespace Megumin
             {
                 res.TrySetResult(0);
             }
+
+            TickWaitQueue2();
+
+            TickWaitQueue3();
         }
 
         /// <summary>
@@ -113,6 +132,154 @@ namespace Megumin
         {
             await Task.Delay(safeMillisecondsDelay).ConfigureAwait(false);
             WaitQueue.Enqueue(source);
+        }
+    }
+
+    partial class ThreadSwitcher
+    {
+        /// <summary>
+        /// 切换线程专用Soucre，不要保留引用，请直接await。
+        /// </summary>
+        public class SwitcherSource : TaskCompletionSource<int>
+        {
+            /// <summary>
+            /// 表示调用线程已经进入异步await
+            /// </summary>
+            public bool IsAwaiting { get; internal protected set; } = false;
+            /// <summary>
+            /// 最大等待轮询时间，超出这个时间将不在同步完成。失去切换线程的作用。
+            /// </summary>
+            public long MaxWaitMilliseconds { get; internal protected set; } = 100;
+            internal protected long? WaitTickTime = null;
+
+            public struct Awaiter : ICriticalNotifyCompletion, INotifyCompletion
+            {
+                private SwitcherSource source;
+
+                public Awaiter(SwitcherSource source)
+                {
+                    this.source = source;
+                }
+
+                public bool IsCompleted
+                {
+                    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                    get
+                    {
+                        return source.Task.IsCompleted;
+                    }
+                }
+
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                [System.Diagnostics.DebuggerHidden]
+                public void GetResult()
+                {
+                    source.Task.GetAwaiter().GetResult();
+                }
+
+                public void UnsafeOnCompleted(Action continuation)
+                {
+                    source.Task.ConfigureAwait(false).GetAwaiter().UnsafeOnCompleted(continuation);
+                    source.IsAwaiting = true;
+                }
+
+                public void OnCompleted(Action continuation)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public Awaiter GetAwaiter()
+            {
+                return new Awaiter(this);
+            }
+        }
+
+        protected readonly ConcurrentQueue<SwitcherSource> WaitQueue2 = new ConcurrentQueue<SwitcherSource>();
+
+        protected void TickWaitQueue2()
+        {
+            while (WaitQueue2.TryPeek(out var res))
+            {
+                if (res.IsAwaiting)
+                {
+                    WaitQueue2.TryDequeue(out var _);
+                    res.TrySetResult(0);
+                }
+                else
+                {
+                    //线程切换如果没有await，就会阻塞所有。
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 使用特殊异步source切换线程，请直接await。否则会阻塞所有线程切换功能。
+        /// </summary>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        public SwitcherSource Switch2()
+        {
+            var source = new SwitcherSource();
+            WaitQueue2.Enqueue(source);
+            return source;
+        }
+    }
+
+    partial class ThreadSwitcher
+    {
+        protected readonly LinkedList<SwitcherSource> WaitQueue3 = new LinkedList<SwitcherSource>();
+
+        protected void TickWaitQueue3()
+        {
+            var current = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            var node = WaitQueue3.First;
+            while (node != null)
+            {
+                if (node.Value.IsAwaiting)
+                {
+                    node.Value.TrySetResult(0);
+                }
+                else
+                {
+                    if (node.Value.WaitTickTime.HasValue)
+                    {
+                        var delta = current - node.Value.WaitTickTime.Value;
+                        if (delta > node.Value.MaxWaitMilliseconds)
+                        {
+                            //保护措施，如果一个线程切换申请一直没有await，就忽略它/提前完成它。
+                            node.Value.TrySetResult(-1);
+                        }
+                    }
+                    else
+                    {
+                        node.Value.WaitTickTime = current;
+                    }
+                }
+
+                var next = node.Next;
+                if (node.Value.Task.IsCompleted)
+                {
+                    WaitQueue3.Remove(node);
+                }
+                node = next;
+            }
+
+        }
+        /// <summary>
+        /// 使用特殊异步source切换线程，请直接await。
+        /// 如果没有await，经过<paramref name="maxWaitMilliseconds"/>后将会被完成，失去切换线程的作用，
+        /// 但不会阻塞线程切换器。
+        /// </summary>
+        /// <returns></returns>
+        public SwitcherSource Switch3MaxWait(int maxWaitMilliseconds = 100)
+        {
+            var source = new SwitcherSource();
+            source.MaxWaitMilliseconds = maxWaitMilliseconds;
+            WaitQueue3.AddLast(source);
+            return source;
         }
     }
 }

@@ -785,10 +785,18 @@
             <param name="action"></param>
         </member>
         <member name="M:Megumin.DefaultThreadSwitcher.Switch(System.Int32)">
-            <summary>
             <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch(System.Int32)"/>
+        </member>
+        <member name="M:Megumin.DefaultThreadSwitcher.Switch2">
+            <summary>
+            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch2"/>
             </summary>
-            <param name="safeMillisecondsDelay"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.DefaultThreadSwitcher.Switch3MaxWait(System.Int32)">
+            <summary>
+            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch3MaxWait(System.Int32)"/>
+            </summary>
             <returns></returns>
         </member>
         <member name="T:Megumin.ThreadSwitcher">
@@ -827,6 +835,36 @@
             </summary>
             <returns></returns>
             <remarks>BUG,无法保证先await 后Tick</remarks>
+        </member>
+        <member name="T:Megumin.ThreadSwitcher.SwitcherSource">
+            <summary>
+            切换线程专用Soucre，不要保留引用，请直接await。
+            </summary>
+        </member>
+        <member name="P:Megumin.ThreadSwitcher.SwitcherSource.IsAwaiting">
+            <summary>
+            表示调用线程已经进入异步await
+            </summary>
+        </member>
+        <member name="P:Megumin.ThreadSwitcher.SwitcherSource.MaxWaitMilliseconds">
+            <summary>
+            最大等待轮询时间，超出这个时间将不在同步完成。失去切换线程的作用。
+            </summary>
+        </member>
+        <member name="M:Megumin.ThreadSwitcher.Switch2">
+            <summary>
+            使用特殊异步source切换线程，请直接await。否则会阻塞所有线程切换功能。
+            </summary>
+            <remarks></remarks>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.ThreadSwitcher.Switch3MaxWait(System.Int32)">
+            <summary>
+            使用特殊异步source切换线程，请直接await。
+            如果没有await，经过<paramref name="maxWaitMilliseconds"/>后将会被完成，失去切换线程的作用，
+            但不会阻塞线程切换器。
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Megumin.Threshold`1">
             <summary>
