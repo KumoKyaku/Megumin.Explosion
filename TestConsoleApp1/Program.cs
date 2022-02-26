@@ -10,7 +10,13 @@ namespace MyApp // Note: actual namespace depends on the project name.
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            new TestEvent().Test();
+            TestThreadSwitcher();
+            Console.ReadLine();
+        }
 
+        private static void TestThreadSwitcher()
+        {
             Thread threada = new Thread(() =>
             {
                 while (true)
@@ -43,7 +49,6 @@ namespace MyApp // Note: actual namespace depends on the project name.
 
             threadb.Start();
             Thread.Sleep(1000 * 60);
-            Console.ReadLine();
         }
 
         static int TestCount = 1;
