@@ -708,6 +708,12 @@
             会清除所有注册的事件，不能清除指定事件。
             </summary>
         </member>
+        <member name="T:Megumin.OneoffEventWeak`1">
+            <summary>
+            弱引用一次性事件. TODO
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="M:Megumin.Node`1.Pop">
             <summary>
             从原位置摘出来并修复前后链接
@@ -1026,6 +1032,11 @@
         </member>
         <member name="T:Megumin.TempValueTaskSource">
             <inheritdoc/>
+        </member>
+        <member name="T:Megumin.WeakEvent">
+            <summary>
+            TODO,GC回收不掉，不知道为什么还是有强引用
+            </summary>
         </member>
         <member name="T:Megumin.WeakReferenceList`1">
             <summary>
