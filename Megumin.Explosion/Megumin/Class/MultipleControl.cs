@@ -179,13 +179,13 @@ namespace Megumin
         /// </summary>
         protected virtual void ApplyValue()
         {
-            var old = Current;
-            var oldK = CurrentKey;
-            var result = CalNewValue();
-            Current = result.Value;
-            CurrentKey = result.Key;
+            var oldValue = Current;
+            var oldKey = CurrentKey;
+            var (newKey, newValue) = CalNewValue();
+            Current = newValue;
+            CurrentKey = newKey;
 
-            bool flagV = EqualityComparer<V>.Default.Equals(old, result.Value);
+            bool flagV = EqualityComparer<V>.Default.Equals(oldValue, newValue);
             //if (old is IEquatable<V> oe)
             //{
             //    //转成接口必然装箱
@@ -199,13 +199,13 @@ namespace Megumin
 
             if (!flagV)
             {
-                OnValueChanged(result.Value, old);
-                OnValueChangedKV((result.Key, result.Value), (oldK, old));
+                OnValueChanged(newValue, oldValue);
+                OnValueChangedKV((newKey, newValue), (oldKey, oldValue));
             }
 
-            if (!flagV || !EqualityComparer<K>.Default.Equals(oldK, result.Key))
+            if (!flagV || !EqualityComparer<K>.Default.Equals(oldKey, newKey))
             {
-                OnKeyValueChanged((result.Key, result.Value), (oldK, old));
+                OnKeyValueChanged((newKey, newValue), (oldKey, oldValue));
             }
         }
 
