@@ -45,6 +45,9 @@ public class TestAttribute : MonoBehaviour
     [Options2String(typeof(ConstTest))]
     public string Option2String;
 
+    [Options2String(typeof(ConstTest), typeof(ConstTest2))]
+    public string Option2String2;
+
     [Path]
     public string Path;
 

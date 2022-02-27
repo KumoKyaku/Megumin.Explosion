@@ -168,6 +168,12 @@ public class ConstTest
     public const string aa = "Tset22";
 }
 
+public class ConstTest2
+{
+    public const string 攻击力 = nameof(攻击力);
+    public const string 防御力 = nameof(防御力);
+}
+
 [Serializable]
 public class EnableFrame : Enableable
 {

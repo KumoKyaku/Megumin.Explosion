@@ -26,7 +26,13 @@ namespace Megumin
             OverrideName = overrideName;
             DefaultValue = defaultValue;
 
-            if (!Cache.TryGetValue(type, out Options))
+            var ops = InitOptions(type);
+            Options = ops;
+        }
+
+        private (string[] Show, string[] Value) InitOptions(Type type)
+        {
+            if (!Cache.TryGetValue(type, out var options))
             {
                 var selected = (from field in type.GetFields()
                                 where field.FieldType == typeof(string)
@@ -44,8 +50,8 @@ namespace Megumin
 
                 var optionShow = new string[fields.Length];
                 var optionValue = new string[fields.Length];
-                Options = (optionShow, optionValue);
-                Cache[type] = Options;
+                options = (optionShow, optionValue);
+                Cache[type] = options;
 
                 for (int i = 0; i < fields.Length; i++)
                 {
@@ -65,9 +71,48 @@ namespace Megumin
                     optionValue[i] = value;
                 }
             }
+            return options;
         }
 
         public (string[] Show, string[] Value) Options;
+
+        public (string[] Show, string[] Value)? Options2 = null;
+        public List<(Type Type, string[] Show, string[] Value)> Options2WhitType;
+
+        public Type[] Types;
+
+        public Options2StringAttribute(params Type[] types)
+        {
+            Sort = true;
+            OverrideName = "";
+            DefaultValue = null;
+
+            Types = types;
+            if (Types != null && Types.Length > 0)
+            {
+                Type = Types[0];
+                var ops = InitOptions(Type);
+                Options = ops;
+
+                Options2WhitType = new List<(Type Type, string[] Show, string[] Value)>();
+                foreach (var item in Types)
+                {
+                    var ops2 = InitOptions(item);
+                    Options2WhitType.Add((item, ops2.Show, ops2.Value));
+                }
+
+                IEnumerable<string> show2 = new string[0];
+                IEnumerable<string> value2 = new string[0];
+
+                foreach (var item in Options2WhitType)
+                {
+                    show2 = show2.Concat(item.Show);
+                    value2 = value2.Concat(item.Value);
+                }
+
+                Options2 = (show2.ToArray(), value2.ToArray());
+            }
+        }
     }
 }
 
@@ -113,14 +158,19 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                //EditorGUI.HelpBox(position, $"{label.text} 字段类型必须是string", MessageType.Error);
-                label.tooltip += $"{nameof(Options2StringAttribute)}失效！\n{label.text} 字段类型必须是string";
-                label.text = $"??? " + label.text;
-                var old = GUI.color;
-                GUI.color = warning;
-                EditorGUI.PropertyField(position, property, label);
-                GUI.color = old;
+                NotWork(position, property, label);
             }
+        }
+
+        private void NotWork(Rect position, SerializedProperty property, GUIContent label)
+        {
+            //EditorGUI.HelpBox(position, $"{label.text} 字段类型必须是string", MessageType.Error);
+            label.tooltip += $"{attribute.GetType().Name}失效！\n{label.text} 字段类型必须是String";
+            label.text = $"??? " + label.text;
+            var old = GUI.color;
+            GUI.color = warning;
+            EditorGUI.PropertyField(position, property, label);
+            GUI.color = old;
         }
 
         public void DrawEnum(SerializedProperty property, GUIContent label, Rect valuePosition)
@@ -133,8 +183,29 @@ namespace UnityEditor.Megumin
             }
 
             var myOptions = enum2StringAttribute.Options;
+            if (enum2StringAttribute.Options2.HasValue)
+            {
+                myOptions = enum2StringAttribute.Options2.Value;
+            }
+
             if (myOptions.Show?.Length > 0)
             {
+                if (myOptions.Show.Length > 30)
+                {
+                    //TODO GenericMenu
+                    //var menu = new GenericMenu();
+                    //string m_SelectedValue = null;
+                    //foreach (var s in enum2StringAttribute.Options2WhitType)
+                    //{
+                    //    var localS = s;
+                    //    menu.AddItem(new GUIContent((ignoreConvertForGUIContent(options) ? localS.ToString() : convertForGUIContent(localS))),
+                    //                 false,
+                    //                 () => { m_SelectedValue = localS; }
+                    //                 );
+                    //}
+                    //menu.ShowAsContext();
+                }
+
                 string current = property.stringValue;
 
                 var index = Array.IndexOf(myOptions.Value, current);
@@ -170,14 +241,14 @@ namespace UnityEditor.Megumin
                 }
                 else
                 {
-                    label.tooltip += $"{nameof(Options2StringAttribute)}失效！\n当前值: {current} 无法解析为{enum2StringAttribute.Type.Name}的常量。";
+                    label.tooltip += $"{attribute.GetType().Name}失效！\n当前值: {current} 无法解析为{enum2StringAttribute.Type.Name}的常量。";
                     label.text = $"!! " + overrideName;
                     EditorGUI.PropertyField(valuePosition, property, label);
                 }
             }
             else
             {
-                label.tooltip += $"{nameof(Options2StringAttribute)}失效！\n 没有常量string！";
+                label.tooltip += $"{attribute.GetType().Name}失效！\n 没有常量string！";
                 label.text = $"!! " + overrideName;
                 EditorGUI.PropertyField(valuePosition, property, label);
             }

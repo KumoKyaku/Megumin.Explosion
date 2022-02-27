@@ -246,7 +246,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1517916577}
   - component: {fileID: 1517916578}
-  - component: {fileID: 1517916579}
   m_Layer: 0
   m_Name: TestAttribute
   m_TagString: Untagged
@@ -293,6 +292,7 @@ MonoBehaviour:
   Indent: IndentTest
   Member2String: Member2String
   Option2String: Tset22
+  Option2String2: "\u653B\u51FB\u529B"
   Path: 
   ProtectedInInspector:
   - ProtectedInInspector1
@@ -303,18 +303,6 @@ MonoBehaviour:
   - ReadOnlyInInspector2
   - ReadOnlyInInspector3
   Snap: 60
---- !u!114 &1517916579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1517916576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bfc8ded737e5dd49a39048934c4f2e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2022781342
 GameObject:
   m_ObjectHideFlags: 0
