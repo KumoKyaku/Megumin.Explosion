@@ -290,7 +290,7 @@ MonoBehaviour:
   FrameAndTime: 0
   GUID: 2c00f63388424f245963897505c7b2d0
   Indent: IndentTest
-  Member2String: Member2String
+  Member2String: ReadOnlyInInspector1
   Option2String: Tset22
   Option2String2: "\u653B\u51FB\u529B"
   Path: 

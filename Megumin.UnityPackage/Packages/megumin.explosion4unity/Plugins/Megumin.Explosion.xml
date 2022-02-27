@@ -710,7 +710,7 @@
         </member>
         <member name="T:Megumin.OneoffEventWeak`1">
             <summary>
-            弱引用一次性事件. TODO
+            弱引用一次性事件. TODO,弱引用没起作用
             </summary>
             <typeparam name="T"></typeparam>
         </member>
