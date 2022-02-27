@@ -64,13 +64,7 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                //EditorGUI.HelpBox(position, $"{label.text} 字段类型必须是string", MessageType.Error);
-                label.tooltip += $"{attribute.GetType().Name}失效！\n{label.text} 字段类型必须是string";
-                label.text = $"??? " + label.text;
-                var old = GUI.color;
-                GUI.color = warning;
-                EditorGUI.PropertyField(position, property, label);
-                GUI.color = old;
+                this.NotMatch(position, property, label);
             }
         }
 
@@ -126,11 +120,11 @@ namespace UnityEditor.Megumin
 
             if (cacheOption != null)
             {
-                DrawOptions((cacheOption, cacheOption),
-                    null,
-                    property.displayName,
-                    property,
+                this.DrawOptions(property,
                     valuePosition,
+                    (cacheOption, cacheOption),
+                    property.displayName,
+                    null,
                     label);
             }
             else
@@ -139,54 +133,6 @@ namespace UnityEditor.Megumin
             }
 
             return;
-        }
-
-        public void DrawOptions(
-            (string[] Show, string[] Value) myOptions,
-            string defaultValue,
-            string overrideName,
-            SerializedProperty property,
-            Rect valuePosition,
-            GUIContent label)
-        {
-            var current = property.stringValue;
-            var index = Array.IndexOf(myOptions.Value, current);
-
-            if (string.IsNullOrEmpty(current))
-            {
-                if (defaultValue == null)
-                {
-                    //新添加给个初值
-                    index = 0;
-                    property.stringValue = myOptions.Value[index];
-                }
-                else
-                {
-                    current = defaultValue;
-                    index = Array.IndexOf(myOptions.Value, current);
-                    property.stringValue = current;
-                }
-            }
-
-            if (index != -1)
-            {
-                if (!string.IsNullOrEmpty(overrideName) && overrideName.StartsWith("Element"))
-                {
-                    //容器内不显名字。
-                    index = EditorGUI.Popup(valuePosition, index, myOptions.Show);
-                }
-                else
-                {
-                    index = EditorGUI.Popup(valuePosition, overrideName, index, myOptions.Show);
-                }
-                property.stringValue = myOptions.Value[index];
-            }
-            else
-            {
-                label.tooltip += $"{attribute.GetType().Name}失效！\n当前值: {current} 无法解析为目标值。";
-                label.text = $"!! " + overrideName;
-                EditorGUI.PropertyField(valuePosition, property, label);
-            }
         }
     }
 }

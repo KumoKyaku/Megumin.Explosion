@@ -22,7 +22,7 @@ namespace UnityEditor.Megumin
 #endif
     internal sealed class AutoFileNameAttributeDrawer : PropertyDrawer
     {
-        static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);
+        
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType == SerializedPropertyType.String)
@@ -52,19 +52,8 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                NotWork(position, property, label);
+                this.NotMatch(position, property, label);
             }
-        }
-
-        private void NotWork(Rect position, SerializedProperty property, GUIContent label)
-        {
-            //EditorGUI.HelpBox(position, $"{label.text} 字段类型必须是string", MessageType.Error);
-            label.tooltip += $"{attribute.GetType().Name}失效！\n{label.text} 字段类型必须是String";
-            label.text = $"??? " + label.text;
-            var old = GUI.color;
-            GUI.color = warning;
-            EditorGUI.PropertyField(position, property, label);
-            GUI.color = old;
         }
     }
 }

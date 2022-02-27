@@ -288,16 +288,21 @@ MonoBehaviour:
   Enum2String: Lerp
   EnumQueue: 0
   FrameAndTime: 0
-  GUID: 2c00f63388424f245963897505c7b2d0
+  GUID: 011f30b31b027cd438bcb0f0e46a1564
   Indent: IndentTest
-  Member2String: ReadOnlyInInspector1
+  Member2String: ProtectedInInspector1
+  Member2String2:
+  - ReadOnlyInInspector1
+  - ReadOnlyInInspector2
+  - ReadOnlyInInspector3
   Option2String: Tset22
-  Option2String2: "\u653B\u51FB\u529B"
+  Option2String2: "\u9632\u5FA1\u529B"
   Path: 
   ProtectedInInspector:
   - ProtectedInInspector1
   - ProtectedInInspector2
   - ProtectedInInspector3
+  - ProtectedInInspector4
   ReadOnlyInInspector:
   - ReadOnlyInInspector1
   - ReadOnlyInInspector2

@@ -59,13 +59,7 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                //EditorGUI.HelpBox(position, $"{label.text} 字段类型必须是string", MessageType.Error);
-                label.tooltip += $"{nameof(Enum2StringAttribute)}失效！\n{label.text} 字段类型必须是string";
-                label.text = $"??? " + label.text;
-                var old = GUI.color;
-                GUI.color = warning;
-                EditorGUI.PropertyField(position, property, label);
-                GUI.color = old;
+                this.NotMatch(position, property, label);
             }
         }
 

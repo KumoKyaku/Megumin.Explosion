@@ -126,7 +126,7 @@ namespace UnityEditor.Megumin
 #endif
     internal sealed class Options2StringDrawer : PropertyDrawer
     {
-        public bool UseEnum = true;
+        public bool UseOption = true;
         static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -141,11 +141,11 @@ namespace UnityEditor.Megumin
                 //valuePosition.x += 20;
 
                 ///在后面画个小勾，切换字符串还是Enum
-                UseEnum = GUI.Toggle(togglePosition, UseEnum, GUIContent.none);
+                UseOption = GUI.Toggle(togglePosition, UseOption, GUIContent.none);
 
-                if (UseEnum)
+                if (UseOption)
                 {
-                    DrawEnum(property, label, valuePosition);
+                    DrawOptions(property, label, valuePosition);
                 }
                 else
                 {
@@ -158,22 +158,11 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                NotWork(position, property, label);
+                this.NotMatch(position, property, label);
             }
         }
 
-        private void NotWork(Rect position, SerializedProperty property, GUIContent label)
-        {
-            //EditorGUI.HelpBox(position, $"{label.text} 字段类型必须是string", MessageType.Error);
-            label.tooltip += $"{attribute.GetType().Name}失效！\n{label.text} 字段类型必须是String";
-            label.text = $"??? " + label.text;
-            var old = GUI.color;
-            GUI.color = warning;
-            EditorGUI.PropertyField(position, property, label);
-            GUI.color = old;
-        }
-
-        public void DrawEnum(SerializedProperty property, GUIContent label, Rect valuePosition)
+        public void DrawOptions(SerializedProperty property, GUIContent label, Rect valuePosition)
         {
             Options2StringAttribute enum2StringAttribute = (Options2StringAttribute)attribute;
             var overrideName = property.displayName;
@@ -206,45 +195,12 @@ namespace UnityEditor.Megumin
                     //menu.ShowAsContext();
                 }
 
-                string current = property.stringValue;
-
-                var index = Array.IndexOf(myOptions.Value, current);
-
-                if (string.IsNullOrEmpty(current))
-                {
-                    if (enum2StringAttribute.DefaultValue == null)
-                    {
-                        //新添加给个初值
-                        index = 0;
-                        property.stringValue = myOptions.Value[index];
-                    }
-                    else
-                    {
-                        current = enum2StringAttribute.DefaultValue;
-                        index = Array.IndexOf(myOptions.Value, current);
-                        property.stringValue = current;
-                    }
-                }
-
-                if (index != -1)
-                {
-                    if (overrideName.StartsWith("Element"))
-                    {
-                        //容器内不显名字。
-                        index = EditorGUI.Popup(valuePosition, index, myOptions.Show);
-                    }
-                    else
-                    {
-                        index = EditorGUI.Popup(valuePosition, overrideName, index, myOptions.Show);
-                    }
-                    property.stringValue = myOptions.Value[index];
-                }
-                else
-                {
-                    label.tooltip += $"{attribute.GetType().Name}失效！\n当前值: {current} 无法解析为{enum2StringAttribute.Type.Name}的常量。";
-                    label.text = $"!! " + overrideName;
-                    EditorGUI.PropertyField(valuePosition, property, label);
-                }
+                this.DrawOptions(property,
+                    valuePosition,
+                    myOptions,
+                    property.displayName,
+                    enum2StringAttribute.DefaultValue,
+                    label);
             }
             else
             {

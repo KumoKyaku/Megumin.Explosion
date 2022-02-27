@@ -143,7 +143,7 @@ namespace UnityEditor.Megumin
             }
             else
             {
-                EditorGUI.PropertyField(position, property, label);
+                this.NotMatch(position, property, label, "字段类型必须是Int");
             }
         }
     }
