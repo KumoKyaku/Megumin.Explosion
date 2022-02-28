@@ -23,9 +23,17 @@ namespace System.Reflection
                 {
                     if (m is FieldInfo field)
                     {
-                        var temp = field.GetValue(obj);
-                        result = temp;
-                        return true;
+                        try
+                        {
+                            var temp = field.GetValue(obj);
+                            result = temp;
+                            return true;
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                        
                     }
                     else if (m is PropertyInfo property)
                     {
@@ -35,9 +43,16 @@ namespace System.Reflection
                     }
                     else if (m is MethodInfo method)
                     {
-                        var temp = method.Invoke(obj, null);
-                        result = temp;
-                        return true;
+                        try
+                        {
+                            var temp = method.Invoke(obj, null);
+                            result = temp;
+                            return true;
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
                     }
                 }
             }
@@ -95,5 +110,7 @@ namespace System.Reflection
             GetConstString(type, out var _, out var _, out var res, sort);
             return res;
         }
+    
+
     }
 }

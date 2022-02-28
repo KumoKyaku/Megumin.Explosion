@@ -7,6 +7,9 @@ namespace UnityEditor.Megumin
 {
     public static class PropertyDrawerUtility_011f30b31b027cd438bcb0f0e46a1564
     {
+        static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);
+
+#if UNITY_EDITOR
         public static void DrawOptions(this PropertyDrawer propertyDrawer,
             SerializedProperty property,
             Rect valuePosition,
@@ -55,8 +58,6 @@ namespace UnityEditor.Megumin
             }
         }
 
-        static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);
-
         public static void NotMatch(this PropertyDrawer propertyDrawer,
             Rect position,
             SerializedProperty property,
@@ -71,6 +72,8 @@ namespace UnityEditor.Megumin
             EditorGUI.PropertyField(position, property, label);
             GUI.color = old;
         }
+#endif
+
     }
 }
 
