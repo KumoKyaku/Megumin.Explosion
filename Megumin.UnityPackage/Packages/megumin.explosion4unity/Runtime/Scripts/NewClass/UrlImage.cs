@@ -14,6 +14,7 @@ namespace UnityEditor.UI
 {
     using UnityEditor;
     using UnityEditor.Megumin;
+    using UnityEditor.SceneManagement;
 
     [CustomEditor(typeof(UrlImage), true)]
     public class UrlImageEditor : ImageEditor
@@ -40,34 +41,49 @@ namespace UnityEditor.UI
             this.DrawInspectorMethods();
         }
 
-        [MenuItem("GameObject/UI/Image -> UrlImage", false, 2002)]
-        static void AddUrlImage(MenuCommand menuCommand)
+        [MenuItem("GameObject/UI/Url Image", false, 2002)]
+        static public void AddUrlImage(MenuCommand menuCommand)
         {
-            if (menuCommand.context is GameObject go)
-            {
-                var iamge = go.GetComponent<Image>();
-                if (iamge)
-                {
-                    GameObject.DestroyImmediate(iamge);
-                    var urlimage = go.AddComponent<UrlImage>();
-                    go.AssetDataSetDirty();
-                }
-            }
+            menuCommand.AddUGUI<UrlImage>();
         }
 
-        [MenuItem("GameObject/UI/UrlImage -> Image", false, 2002)]
-        static void AddImage(MenuCommand menuCommand)
+        //%%%% Context menu for editor %%%%
+        [MenuItem("CONTEXT/Image/Convert To UrlImage", true)]
+        [MenuItem("CONTEXT/RawImage/Convert To UrlImage", true)]
+        private static bool _ConvertToUrlImage(MenuCommand command)
         {
-            if (menuCommand.context is GameObject go)
-            {
-                var orignal = go.GetComponent<UrlImage>();
-                if (orignal)
-                {
-                    GameObject.DestroyImmediate(orignal);
-                    var image = go.AddComponent<Image>();
-                    go.AssetDataSetDirty();
-                }
-            }
+            return command.CanConvertTo<UrlImage>();
+        }
+
+        [MenuItem("CONTEXT/Image/Convert To UrlImage", false)]
+        [MenuItem("CONTEXT/RawImage/Convert To UrlImage", false)]
+        private static void ConvertToUrlImage(MenuCommand command)
+        {
+            command.ConvertTo<UrlImage>();
+        }
+
+        [MenuItem("CONTEXT/UrlImage/Convert To Image", true)]
+        private static bool _ConvertToImage(MenuCommand command)
+        {
+            return command.CanConvertTo<Image>();
+        }
+
+        [MenuItem("CONTEXT/UrlImage/Convert To Image", false)]
+        private static void ConvertTolImage(MenuCommand command)
+        {
+            command.ConvertTo<Image>();
+        }
+
+        [MenuItem("CONTEXT/UrlImage/Convert To RawImage", true)]
+        private static bool _ConvertToRawImage(MenuCommand command)
+        {
+            return command.CanConvertTo<RawImage>();
+        }
+
+        [MenuItem("CONTEXT/UrlImage/Convert To RawImage", false)]
+        private static void ConvertTolRawImage(MenuCommand command)
+        {
+            command.ConvertTo<RawImage>();
         }
     }
 }

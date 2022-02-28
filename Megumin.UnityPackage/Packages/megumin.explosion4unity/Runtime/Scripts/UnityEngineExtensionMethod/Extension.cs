@@ -253,6 +253,76 @@ namespace UnityEngine
 #endif
             throw new NotImplementedException();
         }
+
+
+#if UNITY_EDITOR
+
+        /// <summary>
+        /// https://github.com/mob-sakai/SoftMaskForUGUI/blob/main/Scripts/Editor/EditorUtils.cs#L24
+        /// <para/>Verify whether it can be converted to the specified component.
+        /// </summary>
+        public static bool CanConvertTo<T>(this MenuCommand command) where T : MonoBehaviour
+        {
+            return command != null && command.context && command.context.GetType() != typeof(T);
+        }
+
+        /// <summary>
+        /// https://github.com/mob-sakai/SoftMaskForUGUI/blob/main/Scripts/Editor/EditorUtils.cs#L32
+        /// <para/>Convert to the specified component.
+        /// </summary>
+        public static void ConvertTo<T>(this MenuCommand command) where T : MonoBehaviour
+        {
+            if (command == null)
+            {
+                return;
+            }
+
+            var target = command.context as MonoBehaviour;
+            var so = new SerializedObject(target);
+            so.Update();
+
+            var oldEnable = target.enabled;
+            target.enabled = false;
+
+            // Find MonoScript of the specified component.
+            foreach (var script in Resources.FindObjectsOfTypeAll<MonoScript>())
+            {
+                if (script.GetClass() != typeof(T))
+                    continue;
+
+                // Set 'm_Script' to convert.
+                so.FindProperty("m_Script").objectReferenceValue = script;
+                so.ApplyModifiedProperties();
+                break;
+            }
+
+            (so.targetObject as MonoBehaviour).enabled = oldEnable;
+        }
+
+        public static void AddUGUI<T>(this MenuCommand command) where T : MonoBehaviour
+        {
+            System.Reflection.BindingFlags flags
+                = System.Reflection.BindingFlags.Public
+                | System.Reflection.BindingFlags.Instance
+                | System.Reflection.BindingFlags.NonPublic
+                | System.Reflection.BindingFlags.Static;
+
+            //太复杂了，直接反射
+
+            System.Reflection.Assembly assembly = typeof(UnityEditor.UI.ImageEditor).Assembly;
+            var mo = assembly.GetType("UnityEditor.UI.MenuOptions");
+            var DefaultEditorFactoryType = assembly.GetType("UnityEditor.UI.MenuOptions+DefaultEditorFactory");
+
+            UI.DefaultControls.IFactoryControls factory
+                = DefaultEditorFactoryType.GetField("Default", flags).GetValue(null) as UI.DefaultControls.IFactoryControls;
+            var method = mo.GetMethod("PlaceUIElementRoot", flags);
+
+            GameObject go = factory.CreateGameObject(typeof(T).Name, typeof(T));
+            method.Invoke(null, new object[] { go, command });
+        }
+
+#endif
+
     }
 }
 
