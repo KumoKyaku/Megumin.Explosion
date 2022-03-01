@@ -13,6 +13,19 @@ namespace Megumin
     /// <remarks>MeguminUtility名字太长,即时Utility和别的命名空间Utility冲突,使用全名称限定就可以了.</remarks>
     public static class Utility
     {
+        /// <summary>
+        /// 字段值T哦string时回调。用于一些无法重写ToString的类。
+        /// </summary>
+        public interface IToStringReflectionMemberValueToStringCallbackHandle
+        {
+            string ToStringReflection(object value);
+        }
+
+        /// <summary>
+        /// 唯一回调，ToStringReflection参数太多了直接静态属性好了。
+        /// </summary>
+        public static IToStringReflectionMemberValueToStringCallbackHandle MemberValueToStringCallbackHandle { get; set; }
+
         public static string ToStringReflection(Type type)
         {
             return ToStringReflection<object>(type, null);
@@ -198,7 +211,18 @@ namespace Megumin
             {
                 try
                 {
-                    detail += $"{retract}    {item.Name}  :  {item.GetValue(value)?.ToString()}\n";
+                    var valueObj = item.GetValue(value);
+                    string valueStr = "";
+                    if (MemberValueToStringCallbackHandle != null)
+                    {
+                        valueStr = MemberValueToStringCallbackHandle.ToStringReflection(valueObj);
+                    }
+                    else
+                    {
+                        valueStr = item.GetValue(value)?.ToString();
+                    }
+
+                    detail += $"{retract}    {item.Name}  :  {valueStr}\n";
                     detail += LogListDic(retract + "        ", item.GetValue(value));
                 }
                 catch (Exception e)
@@ -214,7 +238,18 @@ namespace Megumin
             {
                 try
                 {
-                    detail += $"{retract}    {item.Name}:    {item.GetValue(value)?.ToString()}\n";
+                    var valueObj = item.GetValue(value);
+                    string valueStr = "";
+                    if (MemberValueToStringCallbackHandle != null)
+                    {
+                        valueStr = MemberValueToStringCallbackHandle.ToStringReflection(valueObj);
+                    }
+                    else
+                    {
+                        valueStr = item.GetValue(value)?.ToString();
+                    }
+
+                    detail += $"{retract}    {item.Name}  :  {valueStr}\n";
                     detail += LogListDic(retract + "        ", item.GetValue(value));
                 }
                 catch (Exception e)

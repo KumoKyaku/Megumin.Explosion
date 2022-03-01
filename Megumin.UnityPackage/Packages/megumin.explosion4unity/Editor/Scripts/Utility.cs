@@ -210,6 +210,25 @@ public static partial class MeguminEditorUtility
 
         return restype;
     }
+
+    [InitializeOnLoadMethod]
+    static void AddRtostring()
+    {
+        Megumin.Utility.MemberValueToStringCallbackHandle = new UnityToStringCallbackHandle();
+    }
+
+    class UnityToStringCallbackHandle
+        : Megumin.Utility.IToStringReflectionMemberValueToStringCallbackHandle
+    {
+        public string ToStringReflection(object value)
+        {
+            if (value is UnityEngine.Object o)
+            {
+                return o.ToHyperlink(o.ToString());
+            }
+            return value?.ToString();
+        }
+    }
 }
 
 

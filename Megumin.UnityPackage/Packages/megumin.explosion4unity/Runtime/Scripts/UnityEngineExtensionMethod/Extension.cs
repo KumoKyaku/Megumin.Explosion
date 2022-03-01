@@ -15,7 +15,7 @@ using UnityEditor;
 
 namespace UnityEngine
 {
-    public static class MeguminExtension_2B5D73B2
+    public static partial class MeguminExtension_2B5D73B2
     {
         public static bool HasError(this UnityWebRequest uwr)
         {
@@ -254,6 +254,20 @@ namespace UnityEngine
             throw new NotImplementedException();
         }
 
+
+        public static string ToHyperlink(this UnityEngine.Object @object, string baseStr)
+        {
+#if UNITY_EDITOR
+            var link = $"<a href=\"{UnityEditor.AssetDatabase.GetAssetPath(@object)}\">{baseStr}</a>";
+            return link;
+#else
+            return baseStr;
+#endif
+        }
+    }
+
+    public static partial class MeguminExtension_2B5D73B2
+    {
 
 #if UNITY_EDITOR
 
