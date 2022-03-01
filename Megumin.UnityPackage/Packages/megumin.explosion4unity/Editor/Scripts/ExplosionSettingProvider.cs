@@ -87,6 +87,8 @@ public class ExplosionSettingProvider : SettingsProvider
     static SymbolValue DISABLE_SCROBJ_DRAWER = new SymbolValue("DISABLE_SCROBJ_DRAWER", false);
     static SymbolValue DISABLE_EDITORBUTTONATTRIBUTE = new SymbolValue("DISABLE_EDITORBUTTONATTRIBUTE", false);
     static SymbolValue DISABLE_MEGUMIN_PROPERTYDRWAER = new SymbolValue(nameof(DISABLE_MEGUMIN_PROPERTYDRWAER), false);
+    static SymbolValue MEGUMIN_DEBUG_IL2CPP = new SymbolValue(nameof(MEGUMIN_DEBUG_IL2CPP), false);
+    static SymbolValue MEGUMIN_DEBUG_HLUI = new SymbolValue(nameof(MEGUMIN_DEBUG_HLUI), false);
 
     static Value<ClonePathModeSetting.ClonePathMode> ClonePathMode
         = new Value<ClonePathModeSetting.ClonePathMode>("ClonePathMode", ClonePathModeSetting.ClonePathMode.ParentPath);
@@ -132,6 +134,9 @@ public class ExplosionSettingProvider : SettingsProvider
         EditorGUILayout.Space(5);
         EditorGUILayout.LabelField($"用于关闭所有特性PropertyDrawer,提高编辑器性能", TipStype);
         DISABLE_MEGUMIN_PROPERTYDRWAER.DrawSymbol(searchContext);
+
+        MEGUMIN_DEBUG_IL2CPP.DrawSymbol(searchContext);
+        MEGUMIN_DEBUG_HLUI.DrawSymbol(searchContext);
 
         if (GUILayout.Button("Foward"))
         {
