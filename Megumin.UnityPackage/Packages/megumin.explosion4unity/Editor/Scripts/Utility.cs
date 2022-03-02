@@ -222,8 +222,9 @@ public static partial class MeguminEditorUtility
     {
         public string ToStringReflection(object value)
         {
-            if (value is UnityEngine.Object o)
+            if (value is UnityEngine.Object o && o)
             {
+                //检查o，如果null 或者distroy missref调用超链接也没意义
                 return o.ToHyperlink(o.ToString());
             }
             return value?.ToString();
