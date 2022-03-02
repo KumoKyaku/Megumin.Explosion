@@ -219,11 +219,11 @@ namespace Megumin
                     }
                     else
                     {
-                        valueStr = item.GetValue(value)?.ToString();
+                        valueStr = valueObj?.ToString();
                     }
 
                     detail += $"{retract}    {item.Name}  :  {valueStr}\n";
-                    detail += LogListDic(retract + "        ", item.GetValue(value));
+                    detail += LogListDic(retract + "        ", valueObj);
                 }
                 catch (Exception e)
                 {
@@ -246,11 +246,11 @@ namespace Megumin
                     }
                     else
                     {
-                        valueStr = item.GetValue(value)?.ToString();
+                        valueStr = valueObj?.ToString();
                     }
 
                     detail += $"{retract}    {item.Name}  :  {valueStr}\n";
-                    detail += LogListDic(retract + "        ", item.GetValue(value));
+                    detail += LogListDic(retract + "        ", valueObj);
                 }
                 catch (Exception e)
                 {
