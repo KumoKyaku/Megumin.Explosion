@@ -71,7 +71,8 @@ namespace UnityEditor.Megumin
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType == SerializedPropertyType.Integer)
+            if (property.propertyType == SerializedPropertyType.Integer
+                || property.propertyType == SerializedPropertyType.Float)
             {
                 var propertyPosition = position;
                 propertyPosition.width -= 100;
@@ -167,28 +168,73 @@ namespace UnityEditor.Megumin
                         break;
                     case FrameAndTimeAttribute.SaveData.Time:
                         {
-                            var mstime = property.intValue;
-                            var frame = (int)(mstime * rate / 1000 + 0.5f);
-
                             if (isInputFrameMode)
                             {
-                                //帧数输入模式
-                                using (new EditorGUI.DisabledGroupScope(true))
+                                switch (attri.ShowMode)
                                 {
-                                    EditorGUI.PropertyField(propertyPosition, property, label);
-                                }
+                                    case FrameAndTimeAttribute.TimeUnit.Second:
+                                        {
+                                            var mstime = property.floatValue;
+                                            var frame = (int)(mstime * rate  + 0.5f);
+                                            //帧数输入模式
+                                            using (new EditorGUI.DisabledGroupScope(true))
+                                            {
+                                                EditorGUI.PropertyField(propertyPosition, property, label);
+                                            }
 
-                                frame = EditorGUI.IntField(exShow, frame);
-                                mstime = (int)((float)frame * 1000 / rate + 0.5f);
-                                property.intValue = mstime;
+                                            frame = EditorGUI.IntField(exShow, frame);
+                                            mstime = (float)frame / rate;
+                                            property.floatValue = mstime;
+                                        }
+                                        break;
+                                    case FrameAndTimeAttribute.TimeUnit.Millisecond:
+                                        {
+                                            var mstime = property.intValue;
+                                            var frame = (int)(mstime * rate / 1000 + 0.5f);
+                                            //帧数输入模式
+                                            using (new EditorGUI.DisabledGroupScope(true))
+                                            {
+                                                EditorGUI.PropertyField(propertyPosition, property, label);
+                                            }
+
+                                            frame = EditorGUI.IntField(exShow, frame);
+                                            mstime = (int)((float)frame * 1000 / rate + 0.5f);
+                                            property.intValue = mstime;
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                             else
                             {
                                 //时间输入模式
-                                EditorGUI.PropertyField(propertyPosition, property, label);
-                                using (new EditorGUI.DisabledGroupScope(true))
+                                switch (attri.ShowMode)
                                 {
-                                    EditorGUI.IntField(exShow, frame);
+                                    case FrameAndTimeAttribute.TimeUnit.Second:
+                                        {
+                                            EditorGUI.PropertyField(propertyPosition, property, label);
+                                            using (new EditorGUI.DisabledGroupScope(true))
+                                            {
+                                                var mstime = property.floatValue;
+                                                var frame = (int)(mstime * rate + 0.5f);
+                                                EditorGUI.IntField(exShow, frame);
+                                            }
+                                        }
+                                        break;
+                                    case FrameAndTimeAttribute.TimeUnit.Millisecond:
+                                        {
+                                            EditorGUI.PropertyField(propertyPosition, property, label);
+                                            using (new EditorGUI.DisabledGroupScope(true))
+                                            {
+                                                var mstime = property.intValue;
+                                                var frame = (int)(mstime * rate / 1000 + 0.5f);
+                                                EditorGUI.IntField(exShow, frame);
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        break;
                                 }
                             }
                         }
