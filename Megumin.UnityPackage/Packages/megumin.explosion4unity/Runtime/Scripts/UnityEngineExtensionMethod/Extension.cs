@@ -21,7 +21,7 @@ namespace UnityEngine
         {
             bool error = false;
 #if UNITY_2020_1_OR_NEWER
-            error = uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.ProtocolError;
+            error = uwr.result != UnityWebRequest.Result.Success;
 #else
             error = uwr.isNetworkError || uwr.isHttpError;
 #endif

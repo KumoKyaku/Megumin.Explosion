@@ -96,6 +96,7 @@ namespace UnityEngine.UI
     [AddComponentMenu("UI/UrlImage", 12)]
     public class UrlImage : Image
     {
+        [HelpBox("PlayerSettings Allow downloads over HTTP* ?")]
         public string url = "http://i1.hdslb.com/bfs/archive/c3459e54c2373a8b4eae1c5816157f9b7bace726.jpg";
         /// <summary>
         /// 图片缓存目录
@@ -162,18 +163,35 @@ namespace UnityEngine.UI
             {
                 using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(url))
                 {
-                    yield return uwr.SendWebRequest();
-
                     bool error = false;
+                    UnityWebRequestAsyncOperation swr = null;
+
+                    try
+                    {
+                        swr = uwr.SendWebRequest();
+                    }
+                    catch (System.Exception e)
+                    {
+                        error = true;
+                        Debug.LogError($"发送下载urlImage请求失败，{e.Message}。是否在PlayerSettings Allow downloads over HTTP* ?  [{this.name}:{url}] \n {e}");
+                    }
+
+                    if (error)
+                    {
+                        yield break;
+                    }
+
+                    yield return swr;
+
 #if UNITY_2020_1_OR_NEWER
-                    error = uwr.result == Result.ConnectionError || uwr.result == Result.ProtocolError;
+                    error = uwr.result != Result.Success;
 #else
                     error = uwr.isNetworkError || uwr.isHttpError;
 #endif
 
                     if (error)
                     {
-                        Debug.LogError($"下载urlImage失败，{uwr.error}。");
+                        Debug.LogError($"下载urlImage失败，{uwr.error}。  [{this.name}:{url}]");
                     }
                     else
                     {
