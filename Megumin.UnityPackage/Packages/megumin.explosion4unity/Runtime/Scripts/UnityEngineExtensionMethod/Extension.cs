@@ -271,6 +271,38 @@ namespace UnityEngine
 
 #if UNITY_EDITOR
 
+        public static void ConvertTo(this MonoBehaviour mono, MonoScript script)
+        {
+            if (!script)
+            {
+                Debug.LogError("Target MonoScript is Null!");
+            }
+
+            if (!mono)
+            {
+                Debug.LogError("MonoBehaviour is Null!");
+            }
+
+            var so = new SerializedObject(mono);
+            so.Update();
+
+            string opName = $"{mono.GetType().FullName} -> {script.GetClass().FullName}";
+            
+            //Undo 不起作用疯狂报错。
+            Undo.RegisterCompleteObjectUndo(so.targetObject, opName);
+
+            var oldEnable = mono.enabled;
+            mono.enabled = false;
+
+            Debug.Log(opName.Html(HexColor.FrenchViolet));
+
+            // Set 'm_Script' to convert.
+            so.FindProperty("m_Script").objectReferenceValue = script;
+            so.ApplyModifiedProperties();
+
+            (so.targetObject as MonoBehaviour).enabled = oldEnable;
+        }
+
         /// <summary>
         /// https://github.com/mob-sakai/SoftMaskForUGUI/blob/main/Scripts/Editor/EditorUtils.cs#L24
         /// <para/>Verify whether it can be converted to the specified component.
@@ -291,12 +323,7 @@ namespace UnityEngine
                 return;
             }
 
-            var target = command.context as MonoBehaviour;
-            var so = new SerializedObject(target);
-            so.Update();
-
-            var oldEnable = target.enabled;
-            target.enabled = false;
+            MonoScript targetScript = null;
 
             // Find MonoScript of the specified component.
             foreach (var script in Resources.FindObjectsOfTypeAll<MonoScript>())
@@ -304,13 +331,12 @@ namespace UnityEngine
                 if (script.GetClass() != typeof(T))
                     continue;
 
-                // Set 'm_Script' to convert.
-                so.FindProperty("m_Script").objectReferenceValue = script;
-                so.ApplyModifiedProperties();
+                targetScript = script;
                 break;
             }
 
-            (so.targetObject as MonoBehaviour).enabled = oldEnable;
+            var target = command.context as MonoBehaviour;
+            target.ConvertTo(targetScript);
         }
 
         public static void AddUGUI<T>(this MenuCommand command) where T : MonoBehaviour
@@ -335,6 +361,105 @@ namespace UnityEngine
             method.Invoke(null, new object[] { go, command });
         }
 
+        [MenuItem("CONTEXT/Component/Convert Inheritance Type", true)]
+        private static bool CanConvertInheritanceType(MenuCommand command)
+        {
+            if (command == null)
+            {
+                return false;
+            }
+
+            var target = command.context as MonoBehaviour;
+            if (!target)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        [MenuItem("CONTEXT/Component/Convert Inheritance Type", false)]
+        private static void ConvertInheritanceType(MenuCommand command)
+        {
+            if (command == null)
+            {
+                return;
+            }
+
+            var target = command.context as MonoBehaviour;
+            if (!target)
+            {
+                return ;
+            }
+            var myType = target.GetType();
+
+            List<(Type Type, MonoScript Script)> child = new List<(Type Type, MonoScript Script)>();
+            List<(Type Type, MonoScript Script)> parent = new List<(Type Type, MonoScript Script)>();
+
+            var monoBehaviour = typeof(MonoBehaviour);
+
+            // Find MonoScript of the specified component.
+            foreach (var script in Resources.FindObjectsOfTypeAll<MonoScript>())
+            {
+                var tempType = script.GetClass();
+                if (tempType == null
+                    || tempType.IsAbstract
+                    || tempType.IsGenericType)
+                {
+                    continue;
+                }
+
+                if (!tempType.IsSubclassOf(monoBehaviour))
+                {
+                    continue;
+                }
+
+                if (myType.IsSubclassOf(tempType))
+                {
+                    parent.Add((tempType, script));
+                    continue;
+                }
+
+                if (tempType.IsSubclassOf(myType))
+                {
+                    child.Add((tempType, script));
+                    continue;
+                }
+            }
+
+            Debug.Log("Prepare Conver Monoscript Type......");
+            var menu = new GenericMenu();
+            void OnClick(object node)
+            {
+                if (node is ValueTuple<Type, MonoScript> tree)
+                {
+                    target.ConvertTo(tree.Item2);
+                }
+            }
+
+            foreach (var item in parent)
+            {
+                menu.AddItem(new GUIContent(item.Type.FullName), false, OnClick, item);
+            }
+
+            if (parent.Count > 0 && child.Count > 0)
+            {
+                menu.AddItem(new GUIContent("---------"), false, OnClick, null);
+            }
+
+            foreach (var item in child)
+            {
+                menu.AddItem(new GUIContent(item.Type.FullName), false, OnClick, item);
+            }
+            var rect = EditorGUIUtility.GetMainWindowPosition();
+            //Debug.Log(rect.ToStringReflection());
+            //rect.x = -1920 /2;
+            //rect.y = -540;
+            //rect.width = 500;
+            //rect.height = 500;
+            //Debug.Log(rect.ToStringReflection());
+            menu.DropDown(rect);
+        }
 #endif
 
     }
