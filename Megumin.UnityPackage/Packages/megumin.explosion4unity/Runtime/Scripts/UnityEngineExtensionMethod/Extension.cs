@@ -287,7 +287,7 @@ namespace UnityEngine
             so.Update();
 
             string opName = $"{mono.GetType().FullName} -> {script.GetClass().FullName}";
-            
+
             //Undo 不起作用疯狂报错。
             Undo.RegisterCompleteObjectUndo(so.targetObject, opName);
 
@@ -389,7 +389,7 @@ namespace UnityEngine
             var target = command.context as MonoBehaviour;
             if (!target)
             {
-                return ;
+                return;
             }
             var myType = target.GetType();
 
@@ -451,7 +451,41 @@ namespace UnityEngine
             {
                 menu.AddItem(new GUIContent(item.Type.FullName), false, OnClick, item);
             }
-            var rect = EditorGUIUtility.GetMainWindowPosition();
+
+            var rect = Rect.zero;
+
+            rect = EditorGUIUtility.GetMainWindowPosition();
+            //Debug.Log(rect.ToString());
+
+            //rect = EditorGUIUtility.PointsToPixels(rect);
+            //Debug.Log(rect.ToString());
+
+            var w1 = EditorWindow.focusedWindow;
+            if (w1)
+            {
+                var m = w1.position;
+                var r2 = GUIUtility.ScreenToGUIRect(m);
+                //Debug.Log(r2.ToString());
+                rect = r2;
+            }
+
+            //var w2 = EditorWindow.mouseOverWindow;
+            //if (w2)
+            //{
+            //    var m = w2.position;
+            //    var r2 = GUIUtility.ScreenToGUIRect(m);
+            //    //Debug.Log(r2.ToString());
+            //    rect = r2;
+            //}
+
+            //rect.y = rect.y - rect.height / 2;
+            rect.y = rect.y - 100;
+            //rect.x = m.x - rect.x;
+            //Debug.Log(rect.ToString());
+
+            //var v3 = Input.mousePosition; //无效
+            //Debug.Log(v3.ToString());
+
             //Debug.Log(rect.ToStringReflection());
             //rect.x = -1920 /2;
             //rect.y = -540;
