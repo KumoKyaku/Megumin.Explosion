@@ -8,6 +8,8 @@ using Megumin;
 using System;
 using System.Runtime.CompilerServices;
 using UnityEngine.Profiling;
+using System.Runtime.InteropServices;
+using System.Windows; // Or use whatever point class you like for the implicit cast operator
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -464,6 +466,14 @@ namespace UnityEngine
             if (w1)
             {
                 var m = w1.position;
+
+                m.y = m.y - 100;
+
+                if (Win32CursorPoint.TryGet(out var point))
+                {
+                    m.y = point.y - rect.height;
+                }
+
                 var r2 = GUIUtility.ScreenToGUIRect(m);
                 //Debug.Log(r2.ToString());
                 rect = r2;
@@ -479,7 +489,6 @@ namespace UnityEngine
             //}
 
             //rect.y = rect.y - rect.height / 2;
-            rect.y = rect.y - 100;
             //rect.x = m.x - rect.x;
             //Debug.Log(rect.ToString());
 
@@ -499,4 +508,70 @@ namespace UnityEngine
     }
 }
 
+namespace Megumin
+{
+    /// <summary>
+    /// https://stackoverflow.com/questions/1316681/getting-mouse-position-in-c-sharp
+    /// </summary>
+    public struct Win32CursorPoint
+    {
+        public Win32CursorPoint(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int x;
+        public int y;
+
+        /// <summary>
+        /// Struct representing a point.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+
+            public static implicit operator Win32CursorPoint(POINT point)
+            {
+                return new Win32CursorPoint(point.X, point.Y);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the cursor's position, in screen coordinates.
+        /// </summary>
+        /// <see>See MSDN documentation for further information.</see>
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out POINT lpPoint);
+
+        public static Win32CursorPoint GetCursorPosition()
+        {
+            POINT lpPoint;
+
+#if UNITY_EDITOR_WIN
+            GetCursorPos(out lpPoint);
+            // NOTE: If you need error handling
+            // bool success = GetCursorPos(out lpPoint);
+            // if (!success)
+
+#endif
+
+            return lpPoint;
+        }
+
+        public static bool TryGet(out Win32CursorPoint point)
+        {
+            POINT lpPoint;
+            bool success = false;
+#if UNITY_EDITOR_WIN
+            success = GetCursorPos(out lpPoint);
+#endif
+            point = lpPoint;
+            return success;
+        }
+    }
+
+}
 
