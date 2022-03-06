@@ -98,6 +98,18 @@ public static class MonoBehaviourExtension_DA182CC20A33453FA684CD22CE5B97DC
         return false;
     }
 
+    public static bool ToggleEnabled(this Behaviour behaviour)
+    {
+        if (behaviour)
+        {
+            var res = !behaviour.enabled;
+            behaviour.enabled = res;
+            return res;
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// Reset方法中查找
     /// </summary>

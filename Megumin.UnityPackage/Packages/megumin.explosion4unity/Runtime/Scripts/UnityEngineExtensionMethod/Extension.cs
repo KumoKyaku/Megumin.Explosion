@@ -548,7 +548,7 @@ namespace Megumin
 
         public static Win32CursorPoint GetCursorPosition()
         {
-            POINT lpPoint;
+            POINT lpPoint = default;
 
 #if UNITY_EDITOR_WIN
             GetCursorPos(out lpPoint);
@@ -563,7 +563,7 @@ namespace Megumin
 
         public static bool TryGet(out Win32CursorPoint point)
         {
-            POINT lpPoint;
+            POINT lpPoint = default;
             bool success = false;
 #if UNITY_EDITOR_WIN
             success = GetCursorPos(out lpPoint);
