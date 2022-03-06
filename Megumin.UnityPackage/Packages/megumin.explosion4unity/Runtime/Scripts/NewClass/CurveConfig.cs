@@ -7,7 +7,7 @@ namespace Megumin
 {
     public interface ICurveable<out T>
     {
-        T Evaluate(float time);
+        T Evaluate(float time, bool enabled = true, float defaultValue = 0f);
     }
 
     [Serializable]
@@ -23,14 +23,27 @@ namespace Megumin
         [Range(-20, 20)]
         public float YOffset = 0;
 
-        public float Evaluate(float time)
+        public float Evaluate(float time, bool enabled = true, float defaultValue = 0f)
         {
+            if (!enabled)
+            {
+                return defaultValue;
+            }
+
             var x = time / XScale;
             x += XOffset;
             var y = Curve?.Evaluate(x) ?? 0f;
             y += YOffset;
             y *= YScale;
             return y;
+        }
+
+        public float this[float time, bool enabled = true, float defaultValue = 0f]
+        {
+            get
+            {
+                return Evaluate(time, enabled, defaultValue);
+            }
         }
     }
 }
