@@ -34,6 +34,16 @@ namespace Megumin
     {
         [FrameAndTime]
         public int Value;
+
+        //public bool CheckAlive(long startFID, long frameID)
+        //{
+        //    if (Enabled)
+        //    {
+        //        return element.Config.CacheVaildFrame.Value + element.WaitStartFID
+        //                                    >= frameID
+        //    }
+        //    return true;
+        //}
     }
 
     [Serializable]
