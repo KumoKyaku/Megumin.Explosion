@@ -72,4 +72,6 @@ public class TestAttribute : MonoBehaviour
 
     [Snap(60)]
     public int Snap = 60;
+
+    public ClampedValue<int> ClampedValue = new ClampedValue<int>() { Max = 99,Min = 1 };
 }
