@@ -21,7 +21,7 @@ namespace Megumin
         /// <summary>
         /// <inheritdoc cref="Nullable{T}.HasValue"/>
         /// </summary>
-        public bool HasValue => Enabled;
+        public virtual bool HasValue => Enabled;
 
         public static implicit operator bool(Enableable activeable)
         {
@@ -73,6 +73,21 @@ namespace Megumin
         public static implicit operator T(Enableable<T> activeable)
         {
             return activeable.Value;
+        }
+
+        public override bool HasValue
+        {
+            get
+            {
+                if (!Enabled)
+                {
+                    return false;
+                }
+                else
+                {
+                    return Value != null;
+                }
+            }
         }
 
         //public static implicit operator Nullable<T>(Enableable<T> activeable)
