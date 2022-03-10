@@ -9,6 +9,8 @@ namespace Megumin
         public Transform From;
         public Transform To;
         public Material Material;
+        public bool EnableDebugDraw = true;
+
         // Start is called before the first frame update
         void Start()
         {

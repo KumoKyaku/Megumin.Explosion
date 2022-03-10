@@ -51,9 +51,13 @@ namespace Megumin
             {
                 if (StrValue != Value.ToString())
                 {
-                    Debug.LogWarning("枚举值类型变化，保存的枚举值可能与之前不一致");
+                    Debug.LogWarning($"枚举值类型变化，保存的枚举值可能与之前不一致。Type:{typeof(T).Name}  StrValue:{StrValue} != Value:{Value}");
+                    if (Application.isPlaying)
+                    {
+                        //运行时以Str为准。
+                        Value = temp;
+                    }
                 }
-
             }
             else
             {
