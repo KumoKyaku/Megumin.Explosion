@@ -27,32 +27,12 @@ namespace Megumin
     /// 用例3: 多个地方各自不同禁用某些物品使用,类型是FlagEnum,每处禁用的物品类型有重叠,
     /// 这时用一个枚举值来存共有哪些禁用,就无法实现需求.
     /// </remarks>
-    public interface IMultipleControlable<K, V>
+    public interface IMultipleControlable<K, V> : IMultiple<K, V>
     {
-        /// <summary>
-        /// 当前值
-        /// </summary>
-        V Current { get; }
         /// <summary>
         /// 当前值的Key,可能为无效值,看计算方式.
         /// </summary>
         K CurrentKey { get; }
-
-        /// <summary>
-        /// 默认值Key
-        /// </summary>
-        K DefaultKey { get; }
-        /// <summary>
-        /// 默认值
-        /// </summary>
-        /// <remarks>有必要存在,有的需求要设定的值可能就是默认值取反</remarks>
-        V DefaultValue { get; }
-
-        /// <summary>
-        /// 值发生改变
-        /// </summary>
-        [Obsolete("Use ValueChangedKV")]
-        event OnValueChanged<V> ValueChanged;
 
         /// <summary>
         /// 仅当值发生改变
@@ -90,23 +70,21 @@ namespace Megumin
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
     /// <typeparam name="C">构造中使用参数类型,初始化排序缓存时使用的参数</typeparam>
-    public abstract class MultipleControlBase<K, V, C> : IMultipleControlable<K, V>
+    public abstract class MultipleControlBase<K, V, C> :
+        Multiple<K, V>,
+        IMultipleControlable<K, V>
     {
         /// <summary>
         /// TODO,使用最大堆最小堆优化
         /// </summary>
-        protected readonly Dictionary<K, V> Controllers = new Dictionary<K, V>();
-        [Obsolete("Use ValueChangedKV")]
-        public event OnValueChanged<V> ValueChanged;
+        protected Dictionary<K, V> Controllers => ElementDic;
         public event OnValueChanged<(K Key, V Value)> ValueChangedKV;
         public event OnValueChanged<(K Key, V Value)> KeyValueChanged;
 
         protected readonly K defaultKey;
         protected readonly V defaultValue;
-        public K DefaultKey => defaultKey;
-        public V DefaultValue => defaultValue;
-        public V Current { get; protected set; }
-        public K CurrentKey { get; protected set; }
+        public override K DefaultKey => defaultKey;
+        public override V DefaultValue => defaultValue;
 
         /// <summary>
         /// 
@@ -151,33 +129,17 @@ namespace Megumin
         }
 
 
-        public V Control(K key, V value)
-        {
-            Controllers[key] = value;
-            ApplyValue();
-            return Current;
-        }
+        public V Control(K key, V value) => Add(key, value);
 
 
-        public V Cancel(K key, V value = default)
-        {
-            Controllers.Remove(key);
-            ApplyValue();
-            return Current;
-        }
+        public V Cancel(K key, V value = default) => Remove(key, value);
 
-        public V CancelAll()
-        {
-            Controllers.Clear();
-            Controllers[DefaultKey] = DefaultValue;
-            ApplyValue();
-            return Current;
-        }
+        public V CancelAll() => RemoveAll();
 
         /// <summary>
         /// 应用值,使用<see cref="EqualityComparer{T}"/>比较是否发生改变,优化了装箱.
         /// </summary>
-        protected virtual void ApplyValue()
+        protected override void ApplyValue()
         {
             var oldValue = Current;
             var oldKey = CurrentKey;
@@ -209,11 +171,6 @@ namespace Megumin
             }
         }
 
-        protected void OnValueChanged(V newValue, V oldValue)
-        {
-            ValueChanged?.Invoke(newValue, oldValue);
-        }
-
         /// <summary>
         /// 包装一下,不然子类不能调用. Event不带On,方法带On.
         /// </summary>
@@ -228,13 +185,6 @@ namespace Megumin
         {
             KeyValueChanged?.Invoke(newValue, oldValue);
         }
-
-        /// <summary>
-        /// 计算新的值, 返回值也可以用KeyValuePair,没什么区别.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
-        protected abstract (K Key, V Value) CalNewValue();
 
         /// <summary>
         /// 返回当前值

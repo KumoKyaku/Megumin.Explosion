@@ -450,6 +450,25 @@
             <param name="value"></param>
             <returns></returns>
         </member>
+        <member name="T:Megumin.Multiple`2">
+            <summary>
+            <inheritdoc cref="T:Megumin.IMultiple`2"/>
+            </summary>
+            <typeparam name="K"></typeparam>
+            <typeparam name="V"></typeparam>
+        </member>
+        <member name="M:Megumin.Multiple`2.CalNewValue">
+            <summary>
+            计算新的值, 返回值也可以用KeyValuePair,没什么区别.
+            </summary>
+            <returns></returns>
+            <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
+        </member>
+        <member name="M:Megumin.Multiple`2.op_Implicit(Megumin.Multiple{`0,`1})~`1">
+            <summary>
+            返回当前值
+            </summary>
+        </member>
         <member name="T:Megumin.IMultipleControlable`2">
             <summary>
             多重值控制器。
@@ -475,30 +494,9 @@
             这时用一个枚举值来存共有哪些禁用,就无法实现需求.
             </remarks>
         </member>
-        <member name="P:Megumin.IMultipleControlable`2.Current">
-            <summary>
-            当前值
-            </summary>
-        </member>
         <member name="P:Megumin.IMultipleControlable`2.CurrentKey">
             <summary>
             当前值的Key,可能为无效值,看计算方式.
-            </summary>
-        </member>
-        <member name="P:Megumin.IMultipleControlable`2.DefaultKey">
-            <summary>
-            默认值Key
-            </summary>
-        </member>
-        <member name="P:Megumin.IMultipleControlable`2.DefaultValue">
-            <summary>
-            默认值
-            </summary>
-            <remarks>有必要存在,有的需求要设定的值可能就是默认值取反</remarks>
-        </member>
-        <member name="E:Megumin.IMultipleControlable`2.ValueChanged">
-            <summary>
-            值发生改变
             </summary>
         </member>
         <member name="E:Megumin.IMultipleControlable`2.ValueChangedKV">
@@ -540,7 +538,7 @@
             <typeparam name="V"></typeparam>
             <typeparam name="C">构造中使用参数类型,初始化排序缓存时使用的参数</typeparam>
         </member>
-        <member name="F:Megumin.MultipleControlBase`3.Controllers">
+        <member name="P:Megumin.MultipleControlBase`3.Controllers">
             <summary>
             TODO,使用最大堆最小堆优化
             </summary>
@@ -573,13 +571,6 @@
             </summary>
             <param name="newValue"></param>
             <param name="oldValue"></param>
-        </member>
-        <member name="M:Megumin.MultipleControlBase`3.CalNewValue">
-            <summary>
-            计算新的值, 返回值也可以用KeyValuePair,没什么区别.
-            </summary>
-            <returns></returns>
-            <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
         </member>
         <member name="M:Megumin.MultipleControlBase`3.op_Implicit(Megumin.MultipleControlBase{`0,`1,`2})~`1">
             <summary>
@@ -687,6 +678,28 @@
             去并集
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Megumin.MultipleValue`2">
+            <summary>
+            复合值，一个值的某些构成是有限时间的。
+            和IMultipleControlable很像，但是不排序，是求和。
+            <para></para>
+            需求一：最初需求是被弹反给自己增加一个被弹反计数，这一个有效期5秒，如果计数大于3，进入被弹反硬直。
+            这导致弹反计数中，每个弹反点有自己的生命周期，计算总和十分麻烦。
+            <para></para>
+            需求二：护盾由各种护盾构成，蓝盾黄甲，算是生命值，每个构成项可以被消耗。
+            如果HP500，蓝盾200，黄甲300，遇到 350点伤害，消耗掉蓝盾100，黄甲100，HP150。
+            <para></para>
+            需求三：仇恨与威胁值系统，WOW中一个节能产生的仇恨是有时间的，过了时间会消退，和需求一同理。
+            如果通过buff实现，buff数量暴增。
+            计时器是可以实现的，但是容易出bug，对象已经被销毁等。中途整个威胁值已经被重置等，先加后减问题非常多。
+            当前思路是给每个构成项一个key，减去移除的时候识别这个key是不是有效。如果已经移除过或整体重置，不会重复减去。
+            </summary>
+        </member>
+        <member name="T:Megumin.IntMultipleValue`1">
+            <summary>
+            <inheritdoc/>
+            </summary>
         </member>
         <member name="T:Megumin.NotInitException">
             <summary>
@@ -1233,6 +1246,51 @@
             <param name="buttons"></param>
             <param name="options"></param>
             <returns></returns>
+        </member>
+        <member name="T:Megumin.IMultiple`2">
+            <summary>
+            对象有多个部分构成
+            </summary>
+        </member>
+        <member name="P:Megumin.IMultiple`2.DefaultKey">
+            <summary>
+            默认值Key
+            </summary>
+        </member>
+        <member name="P:Megumin.IMultiple`2.DefaultValue">
+            <summary>
+            默认值
+            </summary>
+            <remarks>有必要存在,有的需求要设定的值可能就是默认值取反</remarks>
+        </member>
+        <member name="P:Megumin.IMultiple`2.Current">
+            <summary>
+            当前值
+            </summary>
+        </member>
+        <member name="M:Megumin.IMultiple`2.Add(`0,`1)">
+            <summary>
+            加入一个构成项
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Megumin.IMultiple`2.Remove(`0,`1)">
+            <summary>
+            移除一个构成项
+            </summary>
+            <param name="key"></param>
+            <param name="value">因为总是复制粘贴Add,参数个数对不上,这个值没有使用,只是为了对齐参数个数.</param>
+        </member>
+        <member name="M:Megumin.IMultiple`2.RemoveAll">
+            <summary>
+            取消除默认值以外的所有构成项
+            </summary>
+        </member>
+        <member name="E:Megumin.IMultiple`2.ValueChanged">
+            <summary>
+            值发生改变
+            </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Megumin.IMatcher`2" -->
         <member name="M:Megumin.IMatcher`2.Match(`0,`1)">
