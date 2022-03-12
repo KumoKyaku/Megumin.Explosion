@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a814817e7f98d8642b7de2ffa6d42fff, type: 3}
   m_Name: Loger
   m_EditorClassIdentifier: 
+  Color: {r: 0, g: 0, b: 0, a: 0}
+  Name: 
+  level: 0
+  TestMetaGUID: 47d7f52d91aabce4ea156147269f7ad5

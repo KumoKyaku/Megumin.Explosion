@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8924700087206059370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8924700087206059371}
+  - component: {fileID: 8924700087206059368}
+  m_Layer: 0
+  m_Name: TestAttribute
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8924700087206059371
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8924700087206059370}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8924700087206059368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8924700087206059370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f71c7a18713159c40bd4df56cfbec4ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AreaMask: -1
+  AutoFileName: TestAttribute
+  TestMetaGUID: 882e468d77cb4d241b4bdecc9b974f0f
+  EnableAttribut:
+    Enabled: 0
+    Test: 1
+  Enum2String: Lerp
+  EnumQueue: 0
+  FrameAndTime: 0
+  GUID: 011f30b31b027cd438bcb0f0e46a1564
+  Indent: IndentTest
+  Member2String: ProtectedInInspector1
+  Member2String2:
+  - ReadOnlyInInspector1
+  - ReadOnlyInInspector2
+  - ReadOnlyInInspector3
+  Option2String: Tset22
+  Option2String2: "\u9632\u5FA1\u529B"
+  Path: 
+  ProtectedInInspector:
+  - ProtectedInInspector1
+  - ProtectedInInspector2
+  - ProtectedInInspector3
+  - ProtectedInInspector4
+  ReadOnlyInInspector:
+  - ReadOnlyInInspector1
+  - ReadOnlyInInspector2
+  - ReadOnlyInInspector3
+  Snap: 60
+  ClampedValue:
+    Min: 1
+    Max: 99

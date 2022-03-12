@@ -18,6 +18,9 @@ public class TestAttribute : MonoBehaviour
     [AutoFileName]
     public string AutoFileName;
 
+    [MetaGUID]
+    public string TestMetaGUID;
+
     //[ColorSpacer(4, 2, 300, "#E30022")]
 
     [Enableable]
