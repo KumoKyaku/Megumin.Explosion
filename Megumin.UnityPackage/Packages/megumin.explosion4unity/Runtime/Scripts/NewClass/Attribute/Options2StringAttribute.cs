@@ -17,8 +17,8 @@ namespace Megumin
 
         public string DefaultValue { get; set; }
 
-        static readonly Dictionary<Type, (string[] Show, string[] Value)> Cache
-           = new Dictionary<Type, (string[] Show, string[] Value)>();
+        static readonly Dictionary<Type, (string[] Show, string[] Value, string[] ShowWithTypeName)> Cache
+           = new Dictionary<Type, (string[] Show, string[] Value, string[] ShowWithTypeName)>();
         public Options2StringAttribute(Type type, string defaultValue = null, bool sort = true, string overrideName = "")
         {
             Type = type;
@@ -27,10 +27,10 @@ namespace Megumin
             DefaultValue = defaultValue;
 
             var ops = InitOptions(type);
-            Options = ops;
+            Options = (ops.Show, ops.Value);
         }
 
-        private (string[] Show, string[] Value) InitOptions(Type type)
+        private (string[] Show, string[] Value, string[] ShowWithTypeName) InitOptions(Type type)
         {
             if (!Cache.TryGetValue(type, out var options))
             {
@@ -49,8 +49,9 @@ namespace Megumin
                 var fields = selected.ToArray();
 
                 var optionShow = new string[fields.Length];
+                var optionShowWithTypeName = new string[fields.Length];
                 var optionValue = new string[fields.Length];
-                options = (optionShow, optionValue);
+                options = (optionShow, optionValue, optionShowWithTypeName);
                 Cache[type] = options;
 
                 for (int i = 0; i < fields.Length; i++)
@@ -59,6 +60,7 @@ namespace Megumin
                     var value = field.GetValue(null) as string;
                     //var show = value; 使用字段名字而不是值，因为写代码比较时用的也是字段名
                     var show = field.Name;
+
                     foreach (var attri in field.GetCustomAttributes(typeof(AliasAttribute), true))
                     {
                         if (attri is AliasAttribute alias)
@@ -68,6 +70,7 @@ namespace Megumin
                     }
 
                     optionShow[i] = show;
+                    optionShowWithTypeName[i] = type.Name + "/" + show;
                     optionValue[i] = value;
                 }
             }
@@ -92,13 +95,13 @@ namespace Megumin
             {
                 Type = Types[0];
                 var ops = InitOptions(Type);
-                Options = ops;
+                Options = (ops.Show, ops.Value);
 
                 Options2WhitType = new List<(Type Type, string[] Show, string[] Value)>();
                 foreach (var item in Types)
                 {
                     var ops2 = InitOptions(item);
-                    Options2WhitType.Add((item, ops2.Show, ops2.Value));
+                    Options2WhitType.Add((item, ops2.ShowWithTypeName, ops2.Value));
                 }
 
                 IEnumerable<string> show2 = new string[0];
