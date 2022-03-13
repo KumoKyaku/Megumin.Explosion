@@ -25,6 +25,14 @@ namespace Megumin
         protected readonly V defaultValue;
         public override K DefaultKey => defaultKey;
         public override V DefaultValue => defaultValue;
+
+        public MultipleValue() { }
+        public MultipleValue(K defaultKey, V defaultValue = default)
+        {
+            this.defaultKey = defaultKey;
+            this.defaultValue = defaultValue;
+        }
+
     }
 
     /// <summary>
@@ -32,6 +40,13 @@ namespace Megumin
     /// </summary>
     public class IntMultipleValue<K> : MultipleValue<K, int>
     {
+        public IntMultipleValue() { }
+
+        public IntMultipleValue(K defaultKey, int defaultValue = default)
+            : base(defaultKey, defaultValue)
+        {
+        }
+
         protected override (K Key, int Value) CalNewValue()
         {
             K key = default;

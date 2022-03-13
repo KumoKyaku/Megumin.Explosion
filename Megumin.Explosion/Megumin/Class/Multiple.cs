@@ -74,6 +74,15 @@ namespace Megumin
         public virtual V RemoveAll()
         {
             ElementDic.Clear();
+
+            //if (typeof(K).IsValueType || DefaultKey != null)
+            //{
+            //    //泛型与null比较，IL会装箱，jit会优化掉装箱，IL2CPP不清楚，认为不会优化装箱
+            //    //所以加个值类型判定,还需要排除Nullable的null情况。判断太多太过于繁琐。
+
+            //    //微软源码直接用泛型与null比较,这里不做判断了，增加两个构造函数保证DefaultKey 不为null。
+            //}
+
             ElementDic[DefaultKey] = DefaultValue;
             ApplyValue();
             return Current;
