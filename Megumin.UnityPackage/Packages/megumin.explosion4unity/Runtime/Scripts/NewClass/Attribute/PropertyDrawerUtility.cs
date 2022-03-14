@@ -7,7 +7,8 @@ namespace UnityEditor.Megumin
 {
     public static class PropertyDrawerUtility_011f30b31b027cd438bcb0f0e46a1564
     {
-        static readonly Color warning = new Color(1, 0.7568f, 0.0275f, 1);
+        static readonly Color opNotMatch = new Color(0.75f, 0.67f, 0.44f, 1);
+        static readonly Color typeNotMatch = new Color(1, 0.7568f, 0.0275f, 1);
 
 #if UNITY_EDITOR
         public static void DrawOptions(this PropertyDrawer propertyDrawer,
@@ -61,7 +62,10 @@ namespace UnityEditor.Megumin
             {
                 label.tooltip += $"{propertyDrawer.attribute.GetType().Name}失效！\n当前值: {current} 无法解析为目标值。";
                 label.text = $"!! " + overrideName;
+                var old = GUI.color;
+                GUI.color = opNotMatch;
                 EditorGUI.PropertyField(valuePosition, property, label);
+                GUI.color = old;
             }
         }
 
@@ -75,7 +79,7 @@ namespace UnityEditor.Megumin
             label.tooltip += $"{propertyDrawer.attribute.GetType().Name}失效！\n{label.text} {tip}";
             label.text = $"??? " + label.text;
             var old = GUI.color;
-            GUI.color = warning;
+            GUI.color = typeNotMatch;
             EditorGUI.PropertyField(position, property, label);
             GUI.color = old;
         }
