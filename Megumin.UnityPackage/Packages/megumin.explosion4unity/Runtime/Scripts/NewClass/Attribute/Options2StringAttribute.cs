@@ -200,7 +200,8 @@ namespace UnityEditor.Megumin
 
                 this.DrawOptions(property,
                     valuePosition,
-                    myOptions,
+                    myOptions.Show,
+                    myOptions.Value,
                     property.displayName,
                     enum2StringAttribute.DefaultValue,
                     label);

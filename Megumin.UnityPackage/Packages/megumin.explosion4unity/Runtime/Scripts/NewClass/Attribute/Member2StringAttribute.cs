@@ -142,7 +142,8 @@ namespace UnityEditor.Megumin
             {
                 this.DrawOptions(property,
                     valuePosition,
-                    (cacheOptionShow, cacheOption),
+                    cacheOptionShow,
+                    cacheOption,
                     property.displayName,
                     null,
                     label);

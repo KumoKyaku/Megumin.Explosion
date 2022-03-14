@@ -13,19 +13,20 @@ namespace UnityEditor.Megumin
         public static void DrawOptions(this PropertyDrawer propertyDrawer,
             SerializedProperty property,
             Rect valuePosition,
-            (string[] Show, string[] Value) myOptions,
+            string[] opShow,
+            string[] opValue,
             string overrideName,
             string defaultValue,
             GUIContent label)
         {
             //防止空指针检查
-            if (myOptions.Show == null)
+            if (opShow == null)
             {
-                myOptions = (myOptions.Value, myOptions.Value);
+                opShow = opValue;
             }
 
             var current = property.stringValue;
-            var index = Array.IndexOf(myOptions.Value, current);
+            var index = Array.IndexOf(opValue, current);
 
             if (string.IsNullOrEmpty(current))
             {
@@ -33,12 +34,12 @@ namespace UnityEditor.Megumin
                 {
                     //新添加给个初值
                     index = 0;
-                    property.stringValue = myOptions.Value[index];
+                    property.stringValue = opValue[index];
                 }
                 else
                 {
                     current = defaultValue;
-                    index = Array.IndexOf(myOptions.Value, current);
+                    index = Array.IndexOf(opValue, current);
                     property.stringValue = current;
                 }
             }
@@ -48,13 +49,13 @@ namespace UnityEditor.Megumin
                 if (!string.IsNullOrEmpty(overrideName) && overrideName.StartsWith("Element"))
                 {
                     //容器内不显名字。
-                    index = EditorGUI.Popup(valuePosition, index, myOptions.Show);
+                    index = EditorGUI.Popup(valuePosition, index, opShow);
                 }
                 else
                 {
-                    index = EditorGUI.Popup(valuePosition, overrideName, index, myOptions.Show);
+                    index = EditorGUI.Popup(valuePosition, overrideName, index, opShow);
                 }
-                property.stringValue = myOptions.Value[index];
+                property.stringValue = opValue[index];
             }
             else
             {
