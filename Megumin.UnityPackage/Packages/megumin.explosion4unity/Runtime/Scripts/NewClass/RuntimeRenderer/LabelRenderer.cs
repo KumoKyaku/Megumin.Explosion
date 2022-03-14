@@ -39,7 +39,7 @@ namespace Megumin
         [ReadOnlyInInspector]
         public string cacheText;
 
-        void Awake()
+        public virtual void Awake()
         {
             InitStyle();
         }

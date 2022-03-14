@@ -19,6 +19,23 @@ namespace Megumin
         {
             Path = path;
         }
+
+        public string[] MultiplePath = null;
+        public Member2StringAttribute(params string[] multiplePath)
+        {
+            if (multiplePath != null && multiplePath.Length > 0)
+            {
+                if (multiplePath.Length > 0)
+                {
+                    Path = multiplePath[0];
+                }
+
+                if (multiplePath.Length > 1)
+                {
+                    MultiplePath = multiplePath;
+                }
+            }
+        }
     }
 }
 
@@ -71,7 +88,9 @@ namespace UnityEditor.Megumin
 
         public object cacheObject = null;
         public string cacheMember = null;
+        public string[] cacheMemberMultiple = null;
         public string[] cacheOption = null;
+        public string[] cacheOptionShow = null;
         public void DrawOptions(SerializedProperty property, GUIContent label, Rect valuePosition)
         {
             Member2StringAttribute enum2StringAttribute = (Member2StringAttribute)attribute;
@@ -79,50 +98,51 @@ namespace UnityEditor.Megumin
             //能找到属性却取不到值， NaughtyAttributes 是用反射取得值。
             //var refProp = property.serializedObject.FindProperty(enum2StringAttribute.Path);
 
-            if (!System.Object.Equals(cacheObject, property.serializedObject.targetObject)
-                || cacheMember != enum2StringAttribute.Path)
+            if (!System.Object.Equals(cacheObject, property.serializedObject.targetObject))
             {
-                var hasValue = ReflectionUtility.TryGetValue(
-                    property.serializedObject.targetObject,
-                    enum2StringAttribute.Path, out var memberValue);
-                string[] options = null;
-                if (hasValue)
+                var mpath = enum2StringAttribute.MultiplePath;
+                if (mpath != null && mpath.Length > 1)
                 {
-                    if (memberValue is List<string> list)
+                    if (cacheMemberMultiple != mpath)
                     {
-                        options = list.ToArray();
-                    }
-                    else if (memberValue is string[] array)
-                    {
-                        options = array;
-                    }
-                    else if (memberValue is IEnumerable<string> enumerable)
-                    {
-                        options = enumerable.ToArray();
-                    }
-                    else if (memberValue is IEnumerable<object> enumerableObject)
-                    {
-                        options = new string[enumerableObject.Count()];
-                        var index = 0;
-                        foreach (var item in enumerableObject)
+                        List<string> show = new List<string>();
+                        List<string> value = new List<string>();
+                        foreach (var item in mpath)
                         {
-                            options[index] = item.ToString();
-                            index++;
+                            var ops = RGet(property.serializedObject.targetObject, item);
+                            foreach (var op in ops)
+                            {
+                                show.Add($"{item}/{op}");
+                                value.Add(op);
+                            }
                         }
+
+                        cacheObject = property.serializedObject.targetObject;
+                        cacheMember = null;
+                        cacheMemberMultiple = mpath;
+                        cacheOption = value.ToArray();
+                        cacheOptionShow = show.ToArray();
                     }
                 }
-
-                cacheObject = property.serializedObject.targetObject;
-                cacheMember = enum2StringAttribute.Path;
-                cacheOption = options;
-
+                else
+                {
+                    if (cacheMember != enum2StringAttribute.Path)
+                    {
+                        var ops = RGet(property.serializedObject.targetObject, enum2StringAttribute.Path);
+                        cacheObject = property.serializedObject.targetObject;
+                        cacheMember = enum2StringAttribute.Path;
+                        cacheMemberMultiple = null;
+                        cacheOption = ops;
+                        cacheOptionShow = null;
+                    }
+                }
             }
 
             if (cacheOption != null)
             {
                 this.DrawOptions(property,
                     valuePosition,
-                    (cacheOption, cacheOption),
+                    (cacheOptionShow, cacheOption),
                     property.displayName,
                     null,
                     label);
@@ -133,6 +153,38 @@ namespace UnityEditor.Megumin
             }
 
             return;
+        }
+
+        public string[] RGet(object target, string fname)
+        {
+            var hasValue = ReflectionUtility.TryGetValue(target, fname, out var memberValue);
+            string[] options = Array.Empty<string>();
+            if (hasValue)
+            {
+                if (memberValue is List<string> list)
+                {
+                    options = list.ToArray();
+                }
+                else if (memberValue is string[] array)
+                {
+                    options = array;
+                }
+                else if (memberValue is IEnumerable<string> enumerable)
+                {
+                    options = enumerable.ToArray();
+                }
+                else if (memberValue is IEnumerable<object> enumerableObject)
+                {
+                    options = new string[enumerableObject.Count()];
+                    var index = 0;
+                    foreach (var item in enumerableObject)
+                    {
+                        options[index] = item.ToString();
+                        index++;
+                    }
+                }
+            }
+            return options;
         }
     }
 }

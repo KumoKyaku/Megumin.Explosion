@@ -45,7 +45,7 @@ public class TestAttribute : MonoBehaviour
     [Member2String(nameof(ProtectedInInspector))]
     public string Member2String = "Member2String";
 
-    [Member2String(nameof(ReadOnlyInInspector))]
+    [Member2String(nameof(ReadOnlyInInspector), nameof(ProtectedInInspector))]
     public List<string> Member2String2;
 
     [Options2String(typeof(ConstTest))]
@@ -76,5 +76,5 @@ public class TestAttribute : MonoBehaviour
     [Snap(60)]
     public int Snap = 60;
 
-    public ClampedValue<int> ClampedValue = new ClampedValue<int>() { Max = 99,Min = 1 };
+    public ClampedValue<int> ClampedValue = new ClampedValue<int>() { Max = 99, Min = 1 };
 }

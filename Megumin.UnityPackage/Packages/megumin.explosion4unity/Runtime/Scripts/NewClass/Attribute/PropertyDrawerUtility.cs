@@ -18,6 +18,12 @@ namespace UnityEditor.Megumin
             string defaultValue,
             GUIContent label)
         {
+            //防止空指针检查
+            if (myOptions.Show == null)
+            {
+                myOptions = (myOptions.Value, myOptions.Value);
+            }
+
             var current = property.stringValue;
             var index = Array.IndexOf(myOptions.Value, current);
 
