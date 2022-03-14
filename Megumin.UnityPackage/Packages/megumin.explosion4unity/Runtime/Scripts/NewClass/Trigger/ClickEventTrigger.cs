@@ -26,6 +26,8 @@ namespace Megumin
         public TriggerEvent OnLeftClick;
         public TriggerEvent OnRightClick;
         float last = -1;
+
+        public bool DebugLog = false;
         public void OnPointerDown(PointerEventData eventData)
         {
 
@@ -38,6 +40,11 @@ namespace Megumin
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (DebugLog)
+            {
+                Debug.Log(eventData.ToString());
+            }
+
             PointerClick?.Invoke(eventData);
             if (LeftClick)
             {

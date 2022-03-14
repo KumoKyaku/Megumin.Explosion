@@ -147,4 +147,130 @@ namespace Megumin
 
     }
 
+    /// <summary>
+    /// 支持主动取消的一次性异步事件
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class OneoffEvent2<T>
+    {
+        Dictionary<object, Action> registed = new Dictionary<object, Action>();
+        bool IsInvoking = false;
+        T CurrentResult = default(T);
+
+        public struct Awaitable
+        {
+            internal OneoffEvent2<T> eventSource;
+            internal object key;
+
+            public struct Awaiter : ICriticalNotifyCompletion, INotifyCompletion
+            {
+                private readonly OneoffEvent2<T> source;
+                private readonly object key;
+                public Awaiter(OneoffEvent2<T> source, object key)
+                {
+                    this.source = source;
+                    this.key = key;
+                }
+
+                public bool IsCompleted
+                {
+                    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                    get
+                    {
+                        return source.IsInvoking;
+                    }
+                }
+
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                [System.Diagnostics.DebuggerHidden]
+                public T GetResult()
+                {
+                    return source.CurrentResult;
+                }
+
+                public void UnsafeOnCompleted(Action continuation)
+                {
+                    //这个continuation.Target是编译器生成的类型对象，没办法取消。
+                    //使用自定义TaskBuilder也不行，能拿到fsm，但是拿不到调用对象和fsm的关系
+                    //所有调用者要显示穿进来才行。
+                    source.registed[key] = continuation;
+                }
+
+                public void OnCompleted(Action continuation)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public Awaiter GetAwaiter(/*object caller*/)
+            {
+                return new Awaiter(eventSource, key);
+            }
+        }
+
+        public Awaitable Regist<O>(O key) where O : class
+        {
+            lock (_innerLock)
+            {
+                Awaitable t = new Awaitable();
+                t.eventSource = this;
+                t.key = key;
+                return t;
+            }
+        }
+
+        public void UnRegist<O>(O key) where O : class
+        {
+            lock (_innerLock)
+            {
+                registed.Remove(key);
+            }
+        }
+
+        public void UnRegistAll()
+        {
+            lock (_innerLock)
+            {
+                registed.Clear();
+            }
+        }
+
+        readonly object _innerLock = new object();
+
+        public void Invoke(T result)
+        {
+            lock (_innerLock)
+            {
+                IsInvoking = true;
+                CurrentResult = result;
+                foreach (var item in registed)
+                {
+                    try
+                    {
+                        item.Value?.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        if (item.Key is IExceptionCallbackable callbackable)
+                        {
+                            callbackable.OnException(e, this, item.Key);
+                        }
+                        else
+                        {
+                            //吃掉所有异常
+                            Console.WriteLine(e);
+                        }
+                    }
+                }
+                registed.Clear();
+                IsInvoking = false;
+                CurrentResult = default;
+            }
+        }
+
+        async void Test()
+        {
+            var res = await this.Regist(this);
+        }
+    }
 }
