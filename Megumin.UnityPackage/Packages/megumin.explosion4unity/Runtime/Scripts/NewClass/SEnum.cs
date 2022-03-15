@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using System.Linq;
 
 namespace Megumin
 {
@@ -52,7 +53,7 @@ namespace Megumin
                 if (StrValue != Value.ToString())
                 {
                     Debug.LogWarning($"枚举值类型变化，保存的枚举值可能与之前不一致。Type:{typeof(T).Name}  StrValue:{StrValue} != Value:{Value}");
-                    
+
                     //不行，编辑器报错
                     //if (Application.isPlaying)
                     //{
@@ -87,11 +88,17 @@ namespace UnityEditor.Megumin
         {
             SerializedProperty e = property.FindPropertyRelative("Value");
             SerializedProperty se = property.FindPropertyRelative("StrValue");
-            var oldname = e.enumNames[e.enumValueIndex];
-            if (oldname == se.stringValue)
+
+            var t = fieldInfo.FieldType;
+            var enumType = t.GetGenericArguments()[0];
+
+            var canParseStr = Enum.TryParse(enumType, se.stringValue, true, out var enumValue);
+            var valueParseStr = Enum.ToObject(enumType, e.longValue).ToString();
+
+            if (canParseStr && valueParseStr == se.stringValue)
             {
                 EditorGUI.PropertyField(position, e, label);
-                var name = e.enumNames[e.enumValueIndex];
+                var name = Enum.ToObject(enumType, e.longValue).ToString();
                 se.stringValue = name;
             }
             else
@@ -115,10 +122,18 @@ namespace UnityEditor.Megumin
                 var str = EditorGUI.TextField(timePosition, se.stringValue);
                 se.stringValue = str;
 
+
                 if (GUI.Button(togglePosition, "S"))
                 {
-                    var name = e.enumNames[e.enumValueIndex];
-                    se.stringValue = name;
+                    if (canParseStr)
+                    {
+                        var longv = Convert.ToInt64(enumValue);
+                        e.longValue = longv;
+                    }
+                    else
+                    {
+                        se.stringValue = valueParseStr;
+                    }
                 }
             }
         }
