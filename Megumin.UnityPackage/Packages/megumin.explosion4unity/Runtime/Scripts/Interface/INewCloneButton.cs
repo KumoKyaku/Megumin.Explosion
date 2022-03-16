@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Megumin;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -73,51 +74,71 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
         if (allTypes == null)
         {
             allTypes = new HashSet<Type>();
+
+            void TryAdd2allTypes(Type type, SupportTypesAttribute ab)
+            {
+                if (!ab.AllowInterface && type.IsInterface)
+                {
+                    return;
+                }
+
+                if (!ab.AllowAbstract && type.IsAbstract)
+                {
+                    return;
+                }
+
+                if (!ab.AllowGenericType && type.IsGenericType)
+                {
+                    return;
+                }
+
+                allTypes.Add(type);
+            }
+
+            void TryAddType(Type type, SupportTypesAttribute ab)
+            {
+                TryAdd2allTypes(type, ab);
+
+                if (ab.IncludeChildInSameAssembly)
+                {
+                    Assembly assembly = type.Assembly;
+                    foreach (var item in assembly.GetTypes())
+                    {
+                        if (type.IsAssignableFrom(item))
+                        {
+                            TryAdd2allTypes(item, ab);
+                        }
+                    }
+                }
+            }
+
             var customattributes = this.fieldInfo.GetCustomAttributes(true);
             var abs = from cab in customattributes
                       where cab is Megumin.SupportTypesAttribute
                       let sa = cab as Megumin.SupportTypesAttribute
                       select sa;
 
+#if MEGUMIN_DEV_PROJECT
+            var debug = abs.ToList();
+#endif
+
             foreach (var ab in abs)
             {
                 if (ab != null && ab.Support != null)
                 {
-                    for (int i = 0; i < ab.Support.Length; i++)
+                    if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
                     {
-                        void TryAddType(Type type)
+                        var type = fieldInfo.FieldType;
+                        TryAddType(type, ab);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < ab.Support.Length; i++)
                         {
-                            if (!ab.AllowInterface && type.IsInterface)
+                            var type = ab.Support[i];
+                            if (type != null)
                             {
-                                return;
-                            }
-
-                            if (!ab.AllowAbstract && type.IsAbstract)
-                            {
-                                return;
-                            }
-
-                            if (!ab.AllowGenericType && type.IsGenericType)
-                            {
-                                return;
-                            }
-
-                            allTypes.Add(type);
-                        }
-
-                        var type = ab.Support[i];
-
-                        TryAddType(type);
-
-                        if (ab.IncludeChildInSameAssembly)
-                        {
-                            Assembly assembly = type.Assembly;
-                            foreach (var item in assembly.GetTypes())
-                            {
-                                if (type.IsAssignableFrom(item))
-                                {
-                                    TryAddType(item);
-                                }
+                                TryAddType(type, ab);
                             }
                         }
                     }

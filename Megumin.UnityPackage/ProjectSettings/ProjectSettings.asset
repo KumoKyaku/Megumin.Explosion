@@ -677,7 +677,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthStep: 0.2
   webGLMemoryGeometricGrowthCap: 96
   scriptingDefineSymbols:
-    Standalone: 
+    Standalone: MEGUMIN_DEV_PROJECT
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
@@ -725,6 +725,7 @@ PlayerSettings:
   metroFTAName: 
   metroFTAFileTypes: []
   metroProtocolName: 
+  vcxProjDefaultLanguage: 
   XboxOneProductId: 
   XboxOneUpdateKey: 
   XboxOneSandboxId: 

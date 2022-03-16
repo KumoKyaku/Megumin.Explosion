@@ -23,27 +23,17 @@ public class TestLog : MonoBehaviour
     [Enum2String(typeof(TestEnum))]
     public string TestEnumField;
     public iint Iint;
-    [GUID]
-    public string guid;
-    [GUID]
-    public List<string> Guidlist;
-    [AreaMask]
-    public int areaMask;
+
     [Indent]
     public Color TestColor;
     public HexColor HexColor;
     public List<Loger> Loggers;
     public List<Test12345> Test12345s;
-    // Start is called before the first frame update
-    [HelpBox("帮助", textLanguage: SystemLanguage.ChineseSimplified, EnglishText = "help")]
-    [Indent]
-    [Path(IsFolder = true, Exetension = "txt")]
-    public string path;
+
     //[ReadOnlyInInspector]
     //[OnValueChanged]
     public HSVColor HSVColor;
-    public Megumin.Overridable<string> overridable = new Megumin.Overridable<string>("test");
-    public Enableable<string> Enableable = new Enableable<string>(false, "可开关字段");
+
     //[OnValueChanged(CallBackName = "OnValueChangeTest1")]
     public STest STest;
     public SaveAsset SaveAsset;
@@ -99,8 +89,7 @@ public class TestLog : MonoBehaviour
         }
     }
 
-    [Options2String(typeof(ConstTest))]
-    public string Optionsss;
+
     public Pref<bool> GlobalToggle;
 
     [EditorButton]

@@ -221,6 +221,7 @@ MonoBehaviour:
   OnRightClick:
     m_PersistentCalls:
       m_Calls: []
+  DebugLog: 0
 --- !u!114 &1309913115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,12 +385,6 @@ MonoBehaviour:
   TestEnumField: ccc
   Iint:
     _int: 2147483647
-  guid: e66f23bbb53eded4d8c4a1cc10a65a16
-  Guidlist:
-  - c22cf2b2537ebed42898a00af810edc1
-  - 3b6cbaf1c85cce343b1f6a64cb37a6ee
-  - 266a0883bd3a03f4ca9e372967e70483
-  areaMask: -2147483645
   TestColor: {r: 0, g: 0, b: 0, a: 0}
   HexColor:
     hexCode: '#E5761BD2'
@@ -398,25 +393,92 @@ MonoBehaviour:
   Test12345s:
   - mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
   - mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
-  path: W:/Git/Megumin.Explosion/Megumin.UnityPackage/Logs
   HSVColor:
     Hue: 0.178
     Saturation: 1
     Value: 2
     Alpha: 0.415
-  overridable:
-    defaultValue: test
-    IsOverride: 0
-    MyOverrideValue: "\u53EF\u91CD\u5199\u9ED8\u8BA4\u503C\u5B57\u6BB5"
-  Enableable:
-    Enabled: 0
-    Value: "\u53EF\u5F00\u5173\u5B57\u6BB5"
   STest:
     inta: 151
     intb: 1234568
   SaveAsset: {fileID: 11400000, guid: c6930315ef3e77f4ea45af1032878fca, type: 2}
-  Optionsss: Tset22
   TestScriptObject: {fileID: 0}
+--- !u!1001 &128657509733504469
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 2
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 865.3015
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 545.4668
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.787273
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 128657510070853134, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: m_Name
+      value: TestClass
+      objectReference: {fileID: 0}
+    - target: {fileID: 7910514038022865037, guid: 2532449c2594cda4f9bf2375324c1f09,
+        type: 3}
+      propertyPath: TestCondition.ConditionSO.Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_AddedGameObjects: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2532449c2594cda4f9bf2375324c1f09, type: 3}
 --- !u!1001 &2934216655231609562
 PrefabInstance:
   m_ObjectHideFlags: 0
