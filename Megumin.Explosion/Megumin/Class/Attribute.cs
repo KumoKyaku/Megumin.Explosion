@@ -51,7 +51,7 @@ namespace Megumin
         public Type[] Support { get; set; }
 
         /// <summary>
-        /// 是否包含其他程序集的子类型,默认false,暂时没有支持.
+        /// 是否包含其他程序集的子类型,默认false,支持，谨慎使用，可能会导致编辑器卡顿.
         /// </summary>
         public bool IncludeChildInOtherAssembly { get; set; } = false;
 
@@ -85,6 +85,11 @@ namespace Megumin
         {
             Support = new Type[1];
             Support[0] = type;
+        }
+
+        public SupportTypesAttribute()
+        {
+            //空的化支持标记的类型。
         }
     }
 

@@ -97,18 +97,21 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
 
             void TryAddType(Type type, SupportTypesAttribute ab)
             {
-                TryAdd2allTypes(type, ab);
-
                 if (ab.IncludeChildInSameAssembly)
                 {
                     Assembly assembly = type.Assembly;
-                    foreach (var item in assembly.GetTypes())
+                    Type[] types = assembly.GetTypes();
+                    foreach (var item in types)
                     {
                         if (type.IsAssignableFrom(item))
                         {
                             TryAdd2allTypes(item, ab);
                         }
                     }
+                }
+                else
+                {
+                    TryAdd2allTypes(type, ab);
                 }
             }
 
@@ -126,19 +129,73 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
             {
                 if (ab != null && ab.Support != null)
                 {
-                    if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
+                    if (ab.IncludeChildInOtherAssembly)
                     {
-                        var type = fieldInfo.FieldType;
-                        TryAddType(type, ab);
+                        //包含所有程序集，搜索方式遍历所有程序集,可能会特别慢
+                        Type[] supporttypes = null;
+                        if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
+                        {
+                            var type = fieldInfo.FieldType;
+                            supporttypes = new Type[] { type };
+                        }
+                        else
+                        {
+                            supporttypes = ab.Support;
+                        }
+
+                        var assemblys = AppDomain.CurrentDomain.GetAssemblies();
+                        foreach (var assembly in assemblys)
+                        {
+                            //过滤掉一些，不然肯能太卡
+                            var assName = assembly.FullName;
+                            if (assName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+
+                            //可以通过这个宏来强行搜索unity中的类型
+#if !SCROBJ_DRAWER_FORCEDSEARCH_UNITY
+                            if (assName.StartsWith("Unity", StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+#endif
+
+                            Type[] types = assembly.GetTypes();
+                            foreach (var temptype in types)
+                            {
+                                if (supporttypes.Any(ele =>
+                                {
+                                    if (ele.IsAssignableFrom(temptype))
+                                    {
+                                        //测试类型能 赋值给 支持类型列表 中的任意一个。
+                                        return true;
+                                    }
+                                    return false;
+                                }))
+                                {
+                                    TryAddType(temptype, ab);
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        for (int i = 0; i < ab.Support.Length; i++)
+                        //不包含其他程序集，逐个类型搜索
+                        if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
                         {
-                            var type = ab.Support[i];
-                            if (type != null)
+                            var type = fieldInfo.FieldType;
+                            TryAddType(type, ab);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < ab.Support.Length; i++)
                             {
-                                TryAddType(type, ab);
+                                var type = ab.Support[i];
+                                if (type != null)
+                                {
+                                    TryAddType(type, ab);
+                                }
                             }
                         }
                     }

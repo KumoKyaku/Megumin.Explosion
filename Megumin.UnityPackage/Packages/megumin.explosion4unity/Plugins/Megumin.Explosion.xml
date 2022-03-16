@@ -261,7 +261,7 @@
         </member>
         <member name="P:Megumin.SupportTypesAttribute.IncludeChildInOtherAssembly">
             <summary>
-            是否包含其他程序集的子类型,默认false,暂时没有支持.
+            是否包含其他程序集的子类型,默认false,支持，谨慎使用，可能会导致编辑器卡顿.
             </summary>
         </member>
         <member name="P:Megumin.SupportTypesAttribute.IncludeChildInSameAssembly">
