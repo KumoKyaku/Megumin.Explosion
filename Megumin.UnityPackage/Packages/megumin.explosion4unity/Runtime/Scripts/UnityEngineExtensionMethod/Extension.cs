@@ -266,6 +266,16 @@ namespace UnityEngine
             return baseStr;
 #endif
         }
+
+        public static string ToHyperlink(this UnityEngine.Object @object)
+        {
+#if UNITY_EDITOR
+            var link = $"<a href=\"{UnityEditor.AssetDatabase.GetAssetPath(@object)}\">{@object.ToString()}</a>";
+            return link;
+#else
+            return @object.ToString();
+#endif
+        }
     }
 
     public static partial class MeguminExtension_2B5D73B2
