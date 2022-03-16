@@ -47,4 +47,8 @@ MonoBehaviour:
   TestCondition:
     ConditionSO:
       Enabled: 1
+      Value: {fileID: 11400000, guid: 8e06cf9efd1e81d4681bd9e1919e8240, type: 2}
+  TestCondition2:
+    ConditionSO:
+      Enabled: 1
       Value: {fileID: 0}

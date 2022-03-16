@@ -63,7 +63,41 @@ namespace Megumin
 
 }
 
+#if UNITY_EDITOR
 
+namespace UnityEditor.Megumin
+{
+    using global::Megumin;
+    using UnityEditor;
+
+#if !DISABLE_MEGUMIN_PROPERTYDRWAER
+    [CustomPropertyDrawer(typeof(Condition), true)]
+#endif
+
+    internal sealed class ConditionDrawer : PropertyDrawer
+    {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            var prop = property.FindPropertyRelative("ConditionSO");
+            if (prop != null)
+            {
+                return EditorGUI.GetPropertyHeight(prop, label);
+            }
+            else
+            {
+                return base.GetPropertyHeight(property, label);
+            }
+        }
+
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            var prop = property.FindPropertyRelative("ConditionSO");
+            EditorGUI.PropertyField(position, prop, label, true);
+        }
+    }
+}
+
+#endif
 
 
 
