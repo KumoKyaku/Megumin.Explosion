@@ -270,7 +270,7 @@ namespace UnityEngine
         public static string ToHyperlink(this UnityEngine.Object @object)
         {
 #if UNITY_EDITOR
-            var link = $"<a href=\"{UnityEditor.AssetDatabase.GetAssetPath(@object)}\">{@object.ToString()}</a>";
+            var link = $"<a href=\"{UnityEditor.AssetDatabase.GetAssetPath(@object)}\">{@object.name}</a>";
             return link;
 #else
             return @object.ToString();
