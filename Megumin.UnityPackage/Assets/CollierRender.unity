@@ -356,7 +356,7 @@ MonoBehaviour:
     IsOverride: 0
     MyOverrideValue: 0
   center: {x: 0, y: 0, z: 0}
-  DefaultMat: {fileID: 0}
+  DefaultMat: {fileID: 2100000, guid: 7b7547b7c14da1048a037754dc000998, type: 2}
   RenderArrow: 0
   ArrowLength: 0.5
   ArrowRidus: 0.02
