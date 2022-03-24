@@ -52,3 +52,7 @@ MonoBehaviour:
     ConditionSO:
       Enabled: 1
       Value: {fileID: 0}
+  TestTagMask:
+    Mode: 1
+    EqualTag: Untagged
+    IgnoreTag: []

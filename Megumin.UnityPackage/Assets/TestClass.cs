@@ -7,6 +7,7 @@ public class TestClass : MonoBehaviour
 {
     public Condition TestCondition;
     public Condition TestCondition2;
+    public TagMask TestTagMask;
 
     void Test()
     {
