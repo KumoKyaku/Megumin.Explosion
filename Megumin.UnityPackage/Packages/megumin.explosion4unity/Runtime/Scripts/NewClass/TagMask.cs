@@ -16,7 +16,7 @@ namespace Megumin
             Ignore = 1 << 1,
         }
 
-        public TestMode Mode = TestMode.Equal;
+        public TestMode Mode = 0;
 
         [Tag]
         public string EqualTag = "Untagged";
