@@ -22,6 +22,7 @@ namespace System.Collections.Generic
     /// </summary>
     public static class DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C
     {
+        [Obsolete("不是绝对安全的，没有固定指针，内存移动时会出bug,以后要仔细研究一下",true)]
         public static void RemoveAll<K, V>(this Dictionary<K, V> source, Func<KeyValuePair<K, V>, bool> predicate)
         {
             if (predicate == null || source == null)
