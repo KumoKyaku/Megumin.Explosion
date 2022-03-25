@@ -67,5 +67,26 @@ namespace Megumin
                 await context.Switch();
             }
         }
+
+        /// <summary>
+        /// 用于编辑器将PlayMode的值保存。
+        /// 没有经过测试。
+        /// </summary>
+        /// <returns></returns>
+        public static Task ExitPlayMode()
+        {
+#if UNITY_EDITOR
+            TaskCompletionSource<int> source = new TaskCompletionSource<int>();
+            void Test(UnityEditor.PlayModeStateChange obj)
+            {
+                UnityEditor.EditorApplication.playModeStateChanged -= Test;
+                source.TrySetResult(0);
+            }
+            UnityEditor.EditorApplication.playModeStateChanged += Test;
+            return source.Task;
+#else
+            return Task.CompletedTask;
+#endif
+        }
     }
 }
