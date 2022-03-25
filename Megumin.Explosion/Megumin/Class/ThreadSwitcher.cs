@@ -32,13 +32,18 @@ namespace Megumin
             Default.Switch(action);
         }
 
-        /// <summary>
-        /// <inheritdoc cref="ThreadSwitcher.Switch()"/>
-        /// </summary>
-        /// <returns></returns>
-        public static ThreadSwitcher.SwitcherSource Switch()
+        public static ThreadSwitcher.Awaitable Switch()
         {
             return Default.Switch();
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="ThreadSwitcher.Switch2()"/>
+        /// </summary>
+        /// <returns></returns>
+        public static ThreadSwitcher.SwitcherSource2 Switch2()
+        {
+            return Default.Switch2();
         }
 
         /// <inheritdoc cref="ThreadSwitcher.Switch1(int)"/>
@@ -81,6 +86,8 @@ namespace Megumin
 
             TickWaitQueue1();
 
+            TickWaitQueue2();
+
             TickWaitQueue3();
         }
 
@@ -88,7 +95,7 @@ namespace Megumin
 
         /// <summary>
         /// 切换执行线程
-        /// <seealso cref="Switch()"/>
+        /// <seealso cref="Switch2()"/>
         /// </summary>
         /// <param name="action"></param>
         /// <remarks>线程切换过程中闭包几乎无法避免, 除非明确回调函数参数类型.
@@ -102,18 +109,86 @@ namespace Megumin
 
     public partial class ThreadSwitcher
     {
-        /// <summary>
-        /// 切换线程专用Soucre，不建议保留引用，请直接await。
-        /// </summary>
-        public class SwitcherSource : TaskCompletionSource<int>
+        public struct Awaitable
         {
-            public ConcurrentQueue<SwitcherSource> WaitQueue { get; internal protected set; }
+            internal ConcurrentQueue<Action> WaitQueue;
 
             public struct Awaiter : ICriticalNotifyCompletion, INotifyCompletion
             {
-                private SwitcherSource source;
+                private readonly ConcurrentQueue<Action> WaitQueue;
 
-                public Awaiter(SwitcherSource source)
+                public Awaiter(ConcurrentQueue<Action> waitQueue)
+                {
+                    this.WaitQueue = waitQueue;
+                }
+
+                public bool IsCompleted
+                {
+                    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                    get
+                    {
+                        //永远返回false，总是强制挂起。
+                        return false;
+                    }
+                }
+
+                [MethodImpl(MethodImplOptions.AggressiveInlining)]
+                [System.Diagnostics.DebuggerHidden]
+                public void GetResult()
+                {
+                    //不必进行任何操作，此处已经是切换线程后。
+                }
+
+                public void UnsafeOnCompleted(Action continuation)
+                {
+                    WaitQueue.Enqueue(continuation);
+                }
+
+                public void OnCompleted(Action continuation)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public Awaiter GetAwaiter()
+            {
+                return new Awaiter(WaitQueue);
+            }
+        }
+
+        protected readonly ConcurrentQueue<Action> WaitQueue = new ConcurrentQueue<Action>();
+        public Awaitable Switch()
+        {
+            var source = new Awaitable();
+            source.WaitQueue = WaitQueue;
+            return source;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void TickWaitQueue()
+        {
+            while (WaitQueue.TryDequeue(out var res))
+            {
+                res?.Invoke();
+            }
+        }
+    }
+
+    public partial class ThreadSwitcher
+    {
+        /// <summary>
+        /// 切换线程专用Soucre，不建议保留引用，请直接await。
+        /// </summary>
+        public class SwitcherSource2 : TaskCompletionSource<int>
+        {
+            public ConcurrentQueue<SwitcherSource2> WaitQueue { get; internal protected set; }
+
+            public struct Awaiter : ICriticalNotifyCompletion, INotifyCompletion
+            {
+                private SwitcherSource2 source;
+
+                public Awaiter(SwitcherSource2 source)
                 {
                     this.source = source;
                 }
@@ -153,12 +228,12 @@ namespace Megumin
             }
         }
 
-        protected readonly ConcurrentQueue<SwitcherSource> WaitQueue = new ConcurrentQueue<SwitcherSource>();
+        protected readonly ConcurrentQueue<SwitcherSource2> WaitQueue2 = new ConcurrentQueue<SwitcherSource2>();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected void TickWaitQueue()
+        protected void TickWaitQueue2()
         {
-            while (WaitQueue.TryDequeue(out var res))
+            while (WaitQueue2.TryDequeue(out var res))
             {
                 res.TrySetResult(0);
             }
@@ -166,14 +241,14 @@ namespace Megumin
 
         /// <summary>
         /// 使用特殊异步source切换线程。
-        /// <para/>source只有await 执行后，才会入队<see cref="WaitQueue"/>
+        /// <para/>source只有await 执行后，才会入队<see cref="WaitQueue2"/>
         /// </summary>
         /// <remarks></remarks>
         /// <returns></returns>
-        public SwitcherSource Switch()
+        public SwitcherSource2 Switch2()
         {
-            var source = new SwitcherSource();
-            source.WaitQueue = WaitQueue;
+            var source = new SwitcherSource2();
+            source.WaitQueue = WaitQueue2;
             return source;
         }
     }
@@ -340,8 +415,6 @@ namespace Megumin
             return source;
         }
     }
-
-
 }
 
 

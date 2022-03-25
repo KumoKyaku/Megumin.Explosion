@@ -814,9 +814,9 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Megumin.DefaultThreadSwitcher.Switch">
+        <member name="M:Megumin.DefaultThreadSwitcher.Switch2">
             <summary>
-            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch"/>
+            <inheritdoc cref="M:Megumin.ThreadSwitcher.Switch2"/>
             </summary>
             <returns></returns>
         </member>
@@ -845,22 +845,22 @@
         <member name="M:Megumin.ThreadSwitcher.Switch(System.Action)">
             <summary>
             切换执行线程
-            <seealso cref="M:Megumin.ThreadSwitcher.Switch"/>
+            <seealso cref="M:Megumin.ThreadSwitcher.Switch2"/>
             </summary>
             <param name="action"></param>
             <remarks>线程切换过程中闭包几乎无法避免, 除非明确回调函数参数类型.
             <para>对于性能敏感区域,可以写特定代码消除闭包. 参考 megumin.net</para>
             </remarks>
         </member>
-        <member name="T:Megumin.ThreadSwitcher.SwitcherSource">
+        <member name="T:Megumin.ThreadSwitcher.SwitcherSource2">
             <summary>
             切换线程专用Soucre，不建议保留引用，请直接await。
             </summary>
         </member>
-        <member name="M:Megumin.ThreadSwitcher.Switch">
+        <member name="M:Megumin.ThreadSwitcher.Switch2">
             <summary>
             使用特殊异步source切换线程。
-            <para/>source只有await 执行后，才会入队<see cref="F:Megumin.ThreadSwitcher.WaitQueue"/>
+            <para/>source只有await 执行后，才会入队<see cref="F:Megumin.ThreadSwitcher.WaitQueue2"/>
             </summary>
             <remarks></remarks>
             <returns></returns>
