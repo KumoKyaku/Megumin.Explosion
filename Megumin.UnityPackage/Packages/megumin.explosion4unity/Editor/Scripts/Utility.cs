@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static partial class MeguminEditorUtility
 {
@@ -228,6 +229,41 @@ public static partial class MeguminEditorUtility
                 return o.ToHyperlink();
             }
             return value?.ToString();
+        }
+    }
+
+    [MenuItem("GameObject/Megumin/ForceShowHideGameObject", priority = 15)]
+    static public void ForceShowHideGameObject()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        var objs = scene.GetRootGameObjects();
+
+        static void ShowHiddin(Transform trans)
+        {
+            if (trans.hideFlags.HasFlag(HideFlags.HideInHierarchy))
+            {
+                trans.hideFlags &= ~HideFlags.HideInHierarchy;
+            }
+
+            if (trans.hideFlags.HasFlag(HideFlags.HideInInspector))
+            {
+                trans.hideFlags &= ~HideFlags.HideInInspector;
+            }
+
+            if (trans.hideFlags.HasFlag(HideFlags.HideAndDontSave))
+            {
+                trans.hideFlags &= ~HideFlags.HideAndDontSave;
+            }
+
+            foreach (Transform item in trans)
+            {
+                ShowHiddin(item);
+            }
+        }
+
+        foreach (var obj in objs)
+        {
+            ShowHiddin(obj.transform);
         }
     }
 }
