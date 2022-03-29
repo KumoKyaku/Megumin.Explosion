@@ -9,12 +9,9 @@ public class TestClass : MonoBehaviour
     public Condition TestCondition;
     public Condition TestCondition2;
     public TagFilter TagFilter;
-
-
-
-    [Space]
     public TagMask TestTagMask;
     public LayerMask TestLayerMask;
+    public GameObjectFilter Filter;
 
 
     void Test()

@@ -51,8 +51,25 @@ MonoBehaviour:
   TestCondition2:
     ConditionSO:
       Enabled: 1
-      Value: {fileID: 0}
-  TestTagMask:
-    Mode: 1
+      Value: {fileID: 11400000, guid: 61b7f514481f15044a5d94fcf52321b0, type: 2}
+  TagFilter:
+    Mode: 0
     EqualTag: Untagged
     IgnoreTag: []
+  TestTagMask:
+    Tags:
+    - Untagged
+  TestLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  Filter:
+    LayerMask:
+      Enabled: 0
+      Value:
+        serializedVersion: 2
+        m_Bits: 0
+    TagMask:
+      Enabled: 0
+      Value:
+        Tags:
+        - Untagged

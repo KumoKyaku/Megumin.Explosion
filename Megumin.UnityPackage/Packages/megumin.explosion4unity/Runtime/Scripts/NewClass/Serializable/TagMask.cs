@@ -29,6 +29,24 @@ namespace Megumin
             return Tags.Contains(tag);
         }
 
+        /// <summary>
+        /// 不知道调用CompareTag和 Tags.Contains 哪个更省一些？
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <returns></returns>
+        public bool HasFlag(GameObject gameObject)
+        {
+            foreach (var item in Tags)
+            {
+                if (gameObject.CompareTag(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool HasFlag(Component component)
         {
             foreach (var item in Tags)
