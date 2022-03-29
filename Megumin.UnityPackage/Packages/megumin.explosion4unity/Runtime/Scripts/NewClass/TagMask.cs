@@ -1,93 +1,128 @@
-﻿using System.Collections;
+using Megumin;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using Megumin;
 
 namespace Megumin
 {
     [Serializable]
     public class TagMask
     {
-        [Flags]
-        public enum TestMode
+        public static bool InspectorShowTagList = false;
+
+        [Tag]
+        public List<string> Tags = new List<string>() { "Untagged" };
+
+        public TagMask()
         {
-            Equal = 1 << 0,
-            Ignore = 1 << 1,
         }
 
-        public TestMode Mode = 0;
-
-        [Tag]
-        public string EqualTag = "Untagged";
-
-        [Tag]
-        public List<string> IgnoreTag = new List<string>();
-
-        public bool Check(Component component)
+        public TagMask(params string[] tags)
         {
-            if (Mode.HasFlag(TestMode.Equal))
+            Tags.Clear();
+            Tags.AddRange(tags);
+        }
+
+        public bool HasFlag(string tag)
+        {
+            return Tags.Contains(tag);
+        }
+
+        public bool HasFlag(Component component)
+        {
+            foreach (var item in Tags)
             {
-                if (!component.CompareTag(EqualTag))
+                if (component.CompareTag(item))
                 {
-                    return false;
+                    return true;
                 }
             }
 
-            if (Mode.HasFlag(TestMode.Ignore))
-            {
-                foreach (var item in IgnoreTag)
-                {
-                    if (component.CompareTag(item))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+            return false;
         }
     }
+
 }
 
 #if UNITY_EDITOR
 
 namespace UnityEditor.Megumin
 {
-    /// <summary>
-    /// 太费事，不写了
-    /// </summary>
+    using UnityEditorInternal;
+
 #if !DISABLE_MEGUMIN_PROPERTYDRWAER
-    //[CustomPropertyDrawer(typeof(TagMask))]
+    [CustomPropertyDrawer(typeof(TagMask))]
 #endif
     internal sealed class TagMaskDrawer : PropertyDrawer
     {
+        List<string> mytags = new List<string>();
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (TagMask.InspectorShowTagList)
+            {
+                return EditorGUI.GetPropertyHeight(property, true);
+            }
+            return 18;
+        }
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.BeginProperty(position, label, property);
+            var prop = property.FindPropertyRelative("Tags");
+            mytags.Clear();
+            for (int i = 0; i < prop.arraySize; i++)
+            {
+                mytags.Add(prop.GetArrayElementAtIndex(i).stringValue);
+            }
 
-            // Draw label
-            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+            string[] tags = InternalEditorUtility.tags;
+            var compressedMask = 0;
+            for (int i = 0; i < tags.Length; i++)
+            {
+                if (mytags.Contains(tags[i]))
+                {
+                    compressedMask |= (1 << i);
+                }
+            }
 
-            // Don't make child fields be indented
-            var indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
+            EditorGUI.BeginChangeCheck();
+            compressedMask = EditorGUI.MaskField(position, label, compressedMask, tags);
+            if (EditorGUI.EndChangeCheck())
+            {
+                mytags.Clear();
+                if (compressedMask == ~0)
+                {
+                    //everything
+                    mytags.AddRange(tags);
+                }
+                else
+                {
+                    for (int i = 0; i < tags.Length; i++)
+                    {
+                        if ((compressedMask & (1 << i)) != 0)
+                        {
+                            mytags.Add((string)tags[i]);
+                        }
+                    }
+                }
 
-            // Calculate rects
-            var amountRect = new Rect(position.x, position.y, 30, position.height);
-            var unitRect = new Rect(position.x + 35, position.y, 50, position.height);
-            var nameRect = new Rect(position.x + 90, position.y, position.width - 90, position.height);
+                prop.arraySize = mytags.Count;
+                prop.serializedObject.ApplyModifiedProperties();
+                for (int i = 0; i < mytags.Count; i++)
+                {
+                    prop.GetArrayElementAtIndex(i).stringValue = mytags[i];
+                }
+            }
 
-            var propMode = property.FindPropertyRelative("Mode");
-            var propEqualTag = property.FindPropertyRelative("EqualTag");
-            var propIgnoreTag = property.FindPropertyRelative("IgnoreTag");
-            EditorGUI.PropertyField(position, propMode, true);
-
-
-            // Set indent back to what it was
-            EditorGUI.indentLevel = indent;
-
-            EditorGUI.EndProperty();
+            if (TagMask.InspectorShowTagList)
+            {
+                using (new EditorGUI.IndentLevelScope(2))
+                {
+                    var listposition = position;
+                    listposition.y += 20;
+                    EditorGUI.PropertyField(listposition, prop, label, true);
+                }
+            }
         }
     }
 }
