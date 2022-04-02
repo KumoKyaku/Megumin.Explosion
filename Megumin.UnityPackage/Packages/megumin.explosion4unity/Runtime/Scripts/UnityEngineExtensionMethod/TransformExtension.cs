@@ -32,12 +32,32 @@ public static class TransformExtension_1356FE83A31E4D0ABE20837814D1C94D
     /// </summary>
     /// <param name="trans"></param>
     /// <param name="tar"></param>
-    public static void AlignFrom(this Transform trans, Transform tar)
+    public static void AlignTo(this Transform trans, Transform tar, bool alignScale = false)
     {
         if (tar)
         {
             trans.SetPositionAndRotation(tar.position, tar.rotation);
-            trans.localScale = tar.localScale;
+            if (alignScale)
+            {
+                trans.localScale = tar.lossyScale;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 位置重合
+    /// </summary>
+    /// <param name="trans"></param>
+    /// <param name="tar"></param>
+    public static void AlignTo(this Transform trans, Component tar, bool alignScale = false)
+    {
+        if (tar)
+        {
+            trans.SetPositionAndRotation(tar.transform.position, tar.transform.rotation);
+            if (alignScale)
+            {
+                trans.localScale = tar.transform.lossyScale;
+            }
         }
     }
 
