@@ -99,10 +99,10 @@ namespace Megumin
         {
             var detail = "";
             {
-                BindingFlags staticflag = BindingFlags.Public | BindingFlags.Static;
+                BindingFlags staticflag = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
                 if (flags.HasValue)
                 {
-                    staticflag |= flags.Value;
+                    staticflag = flags.Value;
                 }
 
                 detail += "Static:   \n";
@@ -117,10 +117,10 @@ namespace Megumin
             var detail = "";
             if (value != null)
             {
-                BindingFlags instanceflag = BindingFlags.Public | BindingFlags.Instance;
+                BindingFlags instanceflag = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
                 if (flags.HasValue)
                 {
-                    instanceflag |= flags.Value;
+                    instanceflag = flags.Value;
                 }
 
                 detail += "       \n";
@@ -282,7 +282,7 @@ namespace Megumin
 
                 if (fo is IDictionary dictionary)
                 {
-                    foreach (IDictionaryEnumerator item in dictionary)
+                    foreach (DictionaryEntry item in dictionary)
                     {
                         detail += retract + item.Key.ToString() + "  :  " + item.Value.ToString() + "\n";
                     }
