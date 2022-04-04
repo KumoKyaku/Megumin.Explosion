@@ -64,7 +64,7 @@ namespace Megumin
             }
             else
             {
-                Debug.LogWarning("枚举值类型变化，保存的string无法解析成枚举");
+                Debug.LogWarning($"枚举值类型变化，保存的string：[{StrValue}]无法解析成枚举:[{typeof(T)}]");
             }
         }
     }
