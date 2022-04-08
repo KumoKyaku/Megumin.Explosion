@@ -74,7 +74,7 @@ namespace UnitTestProject1
                   return kv.Value >= 2;
               };
 
-            //test.RemoveAll(predicate);
+            test.RemoveAll(predicate);
             Assert.AreEqual(false, test.Any(predicate));
         }
 

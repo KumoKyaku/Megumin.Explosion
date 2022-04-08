@@ -27,12 +27,17 @@ namespace Megumin
         public override V DefaultValue => defaultValue;
 
         public MultipleValue() { }
-        public MultipleValue(K defaultKey, V defaultValue = default)
+        public MultipleValue(K defaultKey,
+                             V defaultValue = default,
+                             OnValueChanged<V> onValueChanged = null)
         {
             this.defaultKey = defaultKey;
             this.defaultValue = defaultValue;
+            if (onValueChanged != null)
+            {
+                this.ValueChanged += onValueChanged;
+            }
         }
-
     }
 
     /// <summary>
@@ -57,6 +62,138 @@ namespace Megumin
                 value += item.Value;
             }
             return (key, value);
+        }
+    }
+
+    /// <summary>
+    /// 用于FlagEnum,最好用枚举类型实现一次.
+    /// 性能有些额外损失,至少每次计算都要Tostring,甚至装箱一次,不确定.<see cref="CalNewValue"/>.
+    /// </summary>
+    /// <inheritdoc/>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    public class MultipleValueEnum<K, V> : MultipleValue<K, V>
+        where V : struct, Enum, IConvertible
+    {
+        public MultipleValueEnum(K defaultKey,
+                                   V defaultValue,
+                                   OnValueChanged<V> onValueChanged = null)
+            : base(defaultKey, defaultValue, onValueChanged)
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected override (K Key, V Value) CalNewValue()
+        {
+            int temp = DefaultValue.ToInt32(null);
+
+            foreach (var item in ElementDic)
+            {
+                var b = item.Value.ToInt32(null);
+                temp |= b;
+            }
+
+            var res = (V)Enum.Parse(typeof(V), temp.ToString());
+            return (default, res);
+        }
+
+        /// <summary>
+        /// https://github.com/dotnet/runtime/issues/14084
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enum"></param>
+        /// <param name="flag"></param>
+        /// <param name="on"></param>
+        /// <returns></returns>
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //internal static T SetFlag<T>(this T @enum, T flag, bool on) where T : struct, Enum
+        //{
+        //    if (Unsafe.SizeOf<T>() == 1)
+        //    {
+        //        byte x = (byte)((Unsafe.As<T, byte>(ref @enum) & ~Unsafe.As<T, byte>(ref flag))
+        //            | (-Unsafe.As<bool, byte>(ref on) & Unsafe.As<T, byte>(ref flag)));
+        //        return Unsafe.As<byte, T>(ref x);
+        //    }
+        //    else if (Unsafe.SizeOf<T>() == 2)
+        //    {
+        //        var x = (short)((Unsafe.As<T, short>(ref @enum) & ~Unsafe.As<T, short>(ref flag))
+        //            | (-Unsafe.As<bool, byte>(ref on) & Unsafe.As<T, short>(ref flag)));
+        //        return Unsafe.As<short, T>(ref x);
+        //    }
+        //    else if (Unsafe.SizeOf<T>() == 4)
+        //    {
+        //        uint x = (Unsafe.As<T, uint>(ref @enum) & ~Unsafe.As<T, uint>(ref flag))
+        //           | ((uint)-Unsafe.As<bool, byte>(ref on) & Unsafe.As<T, uint>(ref flag));
+        //        return Unsafe.As<uint, T>(ref x);
+        //    }
+        //    else
+        //    {
+        //        ulong x = (Unsafe.As<T, ulong>(ref @enum) & ~Unsafe.As<T, ulong>(ref flag))
+        //           | ((ulong)-(long)Unsafe.As<bool, byte>(ref on) & Unsafe.As<T, ulong>(ref flag));
+        //        return Unsafe.As<ulong, T>(ref x);
+        //    }
+        //}
+    }
+
+    /// <summary>
+    /// 枚举示例<see cref="CalNewValue"/>. FlagEnum排序没有意义,使用|运算.
+    /// </summary>
+    public sealed class MultipleValueEnumKeypadSudoku : MultipleValueEnum<object, KeypadSudoku>
+    {
+        public MultipleValueEnumKeypadSudoku(object defaultKey,
+                                           KeypadSudoku defaultValue,
+                                           OnValueChanged<KeypadSudoku> onValueChanged = null)
+            : base(defaultKey, defaultValue, onValueChanged)
+        {
+        }
+
+        protected override (object Key, KeypadSudoku Value) CalNewValue()
+        {
+            var V = DefaultValue;
+            foreach (var item in ElementDic)
+            {
+                V |= item.Value;
+            }
+
+            return (null, V);
+        }
+    }
+
+    /// <summary>
+    /// 并集.
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    public class MultipleValueCollection<K, V> : MultipleValue<K, ICollection<V>>
+    {
+        public MultipleValueCollection(K defaultKey,
+                                         ICollection<V> defaultValue,
+                                         OnValueChanged<ICollection<V>> onValueChanged = null)
+            : base(defaultKey, defaultValue, onValueChanged)
+        {
+
+        }
+
+        public HashSet<V> AllElement { get; set; } = new HashSet<V>();
+
+        /// <summary>
+        /// 去并集
+        /// </summary>
+        /// <returns></returns>
+        protected override (K Key, ICollection<V> Value) CalNewValue()
+        {
+            AllElement.Clear();
+            foreach (var item in ElementDic)
+            {
+                foreach (var ele in item.Value)
+                {
+                    AllElement.Add(ele);
+                }
+            }
+            return (default, AllElement);
         }
     }
 }

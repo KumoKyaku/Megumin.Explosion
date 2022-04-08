@@ -42,14 +42,16 @@ namespace Megumin.Tests
         [TestMethod()]
         public void MultipleControlEnumRentAutoReturn()
         {
-            MultipleControlEnum<object, KeypadSudoku> control = new MultipleControlEnum<object, KeypadSudoku>(new object(), KeypadSudoku.Up);
+            MultipleValueEnum<object, KeypadSudoku> control = new MultipleValueEnum<object, KeypadSudoku>(new object(), KeypadSudoku.Up);
             var c1 = new object();
-            control.Control(c1, KeypadSudoku.Left);
+            control.Add(c1, KeypadSudoku.Left);
             Assert.AreEqual(KeypadSudoku.Left | KeypadSudoku.Up, control);
 
             var c2 = new object();
-            control.Control(c2, KeypadSudoku.Right);
+            control.Add(c2, KeypadSudoku.Right);
             Assert.AreEqual(KeypadSudoku.Left | KeypadSudoku.Right | KeypadSudoku.Up, control);
         }
     }
 }
+
+
