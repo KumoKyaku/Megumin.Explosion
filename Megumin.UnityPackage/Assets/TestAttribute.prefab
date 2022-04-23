@@ -62,7 +62,7 @@ MonoBehaviour:
   - ReadOnlyInInspector3
   Option2String: Tset22
   Option2String2: "\u9632\u5FA1\u529B"
-  Path: 
+  Path: Assets/Samples
   ProtectedInInspector:
   - ProtectedInInspector1
   - ProtectedInInspector2

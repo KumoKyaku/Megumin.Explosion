@@ -13,7 +13,7 @@ public class TestClass : MonoBehaviour
     public LayerMask TestLayerMask;
     public GameObjectFilter Filter;
 
-
+    public UnityEngine.Object Folder;
     void Test()
     {
         if (TestCondition.Match("hello"))

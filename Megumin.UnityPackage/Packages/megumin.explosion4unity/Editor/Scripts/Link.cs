@@ -147,6 +147,12 @@ namespace Megumin
         {
             OpenURL("https://github.com/mob-sakai/SubAssetEditor");
         }
+
+        [MenuItem("Tools/Link/Mixture")]
+        static void Mixture()
+        {
+            OpenURL("https://github.com/alelievr/Mixture#installation");
+        }
     }
 
     partial class Link
