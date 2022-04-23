@@ -266,6 +266,46 @@ public static partial class MeguminEditorUtility
             ShowHiddin(obj.transform);
         }
     }
+
+    [MenuItem("Assets/Create/⚝Select ScriptableObject", priority = 35)]
+    public static void CreateSelectScriptableObjectAsset()
+    {
+        var res = GetScriptObjectType();
+        if (res != null)
+        {
+            var so = ScriptableObject.CreateInstance(res);
+
+            MethodInfo getActiveFolderPath =
+                typeof(ProjectWindowUtil).GetMethod("GetActiveFolderPath",
+                                                    BindingFlags.Static | BindingFlags.NonPublic);
+
+            string folderPath = (string)getActiveFolderPath.Invoke(null, null);
+            var fn = folderPath.CreateFileName(res.Name, ".asset");
+            AssetDatabase.CreateAsset(so, fn);
+            AssetDatabase.Refresh();
+        }
+    }
+
+    [MenuItem("Assets/Create/⚝Select ScriptableObject", true, priority = 35)]
+    public static bool CreateSelectScriptableObjectAssetValidateFunction()
+    {
+        var res = GetScriptObjectType();
+        return res != null;
+    }
+
+    public static Type GetScriptObjectType()
+    {
+        if (Selection.activeObject is MonoScript mono)
+        {
+            var type = mono.GetClass();
+            if (typeof(ScriptableObject).IsAssignableFrom(type))
+            {
+                return type;
+            }
+        }
+
+        return null;
+    }
 }
 
 

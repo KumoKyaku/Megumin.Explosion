@@ -351,6 +351,25 @@ namespace UnityEngine
             target.ConvertTo(targetScript);
         }
 
+        public static Type GetScriptObjectType(this MenuCommand command)
+        {
+            if (command == null)
+            {
+                return null;
+            }
+
+            if (Selection.activeObject is MonoScript mono)
+            {
+                var type = mono.GetClass();
+                if (typeof(ScriptableObject).IsAssignableFrom(type))
+                {
+                    return type;
+                }
+            }
+
+            return null;
+        }
+
         public static void AddUGUI<T>(this MenuCommand command) where T : MonoBehaviour
         {
             System.Reflection.BindingFlags flags
