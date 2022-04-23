@@ -100,7 +100,8 @@ namespace UnityEditor.Megumin
 
             if (toggle.boolValue)
             {
-                EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("MyOverrideValue"), label, true);
+                SerializedProperty overrideValue = property.FindPropertyRelative("MyOverrideValue");
+                EditorGUI.PropertyField(valuePosition, overrideValue, label, true);
             }
             else
             {

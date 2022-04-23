@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using System;
 
 namespace Megumin
 {
@@ -65,6 +66,37 @@ namespace Megumin
             else
             {
                 File.WriteAllText(path, txt, encoding);
+            }
+        }
+
+        class Scope : IDisposable
+        {
+            CSCodeGenerator g;
+            public Scope(CSCodeGenerator g)
+            {
+                this.g = g;
+                g.BeginScope();
+            }
+            public void Dispose()
+            {
+                g.EndScope();
+            }
+        }
+
+        /// <summary>
+        /// 使用using
+        /// </summary>
+        /// <returns></returns>
+        public IDisposable EnterScope()
+        {
+            return new Scope(this);
+        }
+
+        public IDisposable NewScope
+        {
+            get 
+            { 
+                return new Scope(this); 
             }
         }
     }

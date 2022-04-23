@@ -35,6 +35,15 @@ namespace UnityEngine
             return Path.GetFullPath(path);
         }
 
+        public static string MakeUnityProjectRelativePath(this string path)
+        {
+            //转换为相对路径。
+            var p1 = new System.Uri(path);
+            var p2 = new System.Uri(MeguminUtility4Unity.ProjectPath);
+            var r = p2.MakeRelativeUri(p1);
+            return r.ToString();
+        }
+
         //=====================================
 
         /// <summary>
