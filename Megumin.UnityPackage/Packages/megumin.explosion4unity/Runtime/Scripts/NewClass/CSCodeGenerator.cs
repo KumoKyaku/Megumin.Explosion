@@ -27,7 +27,11 @@ namespace Megumin
 
         public void Push(string code)
         {
-            code = GetIndentStr(Indent) + code;
+            if (!string.IsNullOrEmpty(code))
+            {
+                code = GetIndentStr(Indent) + code;
+            }
+
             Lines.Add(code);
         }
 
@@ -37,6 +41,33 @@ namespace Megumin
             {
                 Push(item);
             }
+        }
+
+        public void PushSummaryNote(params string[] notes)
+        {
+            if (notes == null || notes.Length == 0)
+            {
+                return;
+            }
+
+            if (notes.Length == 1 && string.IsNullOrEmpty(notes[0]))
+            {
+                return;
+            }
+
+            //增加注释
+            Push("");
+            Push(@$"/// <summary>");
+            foreach (var item in notes)
+            {
+                StringReader sr = new StringReader(item);
+                string line = null;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    Push(@$"/// <para/> {line}");
+                }
+            }
+            Push(@$"/// </summary>");
         }
 
         public void BeginScope()
@@ -94,9 +125,9 @@ namespace Megumin
 
         public IDisposable NewScope
         {
-            get 
-            { 
-                return new Scope(this); 
+            get
+            {
+                return new Scope(this);
             }
         }
     }
