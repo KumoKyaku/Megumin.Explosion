@@ -65,6 +65,20 @@ namespace UnityEngine
 
         }
 
+        /// <summary>
+        /// 这里插入一个编辑器刷新，导入新文件等，否则编辑器模式下脚本Update调用不及时。
+        /// </summary>
+        /// <param name="obj"></param>
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        public static void AssetDatabaseRefresh(this UnityEngine.Object obj)
+        {
+
+#if UNITY_EDITOR
+            UnityEditor.AssetDatabase.Refresh();
+#endif
+
+        }
+
         static MethodInfo OpenPropertyEditor;
 
         /// <summary>
