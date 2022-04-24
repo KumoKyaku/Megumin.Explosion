@@ -18,6 +18,12 @@ namespace System.Collections.Generic
             return default;
         }
 
+        public static int RemoveAllNull<T>(this List<T> enumerable)
+            where T : class
+        {
+            return enumerable.RemoveAll(static ele => ele == null);
+        }
+
         public static bool ValidIndex<T>(this IList<T> list, int index)
         {
             return index >= 0 && index < list.Count;
