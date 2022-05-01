@@ -14,9 +14,25 @@ public static class AnimatorExtension_B0724B3FE1814EEB809D274438B254A6
     public static AxialAigned GetAxial(this Animator animator, HumanBodyBones bone)
     {
         HumanBodyBones humanBoneId = bone.FirstChild();
-        var foot = animator.GetBoneTransform(humanBoneId);
-        var locol = foot.transform.localPosition;
-        return GetAxial(locol);
+        if (humanBoneId != HumanBodyBones.LastBone)
+        {
+            //通常使用子对象坐标判断轴向
+            var foot = animator.GetBoneTransform(humanBoneId);
+            var locol = foot.transform.localPosition;
+            return GetAxial(locol);
+        }
+        else
+        {
+            //不存在子对象时，通过自身坐标，计算父骨骼轴向，当作自身轴向。
+            //通常认为末节点骨骼轴向于父骨骼轴向相同。
+            if (bone != HumanBodyBones.LastBone)
+            {
+                var foot = animator.GetBoneTransform(bone);
+                var locol = foot.transform.localPosition;
+                return GetAxial(locol);
+            }
+        }
+        return AxialAigned.None;
     }
 
     public static AxialAigned GetAxial(Vector3 locol)
