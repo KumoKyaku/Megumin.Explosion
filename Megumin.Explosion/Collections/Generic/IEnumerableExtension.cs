@@ -52,6 +52,18 @@ namespace System.Collections.Generic
             }
             return default;
         }
+
+        public static bool AddIfNotContains<T>(this ICollection<T> enumerable, T item)
+            where T : class
+        {
+            if (enumerable.Contains(item))
+            {
+                return false;
+            }
+
+            enumerable.Add(item);
+            return true;
+        }
     }
 }
 
