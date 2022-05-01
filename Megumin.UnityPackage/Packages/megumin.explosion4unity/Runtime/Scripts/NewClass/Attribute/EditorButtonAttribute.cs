@@ -312,12 +312,20 @@ namespace UnityEditor.Megumin
                     {
                         return DateTime.Now;
                     }
+                    else if (res.ParamType == typeof(Color))
+                    {
+                        return Color.white;
+                    }
                     return Activator.CreateInstance(res.ParamType);
                 }
             }
 
             if (parameterType.IsValueType)
             {
+                if (res.ParamType == typeof(Color))
+                {
+                    return Color.white;
+                }
                 return Activator.CreateInstance(parameterType);
             }
 
