@@ -60,6 +60,7 @@ namespace Megumin
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
     public class EditorButtonAttribute : PropertyAttribute
     {
+        public bool AfterDrawDefaultInspector = true;
         public string ButtonName { get; set; }
         public bool UseTypeFullName { get; set; }
         public float ButtonHeight { get; set; } = 20f;
@@ -574,6 +575,32 @@ namespace UnityEditor.Megumin
             }
         }
 
+        public static void DrawInspectorMethodsBeforeDefault(this Editor editor, List<DrawMethod> list)
+        {
+            foreach (var draw in list)
+            {
+                if (draw.Attribute.AfterDrawDefaultInspector == false || draw.Attribute.order < 0)
+                {
+                    DrawButtonforMethod(editor.target, draw.Method, draw.State, draw.Attribute.OnlyPlaying);
+                }
+            }
+        }
+
+        public static void DrawInspectorMethodsAfterDefault(this Editor editor, List<DrawMethod> list)
+        {
+            foreach (var draw in list)
+            {
+                if (draw.Attribute.AfterDrawDefaultInspector == false || draw.Attribute.order < 0)
+                {
+
+                }
+                else
+                {
+                    DrawButtonforMethod(editor.target, draw.Method, draw.State, draw.Attribute.OnlyPlaying);
+                }
+            }
+        }
+
         /// <summary>
         /// 方法缓存，每个脚本类型公用一组方法和参数。每次重写编译，重载域，静态缓存都会被清除。
         /// </summary>
@@ -596,6 +623,32 @@ namespace UnityEditor.Megumin
             }
 
             editor.DrawInspectorMethods(list);
+        }
+
+        public static void DrawButtonBeforeDefaultInspector(this Editor editor)
+        {
+            Type type = editor.target.GetType();
+            if (!MethodCache.TryGetValue(type, out var list))
+            {
+                list = new List<DrawMethod>();
+                editor.CollectDrawButtonMethod(list);
+                MethodCache[type] = list;
+            }
+
+            editor.DrawInspectorMethodsBeforeDefault(list);
+        }
+
+        public static void DrawButtonAfterDefaultInspector(this Editor editor)
+        {
+            Type type = editor.target.GetType();
+            if (!MethodCache.TryGetValue(type, out var list))
+            {
+                list = new List<DrawMethod>();
+                editor.CollectDrawButtonMethod(list);
+                MethodCache[type] = list;
+            }
+
+            editor.DrawInspectorMethodsAfterDefault(list);
         }
     }
 }
@@ -621,8 +674,9 @@ namespace UnityEditor.Megumin
     {
         public override void OnInspectorGUI()
         {
+            this.DrawButtonBeforeDefaultInspector();
             base.OnInspectorGUI();
-            this.DrawInspectorMethods();
+            this.DrawButtonAfterDefaultInspector();
         }
     }
 
