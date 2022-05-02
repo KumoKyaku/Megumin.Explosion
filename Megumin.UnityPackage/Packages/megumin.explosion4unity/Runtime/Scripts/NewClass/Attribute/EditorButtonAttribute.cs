@@ -7,6 +7,7 @@ using System.Collections;
 using Object = UnityEngine.Object;
 using System.Reflection;
 using Megumin;
+using System.Diagnostics;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -55,11 +56,13 @@ namespace Megumin
     /// <para></para><see cref="EditorGUIMethod.DrawInspectorMethods"/>
     /// <para>在自定义Serializable类型方法中无效,无法显示在面板</para>
     /// </summary>
-    [System.AttributeUsage(System.AttributeTargets.Method)]
+    [Obsolete("Rename. Use ButtonAttribute instead.")]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
     public class EditorButtonAttribute : PropertyAttribute
     {
         public string ButtonName { get; set; }
         public bool UseTypeFullName { get; set; }
+        public float ButtonHeight { get; set; } = 20f;
 
         /// <summary>
         /// <para/>true :编辑模式运行模式都有效.
@@ -83,6 +86,32 @@ namespace Megumin
 
 #endif
 
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
+    public class ButtonAttribute : EditorButtonAttribute
+    {
+        public string Name
+        {
+            get
+            {
+                return ButtonName;
+            }
+            set
+            {
+                ButtonName = value;
+            }
+        }
+
+        public ButtonAttribute(string name = null, int buttonSize = 20)
+        {
+            Name = name;
+            ButtonHeight = buttonSize;
+        }
+
+        public ButtonAttribute(bool onlyPlaying)
+        {
+            OnlyPlaying = onlyPlaying;
+        }
+    }
 }
 
 
@@ -481,16 +510,17 @@ namespace UnityEditor.Megumin
                 {
                     object returnVal = methodInfo.Invoke(target, state.parameters);
 
+                    if (returnVal != null)
+                    {
+                        UnityEngine.Debug.Log($"{methodInfo.Name} return : {returnVal}");
+                    }
+
                     if (returnVal is IEnumerator)
                     {
                         if (target is MonoBehaviour mono)
                         {
                             mono.StartCoroutine((IEnumerator)returnVal);
                         }
-                    }
-                    else if (returnVal != null)
-                    {
-                        Debug.Log("Method call result -> " + returnVal);
                     }
 
                     ///强制更新
