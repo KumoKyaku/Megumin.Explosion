@@ -5,13 +5,22 @@ using System;
 
 namespace Megumin
 {
+    public interface IFinder<in K, out V>
+    {
+        V Find(K key);
+    }
+
+    public interface IRegister<in K, in V>
+    {
+        bool Regist(K key, V value);
+    }
+
     /// <summary>
     /// 挂载点查找器
     /// </summary>
-    public interface INodeFinder<in K, T>
+    public interface INodeFinder<in K, T> : IFinder<K, T>, IRegister<K, T>
     {
-        T Find(K key);
-        bool Regist(K name, T transform);
+
     }
 
     public interface ITransformNodeFinder<in K> : INodeFinder<K, Transform> { }
