@@ -46,7 +46,7 @@ namespace Megumin
         }
 
 #if UNITY_EDITOR
-        [EditorButton]
+        [Button]
         void EditorSwitch()
         {
             if (!Application.isPlaying)

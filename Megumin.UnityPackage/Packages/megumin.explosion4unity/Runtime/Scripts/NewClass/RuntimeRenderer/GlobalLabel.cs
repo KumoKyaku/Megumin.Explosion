@@ -25,7 +25,7 @@ namespace Megumin
             GUI.Label(Position, Content, LabelStyle);
         }
 
-        [EditorButton]
+        [Button]
         public virtual void InitStyle(string styleName = "CN CountBadge", bool force = false)
         {
             if (LabelStyle == null || force)
@@ -34,7 +34,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         public void InitStyle(Color textColor, int fontSize = 20)
         {
             if (LabelStyle == null)
@@ -59,7 +59,7 @@ namespace Megumin
             InitStyle(Color.white);
         }
 
-        [EditorButton]
+        [Button]
         public static void Show(string text = "Fast Label")
         {
             if (Instance)
@@ -69,7 +69,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         public static void Clear()
         {
             Show(null);

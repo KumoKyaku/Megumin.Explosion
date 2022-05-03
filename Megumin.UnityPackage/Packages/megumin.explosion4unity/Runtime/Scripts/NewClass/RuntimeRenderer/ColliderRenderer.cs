@@ -89,14 +89,14 @@ namespace Megumin
         }
 
 
-        [EditorButton]
+        [Button]
         public void SwitchGlobalToggle()
         {
             InitGlabalToggle();
             GlobalToggle.Value = !GlobalToggle;
         }
 
-        [EditorButton]
+        [Button]
         void ReCollect()
         {
             SubShowers.Clear();
@@ -123,7 +123,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         void ParentReCollect()
         {
             if (Parent)
@@ -132,7 +132,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         void RemoveSubShowers()
         {
             if (SubShowers != null)
@@ -202,7 +202,8 @@ namespace Megumin
 
         [NonSerialized]
         Color? CacheOverrideColor = null;
-        [EditorButton]
+
+        [Button]
         public void OverrideColor(Color color, bool force = false)
         {
             if (CacheOverrideColor == color && force == false)
@@ -229,7 +230,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         public void CopyChildColor(int index = 0, bool force = false)
         {
             if (SubShowers?.Count > index)
@@ -247,7 +248,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         public void InhertParentColor(bool force = false)
         {
             if (Parent)
@@ -264,7 +265,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         public void ResetMat()
         {
             CacheOverrideColor = null;

@@ -105,7 +105,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         public void ClearLogDelta()
         {
             TotalDelta = default;

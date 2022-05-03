@@ -228,14 +228,14 @@ namespace UnityEngine.UI
             return GetSpriteSource.Task;
         }
 
-        [EditorButton]
+        [Button]
         void ReLoad()
         {
             CheckCacheDir();
             StartCoroutine(GetSprite());
         }
 
-        [EditorButton]
+        [Button]
         void OpenCacheFolder()
         {
             CheckCacheDir();
@@ -243,7 +243,7 @@ namespace UnityEngine.UI
         }
 
         [ContextMenu(nameof(OpenLink))]
-        [EditorButton]
+        [Button]
         void OpenLink()
         {
             Application.OpenURL(url);

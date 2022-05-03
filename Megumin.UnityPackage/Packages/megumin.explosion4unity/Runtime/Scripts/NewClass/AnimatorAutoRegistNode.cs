@@ -13,7 +13,7 @@ namespace Megumin
             Regist();
         }
 
-        [EditorButton]
+        [Button]
         public void Regist()
         {
             var a = GetComponent<Animator>();

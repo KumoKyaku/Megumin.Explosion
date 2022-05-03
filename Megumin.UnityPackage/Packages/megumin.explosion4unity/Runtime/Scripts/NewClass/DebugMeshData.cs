@@ -29,7 +29,7 @@ namespace Megumin
         public Texture Texture;
         public Shader Shader;
 
-        [EditorButton]
+        [Button]
         void CollectMesh()
         {
             var g = gameObject.GetComponentsInChildren<TMP_Text>().ToList();
@@ -40,7 +40,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         void ParseMat()
         {
             if (Material)

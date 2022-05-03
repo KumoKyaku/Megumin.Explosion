@@ -109,7 +109,7 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         void SetAllAreaName()
         {
 #if UNITY_EDITOR

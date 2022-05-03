@@ -77,14 +77,14 @@ namespace Megumin
             }
         }
 
-        [EditorButton]
+        [Button]
         public void SwitchGlobalToggle()
         {
             InitGlobalToggle();
             GlobalToggle.Value = !GlobalToggle;
         }
 
-        [EditorButton]
+        [Button]
         private void InitStyle(string styleName = "CN CountBadge", bool force = false)
         {
             if (LabelStyle == null || force)

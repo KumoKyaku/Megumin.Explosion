@@ -55,19 +55,19 @@ public class TestLog : MonoBehaviour
 
     }
 
-    [EditorButton]
+    [Button]
     public void Test(int a, string str = "默认值1111111111")
     {
         Debug.Log($"{str.Html(HSVColor)}--{HSVColor}--{(Color)HSVColor}--{(HexColor)HSVColor}");
     }
 
-    [EditorButton]
+    [Button]
     public void LogColor()
     {
         HexColor.DebugLogColor();
     }
 
-    [EditorButton]
+    [Button]
     public void TestParseColor()
     {
         foreach (var item in HexColor.GetAllStaticColor())
@@ -92,7 +92,7 @@ public class TestLog : MonoBehaviour
 
     public Pref<bool> GlobalToggle;
 
-    [EditorButton]
+    [Button]
     public void TestQ()
     {
         Vector3 vector3 = new Vector3(0.1f, 0.2f, 0.3f);
@@ -100,13 +100,13 @@ public class TestLog : MonoBehaviour
         var r = matri.GetPosition();
     }
 
-    [EditorButton]
+    [Button]
     public void TestArgs(Loger loger)
     {
         //MeguminEditorUtility.FindCustomEditorTypeByType(typeof(TestScriptObject), false);
     }
 
-    [EditorButton(true)]
+    [Button(true)]
     public void Test2(int? loger)
     {
 

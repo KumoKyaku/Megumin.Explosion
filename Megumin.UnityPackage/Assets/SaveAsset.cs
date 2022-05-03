@@ -61,7 +61,7 @@ public class SaveAsset : ScriptableObject, ISerializationCallbackReceiver
     }
 
 #if UNITY_EDITOR
-    [EditorButton]
+    [Button]
     public void TestAdd()
     {
         var count = 0;

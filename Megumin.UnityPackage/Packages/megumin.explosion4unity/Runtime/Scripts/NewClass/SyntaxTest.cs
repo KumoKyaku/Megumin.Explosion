@@ -38,7 +38,7 @@ namespace Megumin.SyntaxTest
             Test(test);
         }
 
-        [EditorButton]
+        [Button]
         public void Test() => Test2(default);
     }
 }
