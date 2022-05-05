@@ -96,19 +96,26 @@ namespace UnityEditor.Megumin
 
             SerializedProperty toggle = property.FindPropertyRelative("IsOverride");
             //EditorGUI.PropertyField(togglePosition, toggle, GUIContent.none);
+            EditorGUI.BeginProperty(valuePosition, label, toggle);
             toggle.boolValue = GUI.Toggle(togglePosition, toggle.boolValue, GUIContent.none);
+            EditorGUI.EndProperty();
 
             if (toggle.boolValue)
             {
                 SerializedProperty overrideValue = property.FindPropertyRelative("MyOverrideValue");
+                EditorGUI.BeginProperty(valuePosition, label, overrideValue);
                 EditorGUI.PropertyField(valuePosition, overrideValue, label, true);
+                EditorGUI.EndProperty();
             }
             else
             {
                 using (new EditorGUI.DisabledGroupScope(true))
                 {
                     label.text += " [Default]";
-                    EditorGUI.PropertyField(valuePosition, property.FindPropertyRelative("defaultValue"), label, true);
+                    SerializedProperty defaultValue = property.FindPropertyRelative("defaultValue");
+                    EditorGUI.BeginProperty(valuePosition, label, defaultValue);
+                    EditorGUI.PropertyField(valuePosition, defaultValue, label, true);
+                    EditorGUI.EndProperty();
                 }
             }
         }

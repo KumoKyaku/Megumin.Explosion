@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8924700087206059368
 MonoBehaviour:
@@ -55,6 +55,8 @@ MonoBehaviour:
   FrameAndTime: 0
   GUID: 011f30b31b027cd438bcb0f0e46a1564
   Indent: IndentTest
+  LayerInt: 4
+  LayerString: UI
   Member2String: ProtectedInInspector1
   Member2String2:
   - ReadOnlyInInspector1
@@ -73,6 +75,7 @@ MonoBehaviour:
   - ReadOnlyInInspector2
   - ReadOnlyInInspector3
   Snap: 60
+  Tag: Player
   ClampedValue:
     Min: 1
     Max: 99

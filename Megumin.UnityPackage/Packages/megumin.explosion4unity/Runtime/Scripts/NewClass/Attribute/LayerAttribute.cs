@@ -22,9 +22,9 @@ namespace UnityEditor.Megumin
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            property.serializedObject.Update();
             if (property.propertyType == SerializedPropertyType.String)
             {
+                EditorGUI.BeginProperty(position, label, property);
                 if (string.IsNullOrEmpty(property.stringValue))
                 {
                     property.stringValue = "Default";
@@ -34,11 +34,12 @@ namespace UnityEditor.Megumin
                 if (EditorGUI.EndChangeCheck())
                 {
                     property.stringValue = LayerMask.LayerToName(newlayer);
-                    property.serializedObject.ApplyModifiedProperties();
                 }
+                EditorGUI.EndProperty();
             }
             else if (property.propertyType == SerializedPropertyType.Integer)
             {
+                EditorGUI.BeginProperty(position, label, property);
                 var oldLayer = property.longValue;
                 if (oldLayer < 0 || oldLayer > 31)
                 {
@@ -50,8 +51,8 @@ namespace UnityEditor.Megumin
                 if (EditorGUI.EndChangeCheck())
                 {
                     property.longValue = newlayer;
-                    property.serializedObject.ApplyModifiedProperties();
                 }
+                EditorGUI.EndProperty();
             }
             else
             {

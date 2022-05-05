@@ -28,7 +28,9 @@ namespace UnityEditor.Megumin
                 {
                     property.stringValue = "Untagged";
                 }
+                EditorGUI.BeginProperty(position, label, property);
                 property.stringValue = EditorGUI.TagField(position, label, property.stringValue);
+                EditorGUI.EndProperty();
             }
             else
             {

@@ -18,6 +18,8 @@ public class TestLog : MonoBehaviour
     public int ReadOnlyIntValue = 9999;
     public Enableable<int> IntValue2 = new Enableable<int>(false, 20);
     public EnableFrame IntValue3 = new EnableFrame() { Enabled = false, Value = 30 };
+
+    public Overridable<int> OverridableInt = new Overridable<int>(20);
     [FrameAndTime]
     public int FrameCount = 20;
     [Enum2String(typeof(TestEnum))]
@@ -132,7 +134,7 @@ public class TestLog : MonoBehaviour
 }
 
 [Serializable]
-public class STest:INewCloneButton
+public class STest : INewCloneButton
 {
     //[OnValueChanged(CallBackName = "OnValueChangeTest2")]
     public int inta;

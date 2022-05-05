@@ -47,6 +47,7 @@ namespace UnityEditor.Megumin
 
             if (index != -1)
             {
+                EditorGUI.BeginProperty(valuePosition, label, property);
                 if (!string.IsNullOrEmpty(overrideName) && overrideName.StartsWith("Element"))
                 {
                     //容器内不显名字。
@@ -57,6 +58,7 @@ namespace UnityEditor.Megumin
                     index = EditorGUI.Popup(valuePosition, overrideName, index, opShow);
                 }
                 property.stringValue = opValue[index];
+                EditorGUI.EndProperty();
             }
             else
             {

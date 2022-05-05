@@ -14,6 +14,10 @@ public class TestClass : MonoBehaviour
     public GameObjectFilter Filter;
 
     public UnityEngine.Object Folder;
+
+    public Enableable<int> EnableableInt = new Enableable<int>(false, 20);
+    public Overridable<int> OverridableInt = new Overridable<int>(99);
+
     void Test()
     {
         if (TestCondition.Match("hello"))

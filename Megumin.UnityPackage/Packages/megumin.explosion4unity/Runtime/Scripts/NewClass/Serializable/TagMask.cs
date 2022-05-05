@@ -103,6 +103,7 @@ namespace UnityEditor.Megumin
                 }
             }
 
+            EditorGUI.BeginProperty(position, label, property);
             EditorGUI.BeginChangeCheck();
             compressedMask = EditorGUI.MaskField(position, label, compressedMask, tags);
             if (EditorGUI.EndChangeCheck())
@@ -131,6 +132,7 @@ namespace UnityEditor.Megumin
                     prop.GetArrayElementAtIndex(i).stringValue = mytags[i];
                 }
             }
+            EditorGUI.EndProperty();
 
             if (TagMask.InspectorShowTagList)
             {

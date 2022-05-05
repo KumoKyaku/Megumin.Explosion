@@ -107,6 +107,7 @@ namespace UnityEditor.Megumin
 
 #if !DISABLE_MEGUMIN_PROPERTYDRWAER
     [CustomPropertyDrawer(typeof(Enableable), true)]
+    [CustomPropertyDrawer(typeof(Enableable<>), true)]
 #endif
     internal sealed class EnableableDrawer : PropertyDrawer
     {
@@ -132,14 +133,18 @@ namespace UnityEditor.Megumin
             var valuePosition = position;
             valuePosition.width -= 20;
             SerializedProperty toggle = property.FindPropertyRelative("Enabled");
+            EditorGUI.BeginProperty(valuePosition, label, toggle);
             toggle.boolValue = GUI.Toggle(togglePosition, toggle.boolValue, GUIContent.none);
+            EditorGUI.EndProperty();
 
             SerializedProperty value = property.FindPropertyRelative("Value");
             if (value != null)
             {
+                EditorGUI.BeginProperty(valuePosition, label, value);
                 EditorGUI.BeginDisabledGroup(!toggle.boolValue);
                 EditorGUI.PropertyField(valuePosition, value, label, true);
                 EditorGUI.EndDisabledGroup();
+                EditorGUI.EndProperty();
             }
         }
     }

@@ -96,8 +96,12 @@ namespace UnityEditor.Megumin
 
                     if (Enum.TryParse(type, current, true, out var currentEnum))
                     {
+                        EditorGUI.BeginProperty(valuePosition, label, property);
+                        
                         var result = EditorGUI.EnumPopup(valuePosition, overrideName, (Enum)currentEnum);
                         property.stringValue = result.ToString();
+                        
+                        EditorGUI.EndProperty();
                     }
                     else
                     {

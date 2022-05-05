@@ -60,6 +60,7 @@ namespace UnityEditor.Megumin
             var obj = AssetDatabase.LoadAssetAtPath(property.stringValue, typeof(UnityEngine.Object));
             if (obj)
             {
+                EditorGUI.BeginProperty(position, label, property);
                 float width = propertyPosition.width;
                 propertyPosition.width = EditorGUIUtility.labelWidth;
                 EditorGUI.LabelField(propertyPosition, label);
@@ -70,6 +71,7 @@ namespace UnityEditor.Megumin
                 {
                     EditorGUI.ObjectField(propertyPosition, obj, typeof(UnityEngine.Object), false);
                 }
+                EditorGUI.EndProperty();
             }
             else
             {
@@ -78,7 +80,7 @@ namespace UnityEditor.Megumin
 
             if (GUI.Button(buttonPosition, "Select"))
             {
-                string dir = Path.Combine(MeguminUtility4Unity.ProjectPath,property.stringValue);
+                string dir = Path.Combine(MeguminUtility4Unity.ProjectPath, property.stringValue);
                 dir = Path.GetDirectoryName(dir);
                 dir = Path.GetFullPath(dir);
 

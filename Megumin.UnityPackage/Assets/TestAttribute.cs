@@ -41,6 +41,13 @@ public class TestAttribute : MonoBehaviour
     [HelpBox("HelpBox")]
     [Indent]
     public string Indent = "IndentTest";
+    [Indent]
+    public int IndentInt = 99;
+
+    [Layer]
+    public int LayerInt;
+    [Layer]
+    public string LayerString;
 
     [Member2String(nameof(ProtectedInInspector))]
     public string Member2String = "Member2String";
@@ -75,6 +82,9 @@ public class TestAttribute : MonoBehaviour
 
     [Snap(60)]
     public int Snap = 60;
+
+    [Tag]
+    public string Tag;
 
     public ClampedValue<int> ClampedValue = new ClampedValue<int>() { Max = 99, Min = 1 };
 }
