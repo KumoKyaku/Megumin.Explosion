@@ -43,6 +43,16 @@ public static class GameObjectExtension_044A46672EEE4ED5BDE291E8DEC3012E
     /// 更改包括子的层级
     /// </summary>
     /// <param name="obj"></param>
+    /// <param name="layer"></param>
+    public static void SetLayerOnAll(this GameObject obj, string layer)
+    {
+        SetLayerOnAll(obj, LayerMask.NameToLayer(layer));
+    }
+
+    /// <summary>
+    /// 更改包括子的层级
+    /// </summary>
+    /// <param name="obj"></param>
     /// <param name="tag"></param>
     public static void SetTagOnAll(this GameObject obj, string tag)
     {
