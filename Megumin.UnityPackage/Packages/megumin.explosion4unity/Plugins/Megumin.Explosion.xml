@@ -28,6 +28,23 @@
             字典扩展
             </summary>
         </member>
+        <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.RemoveAll``2(System.Collections.Generic.Dictionary{``0,``1},System.Func{System.Collections.Generic.KeyValuePair{``0,``1},System.Boolean})">
+            <summary>
+            使用<see cref="T:Megumin.ListPool`1"/>缓存key实现。
+            </summary>
+            <typeparam name="K"></typeparam>
+            <typeparam name="V"></typeparam>
+            <param name="source"></param>
+            <param name="predicate"></param>
+        </member>
+        <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.RemoveAll``1(System.Collections.Generic.Dictionary{System.Int32,``0},System.Func{System.Collections.Generic.KeyValuePair{System.Int32,``0},System.Boolean})">
+            <summary>
+            如果字典特别大可能会爆栈
+            </summary>
+            <typeparam name="V"></typeparam>
+            <param name="source"></param>
+            <param name="predicate"></param>
+        </member>
         <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.ReplaceFileName(System.String,System.String)">
             <summary>
             安全替换路径中的文件名，会检测是否已经存在。
@@ -615,9 +632,6 @@
             <returns></returns>
             <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
         </member>
-        <member name="T:Megumin.MultipleControl`1">
-            <inheritdoc/>
-        </member>
         <member name="T:Megumin.ActiveControl">
             <summary>
             开启关闭控制，默认只要有个一个控制源为true，结果就是true.
@@ -641,44 +655,6 @@
             重写比较方法提高了性能
             </summary>
         </member>
-        <member name="T:Megumin.MultipleControlEnum`2">
-            <summary>
-            用于FlagEnum,最好用枚举类型实现一次.
-            性能有些额外损失,至少每次计算都要Tostring,甚至装箱一次,不确定.<see cref="M:Megumin.MultipleControlEnum`2.CalNewValue"/>.
-            </summary>
-            <inheritdoc/>
-            <typeparam name="K"></typeparam>
-            <typeparam name="V"></typeparam>
-        </member>
-        <member name="M:Megumin.MultipleControlEnum`2.CalNewValue">
-            <summary>
-            
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Megumin.MultipleControlKeypadSudoku">
-            <summary>
-            枚举示例<see cref="M:Megumin.MultipleControlKeypadSudoku.CalNewValue"/>. FlagEnum排序没有意义,使用|运算.
-            </summary>
-        </member>
-        <member name="T:Megumin.MultipleControlCollection`2">
-            <summary>
-            并集. //TODO,没啥办法判断值改变,索性每次计算都调用回调.
-            </summary>
-            <typeparam name="K"></typeparam>
-            <typeparam name="V"></typeparam>
-        </member>
-        <member name="F:Megumin.MultipleControlCollection`2.func">
-            <summary>
-            TODO,控制交集并集
-            </summary>
-        </member>
-        <member name="M:Megumin.MultipleControlCollection`2.CalNewValue">
-            <summary>
-            去并集
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:Megumin.MultipleValue`2">
             <summary>
             复合值，一个值的某些构成是有限时间的。
@@ -700,6 +676,39 @@
             <summary>
             <inheritdoc/>
             </summary>
+        </member>
+        <member name="T:Megumin.MultipleValueEnum`2">
+            <summary>
+            用于FlagEnum,最好用枚举类型实现一次.
+            性能有些额外损失,至少每次计算都要Tostring,甚至装箱一次,不确定.<see cref="M:Megumin.MultipleValueEnum`2.CalNewValue"/>.
+            </summary>
+            <inheritdoc/>
+            <typeparam name="K"></typeparam>
+            <typeparam name="V"></typeparam>
+        </member>
+        <member name="M:Megumin.MultipleValueEnum`2.CalNewValue">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Megumin.MultipleValueEnumKeypadSudoku">
+            <summary>
+            枚举示例<see cref="M:Megumin.MultipleValueEnumKeypadSudoku.CalNewValue"/>. FlagEnum排序没有意义,使用|运算.
+            </summary>
+        </member>
+        <member name="T:Megumin.MultipleValueCollection`2">
+            <summary>
+            并集.
+            </summary>
+            <typeparam name="K"></typeparam>
+            <typeparam name="V"></typeparam>
+        </member>
+        <member name="M:Megumin.MultipleValueCollection`2.CalNewValue">
+            <summary>
+            去并集
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Megumin.NotInitException">
             <summary>
@@ -1093,6 +1102,26 @@
         <member name="T:Megumin.Axial">
             <summary>
             轴向
+            </summary>
+        </member>
+        <member name="T:Megumin.AxialAigned">
+            <summary>
+            带符号的轴向
+            </summary>
+        </member>
+        <member name="F:Megumin.AxialAigned.Xn">
+            <summary>
+            负x
+            </summary>
+        </member>
+        <member name="F:Megumin.AxialAigned.Yn">
+            <summary>
+            负y
+            </summary>
+        </member>
+        <member name="F:Megumin.AxialAigned.Zn">
+            <summary>
+            负z
             </summary>
         </member>
         <member name="T:Megumin.LeftOrRight">
