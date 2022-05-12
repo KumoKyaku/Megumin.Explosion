@@ -171,6 +171,12 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
                                         //测试类型能 赋值给 支持类型列表 中的任意一个。
                                         return true;
                                     }
+
+                                    if (ele.IsSubclassOfRawGeneric(temptype))
+                                    {
+                                        //测试泛型
+                                        return true;
+                                    }
                                     return false;
                                 }))
                                 {

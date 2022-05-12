@@ -1674,5 +1674,21 @@
             <param name="type"></param>
             <returns></returns>
         </member>
+        <member name="M:TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431.IsSubclassOfRawGeneric(System.Type,System.Type)">
+            <summary>
+            https://stackoverflow.com/a/457708/15201132
+            </summary>
+            <param name="generic"></param>
+            <param name="toCheck"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431.IsSubClassOfGeneric(System.Type,System.Type)">
+            <summary>
+            https://stackoverflow.com/a/18828085/15201132
+            </summary>
+            <param name="child"></param>
+            <param name="parent"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>
