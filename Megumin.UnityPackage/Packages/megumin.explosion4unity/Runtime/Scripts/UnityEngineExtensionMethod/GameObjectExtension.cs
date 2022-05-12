@@ -63,6 +63,20 @@ public static class GameObjectExtension_044A46672EEE4ED5BDE291E8DEC3012E
         }
     }
 
+    /// <summary>
+    /// 更改包括子的层级
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="tag"></param>
+    public static void SetHideFlagsOnAll(this GameObject obj, HideFlags hideFlags)
+    {
+        ///据说GetComponentsInChildren更快
+        foreach (Transform trans in obj.GetComponentsInChildren<Transform>(true))
+        {
+            trans.hideFlags = hideFlags;
+        }
+    }
+
     public static void CallInChildren<T>(this GameObject gameObject, Action<T> action, string ignoreTag = "SubElement")
     {
         if (action == null)
