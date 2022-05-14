@@ -244,11 +244,6 @@ namespace UnityEditor.Megumin
             {
                 EditorGUI.PropertyField(propertyPosition, property, label);
 
-                if (GUI.Button(leftPosotion, "New", left))
-                {
-                    CreateInstance(property, obj.GetType());
-                }
-
                 if (GUI.Button(rightPosition, "Clone", right))
                 {
                     var clone = ScriptableObject.Instantiate(obj);
@@ -268,6 +263,11 @@ namespace UnityEditor.Megumin
                     {
                         CreateInstanceAsset(property, clone);
                     }
+                }
+
+                if (GUI.Button(leftPosotion, "New", left))
+                {
+                    CreateInstance(property, obj.GetType());
                 }
             }
             else
@@ -338,20 +338,6 @@ namespace UnityEditor.Megumin
                         return (resultType, resultTName);
                     }
 
-                    if (GUI.Button(leftPosotion, "New", left))
-                    {
-                        // 识别是不是按住Alt，进入subAsset模式。
-                        var (T, TName) = CalTargetType();
-                        if (T != null)
-                        {
-                            CreateInstance(property, T);
-                        }
-                        else
-                        {
-                            CreateInstance(property, TName);
-                        }
-                    }
-
                     if (GUI.Button(rightPosition, "Save", right))
                     {
                         var (T, TName) = CalTargetType();
@@ -367,6 +353,20 @@ namespace UnityEditor.Megumin
                             saveTask = new SaveTask() { instancePath = instancePath, T = T, TName = TName };
                         }
                         GUIUtility.ExitGUI();
+                    }
+                    
+                    if (GUI.Button(leftPosotion, "New", left))
+                    {
+                        // 识别是不是按住Alt，进入subAsset模式。
+                        var (T, TName) = CalTargetType();
+                        if (T != null)
+                        {
+                            CreateInstance(property, T);
+                        }
+                        else
+                        {
+                            CreateInstance(property, TName);
+                        }
                     }
                 }
             }
