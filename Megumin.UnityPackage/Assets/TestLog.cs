@@ -93,6 +93,13 @@ public class TestLog : MonoBehaviour
 
 
     public Pref<bool> GlobalToggle;
+    [SerializeReference]
+    [SerializeReferenceNewButton]
+    public STest TestRef;
+
+    [SerializeReference]
+    [SerializeReferenceNewButton]
+    public List<STest> TestRefList;
 
     [Button]
     public void TestQ()
@@ -149,6 +156,18 @@ public class STest : INewCloneButton
     {
         Debug.LogError($"OnValidate {inta}");
     }
+}
+
+[Serializable]
+public class STestAAA : STest
+{
+    public string ChildAAA = "ChildA";
+}
+
+[Serializable]
+public class STestBBB : STest
+{
+    public string ChildBBB = "ChildB";
 }
 
 public class ConstTest

@@ -381,6 +381,10 @@ MonoBehaviour:
   IntValue3:
     Enabled: 0
     Value: 30
+  OverridableInt:
+    defaultValue: 20
+    IsOverride: 0
+    MyOverrideValue: 0
   FrameCount: 40
   TestEnumField: ccc
   Iint:
@@ -402,7 +406,39 @@ MonoBehaviour:
     inta: 151
     intb: 1234568
   SaveAsset: {fileID: 11400000, guid: c6930315ef3e77f4ea45af1032878fca, type: 2}
+  TestRef:
+    rid: 5271465886733565972
+  TestRefList:
+  - rid: 5271465886733565969
+  - rid: 5271465886733565970
+  - rid: 5271465886733565971
   TestScriptObject: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 5271465886733565969
+      type: {class: STest, ns: , asm: Assembly-CSharp}
+      data:
+        inta: 0
+        intb: 0
+    - rid: 5271465886733565970
+      type: {class: STestAAA, ns: , asm: Assembly-CSharp}
+      data:
+        inta: 0
+        intb: 0
+        ChildAAA: ChildA
+    - rid: 5271465886733565971
+      type: {class: STestBBB, ns: , asm: Assembly-CSharp}
+      data:
+        inta: 0
+        intb: 0
+        ChildBBB: ChildB
+    - rid: 5271465886733565972
+      type: {class: STestAAA, ns: , asm: Assembly-CSharp}
+      data:
+        inta: 0
+        intb: 0
+        ChildAAA: ChildA
 --- !u!1001 &128657509733504469
 PrefabInstance:
   m_ObjectHideFlags: 0
