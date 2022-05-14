@@ -182,6 +182,8 @@ namespace UnityEditor.Megumin
                 if (GUI.Button(leftPosotion, "New", left))
                 {
                     var newObj = Activator.CreateInstance(targetType);
+                    var source = property.managedReferenceValue;
+                    source.SimilarityCopyTo(newObj);
                     property.managedReferenceValue = newObj;
                 }
             }

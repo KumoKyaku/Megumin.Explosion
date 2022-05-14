@@ -249,6 +249,15 @@
             <param name="IsLAN">true取得局域网IP，flase取得外网IP，默认值为flase</param>
             <returns></returns>
         </member>
+        <member name="M:System.ObjectExtension.SimilarityCopyTo(System.Object,System.Object,System.Boolean,System.Reflection.BindingFlags)">
+            <summary>
+            反射复制字段属性的值,近似匹配
+            </summary>
+            <param name="source"></param>
+            <param name="target"></param>
+            <param name="useNameFindMode"></param>
+            <param name="flags"></param>
+        </member>
         <member name="M:System.Reflection.FieldInfoExtension_E5A239CE4DB34975A4A939379BA9A036.CollectSupportType(System.Reflection.FieldInfo,System.Collections.Generic.HashSet{System.Type},System.Func{System.Reflection.Assembly,System.Boolean},System.Boolean,System.Boolean)">
             <summary>
             反射查找<see cref="T:Megumin.SupportTypesAttribute"/>设定中支持的类型。
