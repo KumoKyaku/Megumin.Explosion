@@ -4,6 +4,7 @@ using UnityEditor.SettingsManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Linq;
+using Megumin;
 
 [InitializeOnLoad]
 public class ExplosionSettingProvider : SettingsProvider

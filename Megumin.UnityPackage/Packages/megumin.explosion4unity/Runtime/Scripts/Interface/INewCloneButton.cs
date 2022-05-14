@@ -27,397 +27,301 @@ namespace Megumin
     {
 
     }
+
+    public static class ClonePathModeSetting
+    {
+        public enum ClonePathMode
+        {
+            ReferencePath = 0,
+            ParentPath = 1,
+            /// <summary>
+            /// 或者按住Alt键创建，自动进入SubAsset模式。
+            /// </summary>
+            SubAsset = 2,
+        }
+
+        /// <summary>
+        /// clone时使用父路径还是克隆对象路径.
+        /// </summary>
+        public static ClonePathMode PathMode { get; set; } = ClonePathMode.ParentPath;
+    }
 }
 
+namespace UnityEditor.Megumin
+{
 
 #if UNITY_EDITOR
 
-public static class ClonePathModeSetting
-{
-    public enum ClonePathMode
-    {
-        ReferencePath = 0,
-        ParentPath = 1,
-        /// <summary>
-        /// 或者按住Alt键创建，自动进入SubAsset模式。
-        /// </summary>
-        SubAsset = 2,
-    }
-
     /// <summary>
-    /// clone时使用父路径还是克隆对象路径.
+    /// 增加new,clone两个按钮.对Material无效.想增加SubAsset功能,但是发现没有必要.
     /// </summary>
-    public static ClonePathMode PathMode { get; set; } = ClonePathMode.ParentPath;
-}
-
-/// <summary>
-/// 增加new,clone两个按钮.对Material无效.想增加SubAsset功能,但是发现没有必要.
-/// </summary>
-/// 
+    /// 
 #if !DISABLE_MEGUMIN_PROPERTYDRWAER
 #if !DISABLE_SCROBJ_DRAWER
-//[CustomPropertyDrawer(typeof(Material), true)]
-[CustomPropertyDrawer(typeof(ScriptableObject), true)]
+    //[CustomPropertyDrawer(typeof(Material), true)]
+    [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
-[CustomPropertyDrawer(typeof(INewCloneButton), true)]
-[CustomPropertyDrawer(typeof(SerializeReferenceNewButtonAttribute))]
+    [CustomPropertyDrawer(typeof(INewCloneButton), true)]
+    [CustomPropertyDrawer(typeof(SerializeReferenceNewButtonAttribute))]
 #endif
-public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
-{
-    static GUIStyle left = new GUIStyle("minibuttonleft");
-    static GUIStyle right = new GUIStyle("minibuttonright");
-    static Regex typeRegex = new Regex(@"^PPtr\<\$(.*)>$");
-
-    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
     {
-        return EditorGUI.GetPropertyHeight(property, label);
-    }
+        static GUIStyle left = new GUIStyle("minibuttonleft");
+        static GUIStyle right = new GUIStyle("minibuttonright");
+        static Regex typeRegex = new Regex(@"^PPtr\<\$(.*)>$");
 
-    string[] SupportNames;
-    int index = 0;
-    Type[] SupportTypes;
-    HashSet<Type> allTypes;
-    SaveTask saveTask = null;
-
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    {
-        CacheSupportType();
-
-        var propertyPosition = position;
-        propertyPosition.width -= 86;
-
-        var buttonPosition = position;
-        buttonPosition.width = 80;
-        buttonPosition.x += position.width - 80;
-
-
-        var leftPosotion = buttonPosition;
-        leftPosotion.width = 40;
-        var rightPosition = buttonPosition;
-        rightPosition.width = 40;
-        rightPosition.x += 40;
-
-        if (property.type.StartsWith("PPtr"))
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            DrawPPtrType(property, label, propertyPosition, leftPosotion, rightPosition);
+            return EditorGUI.GetPropertyHeight(property, label);
         }
-        else if (attribute is SerializeReferenceNewButtonAttribute add)
-        {
-            DrawSerializeReference(property, label, position, propertyPosition, leftPosotion, rightPosition);
-        }
-        else
-        {
-            EditorGUI.PropertyField(position, property, label, true);
-            return;
-        }
-    }
 
-    /// <summary>
-    /// 缓存支持的类型
-    /// </summary>
-    public void CacheSupportType()
-    {
-        if (allTypes == null)
-        {
-            allTypes = new HashSet<Type>();
+        string[] SupportNames;
+        int index = 0;
+        Type[] SupportTypes;
+        HashSet<Type> allTypes;
+        SaveTask saveTask = null;
 
-            var customattributes = this.fieldInfo.GetCustomAttributes(true);
-            var abs = from cab in customattributes
-                      where cab is Megumin.SupportTypesAttribute
-                      let sa = cab as Megumin.SupportTypesAttribute
-                      select sa;
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            CacheSupportType();
+
+            var propertyPosition = position;
+            propertyPosition.width -= 86;
+
+            var buttonPosition = position;
+            buttonPosition.width = 80;
+            buttonPosition.x += position.width - 80;
+
+
+            var leftPosotion = buttonPosition;
+            leftPosotion.width = 40;
+            var rightPosition = buttonPosition;
+            rightPosition.width = 40;
+            rightPosition.x += 40;
+
+            if (property.type.StartsWith("PPtr"))
+            {
+                DrawPPtrType(property, label, propertyPosition, leftPosotion, rightPosition);
+            }
+            else if (attribute is SerializeReferenceNewButtonAttribute add)
+            {
+                DrawSerializeReference(property, label, position, propertyPosition, leftPosotion, rightPosition);
+            }
+            else
+            {
+                EditorGUI.PropertyField(position, property, label, true);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// 缓存支持的类型
+        /// </summary>
+        public void CacheSupportType()
+        {
+            if (allTypes == null)
+            {
+                allTypes = new HashSet<Type>();
+
+                var customattributes = this.fieldInfo.GetCustomAttributes(true);
+                var abs = from cab in customattributes
+                          where cab is SupportTypesAttribute
+                          let sa = cab as SupportTypesAttribute
+                          select sa;
 
 #if MEGUMIN_DEV_PROJECT
             var debug = abs.ToList();
 #endif
 
-            foreach (var ab in abs)
-            {
-                if (ab != null)
+                foreach (var ab in abs)
                 {
-                    if (ab.IncludeChildInOtherAssembly)
+                    if (ab != null)
                     {
-                        //包含所有程序集，搜索方式遍历所有程序集,可能会特别慢
-                        Type[] supporttypes = null;
-                        if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
+                        if (ab.IncludeChildInOtherAssembly)
                         {
-                            var type = fieldInfo.FieldType;
-                            supporttypes = new Type[] { type };
-                        }
-                        else
-                        {
-                            supporttypes = ab.Support;
-                        }
-
-                        var assemblys = AppDomain.CurrentDomain.GetAssemblies();
-                        foreach (var assembly in assemblys)
-                        {
-                            //过滤掉一些，不然肯能太卡
-                            var assName = assembly.FullName;
-                            if (assName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
+                            //包含所有程序集，搜索方式遍历所有程序集,可能会特别慢
+                            Type[] supporttypes = null;
+                            if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
                             {
-                                continue;
+                                var type = fieldInfo.FieldType;
+                                supporttypes = new Type[] { type };
+                            }
+                            else
+                            {
+                                supporttypes = ab.Support;
                             }
 
-                            //可以通过这个宏来强行搜索unity中的类型
+                            var assemblys = AppDomain.CurrentDomain.GetAssemblies();
+                            foreach (var assembly in assemblys)
+                            {
+                                //过滤掉一些，不然肯能太卡
+                                var assName = assembly.FullName;
+                                if (assName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    continue;
+                                }
+
+                                //可以通过这个宏来强行搜索unity中的类型
 #if !SCROBJ_DRAWER_FORCEDSEARCH_UNITY
-                            if (assName.StartsWith("Unity", StringComparison.OrdinalIgnoreCase))
-                            {
-                                continue;
-                            }
+                                if (assName.StartsWith("Unity", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    continue;
+                                }
 #endif
 
-                            Type[] types = assembly.GetTypes();
-                            foreach (var temptype in types)
-                            {
-                                if (supporttypes.Any(ele =>
+                                Type[] types = assembly.GetTypes();
+                                foreach (var temptype in types)
                                 {
-                                    if (ele.IsAssignableFrom(temptype))
+                                    if (supporttypes.Any(ele =>
                                     {
-                                        //测试类型能 赋值给 支持类型列表 中的任意一个。
-                                        return true;
-                                    }
+                                        if (ele.IsAssignableFrom(temptype))
+                                        {
+                                            //测试类型能 赋值给 支持类型列表 中的任意一个。
+                                            return true;
+                                        }
 
-                                    if (ele.IsSubclassOfRawGeneric(temptype))
+                                        if (ele.IsSubclassOfRawGeneric(temptype))
+                                        {
+                                            //测试泛型
+                                            return true;
+                                        }
+                                        return false;
+                                    }))
                                     {
-                                        //测试泛型
-                                        return true;
+                                        TryAddType(temptype, ab, allTypes);
                                     }
-                                    return false;
-                                }))
-                                {
-                                    TryAddType(temptype, ab, allTypes);
                                 }
                             }
-                        }
-                    }
-                    else
-                    {
-                        //不包含其他程序集，逐个类型搜索
-                        if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
-                        {
-                            var type = fieldInfo.FieldType;
-                            TryAddType(type, ab, allTypes);
                         }
                         else
                         {
-                            for (int i = 0; i < ab.Support.Length; i++)
+                            //不包含其他程序集，逐个类型搜索
+                            if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
                             {
-                                var type = ab.Support[i];
-                                if (type != null)
+                                var type = fieldInfo.FieldType;
+                                TryAddType(type, ab, allTypes);
+                            }
+                            else
+                            {
+                                for (int i = 0; i < ab.Support.Length; i++)
                                 {
-                                    TryAddType(type, ab, allTypes);
+                                    var type = ab.Support[i];
+                                    if (type != null)
+                                    {
+                                        TryAddType(type, ab, allTypes);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            if (abs.Count() == 0)
-            {
-                //没有特性标记时使用自身类型搜索一次
-                TryAddType(fieldInfo.FieldType, true, false, false, false, allTypes);
-            }
-
-            int index = 0;
-            SupportNames = new string[allTypes.Count];
-            SupportTypes = new Type[allTypes.Count];
-            foreach (var item in allTypes)
-            {
-                SupportNames[index] = item.Name;
-                SupportTypes[index] = item;
-                index++;
-            }
-        }
-    }
-
-    public void TryAddType(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
-    {
-        if (ab.IncludeChildInSameAssembly)
-        {
-            Assembly assembly = type.Assembly;
-            Type[] types = assembly.GetTypes();
-            foreach (var item in types)
-            {
-                if (type.IsAssignableFrom(item))
+                if (abs.Count() == 0)
                 {
-                    TryAdd2allTypes(item, ab, allTypes);
+                    //没有特性标记时使用自身类型搜索一次
+                    TryAddType(fieldInfo.FieldType, true, false, false, false, allTypes);
+                }
+
+                int index = 0;
+                SupportNames = new string[allTypes.Count];
+                SupportTypes = new Type[allTypes.Count];
+                foreach (var item in allTypes)
+                {
+                    SupportNames[index] = item.Name;
+                    SupportTypes[index] = item;
+                    index++;
                 }
             }
         }
-        else
-        {
-            TryAdd2allTypes(type, ab, allTypes);
-        }
-    }
 
-    public void TryAdd2allTypes(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
-    {
-        if (!ab.AllowInterface && type.IsInterface)
+        public void TryAddType(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
         {
-            return;
-        }
-
-        if (!ab.AllowAbstract && type.IsAbstract)
-        {
-            return;
-        }
-
-        if (!ab.AllowGenericType && type.IsGenericType)
-        {
-            return;
-        }
-
-        allTypes.Add(type);
-    }
-
-    public void TryAddType(Type type, bool IncludeChildInSameAssembly, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
-    {
-        if (IncludeChildInSameAssembly)
-        {
-            Assembly assembly = type.Assembly;
-            Type[] types = assembly.GetTypes();
-            foreach (var item in types)
+            if (ab.IncludeChildInSameAssembly)
             {
-                if (type.IsAssignableFrom(item))
+                Assembly assembly = type.Assembly;
+                Type[] types = assembly.GetTypes();
+                foreach (var item in types)
                 {
-                    TryAdd2allTypes(item, allowInterface, allowAbstract, allowGenericType, allTypes);
+                    if (type.IsAssignableFrom(item))
+                    {
+                        TryAdd2allTypes(item, ab, allTypes);
+                    }
                 }
-            }
-        }
-        else
-        {
-            TryAdd2allTypes(type, allowInterface, allowAbstract, allowGenericType, allTypes);
-        }
-    }
-
-    public void TryAdd2allTypes(Type type, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
-    {
-        if (!allowInterface && type.IsInterface)
-        {
-            return;
-        }
-
-        if (!allowAbstract && type.IsAbstract)
-        {
-            return;
-        }
-
-        if (!allowGenericType && type.IsGenericType)
-        {
-            return;
-        }
-
-        allTypes.Add(type);
-    }
-
-    public void DrawSerializeReference(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
-    {
-        if (leftPosotion.height > 18)
-        {
-            leftPosotion.height = 18;
-            rightPosition.height = 18;
-        }
-
-        if (SupportNames != null && SupportNames.Length > 0)
-        {
-            //通过特性支持多个类型
-
-            var popPosition = rightPosition;
-            popPosition.width = 55;
-            popPosition.x -= 15;
-
-            index = EditorGUI.Popup(popPosition, index, SupportNames);
-            var targetType = SupportTypes[index];
-
-
-            if (GUI.Button(leftPosotion, "New", left))
-            {
-                var newObj = Activator.CreateInstance(targetType);
-                property.managedReferenceValue = newObj;
-            }
-        }
-
-        if (!property.isExpanded)
-        {
-            EditorGUI.PropertyField(propertyPosition, property, label, true);
-            using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
-            {
-                var textPosition = propertyPosition;
-                textPosition.x += EditorGUIUtility.labelWidth;
-                textPosition.width -= EditorGUIUtility.labelWidth;
-                EditorGUI.TextField(textPosition, property.managedReferenceValue?.ToString());
-            }
-        }
-        else
-        {
-            EditorGUI.PropertyField(position, property, label, true);
-        }
-    }
-
-    protected void DrawPPtrType(SerializedProperty property, GUIContent label, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
-    {
-        if (saveTask != null)
-        {
-            var T = saveTask.T;
-            var TName = saveTask.TName;
-            var instancePath = saveTask.instancePath;
-            saveTask = null;
-
-            ScriptableObject instance = null;
-            if (T != null)
-            {
-                instance = ScriptableObject.CreateInstance(T);
             }
             else
             {
-                instance = ScriptableObject.CreateInstance(TName);
-            }
-
-            if (instancePath.StartsWith(MeguminUtility4Unity.ProjectPath))
-            {
-                instancePath = instancePath.Replace(MeguminUtility4Unity.ProjectPath, "");
-            }
-
-            AssetDatabase.CreateAsset(instance, instancePath);
-            AssetDatabase.Refresh();
-            property.objectReferenceValue = instance;
-        }
-
-        var obj = property.objectReferenceValue;
-        if (obj)
-        {
-            EditorGUI.PropertyField(propertyPosition, property, label);
-
-            if (GUI.Button(leftPosotion, "New", left))
-            {
-                CreateInstance(property, obj.GetType());
-            }
-
-            if (GUI.Button(rightPosition, "Clone", right))
-            {
-                var clone = ScriptableObject.Instantiate(obj);
-                if (!Event.current.alt && ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.ReferencePath)
-                {
-                    var path = AssetDatabase.GetAssetPath(obj);
-                    var oriName = Path.GetFileNameWithoutExtension(path);
-
-                    var newFileName = oriName.FileNameAddOne();
-                    path = path.ReplaceFileName(newFileName);
-
-                    AssetDatabase.CreateAsset(clone, path);
-                    AssetDatabase.Refresh();
-                    property.objectReferenceValue = clone;
-                }
-                else
-                {
-                    CreateInstanceAsset(property, clone);
-                }
+                TryAdd2allTypes(type, ab, allTypes);
             }
         }
-        else
+
+        public void TryAdd2allTypes(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
         {
+            if (!ab.AllowInterface && type.IsInterface)
+            {
+                return;
+            }
+
+            if (!ab.AllowAbstract && type.IsAbstract)
+            {
+                return;
+            }
+
+            if (!ab.AllowGenericType && type.IsGenericType)
+            {
+                return;
+            }
+
+            allTypes.Add(type);
+        }
+
+        public void TryAddType(Type type, bool IncludeChildInSameAssembly, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
+        {
+            if (IncludeChildInSameAssembly)
+            {
+                Assembly assembly = type.Assembly;
+                Type[] types = assembly.GetTypes();
+                foreach (var item in types)
+                {
+                    if (type.IsAssignableFrom(item))
+                    {
+                        TryAdd2allTypes(item, allowInterface, allowAbstract, allowGenericType, allTypes);
+                    }
+                }
+            }
+            else
+            {
+                TryAdd2allTypes(type, allowInterface, allowAbstract, allowGenericType, allTypes);
+            }
+        }
+
+        public void TryAdd2allTypes(Type type, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
+        {
+            if (!allowInterface && type.IsInterface)
+            {
+                return;
+            }
+
+            if (!allowAbstract && type.IsAbstract)
+            {
+                return;
+            }
+
+            if (!allowGenericType && type.IsGenericType)
+            {
+                return;
+            }
+
+            allTypes.Add(type);
+        }
+
+        public void DrawSerializeReference(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
+        {
+            if (leftPosotion.height > 18)
+            {
+                leftPosotion.height = 18;
+                rightPosition.height = 18;
+            }
+
             if (SupportNames != null && SupportNames.Length > 0)
             {
                 //通过特性支持多个类型
@@ -428,235 +332,336 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
 
                 index = EditorGUI.Popup(popPosition, index, SupportNames);
                 var targetType = SupportTypes[index];
-                EditorGUI.ObjectField(propertyPosition, property, targetType, label);
+
 
                 if (GUI.Button(leftPosotion, "New", left))
                 {
-                    CreateInstance(property, targetType);
+                    var newObj = Activator.CreateInstance(targetType);
+                    property.managedReferenceValue = newObj;
+                }
+            }
+
+            if (!property.isExpanded)
+            {
+                EditorGUI.PropertyField(propertyPosition, property, label, true);
+                using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
+                {
+                    var textPosition = propertyPosition;
+                    textPosition.x += EditorGUIUtility.labelWidth;
+                    textPosition.width -= EditorGUIUtility.labelWidth;
+                    EditorGUI.TextField(textPosition, property.managedReferenceValue?.ToString());
                 }
             }
             else
             {
-                //没有设置特性
+                EditorGUI.PropertyField(position, property, label, true);
+            }
+        }
+
+        protected void DrawPPtrType(SerializedProperty property, GUIContent label, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
+        {
+            if (saveTask != null)
+            {
+                var T = saveTask.T;
+                var TName = saveTask.TName;
+                var instancePath = saveTask.instancePath;
+                saveTask = null;
+
+                ScriptableObject instance = null;
+                if (T != null)
+                {
+                    instance = ScriptableObject.CreateInstance(T);
+                }
+                else
+                {
+                    instance = ScriptableObject.CreateInstance(TName);
+                }
+
+                if (instancePath.StartsWith(MeguminUtility4Unity.ProjectPath))
+                {
+                    instancePath = instancePath.Replace(MeguminUtility4Unity.ProjectPath, "");
+                }
+
+                AssetDatabase.CreateAsset(instance, instancePath);
+                AssetDatabase.Refresh();
+                property.objectReferenceValue = instance;
+            }
+
+            var obj = property.objectReferenceValue;
+            if (obj)
+            {
                 EditorGUI.PropertyField(propertyPosition, property, label);
 
-                (Type T, string TName) CalTargetType()
+                if (GUI.Button(leftPosotion, "New", left))
                 {
-                    var fieldType = fieldInfo.FieldType;
-                    Type resultType = null;
-                    string resultTName = null;
-                    if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
+                    CreateInstance(property, obj.GetType());
+                }
+
+                if (GUI.Button(rightPosition, "Clone", right))
+                {
+                    var clone = ScriptableObject.Instantiate(obj);
+                    if (!Event.current.alt && ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.ReferencePath)
                     {
-                        var type = fieldType.GetGenericArguments()[0];
-                        resultType = type;
-                    }
-                    else if (fieldType.IsSubclassOf(typeof(Array)))
-                    {
-                        var type = fieldType.GetElementType();
-                        resultType = type;
+                        var path = AssetDatabase.GetAssetPath(obj);
+                        var oriName = Path.GetFileNameWithoutExtension(path);
+
+                        var newFileName = oriName.FileNameAddOne();
+                        path = path.ReplaceFileName(newFileName);
+
+                        AssetDatabase.CreateAsset(clone, path);
+                        AssetDatabase.Refresh();
+                        property.objectReferenceValue = clone;
                     }
                     else
                     {
-                        var ret = typeRegex.Match(property.type);
-                        if (ret.Success)
+                        CreateInstanceAsset(property, clone);
+                    }
+                }
+            }
+            else
+            {
+                if (SupportNames != null && SupportNames.Length > 0)
+                {
+                    //通过特性支持多个类型
+
+                    var popPosition = rightPosition;
+                    popPosition.width = 55;
+                    popPosition.x -= 15;
+
+                    index = EditorGUI.Popup(popPosition, index, SupportNames);
+                    var targetType = SupportTypes[index];
+                    EditorGUI.ObjectField(propertyPosition, property, targetType, label);
+
+                    if (GUI.Button(leftPosotion, "New", left))
+                    {
+                        CreateInstance(property, targetType);
+                    }
+                }
+                else
+                {
+                    //没有设置特性
+                    EditorGUI.PropertyField(propertyPosition, property, label);
+
+                    (Type T, string TName) CalTargetType()
+                    {
+                        var fieldType = fieldInfo.FieldType;
+                        Type resultType = null;
+                        string resultTName = null;
+                        if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
                         {
-                            if (ret.Groups[1].Value == fieldType.Name)
-                            {
-                                resultType = fieldType;
-                            }
-                            else
-                            {
-                                resultTName = ret.Groups[1].Value;
-                            }
+                            var type = fieldType.GetGenericArguments()[0];
+                            resultType = type;
+                        }
+                        else if (fieldType.IsSubclassOf(typeof(Array)))
+                        {
+                            var type = fieldType.GetElementType();
+                            resultType = type;
                         }
                         else
                         {
-                            resultType = fieldType;
+                            var ret = typeRegex.Match(property.type);
+                            if (ret.Success)
+                            {
+                                if (ret.Groups[1].Value == fieldType.Name)
+                                {
+                                    resultType = fieldType;
+                                }
+                                else
+                                {
+                                    resultTName = ret.Groups[1].Value;
+                                }
+                            }
+                            else
+                            {
+                                resultType = fieldType;
+                            }
+                        }
+
+                        if (resultType != null)
+                        {
+                            resultTName = resultType.Name;
+                        }
+
+                        return (resultType, resultTName);
+                    }
+
+                    if (GUI.Button(leftPosotion, "New", left))
+                    {
+                        // 识别是不是按住Alt，进入subAsset模式。
+                        var (T, TName) = CalTargetType();
+                        if (T != null)
+                        {
+                            CreateInstance(property, T);
+                        }
+                        else
+                        {
+                            CreateInstance(property, TName);
                         }
                     }
 
-                    if (resultType != null)
+                    if (GUI.Button(rightPosition, "Save", right))
                     {
-                        resultTName = resultType.Name;
+                        var (T, TName) = CalTargetType();
+                        string dir = GetDir(property);
+                        var fileName = $"{property.serializedObject.targetObject.name}_{TName}";
+                        fileName = fileName.AutoFileName(dir, ".asset",
+                                          EditorSettings.gameObjectNamingScheme.ToString(),
+                                          EditorSettings.gameObjectNamingDigits);
+                        var instancePath = EditorUtility.SaveFilePanel("Create", dir, fileName, "asset");
+                        if (!string.IsNullOrEmpty(instancePath))
+                        {
+                            instancePath = Path.GetFullPath(instancePath);
+                            saveTask = new SaveTask() { instancePath = instancePath, T = T, TName = TName };
+                        }
+                        GUIUtility.ExitGUI();
                     }
-
-                    return (resultType, resultTName);
-                }
-
-                if (GUI.Button(leftPosotion, "New", left))
-                {
-                    // 识别是不是按住Alt，进入subAsset模式。
-                    var (T, TName) = CalTargetType();
-                    if (T != null)
-                    {
-                        CreateInstance(property, T);
-                    }
-                    else
-                    {
-                        CreateInstance(property, TName);
-                    }
-                }
-
-                if (GUI.Button(rightPosition, "Save", right))
-                {
-                    var (T, TName) = CalTargetType();
-                    string dir = GetDir(property);
-                    var fileName = $"{property.serializedObject.targetObject.name}_{TName}";
-                    fileName = fileName.AutoFileName(dir, ".asset",
-                                      EditorSettings.gameObjectNamingScheme.ToString(),
-                                      EditorSettings.gameObjectNamingDigits);
-                    var instancePath = EditorUtility.SaveFilePanel("Create", dir, fileName, "asset");
-                    if (!string.IsNullOrEmpty(instancePath))
-                    {
-                        instancePath = Path.GetFullPath(instancePath);
-                        saveTask = new SaveTask() { instancePath = instancePath, T = T, TName = TName };
-                    }
-                    GUIUtility.ExitGUI();
                 }
             }
         }
-    }
 
-    class SaveTask
-    {
-        public Type T;
-        public string TName;
-        public string instancePath;
-    }
-
-    private static void CreateInstance(SerializedProperty property, string type)
-    {
-        var instance = ScriptableObject.CreateInstance(type);
-        CreateInstanceAsset(property, instance);
-    }
-
-    private static void CreateInstance(SerializedProperty property, Type type)
-    {
-        var instance = ScriptableObject.CreateInstance(type);
-        CreateInstanceAsset(property, instance);
-    }
-
-    const string Root = @"Assets";
-    private static void CreateInstanceAsset(SerializedProperty property, UnityEngine.Object instance)
-    {
-        string dir = GetDir(property);
-
-        if (Event.current.alt || ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.SubAsset)
+        class SaveTask
         {
-            var success = CreateSubAsset(property, instance, dir);
-            if (success)
-            {
-                return;
-            }
-            else
-            {
-                Debug.LogError($"创建SubAsset失败，使用普通模式创建。");
-            }
+            public Type T;
+            public string TName;
+            public string instancePath;
         }
 
-        var ex = ".asset";
-        var path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}",
-                                      ex,
-                                      EditorSettings.gameObjectNamingScheme.ToString(),
-                                      EditorSettings.gameObjectNamingDigits);
-
-        AssetDatabase.CreateAsset(instance, path);
-        AssetDatabase.Refresh();
-        property.objectReferenceValue = instance;
-    }
-
-    public static bool CreateSubAsset(SerializedProperty property, UnityEngine.Object instance, string dir)
-    {
-        try
+        private static void CreateInstance(SerializedProperty property, string type)
         {
-            AssetDatabase.AddObjectToAsset(instance, property.serializedObject.targetObject);
+            var instance = ScriptableObject.CreateInstance(type);
+            CreateInstanceAsset(property, instance);
+        }
 
-            //虽然是子对象，名字还是要带上父名字。其他位置选择SO资源的时候，能看见子对象却看不见父，不是全名不方便。
+        private static void CreateInstance(SerializedProperty property, Type type)
+        {
+            var instance = ScriptableObject.CreateInstance(type);
+            CreateInstanceAsset(property, instance);
+        }
+
+        const string Root = @"Assets";
+        private static void CreateInstanceAsset(SerializedProperty property, UnityEngine.Object instance)
+        {
+            string dir = GetDir(property);
+
+            if (Event.current.alt || ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.SubAsset)
+            {
+                var success = CreateSubAsset(property, instance, dir);
+                if (success)
+                {
+                    return;
+                }
+                else
+                {
+                    Debug.LogError($"创建SubAsset失败，使用普通模式创建。");
+                }
+            }
+
             var ex = ".asset";
             var path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}",
                                           ex,
                                           EditorSettings.gameObjectNamingScheme.ToString(),
                                           EditorSettings.gameObjectNamingDigits);
 
-            var tempName = Path.GetFileNameWithoutExtension(path);
-
-            string assetPath = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
-            var allAsset = AssetDatabase.LoadAllAssetsAtPath(assetPath);
-            while (allAsset.Any(a => a.name == tempName))
-            {
-                tempName = tempName.FileNameAddOne(EditorSettings.gameObjectNamingScheme.ToString(),
-                                          EditorSettings.gameObjectNamingDigits);
-            }
-            instance.name = tempName;
-            //AssetDatabase.ImportAsset(assetPath);
+            AssetDatabase.CreateAsset(instance, path);
+            AssetDatabase.Refresh();
             property.objectReferenceValue = instance;
-            property.serializedObject.targetObject.AssetDataSetDirty();
-            AssetDatabase.SaveAssetIfDirty(property.serializedObject.targetObject);
-        }
-        catch (Exception)
-        {
-            return false;
         }
 
-        return true;
-    }
-
-    /// <summary>
-    /// 取得对象在资源路径.
-    /// 如果是场景中的对象,取得prefab和变体的资源路径.
-    /// </summary>
-    /// <param name="object"></param>
-    /// <returns></returns>
-    public static string GetPathFixed(UnityEngine.Object @object)
-    {
-        var path = AssetDatabase.GetAssetPath(@object);
-        if (string.IsNullOrEmpty(path))
+        public static bool CreateSubAsset(SerializedProperty property, UnityEngine.Object instance, string dir)
         {
-            var root = PrefabUtility.GetOutermostPrefabInstanceRoot(@object);
-            if (root)
+            try
             {
-                var ori = PrefabUtility.GetCorrespondingObjectFromSource(root);
-                path = AssetDatabase.GetAssetPath(ori);
+                AssetDatabase.AddObjectToAsset(instance, property.serializedObject.targetObject);
+
+                //虽然是子对象，名字还是要带上父名字。其他位置选择SO资源的时候，能看见子对象却看不见父，不是全名不方便。
+                var ex = ".asset";
+                var path = dir.CreateFileName($"{property.serializedObject.targetObject.name}_{instance.GetType().Name}",
+                                              ex,
+                                              EditorSettings.gameObjectNamingScheme.ToString(),
+                                              EditorSettings.gameObjectNamingDigits);
+
+                var tempName = Path.GetFileNameWithoutExtension(path);
+
+                string assetPath = AssetDatabase.GetAssetPath(property.serializedObject.targetObject);
+                var allAsset = AssetDatabase.LoadAllAssetsAtPath(assetPath);
+                while (allAsset.Any(a => a.name == tempName))
+                {
+                    tempName = tempName.FileNameAddOne(EditorSettings.gameObjectNamingScheme.ToString(),
+                                              EditorSettings.gameObjectNamingDigits);
+                }
+                instance.name = tempName;
+                //AssetDatabase.ImportAsset(assetPath);
+                property.objectReferenceValue = instance;
+                property.serializedObject.targetObject.AssetDataSetDirty();
+                AssetDatabase.SaveAssetIfDirty(property.serializedObject.targetObject);
             }
-        }
-
-        return path;
-    }
-
-    /// <summary>
-    /// 安全处理对象路径.
-    /// 如果路径为空,返回当前场景的资源路径.
-    /// 如果场景为保存,返回根路径.
-    /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    public static string SafeObjectDir(string path)
-    {
-        string dir = Root;
-        if (!string.IsNullOrEmpty(path))
-        {
-            dir = Path.GetDirectoryName(path);
-        }
-        else
-        {
-            var scene = EditorSceneManager.GetActiveScene();
-            if (!string.IsNullOrEmpty(scene.path))
+            catch (Exception)
             {
-                dir = Path.GetDirectoryName(scene.path);
+                return false;
             }
+
+            return true;
         }
 
-        return dir;
-    }
+        /// <summary>
+        /// 取得对象在资源路径.
+        /// 如果是场景中的对象,取得prefab和变体的资源路径.
+        /// </summary>
+        /// <param name="object"></param>
+        /// <returns></returns>
+        public static string GetPathFixed(UnityEngine.Object @object)
+        {
+            var path = AssetDatabase.GetAssetPath(@object);
+            if (string.IsNullOrEmpty(path))
+            {
+                var root = PrefabUtility.GetOutermostPrefabInstanceRoot(@object);
+                if (root)
+                {
+                    var ori = PrefabUtility.GetCorrespondingObjectFromSource(root);
+                    path = AssetDatabase.GetAssetPath(ori);
+                }
+            }
 
-    private static string GetDir(SerializedProperty property)
-    {
-        var path = GetPathFixed(property.serializedObject.targetObject);
-        return SafeObjectDir(path);
+            return path;
+        }
+
+        /// <summary>
+        /// 安全处理对象路径.
+        /// 如果路径为空,返回当前场景的资源路径.
+        /// 如果场景为保存,返回根路径.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string SafeObjectDir(string path)
+        {
+            string dir = Root;
+            if (!string.IsNullOrEmpty(path))
+            {
+                dir = Path.GetDirectoryName(path);
+            }
+            else
+            {
+                var scene = EditorSceneManager.GetActiveScene();
+                if (!string.IsNullOrEmpty(scene.path))
+                {
+                    dir = Path.GetDirectoryName(scene.path);
+                }
+            }
+
+            return dir;
+        }
+
+        private static string GetDir(SerializedProperty property)
+        {
+            var path = GetPathFixed(property.serializedObject.targetObject);
+            return SafeObjectDir(path);
+        }
     }
-}
 
 
 #endif
+}
+
+
 
 
