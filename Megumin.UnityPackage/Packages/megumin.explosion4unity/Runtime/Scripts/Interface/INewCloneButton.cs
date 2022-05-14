@@ -22,7 +22,9 @@ namespace Megumin
 
     }
 
-
+    /// <summary>
+    /// 使用<see cref="SupportTypesAttribute"/>设置支持类型的搜索范围。
+    /// </summary>
     public class SerializeReferenceNewButtonAttribute : PropertyAttribute
     {
 
@@ -123,104 +125,7 @@ namespace UnityEditor.Megumin
             {
                 allTypes = new HashSet<Type>();
 
-                var customattributes = this.fieldInfo.GetCustomAttributes(true);
-                var abs = from cab in customattributes
-                          where cab is SupportTypesAttribute
-                          let sa = cab as SupportTypesAttribute
-                          select sa;
-
-#if MEGUMIN_DEV_PROJECT
-            var debug = abs.ToList();
-#endif
-
-                foreach (var ab in abs)
-                {
-                    if (ab != null)
-                    {
-                        if (ab.IncludeChildInOtherAssembly)
-                        {
-                            //包含所有程序集，搜索方式遍历所有程序集,可能会特别慢
-                            Type[] supporttypes = null;
-                            if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
-                            {
-                                var type = fieldInfo.FieldType;
-                                supporttypes = new Type[] { type };
-                            }
-                            else
-                            {
-                                supporttypes = ab.Support;
-                            }
-
-                            var assemblys = AppDomain.CurrentDomain.GetAssemblies();
-                            foreach (var assembly in assemblys)
-                            {
-                                //过滤掉一些，不然肯能太卡
-                                var assName = assembly.FullName;
-                                if (assName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    continue;
-                                }
-
-                                //可以通过这个宏来强行搜索unity中的类型
-#if !SCROBJ_DRAWER_FORCEDSEARCH_UNITY
-                                if (assName.StartsWith("Unity", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    continue;
-                                }
-#endif
-
-                                Type[] types = assembly.GetTypes();
-                                foreach (var temptype in types)
-                                {
-                                    if (supporttypes.Any(ele =>
-                                    {
-                                        if (ele.IsAssignableFrom(temptype))
-                                        {
-                                            //测试类型能 赋值给 支持类型列表 中的任意一个。
-                                            return true;
-                                        }
-
-                                        if (ele.IsSubclassOfRawGeneric(temptype))
-                                        {
-                                            //测试泛型
-                                            return true;
-                                        }
-                                        return false;
-                                    }))
-                                    {
-                                        TryAddType(temptype, ab, allTypes);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //不包含其他程序集，逐个类型搜索
-                            if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
-                            {
-                                var type = fieldInfo.FieldType;
-                                TryAddType(type, ab, allTypes);
-                            }
-                            else
-                            {
-                                for (int i = 0; i < ab.Support.Length; i++)
-                                {
-                                    var type = ab.Support[i];
-                                    if (type != null)
-                                    {
-                                        TryAddType(type, ab, allTypes);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (abs.Count() == 0)
-                {
-                    //没有特性标记时使用自身类型搜索一次
-                    TryAddType(fieldInfo.FieldType, true, false, false, false, allTypes);
-                }
+                this.fieldInfo.CollectSupportType(allTypes, AssemblyFilter);
 
                 int index = 0;
                 SupportNames = new string[allTypes.Count];
@@ -234,84 +139,24 @@ namespace UnityEditor.Megumin
             }
         }
 
-        public void TryAddType(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
+        public bool AssemblyFilter(Assembly assembly)
         {
-            if (ab.IncludeChildInSameAssembly)
+            //过滤掉一些，不然肯能太卡
+            var assName = assembly.FullName;
+            if (assName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
             {
-                Assembly assembly = type.Assembly;
-                Type[] types = assembly.GetTypes();
-                foreach (var item in types)
-                {
-                    if (type.IsAssignableFrom(item))
-                    {
-                        TryAdd2allTypes(item, ab, allTypes);
-                    }
-                }
-            }
-            else
-            {
-                TryAdd2allTypes(type, ab, allTypes);
-            }
-        }
-
-        public void TryAdd2allTypes(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
-        {
-            if (!ab.AllowInterface && type.IsInterface)
-            {
-                return;
+                return false;
             }
 
-            if (!ab.AllowAbstract && type.IsAbstract)
+            //可以通过这个宏来强行搜索unity中的类型
+#if !SCROBJ_DRAWER_FORCEDSEARCH_UNITY
+            if (assName.StartsWith("Unity", StringComparison.OrdinalIgnoreCase))
             {
-                return;
+                return false;
             }
+#endif
 
-            if (!ab.AllowGenericType && type.IsGenericType)
-            {
-                return;
-            }
-
-            allTypes.Add(type);
-        }
-
-        public void TryAddType(Type type, bool IncludeChildInSameAssembly, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
-        {
-            if (IncludeChildInSameAssembly)
-            {
-                Assembly assembly = type.Assembly;
-                Type[] types = assembly.GetTypes();
-                foreach (var item in types)
-                {
-                    if (type.IsAssignableFrom(item))
-                    {
-                        TryAdd2allTypes(item, allowInterface, allowAbstract, allowGenericType, allTypes);
-                    }
-                }
-            }
-            else
-            {
-                TryAdd2allTypes(type, allowInterface, allowAbstract, allowGenericType, allTypes);
-            }
-        }
-
-        public void TryAdd2allTypes(Type type, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
-        {
-            if (!allowInterface && type.IsInterface)
-            {
-                return;
-            }
-
-            if (!allowAbstract && type.IsAbstract)
-            {
-                return;
-            }
-
-            if (!allowGenericType && type.IsGenericType)
-            {
-                return;
-            }
-
-            allTypes.Add(type);
+            return true;
         }
 
         public void DrawSerializeReference(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)

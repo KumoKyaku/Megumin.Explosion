@@ -48,6 +48,8 @@ namespace Megumin
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class SupportTypesAttribute : Attribute
     {
+        public static readonly SupportTypesAttribute Default = new SupportTypesAttribute();
+
         public Type[] Support { get; set; }
 
         /// <summary>
