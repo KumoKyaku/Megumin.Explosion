@@ -64,7 +64,7 @@ namespace UnityEditor.Megumin
     [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
     [CustomPropertyDrawer(typeof(INewCloneButton), true)]
-    [CustomPropertyDrawer(typeof(SerializeReferenceNewButtonAttribute))]
+    [CustomPropertyDrawer(typeof(SerializeReferenceNewButtonAttribute), true)]
 #endif
     public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
     {
@@ -78,6 +78,11 @@ namespace UnityEditor.Megumin
         }
 
         string[] SupportNames;
+        /// <summary>
+        /// 多态序列化时，每个不同的类型都有自己的PropertyDrawer实例，所以这个index会每个实例有自己的值。
+        /// 表现就是选项当前值会每次new都会变，没有什么好的办法。
+        /// <para/> 而且必须CanCacheInspectorGUI为true，否则类型缓存和savetask都会失效。
+        /// </summary>
         int index = 0;
         Type[] SupportTypes;
         HashSet<Type> allTypes;
