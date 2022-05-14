@@ -12,12 +12,21 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
-/// <summary>
-/// 在面板绘制new clone 按钮
-/// </summary>
-public interface INewCloneButton
+namespace Megumin
 {
+    /// <summary>
+    /// 在面板绘制new clone 按钮
+    /// </summary>
+    public interface INewCloneButton
+    {
 
+    }
+
+
+    public class SerializeReferenceNewButtonAttribute : PropertyAttribute
+    {
+
+    }
 }
 
 
@@ -51,6 +60,7 @@ public static class ClonePathModeSetting
 [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
 [CustomPropertyDrawer(typeof(INewCloneButton), true)]
+[CustomPropertyDrawer(typeof(SerializeReferenceNewButtonAttribute))]
 #endif
 public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
 {
@@ -71,49 +81,45 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
+        CacheSupportType();
+
+        var propertyPosition = position;
+        propertyPosition.width -= 86;
+
+        var buttonPosition = position;
+        buttonPosition.width = 80;
+        buttonPosition.x += position.width - 80;
+
+
+        var leftPosotion = buttonPosition;
+        leftPosotion.width = 40;
+        var rightPosition = buttonPosition;
+        rightPosition.width = 40;
+        rightPosition.x += 40;
+
+        if (property.type.StartsWith("PPtr"))
+        {
+            DrawPPtrType(property, label, propertyPosition, leftPosotion, rightPosition);
+        }
+        else if (attribute is SerializeReferenceNewButtonAttribute add)
+        {
+            DrawSerializeReference(property, label, position, propertyPosition, leftPosotion, rightPosition);
+        }
+        else
+        {
+            EditorGUI.PropertyField(position, property, label, true);
+            return;
+        }
+    }
+
+    /// <summary>
+    /// 缓存支持的类型
+    /// </summary>
+    public void CacheSupportType()
+    {
         if (allTypes == null)
         {
             allTypes = new HashSet<Type>();
-
-            void TryAdd2allTypes(Type type, SupportTypesAttribute ab)
-            {
-                if (!ab.AllowInterface && type.IsInterface)
-                {
-                    return;
-                }
-
-                if (!ab.AllowAbstract && type.IsAbstract)
-                {
-                    return;
-                }
-
-                if (!ab.AllowGenericType && type.IsGenericType)
-                {
-                    return;
-                }
-
-                allTypes.Add(type);
-            }
-
-            void TryAddType(Type type, SupportTypesAttribute ab)
-            {
-                if (ab.IncludeChildInSameAssembly)
-                {
-                    Assembly assembly = type.Assembly;
-                    Type[] types = assembly.GetTypes();
-                    foreach (var item in types)
-                    {
-                        if (type.IsAssignableFrom(item))
-                        {
-                            TryAdd2allTypes(item, ab);
-                        }
-                    }
-                }
-                else
-                {
-                    TryAdd2allTypes(type, ab);
-                }
-            }
 
             var customattributes = this.fieldInfo.GetCustomAttributes(true);
             var abs = from cab in customattributes
@@ -127,7 +133,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
 
             foreach (var ab in abs)
             {
-                if (ab != null && ab.Support != null)
+                if (ab != null)
                 {
                     if (ab.IncludeChildInOtherAssembly)
                     {
@@ -180,7 +186,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
                                     return false;
                                 }))
                                 {
-                                    TryAddType(temptype, ab);
+                                    TryAddType(temptype, ab, allTypes);
                                 }
                             }
                         }
@@ -191,7 +197,7 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
                         if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
                         {
                             var type = fieldInfo.FieldType;
-                            TryAddType(type, ab);
+                            TryAddType(type, ab, allTypes);
                         }
                         else
                         {
@@ -200,12 +206,18 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
                                 var type = ab.Support[i];
                                 if (type != null)
                                 {
-                                    TryAddType(type, ab);
+                                    TryAddType(type, ab, allTypes);
                                 }
                             }
                         }
                     }
                 }
+            }
+
+            if (abs.Count() == 0)
+            {
+                //没有特性标记时使用自身类型搜索一次
+                TryAddType(fieldInfo.FieldType, true, false, false, false, allTypes);
             }
 
             int index = 0;
@@ -218,28 +230,130 @@ public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
                 index++;
             }
         }
+    }
 
-        var propertyPosition = position;
-        propertyPosition.width -= 86;
-
-        var buttonPosition = position;
-        buttonPosition.width = 80;
-        buttonPosition.x += position.width - 80;
-
-
-        var leftPosotion = buttonPosition;
-        leftPosotion.width = 40;
-        var rightPosition = buttonPosition;
-        rightPosition.width = 40;
-        rightPosition.x += 40;
-
-        if (!property.type.StartsWith("PPtr"))
+    public void TryAddType(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
+    {
+        if (ab.IncludeChildInSameAssembly)
         {
-            EditorGUI.PropertyField(position, property, label, true);
+            Assembly assembly = type.Assembly;
+            Type[] types = assembly.GetTypes();
+            foreach (var item in types)
+            {
+                if (type.IsAssignableFrom(item))
+                {
+                    TryAdd2allTypes(item, ab, allTypes);
+                }
+            }
+        }
+        else
+        {
+            TryAdd2allTypes(type, ab, allTypes);
+        }
+    }
+
+    public void TryAdd2allTypes(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
+    {
+        if (!ab.AllowInterface && type.IsInterface)
+        {
             return;
         }
 
-        DrawPPtrType(property, label, propertyPosition, leftPosotion, rightPosition);
+        if (!ab.AllowAbstract && type.IsAbstract)
+        {
+            return;
+        }
+
+        if (!ab.AllowGenericType && type.IsGenericType)
+        {
+            return;
+        }
+
+        allTypes.Add(type);
+    }
+
+    public void TryAddType(Type type, bool IncludeChildInSameAssembly, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
+    {
+        if (IncludeChildInSameAssembly)
+        {
+            Assembly assembly = type.Assembly;
+            Type[] types = assembly.GetTypes();
+            foreach (var item in types)
+            {
+                if (type.IsAssignableFrom(item))
+                {
+                    TryAdd2allTypes(item, allowInterface, allowAbstract, allowGenericType, allTypes);
+                }
+            }
+        }
+        else
+        {
+            TryAdd2allTypes(type, allowInterface, allowAbstract, allowGenericType, allTypes);
+        }
+    }
+
+    public void TryAdd2allTypes(Type type, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
+    {
+        if (!allowInterface && type.IsInterface)
+        {
+            return;
+        }
+
+        if (!allowAbstract && type.IsAbstract)
+        {
+            return;
+        }
+
+        if (!allowGenericType && type.IsGenericType)
+        {
+            return;
+        }
+
+        allTypes.Add(type);
+    }
+
+    public void DrawSerializeReference(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
+    {
+        if (leftPosotion.height > 18)
+        {
+            leftPosotion.height = 18;
+            rightPosition.height = 18;
+        }
+
+        if (SupportNames != null && SupportNames.Length > 0)
+        {
+            //通过特性支持多个类型
+
+            var popPosition = rightPosition;
+            popPosition.width = 55;
+            popPosition.x -= 15;
+
+            index = EditorGUI.Popup(popPosition, index, SupportNames);
+            var targetType = SupportTypes[index];
+
+
+            if (GUI.Button(leftPosotion, "New", left))
+            {
+                var newObj = Activator.CreateInstance(targetType);
+                property.managedReferenceValue = newObj;
+            }
+        }
+
+        if (!property.isExpanded)
+        {
+            EditorGUI.PropertyField(propertyPosition, property, label, true);
+            using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
+            {
+                var textPosition = propertyPosition;
+                textPosition.x += EditorGUIUtility.labelWidth;
+                textPosition.width -= EditorGUIUtility.labelWidth;
+                EditorGUI.TextField(textPosition, property.managedReferenceValue?.ToString());
+            }
+        }
+        else
+        {
+            EditorGUI.PropertyField(position, property, label, true);
+        }
     }
 
     protected void DrawPPtrType(SerializedProperty property, GUIContent label, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
