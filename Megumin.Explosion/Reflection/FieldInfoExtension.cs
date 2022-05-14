@@ -8,44 +8,52 @@ namespace System.Reflection
 {
     public static class FieldInfoExtension_E5A239CE4DB34975A4A939379BA9A036
     {
-        public static void TryAddType(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
+        public static void TryAddType(HashSet<Type> allTypes, SupportTypesAttribute ab, Type[] supporttypes, Assembly assembly)
         {
             if (ab.IncludeChildInSameAssembly)
             {
-                Assembly assembly = type.Assembly;
                 Type[] types = assembly.GetTypes();
-                foreach (var item in types)
+                foreach (var temptype in types)
                 {
-                    if (type.IsAssignableFrom(item))
+                    if (supporttypes.Any(ele => Match(ele, temptype)))
                     {
-                        TryAdd2allTypes(item, ab, allTypes);
+                        TryAdd2allTypes(temptype, ab, allTypes);
                     }
                 }
             }
             else
             {
-                TryAdd2allTypes(type, ab, allTypes);
+                foreach (var item in supporttypes)
+                {
+                    TryAdd2allTypes(item, ab, allTypes);
+                }
             }
+        }
+
+        static bool Match(this Type parent, Type toCheck)
+        {
+            if (parent.IsAssignableFrom(toCheck))
+            {
+                //测试类型能 赋值给 支持类型列表 中的任意一个。
+                return true;
+            }
+
+            if (parent.IsSubclassOfRawGeneric(toCheck))
+            {
+                //测试泛型
+                return true;
+            }
+            return false;
+        }
+
+        public static void TryAddType(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
+        {
+            TryAddType(type, ab.IncludeChildInSameAssembly, ab.AllowInterface, ab.AllowAbstract, ab.AllowGenericType, allTypes);
         }
 
         public static void TryAdd2allTypes(Type type, SupportTypesAttribute ab, HashSet<Type> allTypes)
         {
-            if (!ab.AllowInterface && type.IsInterface)
-            {
-                return;
-            }
-
-            if (!ab.AllowAbstract && type.IsAbstract)
-            {
-                return;
-            }
-
-            if (!ab.AllowGenericType && type.IsGenericType)
-            {
-                return;
-            }
-
-            allTypes.Add(type);
+            TryAdd2allTypes(type, ab.AllowInterface, ab.AllowAbstract, ab.AllowGenericType, allTypes);
         }
 
         public static void TryAddType(Type type, bool includeChildInSameAssembly, bool allowInterface, bool allowAbstract, bool allowGenericType, HashSet<Type> allTypes)
@@ -56,7 +64,7 @@ namespace System.Reflection
                 Type[] types = assembly.GetTypes();
                 foreach (var item in types)
                 {
-                    if (type.IsAssignableFrom(item))
+                    if (type.Match(item))
                     {
                         TryAdd2allTypes(item, allowInterface, allowAbstract, allowGenericType, allTypes);
                     }
@@ -112,76 +120,46 @@ namespace System.Reflection
             {
                 if (ab != null)
                 {
-                    if (ab.IncludeChildInOtherAssembly)
+                    //包含所有程序集，搜索方式遍历所有程序集,可能会特别慢
+                    Type[] supporttypes = null;
+                    if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
                     {
-                        //包含所有程序集，搜索方式遍历所有程序集,可能会特别慢
-                        Type[] supporttypes = null;
-                        if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
-                        {
-                            var type = fieldInfo.FieldType;
-                            supporttypes = new Type[] { type };
-                        }
-                        else
-                        {
-                            supporttypes = ab.Support;
-                        }
-
-                        var assemblys = AppDomain.CurrentDomain.GetAssemblies();
-                        foreach (var assembly in assemblys)
-                        {
-                            //过滤掉一些，不然肯能太卡
-                            if (assemblyFilter != null)
-                            {
-                                if (!assemblyFilter.Invoke(assembly))
-                                {
-                                    //过滤一些程序集
-                                    continue;
-                                }
-                            }
-
-                            Type[] types = assembly.GetTypes();
-                            foreach (var temptype in types)
-                            {
-                                if (supporttypes.Any(ele =>
-                                {
-                                    if (ele.IsAssignableFrom(temptype))
-                                    {
-                                        //测试类型能 赋值给 支持类型列表 中的任意一个。
-                                        return true;
-                                    }
-
-                                    if (ele.IsSubclassOfRawGeneric(temptype))
-                                    {
-                                        //测试泛型
-                                        return true;
-                                    }
-                                    return false;
-                                }))
-                                {
-                                    TryAdd2allTypes(temptype, ab, allTypes);
-                                }
-                            }
-                        }
+                        var type = fieldInfo.FieldType;
+                        supporttypes = new Type[] { type };
                     }
                     else
                     {
-                        //不包含其他程序集，逐个类型搜索
-                        if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
+                        supporttypes = ab.Support;
+                    }
+
+                    IEnumerable<Assembly> assemblys = null;
+                    if (ab.IncludeChildInOtherAssembly)
+                    {
+                        assemblys = AppDomain.CurrentDomain.GetAssemblies();
+                    }
+                    else
+                    {
+                        var set = new HashSet<Assembly>();
+                        foreach (var item in supporttypes)
                         {
-                            var type = fieldInfo.FieldType;
-                            TryAddType(type, ab, allTypes);
+                            set.Add(item.Assembly);
                         }
-                        else
+                        assemblys = set;
+                    }
+
+                    foreach (var assembly in assemblys)
+                    {
+                        //过滤掉一些，不然肯能太卡
+                        if (assemblyFilter != null)
                         {
-                            for (int i = 0; i < ab.Support.Length; i++)
+                            if (!assemblyFilter.Invoke(assembly))
                             {
-                                var type = ab.Support[i];
-                                if (type != null)
-                                {
-                                    TryAddType(type, ab, allTypes);
-                                }
+                                //过滤一些程序集
+                                continue;
                             }
                         }
+
+                        TryAddType(allTypes, ab, supporttypes, assembly);
                     }
                 }
             }
@@ -192,6 +170,8 @@ namespace System.Reflection
                 TryAddType(fieldInfo.FieldType, SupportTypesAttribute.Default, allTypes);
             }
         }
+
+
     }
 }
 
