@@ -85,8 +85,6 @@ namespace UnityEditor.Megumin
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            CacheSupportType();
-
             var propertyPosition = position;
             propertyPosition.width -= 86;
 
@@ -103,10 +101,12 @@ namespace UnityEditor.Megumin
 
             if (property.type.StartsWith("PPtr"))
             {
+                CacheSupportType();
                 DrawPPtrType(property, label, propertyPosition, leftPosotion, rightPosition);
             }
             else if (attribute is SerializeReferenceNewButtonAttribute add)
             {
+                CacheSupportType(true);
                 DrawSerializeReference(property, label, position, propertyPosition, leftPosotion, rightPosition);
             }
             else
@@ -119,13 +119,13 @@ namespace UnityEditor.Megumin
         /// <summary>
         /// 缓存支持的类型
         /// </summary>
-        public void CacheSupportType()
+        public void CacheSupportType(bool collectSelfTypeIfNoAttribute = false)
         {
             if (allTypes == null)
             {
                 allTypes = new HashSet<Type>();
 
-                this.fieldInfo.CollectSupportType(allTypes, AssemblyFilter);
+                this.fieldInfo.CollectSupportType(allTypes, AssemblyFilter, collectSelfTypeIfNoAttribute);
 
                 int index = 0;
                 SupportNames = new string[allTypes.Count];
@@ -171,13 +171,13 @@ namespace UnityEditor.Megumin
             {
                 //通过特性支持多个类型
 
+                //偏移两个像素，让UI更好看，不然左边会有一个空隙
                 var popPosition = rightPosition;
-                popPosition.width = 55;
-                popPosition.x -= 15;
-
+                popPosition.width += 2;
+                popPosition.x -= 2;
                 index = EditorGUI.Popup(popPosition, index, SupportNames);
-                var targetType = SupportTypes[index];
 
+                var targetType = SupportTypes[index];
 
                 if (GUI.Button(leftPosotion, "New", left))
                 {
@@ -269,11 +269,12 @@ namespace UnityEditor.Megumin
                 {
                     //通过特性支持多个类型
 
+                    //偏移两个像素，让UI更好看，不然左边会有一个空隙
                     var popPosition = rightPosition;
-                    popPosition.width = 55;
-                    popPosition.x -= 15;
-
+                    popPosition.width += 2;
+                    popPosition.x -= 2;
                     index = EditorGUI.Popup(popPosition, index, SupportNames);
+
                     var targetType = SupportTypes[index];
                     EditorGUI.ObjectField(propertyPosition, property, targetType, label);
 

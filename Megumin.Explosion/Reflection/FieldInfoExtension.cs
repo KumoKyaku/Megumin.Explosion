@@ -100,11 +100,15 @@ namespace System.Reflection
         /// 反射查找<see cref="SupportTypesAttribute"/>设定中支持的类型。
         /// </summary>
         /// <param name="fieldInfo"></param>
-        /// <param name="allTypes"></param>
-        /// <param name="assemblyFilter"></param>
+        /// <param name="allTypes">结果集</param>
+        /// <param name="assemblyFilter">程序集过滤回调</param>
+        /// <param name="collectSelfTypeIfNoAttribute">没有SupportTypesAttribute时，使用自身类型作为支持类型</param>
+        /// <param name="useGenericArgumentsTypeInsteadCollectionType">遇到泛型集合时，使用泛型参数类型代替集合类型</param>
         public static void CollectSupportType(this FieldInfo fieldInfo,
                                             HashSet<Type> allTypes,
-                                            Func<Assembly, bool> assemblyFilter = null)
+                                            Func<Assembly, bool> assemblyFilter = null,
+                                            bool collectSelfTypeIfNoAttribute = false,
+                                            bool useGenericArgumentsTypeInsteadCollectionType = true)
         {
             var customattributes = fieldInfo.GetCustomAttributes(true);
             var abs = from cab in customattributes
@@ -164,14 +168,33 @@ namespace System.Reflection
                 }
             }
 
-            if (abs.Count() == 0)
+            if (collectSelfTypeIfNoAttribute && abs.Count() == 0)
             {
                 //没有特性标记时使用自身类型搜索一次
-                TryAddType(fieldInfo.FieldType, SupportTypesAttribute.Default, allTypes);
+                var fieldType = fieldInfo.FieldType;
+                if (useGenericArgumentsTypeInsteadCollectionType)
+                {
+                    if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
+                    {
+                        var type = fieldType.GetGenericArguments()[0];
+                        TryAddType(type, SupportTypesAttribute.Default, allTypes);
+                    }
+                    else if (fieldType.IsSubclassOf(typeof(Array)))
+                    {
+                        var type = fieldType.GetElementType();
+                        TryAddType(type, SupportTypesAttribute.Default, allTypes);
+                    }
+                    else
+                    {
+                        TryAddType(fieldType, SupportTypesAttribute.Default, allTypes);
+                    }
+                }
+                else
+                {
+                    TryAddType(fieldType, SupportTypesAttribute.Default, allTypes);
+                }
             }
         }
-
-
     }
 }
 
