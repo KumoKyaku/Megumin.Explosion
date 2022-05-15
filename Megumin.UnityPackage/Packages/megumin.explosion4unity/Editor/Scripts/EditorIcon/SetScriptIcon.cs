@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 //https://gist.github.com/MattRix/c1f7840ae2419d8eb2ec0695448d4321
@@ -74,6 +75,44 @@ namespace Megumin
             }
 
             return false;
+        }
+
+        [MenuItem("Tools/Style/Export Editor Icons", priority = -1002)]
+        public static void ExportIconList()
+        {
+            EditorUtility.DisplayProgressBar("Export", "Find TotalIcon", 0.1f);
+            var list = MeguminEditorUtility.GetEditorIcon();
+            var set = new HashSet<string>();
+            foreach (var item in list)
+            {
+                set.Add(item.Name);
+            }
+            CSCodeGenerator generator = new CSCodeGenerator();
+            generator.Push(@"public static class EditorIconListByCodeGenerate");
+            using (generator.NewScope)
+            {
+                generator.PushSummaryNote(@$"AutoGeneric. TotalCount : {set.Count} ");
+                generator.Push(@"public static string[] IconList =");
+                generator.BeginScope();
+                int count = 0;
+                foreach (var item in set)
+                {
+                    var name = System.IO.Path.GetFileNameWithoutExtension(item);
+                    generator.Push(@$"""{name}"",");
+                    count++;
+                }
+                generator.EndScopeWithSemicolon();
+            }
+            generator.Push("");
+            generator.Push("");
+
+            //var path = @"W:\Git\Megumin.Explosion\Megumin.UnityPackage\Packages\megumin.explosion4unity\Editor\Scripts\EditorIcon\EditorIconList.cs";
+            var path = Path.Combine(MeguminUtility4Unity.PackagesPath,
+                @"megumin.explosion4unity\Editor\Scripts\EditorIcon\EditorIconList.cs");
+            path = Path.GetFullPath(path);
+            EditorUtility.DisplayProgressBar("Export", "WirteCodeToPath", 0.75f);
+            generator.Generate(path);
+            EditorUtility.ClearProgressBar();
         }
     }
 

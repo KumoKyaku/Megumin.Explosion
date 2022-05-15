@@ -82,6 +82,15 @@ namespace Megumin
             Push(@$"}}");
         }
 
+        /// <summary>
+        /// 结束一个区域并附带分号
+        /// </summary>
+        public void EndScopeWithSemicolon()
+        {
+            Indent--;
+            Push(@$"}};");
+        }
+
         public void Generate(string path, Encoding encoding = null)
         {
             string txt = "";
