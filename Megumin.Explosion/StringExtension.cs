@@ -298,6 +298,52 @@ public static class StringExtension_E68DD56066C94F2286AF4BD18126A406
 
         return false;
     }
+
+    /// <summary>
+    /// 按照AaBbCc排序比较
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
+    public static int CompareAaBbCc(this string a, string b)
+    {
+        if (string.Equals(a, b))
+        {
+            return 0;
+        }
+
+        var index = 0;
+        while (true)
+        {
+            char ac = (char)0;
+            if (index < a.Length)
+            {
+                ac = a[index];
+            }
+
+            var bc = (char)0;
+            if (index < b.Length)
+            {
+                bc = b[index];
+            }
+
+            var acl = char.ToLower(ac);
+            var bcl = char.ToLower(bc);
+            if (acl != bcl)
+            {
+                return acl - bcl;
+            }
+            else
+            {
+                if (ac != bc)
+                {
+                    return ac - bc;
+                }
+            }
+
+            index++;
+        }
+    }
 }
 
 namespace System.IO

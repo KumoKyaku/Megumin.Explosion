@@ -64,6 +64,11 @@ namespace System.Collections.Generic
             enumerable.Add(item);
             return true;
         }
+
+        public static void SortAaBbCc(this List<string> list)
+        {
+            list.Sort((a, b) => a.CompareAaBbCc(b));
+        }
     }
 }
 

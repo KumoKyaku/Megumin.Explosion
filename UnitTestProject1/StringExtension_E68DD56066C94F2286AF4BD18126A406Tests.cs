@@ -38,11 +38,57 @@ namespace Tests
             var res2 = "set12sfa".FileNameAddOne();
             Assert.AreEqual("set12sfa (1)", res2);
 
-            var res3 =  "sdfasd(1)".FileNameAddOne();
+            var res3 = "sdfasd(1)".FileNameAddOne();
             Assert.AreEqual("sdfasd(2)", res3);
 
             var res4 = "sadfasf (654)".FileNameAddOne();
             Assert.AreEqual("sadfasf (655)", res4);
+        }
+
+        [TestMethod()]
+        public void SortAaBbCcTest()
+        {
+            List<string> list = new List<string>()
+            {
+                "AaBBcc",
+                "aabbCC",
+                "AAbBcc",
+                "BaCC"
+            };
+
+            var a1 = "A".CompareAaBbCc("a");
+            Assert.IsTrue(a1 < 0);
+
+            var a2 = "B".CompareAaBbCc("a");
+            Assert.IsTrue(a2 > 0);
+
+            var a3 = "a".CompareAaBbCc("A");
+            Assert.IsTrue(a3 > 0);
+
+            var a4 = "a".CompareAaBbCc("B");
+            Assert.IsTrue(a4 < 0);
+
+            var a5 = "b".CompareAaBbCc("A");
+            Assert.IsTrue(a5 > 0);
+
+            var a6 = "Ab".CompareAaBbCc("AbA");
+            Assert.IsTrue(a6 < 0);
+
+
+            var res = list[0].CompareAaBbCc(list[1]);
+            Assert.IsTrue(res < 0);
+
+            var res2 = list[1].CompareAaBbCc(list[2]);
+            Assert.IsTrue(res2 > 0);
+
+            var res3 = list[0].CompareAaBbCc(list[2]);
+            Assert.IsTrue(res3 > 0);
+
+            list.Sort((a, b) => a.CompareAaBbCc(b));
+            Assert.AreEqual(list[0], "AAbBcc");
+            Assert.AreEqual(list[1], "AaBBcc");
+            Assert.AreEqual(list[2], "aabbCC");
+            Assert.AreEqual(list[3], "BaCC");
         }
     }
 }
@@ -56,8 +102,8 @@ namespace System.Tests
         public void TryPerseHexColorTest()
         {
             string orignal = "FFff00";
-            orignal.TryPerseHexColor(out var r,out var g,out var b,out var a);
-            Assert.AreEqual(255,r);
+            orignal.TryPerseHexColor(out var r, out var g, out var b, out var a);
+            Assert.AreEqual(255, r);
             Assert.AreEqual(255, g);
             Assert.AreEqual(0, b);
             Assert.AreEqual(255, a);
