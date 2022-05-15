@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Megumin;
 
 namespace System.Collections.Generic
 {
@@ -68,6 +69,53 @@ namespace System.Collections.Generic
         public static void SortAaBbCc(this List<string> list)
         {
             list.Sort((a, b) => a.CompareAaBbCc(b));
+        }
+
+        public struct Remover<T>
+        {
+            private readonly ICollection<T> list;
+            private List<T> cache;
+
+            public Remover(ICollection<T> list)
+            {
+                this.list = list;
+                cache = ListPool<T>.Rent();
+            }
+
+            public void Push(T item)
+            {
+                DelayRemove(item);
+            }
+
+            public void DelayRemove(T item)
+            {
+                if (cache == null)
+                {
+                    cache = ListPool<T>.Rent();
+                }
+                cache.Add(item);
+            }
+
+            public void RemoveNow()
+            {
+                foreach (var item in cache)
+                {
+                    list.Remove(item);
+                }
+                ListPool<T>.Return(ref cache);
+                cache = null;
+            }
+        }
+
+        /// <summary>
+        /// 获得一个在foreach中使用的删除器
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static Remover<T> GetForeachRemover<T>(this ICollection<T> list)
+        {
+            return new Remover<T>(list);
         }
     }
 }

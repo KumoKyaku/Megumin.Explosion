@@ -180,5 +180,53 @@ namespace System.Collections.Generic
                 }
             }
         }
+
+        public struct Remover<K, V>
+        {
+            private readonly IDictionary<K, V> list;
+            private List<K> cache;
+
+            public Remover(IDictionary<K, V> list)
+            {
+                this.list = list;
+                cache = ListPool<K>.Rent();
+            }
+
+            public void Push(K item)
+            {
+                DelayRemove(item);
+            }
+
+            public void DelayRemove(K item)
+            {
+                if (cache == null)
+                {
+                    cache = ListPool<K>.Rent();
+                }
+                cache.Add(item);
+            }
+
+            public void RemoveNow()
+            {
+                foreach (var item in cache)
+                {
+                    list.Remove(item);
+                }
+                ListPool<K>.Return(ref cache);
+                cache = null;
+            }
+        }
+
+        /// <summary>
+        /// 获得一个在foreach中使用的删除器
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static Remover<K, V> GetForeachRemover<K, V>(this IDictionary<K, V> source)
+        {
+            return new Remover<K, V>(source);
+        }
     }
 }

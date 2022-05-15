@@ -45,6 +45,23 @@
             <param name="source"></param>
             <param name="predicate"></param>
         </member>
+        <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.GetForeachRemover``2(System.Collections.Generic.IDictionary{``0,``1})">
+            <summary>
+            获得一个在foreach中使用的删除器
+            </summary>
+            <typeparam name="K"></typeparam>
+            <typeparam name="V"></typeparam>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.GetForeachRemover``1(System.Collections.Generic.ICollection{``0})">
+            <summary>
+            获得一个在foreach中使用的删除器
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
         <member name="M:System.IO.StringExtension_FA3412521A22430AAAF2BB15471A5277.ReplaceFileName(System.String,System.String)">
             <summary>
             安全替换路径中的文件名，会检测是否已经存在。
@@ -1607,6 +1624,14 @@
             <param name="c"></param>
             <param name="radix"></param>
             <param name="result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:StringExtension_E68DD56066C94F2286AF4BD18126A406.CompareAaBbCc(System.String,System.String)">
+            <summary>
+            按照AaBbCc排序比较
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
             <returns></returns>
         </member>
         <member name="T:StructExtension_28FDB7156FD24F39B5EA39D95892E328">
