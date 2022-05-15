@@ -45,7 +45,7 @@ public static partial class MeguminEditorUtility
             _icons.Add((gc, new GUIContent(x.name)));
         }
 
-        _icons.Sort();
+        _icons.Sort((x,y) => { return x.name.text.CompareTo(y.name.text); });
         Resources.UnloadUnusedAssets();
         System.GC.Collect();
         return _icons;

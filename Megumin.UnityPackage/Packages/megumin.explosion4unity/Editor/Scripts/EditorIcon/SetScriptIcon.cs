@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
 //https://gist.github.com/MattRix/c1f7840ae2419d8eb2ec0695448d4321
 
 namespace Megumin
@@ -87,6 +88,7 @@ namespace Megumin
             {
                 set.Add(item.Name);
             }
+
             CSCodeGenerator generator = new CSCodeGenerator();
             generator.Push(@"public static class EditorIconListByCodeGenerate");
             using (generator.NewScope)

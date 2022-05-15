@@ -342,6 +342,7 @@ public partial class EditorIcons : EditorWindow
         iconContentListBig = new List<GUIContent>();
         iconContentListAll = new List<GUIContent>();
 
+        HashSet<Texture> check = new HashSet<Texture>();
         for (var i = 0; i < ico_list.Length; ++i)
         {
             GUIContent ico = GetIcon(ico_list[i]);
@@ -349,6 +350,18 @@ public partial class EditorIcons : EditorWindow
             if (ico == null)
             {
                 iconMissingNames.Add(ico_list[i]);
+                continue;
+            }
+
+            if (!ico.image)
+            {
+                iconMissingNames.Add(ico_list[i]);
+                continue;
+            }
+
+            if (!check.Add(ico.image))
+            {
+                //Debug.LogError(ico_list[i] + "图标重复");
                 continue;
             }
 
