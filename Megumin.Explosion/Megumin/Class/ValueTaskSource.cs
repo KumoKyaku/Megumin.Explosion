@@ -150,7 +150,6 @@ namespace Megumin
 
     /// <summary>
     /// 临时使用的IValueTaskSource，线程安全，但是没有性能优化。当作包装类使用。
-    /// <para>没有处理线程同步上下文</para>
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
     public class TempValueTaskSource<TResult> : IValueTaskSource<TResult>
@@ -348,6 +347,72 @@ namespace Megumin
         public bool TrySetResult()
         {
             return TrySetResult(true);
+        }
+    }
+
+
+    /// <summary>
+    /// 舍弃一个异步，永远不能触发
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ForgetValueTaskSource<T> : IValueTaskSource<T>
+    {
+        private ForgetValueTaskSource() { }
+        public ValueTaskSourceStatus GetStatus(short token)
+        {
+            return ValueTaskSourceStatus.Pending;
+        }
+
+        public void OnCompleted(Action<object> continuation, object state, short token, ValueTaskSourceOnCompletedFlags flags)
+        {
+
+        }
+
+        public T GetResult(short token)
+        {
+            return default(T);
+        }
+
+        /// <summary>
+        /// 返回一个永远不会完成的Task
+        /// </summary>
+        public static ValueTask<T> ForgetIt
+        {
+            get
+            {
+                return new ValueTask<T>(new ForgetValueTaskSource<T>(), 0);
+            }
+        }
+    }
+
+    public class ForgetValueTaskSource : IValueTaskSource
+    {
+        private ForgetValueTaskSource() { }
+
+        public ValueTaskSourceStatus GetStatus(short token)
+        {
+            return ValueTaskSourceStatus.Pending;
+        }
+
+        public void OnCompleted(Action<object> continuation, object state, short token, ValueTaskSourceOnCompletedFlags flags)
+        {
+
+        }
+
+        public void GetResult(short token)
+        {
+
+        }
+
+        /// <summary>
+        /// 返回一个永远不会完成的Task
+        /// </summary>
+        public static ValueTask ForgetIt
+        {
+            get
+            {
+                return new ValueTask(new ForgetValueTaskSource(), 0);
+            }
         }
     }
 }
