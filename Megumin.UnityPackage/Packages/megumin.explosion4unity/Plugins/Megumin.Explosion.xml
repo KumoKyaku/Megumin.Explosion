@@ -1089,7 +1089,6 @@
         <member name="T:Megumin.TempValueTaskSource`1">
             <summary>
             临时使用的IValueTaskSource，线程安全，但是没有性能优化。当作包装类使用。
-            <para>没有处理线程同步上下文</para>
             </summary>
             <typeparam name="TResult"></typeparam>
         </member>
@@ -1106,6 +1105,22 @@
         </member>
         <member name="T:Megumin.TempValueTaskSource">
             <inheritdoc/>
+        </member>
+        <member name="T:Megumin.ForgetValueTaskSource`1">
+            <summary>
+            舍弃一个异步，永远不能触发
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Megumin.ForgetValueTaskSource`1.ForgetIt">
+            <summary>
+            返回一个永远不会完成的Task
+            </summary>
+        </member>
+        <member name="P:Megumin.ForgetValueTaskSource.ForgetIt">
+            <summary>
+            返回一个永远不会完成的Task
+            </summary>
         </member>
         <member name="T:Megumin.WeakEvent">
             <summary>
