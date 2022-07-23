@@ -70,7 +70,7 @@ namespace Megumin
 
             if (DrawRay)
             {
-                Debug.DrawRay(ray.origin, ray.direction * 1000);
+                Debug.DrawRay(ray.origin, ray.direction * 1000, PointMat.MainColor());
             }
 
             HitAreaName = "";
