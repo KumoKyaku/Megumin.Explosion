@@ -6,6 +6,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace UnityEngine
 {
     public static class MeguminUtility4Unity
@@ -119,6 +123,41 @@ namespace UnityEngine
         //    }
         //    return false;
         //}
+
+        public static List<(T obj, string guid, long localId, string path)>
+            CollectAllAsset<T>(List<string> collectFolder = null)
+            where T : UnityEngine.Object
+        {
+            List<(T obj, string guid, long localId, string path)> list = new List<(T obj, string guid, long localId, string path)>();
+
+#if UNITY_EDITOR
+
+            var FindAssetsFolders = new string[] { "Assets", "Packages" };
+            if (collectFolder != null)
+            {
+                FindAssetsFolders = collectFolder.ToArray();
+            }
+
+            string[] GUIDs = AssetDatabase.FindAssets($"t:{typeof(T).Name}",
+                FindAssetsFolders);
+
+            for (int i = 0; i < GUIDs.Length; i++)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(GUIDs[i]);
+                var sos = AssetDatabase.LoadAllAssetsAtPath(path);
+                foreach (var item in sos)
+                {
+                    if (item != null && item is T so)
+                    {
+                        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(so, out var tempGUID, out long localID);
+                        list.Add((so, tempGUID, localID, path));
+                    }
+                }
+            }
+#endif
+
+            return list;
+        }
     }
 }
 
