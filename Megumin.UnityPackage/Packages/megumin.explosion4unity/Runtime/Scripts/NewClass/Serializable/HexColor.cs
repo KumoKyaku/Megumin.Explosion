@@ -239,7 +239,8 @@ namespace UnityEngine
         {
             foreach (var item in GetAllStaticColor())
             {
-                Debug.Log(item.Item2.Html($"HexColor.<b>{item.Name}</b>.Html(\"Hello World!\")"));
+                Color color = item.Item2;
+                Debug.Log(item.Item2.Html($"HexColor.<b>{item.Name}</b>.Html(\"Hello World!\")  {item.Item2.hexCode}") + $"\nvar color = new Color({color.r}, {color.g}, {color.b}, {color.a});");
             }
         }
 
