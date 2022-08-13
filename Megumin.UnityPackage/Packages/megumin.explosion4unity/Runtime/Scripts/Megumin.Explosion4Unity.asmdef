@@ -34,6 +34,11 @@
             "name": "com.unity.nuget.mono-cecil",
             "expression": "0.1.0",
             "define": "MEGUMIN_MONOCECIL"
+        },
+        {
+            "name": "com.unity.burst",
+            "expression": "1.7.0",
+            "define": "MEGUMIN_MONOCECIL"
         }
     ],
     "noEngineReferences": false

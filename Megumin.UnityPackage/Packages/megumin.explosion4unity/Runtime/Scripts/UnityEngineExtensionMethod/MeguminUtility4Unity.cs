@@ -195,7 +195,7 @@ namespace UnityEngine
                 return @$"<a href=""{res.rpath}"" line=""{res.StartLine}"">{type.FullName}</a>";
             }
 #else
-            return type.FullName;
+            return $"{type.FullName}    {"[Need MonoCecil]".HtmlColor(HexColor.BrickRed)}";
 #endif
         }
     }
