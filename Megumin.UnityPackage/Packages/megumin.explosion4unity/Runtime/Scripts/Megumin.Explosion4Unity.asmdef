@@ -29,6 +29,11 @@
             "name": "com.dbrizov.naughtyattributes",
             "expression": "2.1.0",
             "define": "COMPATIBILITY_NaughtyAttributes"
+        },
+        {
+            "name": "com.unity.nuget.mono-cecil",
+            "expression": "0.1.0",
+            "define": "MEGUMIN_MONOCECIL"
         }
     ],
     "noEngineReferences": false

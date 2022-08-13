@@ -204,6 +204,7 @@ namespace UnityEditor.Megumin
                     var source = property.managedReferenceValue;
                     source.SimilarityCopyTo(newObj);
                     property.managedReferenceValue = newObj;
+                    Debug.Log($"创建多态对象: {targetType.GetUnityProjectLink()}");
                 }
             }
 

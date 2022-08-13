@@ -158,6 +158,46 @@ namespace UnityEngine
 
             return list;
         }
+
+
+        /// <summary>
+        /// 目前拿到的是第一个方法的行号链接，没找到class声明那一行。
+        /// 使用imguidebugger查看Console链接源文本。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string GetUnityProjectLink(this Type type)
+        {
+#if MEGUMIN_MONOCECIL
+            static (string rpath, int StartLine) GetPath(Mono.Cecil.TypeDefinition t)
+            {
+                foreach (var method in t.Methods)
+                {
+                    if (method.HasBody)
+                    {
+                        var se = method.DebugInformation.GetSequencePointMapping();
+                        foreach (var item in se)
+                        {
+                            var link = item.Value.Document.Url;
+                            var rpath = link.MakeUnityProjectRelativePath();
+                            return (rpath, item.Value.StartLine);
+                        }
+                    }
+                }
+                return default;
+            }
+
+            var r = new Mono.Cecil.ReaderParameters() { ReadSymbols = true };
+            using (var ad = Mono.Cecil.AssemblyDefinition.ReadAssembly(type.Assembly.Location, r))
+            {
+                var td = ad.MainModule.GetType(type.FullName);
+                var res = GetPath(td);
+                return @$"<a href=""{res.rpath}"" line=""{res.StartLine}"">{type.FullName}</a>";
+            }
+#else
+            return type.FullName;
+#endif
+        }
     }
 }
 
