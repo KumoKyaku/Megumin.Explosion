@@ -95,7 +95,7 @@ public class TestLog : MonoBehaviour
     public Pref<bool> GlobalToggle;
     [SerializeReference]
     [SerializeReferenceNewButton]
-    public STest TestRef;
+    public IStest TestRef;
 
     [SerializeReference]
     [SerializeReferenceNewButton]
@@ -140,8 +140,13 @@ public class TestLog : MonoBehaviour
     public TestScriptObject TestScriptObject;
 }
 
+public interface IStest
+{
+
+}
+
 [Serializable]
-public class STest : INewCloneButton
+public class STest: IStest
 {
     //[OnValueChanged(CallBackName = "OnValueChangeTest2")]
     public int inta;

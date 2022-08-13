@@ -275,7 +275,7 @@
             <param name="useNameFindMode"></param>
             <param name="flags"></param>
         </member>
-        <member name="M:System.Reflection.FieldInfoExtension_E5A239CE4DB34975A4A939379BA9A036.CollectSupportType(System.Reflection.FieldInfo,System.Collections.Generic.HashSet{System.Type},System.Func{System.Reflection.Assembly,System.Boolean},System.Boolean,System.Boolean)">
+        <member name="M:System.Reflection.FieldInfoExtension_E5A239CE4DB34975A4A939379BA9A036.CollectSupportType(System.Reflection.FieldInfo,System.Collections.Generic.HashSet{System.Type},System.Func{System.Reflection.Assembly,System.Boolean},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
             <summary>
             反射查找<see cref="T:Megumin.SupportTypesAttribute"/>设定中支持的类型。
             </summary>
@@ -284,6 +284,7 @@
             <param name="assemblyFilter">程序集过滤回调</param>
             <param name="collectSelfTypeIfNoAttribute">没有SupportTypesAttribute时，使用自身类型作为支持类型</param>
             <param name="useGenericArgumentsTypeInsteadCollectionType">遇到泛型集合时，使用泛型参数类型代替集合类型</param>
+            <param name="extraCheck">额外搜索的程序集</param>
         </member>
         <member name="T:EnumExtension_5108BEA26E8C44D9A538646E15B6B175">
             <summary>
@@ -1747,6 +1748,14 @@
             </summary>
             <param name="child"></param>
             <param name="parent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431.GetInnerType(System.Type,System.Boolean)">
+            <summary>
+            取得实际类型，泛型中的填充类型
+            </summary>
+            <param name="fieldType"></param>
+            <param name="useGenericArgumentsTypeInsteadCollectionType"></param>
             <returns></returns>
         </member>
     </members>

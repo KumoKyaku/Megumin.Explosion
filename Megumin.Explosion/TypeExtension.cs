@@ -125,6 +125,31 @@ public static class TypeExtension_7AE0B2E4B4124A53AE87CE8D95431431
         str += $"{lhsName}.IsSubClassOfGeneric({rhsName}) : {lhs.IsSubClassOfGeneric(rhs)} \n";
         return str;
     }
+
+    /// <summary>
+    /// 取得实际类型，泛型中的填充类型
+    /// </summary>
+    /// <param name="fieldType"></param>
+    /// <param name="useGenericArgumentsTypeInsteadCollectionType"></param>
+    /// <returns></returns>
+    public static Type GetInnerType(this Type fieldType, bool useGenericArgumentsTypeInsteadCollectionType = true)
+    {
+        var type = fieldType;
+        if (useGenericArgumentsTypeInsteadCollectionType)
+        {
+            if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                type = fieldType.GetGenericArguments()[0];
+
+            }
+            else if (fieldType.IsSubclassOf(typeof(Array)))
+            {
+                type = fieldType.GetElementType();
+            }
+        }
+
+        return type;
+    }
 }
 
 

@@ -24,6 +24,7 @@ namespace Megumin
 
     /// <summary>
     /// 使用<see cref="SupportTypesAttribute"/>设置支持类型的搜索范围。
+    /// <para><see cref="SerializeReference"/>不从<see cref="PropertyAttribute"/>继承，所以这个特性无法省略。</para>
     /// </summary>
     public class SerializeReferenceNewButtonAttribute : PropertyAttribute
     {
@@ -106,12 +107,12 @@ namespace UnityEditor.Megumin
 
             if (property.type.StartsWith("PPtr"))
             {
-                CacheSupportType();
+                CacheSupportType(property);
                 DrawPPtrType(property, label, propertyPosition, leftPosotion, rightPosition);
             }
             else if (attribute is SerializeReferenceNewButtonAttribute add)
             {
-                CacheSupportType(true);
+                CacheSupportType(property, true);
                 DrawSerializeReference(property, label, position, propertyPosition, leftPosotion, rightPosition);
             }
             else
@@ -124,13 +125,26 @@ namespace UnityEditor.Megumin
         /// <summary>
         /// 缓存支持的类型
         /// </summary>
-        public void CacheSupportType(bool collectSelfTypeIfNoAttribute = false)
+        public void CacheSupportType(SerializedProperty property, bool collectSelfTypeIfNoAttribute = false)
         {
             if (allTypes == null)
             {
                 allTypes = new HashSet<Type>();
 
-                this.fieldInfo.CollectSupportType(allTypes, AssemblyFilter, collectSelfTypeIfNoAttribute);
+                //额外检测SO对象本身类型所在程序集
+                HashSet<Assembly> extraAss = new HashSet<Assembly>();
+                if (property.serializedObject.targetObjects != null)
+                {
+                    foreach (var item in property.serializedObject.targetObjects)
+                    {
+                        extraAss.Add(item.GetType().Assembly);
+                    }
+                }
+
+                this.fieldInfo.CollectSupportType(allTypes,
+                                                  AssemblyFilter,
+                                                  collectSelfTypeIfNoAttribute,
+                                                  extraCheck: extraAss);
 
                 int index = 0;
                 SupportNames = new string[allTypes.Count];
@@ -354,7 +368,7 @@ namespace UnityEditor.Megumin
                         }
                         GUIUtility.ExitGUI();
                     }
-                    
+
                     if (GUI.Button(leftPosotion, "New", left))
                     {
                         // 识别是不是按住Alt，进入subAsset模式。

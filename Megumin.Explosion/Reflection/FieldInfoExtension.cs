@@ -30,6 +30,25 @@ namespace System.Reflection
             }
         }
 
+        public static void TryAddTypeFromAssembly(HashSet<Type> allTypes, SupportTypesAttribute ab, Type supporttypes, Assembly assembly)
+        {
+            if (ab.IncludeChildInSameAssembly)
+            {
+                Type[] types = assembly.GetTypes();
+                foreach (var temptype in types)
+                {
+                    if (Match(supporttypes, temptype))
+                    {
+                        TryAdd2allTypes(temptype, ab, allTypes);
+                    }
+                }
+            }
+            else
+            {
+                TryAdd2allTypes(supporttypes, ab, allTypes);
+            }
+        }
+
         static bool Match(this Type parent, Type toCheck)
         {
             if (parent.IsAssignableFrom(toCheck))
@@ -104,11 +123,13 @@ namespace System.Reflection
         /// <param name="assemblyFilter">程序集过滤回调</param>
         /// <param name="collectSelfTypeIfNoAttribute">没有SupportTypesAttribute时，使用自身类型作为支持类型</param>
         /// <param name="useGenericArgumentsTypeInsteadCollectionType">遇到泛型集合时，使用泛型参数类型代替集合类型</param>
+        /// <param name="extraCheck">额外搜索的程序集</param>
         public static void CollectSupportType(this FieldInfo fieldInfo,
                                             HashSet<Type> allTypes,
                                             Func<Assembly, bool> assemblyFilter = null,
                                             bool collectSelfTypeIfNoAttribute = false,
-                                            bool useGenericArgumentsTypeInsteadCollectionType = true)
+                                            bool useGenericArgumentsTypeInsteadCollectionType = true,
+                                            IEnumerable<Assembly> extraCheck = null)
         {
             var customattributes = fieldInfo.GetCustomAttributes(true);
             var abs = from cab in customattributes
@@ -128,7 +149,7 @@ namespace System.Reflection
                     Type[] supporttypes = null;
                     if (ab.Support == null || ab.Support.Length == 0 || ab.Support[0] == null)
                     {
-                        var type = fieldInfo.FieldType;
+                        var type = fieldInfo.FieldType.GetInnerType(useGenericArgumentsTypeInsteadCollectionType);
                         supporttypes = new Type[] { type };
                     }
                     else
@@ -149,6 +170,10 @@ namespace System.Reflection
                             set.Add(item.Assembly);
                         }
                         assemblys = set;
+                        if (extraCheck != null)
+                        {
+                            assemblys = assemblys.Concat(extraCheck);
+                        }
                     }
 
                     foreach (var assembly in assemblys)
@@ -172,26 +197,15 @@ namespace System.Reflection
             {
                 //没有特性标记时使用自身类型搜索一次
                 var fieldType = fieldInfo.FieldType;
-                if (useGenericArgumentsTypeInsteadCollectionType)
+                Type type = fieldType.GetInnerType(useGenericArgumentsTypeInsteadCollectionType);
+
+                TryAddType(type, SupportTypesAttribute.Default, allTypes);
+                if (extraCheck != null)
                 {
-                    if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
+                    foreach (var item in extraCheck)
                     {
-                        var type = fieldType.GetGenericArguments()[0];
-                        TryAddType(type, SupportTypesAttribute.Default, allTypes);
+                        TryAddTypeFromAssembly(allTypes, SupportTypesAttribute.Default, type, item);
                     }
-                    else if (fieldType.IsSubclassOf(typeof(Array)))
-                    {
-                        var type = fieldType.GetElementType();
-                        TryAddType(type, SupportTypesAttribute.Default, allTypes);
-                    }
-                    else
-                    {
-                        TryAddType(fieldType, SupportTypesAttribute.Default, allTypes);
-                    }
-                }
-                else
-                {
-                    TryAddType(fieldType, SupportTypesAttribute.Default, allTypes);
                 }
             }
         }
