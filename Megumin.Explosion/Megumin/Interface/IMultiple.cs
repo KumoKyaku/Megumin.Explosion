@@ -22,6 +22,11 @@ namespace Megumin
         V DefaultValue { get; }
 
         /// <summary>
+        /// 当前值的Key,可能为无效值,看计算方式.
+        /// </summary>
+        K CurrentKey { get; }
+
+        /// <summary>
         /// 当前值
         /// </summary>
         V Current { get; }
@@ -46,8 +51,16 @@ namespace Megumin
         V RemoveAll();
 
         /// <summary>
-        /// 值发生改变
+        /// 仅当值发生改变时被调用
         /// </summary>
         event OnValueChanged<V> ValueChanged;
+        /// <summary>
+        /// 仅当值发生改变时被调用
+        /// </summary>
+        event OnValueChanged<(K Key, V Value)> ValueChangedKV;
+        /// <summary>
+        /// 当前键值任一发生改变时被调用
+        /// </summary>
+        event OnValueChanged<(K Key, V Value)> KeyValueChanged;
     }
 }

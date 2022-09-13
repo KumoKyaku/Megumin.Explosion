@@ -30,21 +30,6 @@ namespace Megumin
     public interface IMultipleControlable<K, V> : IMultiple<K, V>
     {
         /// <summary>
-        /// 当前值的Key,可能为无效值,看计算方式.
-        /// </summary>
-        K CurrentKey { get; }
-
-        /// <summary>
-        /// 仅当值发生改变
-        /// </summary>
-        event OnValueChanged<(K Key, V Value)> ValueChangedKV;
-
-        /// <summary>
-        /// 当前键值任一发生改变
-        /// </summary>
-        event OnValueChanged<(K Key, V Value)> KeyValueChanged;
-
-        /// <summary>
         /// 开始控制
         /// </summary>
         /// <param name="key"></param>
@@ -78,8 +63,6 @@ namespace Megumin
         /// TODO,使用最大堆最小堆优化
         /// </summary>
         protected Dictionary<K, V> Controllers => ElementDic;
-        public event OnValueChanged<(K Key, V Value)> ValueChangedKV;
-        public event OnValueChanged<(K Key, V Value)> KeyValueChanged;
 
         protected readonly K defaultKey;
         protected readonly V defaultValue;
@@ -119,7 +102,7 @@ namespace Megumin
         }
 
         /// <summary>
-        /// 构造函数中间调用的虚方法,用于初始化排序字段,在第一次<see cref="ApplyValue"/>前调用.
+        /// 构造函数中间调用的虚方法,用于初始化排序字段,在第一次<see cref="Multiple{K, V}.ApplyValue"/>前调用.
         /// <para>不需要排序的或者计算方式不需要缓存的,可以忽略这个函数.</para>
         /// 这个主要作用用来初始化排序的linq表达式.
         /// </summary>
@@ -128,63 +111,12 @@ namespace Megumin
 
         }
 
-
         public V Control(K key, V value) => Add(key, value);
 
 
         public V Cancel(K key, V value = default) => Remove(key, value);
 
         public V CancelAll() => RemoveAll();
-
-        /// <summary>
-        /// 应用值,使用<see cref="EqualityComparer{T}"/>比较是否发生改变,优化了装箱.
-        /// </summary>
-        protected override void ApplyValue()
-        {
-            var oldValue = Current;
-            var oldKey = CurrentKey;
-            var (newKey, newValue) = CalNewValue();
-            Current = newValue;
-            CurrentKey = newKey;
-
-            bool flagV = EqualityComparer<V>.Default.Equals(oldValue, newValue);
-            //if (old is IEquatable<V> oe)
-            //{
-            //    //转成接口必然装箱
-            //    flagV = oe.Equals(Current);
-            //}
-            //else
-            //{
-            //    //Equals方法两个对象都要装箱
-            //    flagV = Equals(old, Current);
-            //}
-
-            if (!flagV)
-            {
-                OnValueChanged(newValue, oldValue);
-                OnValueChangedKV((newKey, newValue), (oldKey, oldValue));
-            }
-
-            if (!flagV || !EqualityComparer<K>.Default.Equals(oldKey, newKey))
-            {
-                OnKeyValueChanged((newKey, newValue), (oldKey, oldValue));
-            }
-        }
-
-        /// <summary>
-        /// 包装一下,不然子类不能调用. Event不带On,方法带On.
-        /// </summary>
-        /// <param name="newValue"></param>
-        /// <param name="oldValue"></param>
-        protected void OnValueChangedKV((K, V) newValue, (K, V) oldValue)
-        {
-            ValueChangedKV?.Invoke(newValue, oldValue);
-        }
-
-        protected void OnKeyValueChanged((K, V) newValue, (K, V) oldValue)
-        {
-            KeyValueChanged?.Invoke(newValue, oldValue);
-        }
 
         /// <summary>
         /// 返回当前值
