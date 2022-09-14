@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -144,6 +146,41 @@ namespace System.Net
             return false;
         }
 
+        /// <summary>
+        /// 尝试Ping指定IP是否能够Ping通
+        /// </summary>
+        /// <param name="address">指定IP</param>
+        /// <param name="timeout">Ping类默认超时是5000 https://source.dot.net/#System.Net.Ping/System/Net/NetworkInformation/Ping.cs,16</param>
+        /// <returns>true 是 false 否</returns>
+        public static async ValueTask<bool> IsPingIP(IPAddress address, int timeout = 1000)
+        {
+            try
+            {
+                //创建Ping对象
+                Ping ping = new Ping();
+                //接受Ping返回值
+                PingReply reply = await ping.SendPingAsync(address, timeout);
+                if (reply.Status == IPStatus.Success)
+                {
+                    //Ping通
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                //Ping失败
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 取得局域网IP
+        /// </summary>
+        /// <returns></returns>
         public static IPAddress GetLANIP()
         {
             var list = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
@@ -158,36 +195,60 @@ namespace System.Net
         }
 
         /// <summary>
-        /// 取得IP
-        /// <para>true取得局域网IP，flase取得外网IP，默认值为flase</para>
+        /// 取得网关IP
         /// </summary>
-        /// <param name="IsLAN">true取得局域网IP，flase取得外网IP，默认值为flase</param>
         /// <returns></returns>
-        public static IPAddress GetIP(bool IsLAN = false)
+        public static async ValueTask<IPAddress> GetGateway(AddressFamily addressFamily = AddressFamily.InterNetwork)
         {
-            if (IsLAN)
+            //网关地址
+            IPAddress gateway = null;
+            //获取所有网卡
+            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+            //遍历数组
+            foreach (var netWork in nics)
             {
-                return GetLANIP();
+                //单个网卡的IP对象
+                IPInterfaceProperties ip = netWork.GetIPProperties();
+                //获取该IP对象的网关
+                GatewayIPAddressInformationCollection gateways = ip.GatewayAddresses;
+                foreach (var gateWay in gateways)
+                {
+                    if (gateWay.Address.AddressFamily != addressFamily)
+                    {
+                        continue;
+                    }
+
+                    //如果能够Ping通网关
+                    if (await IsPingIP(gateWay.Address))
+                    {
+                        //得到网关地址
+                        gateway = gateWay.Address;
+                        //跳出循环
+                        break;
+                    }
+                }
+                //如果已经得到网关地址
+                if (gateway != null)
+                {
+                    //跳出循环
+                    break;
+                }
             }
-            else
+
+            if (gateway == null)
             {
-                return GetGloablIPAsync().Result;
+                gateway = IPAddress.None;
             }
+
+            //返回网关地址
+            return gateway;
         }
 
-        public static async ValueTask<IPAddress> GetIPAsync(bool IsLAN = false)
-        {
-            if (IsLAN)
-            {
-                return GetLANIP();
-            }
-            else
-            {
-                return await GetGloablIPAsync();
-            }
-        }
-
-        public static async ValueTask<IPAddress> GetGloablIPAsync()
+        /// <summary>
+        /// 取得广域网IP
+        /// </summary>
+        /// <returns></returns>
+        public static async ValueTask<IPAddress> GetWANIP(AddressFamily addressFamily = AddressFamily.InterNetwork)
         {
             Uri uri = new Uri("http://ip.42.pl/raw");
             System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
@@ -205,6 +266,36 @@ namespace System.Net
                     IPAddress.TryParse(ipstring, out var iPAddress);
                     return iPAddress;
                 }
+            }
+        }
+
+        /// <summary>
+        /// 取得IP
+        /// <para>true取得局域网IP，flase取得外网IP，默认值为flase</para>
+        /// </summary>
+        /// <param name="IsLAN">true取得局域网IP，flase取得外网IP，默认值为flase</param>
+        /// <returns></returns>
+        public static IPAddress GetIP(bool IsLAN = false)
+        {
+            if (IsLAN)
+            {
+                return GetLANIP();
+            }
+            else
+            {
+                return GetWANIP().Result;
+            }
+        }
+
+        public static async ValueTask<IPAddress> GetIPAsync(bool IsLAN = false)
+        {
+            if (IsLAN)
+            {
+                return GetLANIP();
+            }
+            else
+            {
+                return await GetWANIP();
             }
         }
     }

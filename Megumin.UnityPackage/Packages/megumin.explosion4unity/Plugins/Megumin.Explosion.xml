@@ -258,6 +258,32 @@
             <param name="address"></param>
             <returns></returns>
         </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsPingIP(System.Net.IPAddress,System.Int32)">
+            <summary>
+            尝试Ping指定IP是否能够Ping通
+            </summary>
+            <param name="address">指定IP</param>
+            <param name="timeout">Ping类默认超时是5000 https://source.dot.net/#System.Net.Ping/System/Net/NetworkInformation/Ping.cs,16</param>
+            <returns>true 是 false 否</returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetLANIP">
+            <summary>
+            取得局域网IP
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetGateway(System.Net.Sockets.AddressFamily)">
+            <summary>
+            取得网关IP
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetWANIP(System.Net.Sockets.AddressFamily)">
+            <summary>
+            取得广域网IP
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetIP(System.Boolean)">
             <summary>
             取得IP
