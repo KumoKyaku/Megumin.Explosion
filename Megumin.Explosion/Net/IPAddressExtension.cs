@@ -181,17 +181,17 @@ namespace System.Net
         /// 取得局域网IP
         /// </summary>
         /// <returns></returns>
-        public static IPAddress GetLANIP()
+        public static IPAddress GetLANIP(AddressFamily addressFamily = AddressFamily.InterNetwork)
         {
             var list = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
             foreach (var item in list)
             {
-                if (item.AddressFamily == Sockets.AddressFamily.InterNetwork && item.IsLocalAddress())
+                if (item.AddressFamily == addressFamily)
                 {
                     return item;
                 }
             }
-            return IPAddress.Loopback;
+            return null;
         }
 
         /// <summary>
@@ -235,11 +235,6 @@ namespace System.Net
                 }
             }
 
-            if (gateway == null)
-            {
-                gateway = IPAddress.None;
-            }
-
             //返回网关地址
             return gateway;
         }
@@ -274,28 +269,29 @@ namespace System.Net
         /// <para>true取得局域网IP，flase取得外网IP，默认值为flase</para>
         /// </summary>
         /// <param name="IsLAN">true取得局域网IP，flase取得外网IP，默认值为flase</param>
+        /// <param name="addressFamily"></param>
         /// <returns></returns>
-        public static IPAddress GetIP(bool IsLAN = false)
+        public static IPAddress GetIP(bool IsLAN = false, AddressFamily addressFamily = AddressFamily.InterNetwork)
         {
             if (IsLAN)
             {
-                return GetLANIP();
+                return GetLANIP(addressFamily);
             }
             else
             {
-                return GetWANIP().Result;
+                return GetWANIP(addressFamily).Result;
             }
         }
 
-        public static async ValueTask<IPAddress> GetIPAsync(bool IsLAN = false)
+        public static async ValueTask<IPAddress> GetIPAsync(bool IsLAN = false, AddressFamily addressFamily = AddressFamily.InterNetwork)
         {
             if (IsLAN)
             {
-                return GetLANIP();
+                return GetLANIP(addressFamily);
             }
             else
             {
-                return await GetWANIP();
+                return await GetWANIP(addressFamily);
             }
         }
     }
