@@ -20,8 +20,12 @@ namespace Megumin
         [field: SerializeField]
         public string OverrideLabel { get; set; } = null;
 
+        [Header("Font")]
+        public Font Font;
         public int FontSize = 18;
         public Color FontColor = Color.white;
+
+        [Space]
         public Vector2 Size = new Vector2(400, 200);
         public Vector3 Offset = Vector3.zero;
         [Range(-1, 1)]
@@ -90,6 +94,10 @@ namespace Megumin
             if (LabelStyle == null || force)
             {
                 LabelStyle = new GUIStyle(styleName);
+                if (Font)
+                {
+                    LabelStyle.font = Font;
+                }
             }
         }
 
