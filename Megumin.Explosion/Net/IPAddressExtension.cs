@@ -144,6 +144,19 @@ namespace System.Net
             return false;
         }
 
+        public static IPAddress GetLANIP()
+        {
+            var list = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
+            foreach (var item in list)
+            {
+                if (item.AddressFamily == Sockets.AddressFamily.InterNetwork && item.IsLocalAddress())
+                {
+                    return item;
+                }
+            }
+            return IPAddress.Loopback;
+        }
+
         /// <summary>
         /// 取得IP
         /// <para>true取得局域网IP，flase取得外网IP，默认值为flase</para>
@@ -158,21 +171,8 @@ namespace System.Net
             }
             else
             {
-                return GetGloablIP();
+                return GetGloablIPAsync().Result;
             }
-        }
-
-        public static IPAddress GetLANIP()
-        {
-            var list = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
-            foreach (var item in list)
-            {
-                if (item.AddressFamily == Sockets.AddressFamily.InterNetwork && item.IsLocalAddress())
-                {
-                    return item;
-                }
-            }
-            return IPAddress.Loopback;
         }
 
         public static async ValueTask<IPAddress> GetIPAsync(bool IsLAN = false)
@@ -187,46 +187,23 @@ namespace System.Net
             }
         }
 
-        public static IPAddress GetGloablIP()
-        {
-            Uri uri = new Uri("http://ip-api.com/json");
-            System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
-            req.Method = "get";
-            using (Stream s = req.GetResponse().GetResponseStream())
-            {
-                using (StreamReader reader = new StreamReader(s))
-                {
-                    string str = reader.ReadToEnd();
-                    Match m = Regex.Match(str, @"""query"":""(\S+)""");
-                    var ipstring = "";
-                    if (m.Success)
-                    {
-                        ipstring = m.Groups[1].Value;
-                    }
-
-                    return IPAddress.Parse(ipstring);
-                }
-            }
-        }
-
         public static async ValueTask<IPAddress> GetGloablIPAsync()
         {
-            Uri uri = new Uri("http://ip-api.com/json");
+            Uri uri = new Uri("http://ip.42.pl/raw");
             System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
             req.Method = "get";
             using (Stream s = (await req.GetResponseAsync()).GetResponseStream())
             {
                 using (StreamReader reader = new StreamReader(s))
                 {
-                    string str = reader.ReadToEnd();
-                    Match m = Regex.Match(str, @"""query"":""(\S+)""");
-                    var ipstring = "";
+                    var ipstring = reader.ReadToEnd();
+                    Match m = Regex.Match(reader.ReadToEnd(), @"""query"":""(\S+)""");
                     if (m.Success)
                     {
                         ipstring = m.Groups[1].Value;
                     }
-
-                    return IPAddress.Parse(ipstring);
+                    IPAddress.TryParse(ipstring, out var iPAddress);
+                    return iPAddress;
                 }
             }
         }
