@@ -25,14 +25,6 @@ namespace Megumin
         {
             Content = FPSCounter.Default.Update();
         }
-
-        public override void InitStyle(string styleName = "CN CountBadge", bool force = false)
-        {
-            if (LabelStyle == null || force)
-            {
-                LabelStyle = new GUIStyle(GUI.skin.label);
-            }
-        }
     }
 }
 

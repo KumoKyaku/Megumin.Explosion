@@ -115,32 +115,45 @@ namespace System.Net
         /// <returns></returns>
         public static bool IsLocalAddress(this IPAddress address)
         {
-            var parts = address.GetIntPart();
-            if (address.IsA())
+            if (address == null)
             {
-                if (parts[0] == 10)
-                {
-                    return true;
-                }
+                return false;
             }
 
-            if (address.IsB())
+            if (address.AddressFamily == AddressFamily.InterNetwork)
             {
-                if (parts[0] == 172)
+                var parts = address.GetIntPart();
+                if (address.IsA())
                 {
-                    if (parts[1] >= 16 && parts[1] <= 31)
+                    if (parts[0] == 10)
+                    {
+                        return true;
+                    }
+                }
+
+                if (address.IsB())
+                {
+                    if (parts[0] == 172)
+                    {
+                        if (parts[1] >= 16 && parts[1] <= 31)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                if (address.IsC())
+                {
+                    if (parts[0] == 192 && parts[1] == 168)
                     {
                         return true;
                     }
                 }
             }
-
-            if (address.IsC())
+            else if (address.AddressFamily == AddressFamily.InterNetworkV6)
             {
-                if (parts[0] == 192 && parts[1] == 168)
-                {
-                    return true;
-                }
+                //todo
+                return true;
             }
 
             return false;
@@ -186,9 +199,77 @@ namespace System.Net
             var list = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
             foreach (var item in list)
             {
-                if (item.AddressFamily == addressFamily)
+                if (item.AddressFamily == addressFamily && item.IsLocalAddress())
                 {
                     return item;
+                }
+            }
+            return null;
+        }
+
+        public static UnicastIPAddressInformation GetLANInformation(AddressFamily addressFamily = AddressFamily.InterNetwork)
+        {
+            var ipinfo = GetUnicastIPAddressInformation(NetworkInterfaceType.Ethernet, addressFamily);
+            if (ipinfo != null)
+            {
+                return ipinfo;
+            }
+
+            ipinfo = GetUnicastIPAddressInformation(NetworkInterfaceType.Wireless80211, addressFamily);
+            if (ipinfo != null)
+            {
+                return ipinfo;
+            }
+
+            ipinfo = GetUnicastIPAddressInformation(NetworkInterfaceType.Wman, addressFamily);
+            if (ipinfo != null)
+            {
+                return ipinfo;
+            }
+
+            ipinfo = GetUnicastIPAddressInformation(NetworkInterfaceType.Wwanpp, addressFamily);
+            if (ipinfo != null)
+            {
+                return ipinfo;
+            }
+
+            ipinfo = GetUnicastIPAddressInformation(NetworkInterfaceType.Wwanpp2, addressFamily);
+            if (ipinfo != null)
+            {
+                return ipinfo;
+            }
+
+            return null;
+        }
+
+        public static UnicastIPAddressInformation GetUnicastIPAddressInformation(
+            NetworkInterfaceType interfaceType, AddressFamily addressFamily = AddressFamily.InterNetwork)
+        {
+            var netf = GetUpNetworkInterface(interfaceType);
+            return GetFirstIP(netf, addressFamily);
+        }
+
+        public static NetworkInterface[] GetUpNetworkInterface(NetworkInterfaceType interfaceType)
+        {
+            var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+            var result = from i in networkInterfaces
+                         where i.NetworkInterfaceType == interfaceType
+                         where i.OperationalStatus == OperationalStatus.Up
+                         select i;
+            return result.ToArray();
+        }
+
+        public static UnicastIPAddressInformation GetFirstIP(NetworkInterface[] networkInterfaces, AddressFamily addressFamily = AddressFamily.InterNetwork)
+        {
+            foreach (var item in networkInterfaces)
+            {
+                IPInterfaceProperties iPInterfaceProperties = item.GetIPProperties();
+                foreach (var ip in iPInterfaceProperties.UnicastAddresses)
+                {
+                    if (ip.Address.AddressFamily == addressFamily)
+                    {
+                        return ip;
+                    }
                 }
             }
             return null;
@@ -198,7 +279,7 @@ namespace System.Net
         /// 取得网关IP
         /// </summary>
         /// <returns></returns>
-        public static async ValueTask<IPAddress> GetGateway(AddressFamily addressFamily = AddressFamily.InterNetwork)
+        public static async ValueTask<IPAddress> GetGateway(AddressFamily addressFamily = AddressFamily.InterNetwork, bool pingCheck = true)
         {
             //网关地址
             IPAddress gateway = null;
@@ -218,14 +299,25 @@ namespace System.Net
                         continue;
                     }
 
-                    //如果能够Ping通网关
-                    if (await IsPingIP(gateWay.Address))
+                    if (pingCheck)
+                    {
+                        //如果能够Ping通网关
+                        if (await IsPingIP(gateWay.Address))
+                        {
+                            //得到网关地址
+                            gateway = gateWay.Address;
+                            //跳出循环
+                            break;
+                        }
+                    }
+                    else
                     {
                         //得到网关地址
                         gateway = gateWay.Address;
                         //跳出循环
                         break;
                     }
+
                 }
                 //如果已经得到网关地址
                 if (gateway != null)

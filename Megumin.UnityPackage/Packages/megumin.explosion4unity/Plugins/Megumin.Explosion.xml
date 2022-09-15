@@ -272,7 +272,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetGateway(System.Net.Sockets.AddressFamily)">
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.GetGateway(System.Net.Sockets.AddressFamily,System.Boolean)">
             <summary>
             取得网关IP
             </summary>
