@@ -251,6 +251,16 @@
             <param name="address"></param>
             <returns></returns>
         </member>
+        <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsLAN(System.Net.IPAddress)">
+            <summary>
+            判断地址是不是局域网地址
+            <para/> LAN，全称Local Area Network，中文名叫做局域网。
+            <para/> WAN，全称Wide Area Network，中文名叫做广域网。
+            <para/> WLAN，全称Wireless LAN, 无线局域网。
+            </summary>
+            <param name="address"></param>
+            <returns></returns>
+        </member>
         <member name="M:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414.IsLocalAddress(System.Net.IPAddress)">
             <summary>
             判断地址是不是局域网地址

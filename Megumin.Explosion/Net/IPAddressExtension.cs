@@ -110,10 +110,13 @@ namespace System.Net
 
         /// <summary>
         /// 判断地址是不是局域网地址
+        /// <para/> LAN，全称Local Area Network，中文名叫做局域网。
+        /// <para/> WAN，全称Wide Area Network，中文名叫做广域网。
+        /// <para/> WLAN，全称Wireless LAN, 无线局域网。
         /// </summary>
         /// <param name="address"></param>
         /// <returns></returns>
-        public static bool IsLocalAddress(this IPAddress address)
+        public static bool IsLAN(this IPAddress address)
         {
             if (address == null)
             {
@@ -152,11 +155,24 @@ namespace System.Net
             }
             else if (address.AddressFamily == AddressFamily.InterNetworkV6)
             {
-                //todo
-                return true;
+                //开头只要不是F开头，都是公网IP
+                //电信为240e开头的（240e::/20）；移动为2409开头的（2409:8000::/20）；联通为2408开头的（2408:8000::/20）。
+                //https://post.smzdm.com/p/ag4oe8o7/
+                return address.ToString().StartsWith("f", StringComparison.OrdinalIgnoreCase);
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 判断地址是不是局域网地址
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        [Obsolete("Use IsLAN")]
+        public static bool IsLocalAddress(this IPAddress address)
+        {
+            return IsLAN(address);
         }
 
         /// <summary>
@@ -199,7 +215,7 @@ namespace System.Net
             var list = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
             foreach (var item in list)
             {
-                if (item.AddressFamily == addressFamily && item.IsLocalAddress())
+                if (item.AddressFamily == addressFamily && item.IsLAN())
                 {
                     return item;
                 }
