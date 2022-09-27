@@ -244,13 +244,14 @@ PackageWizard Fast Created.
 
         private void CreatePackageInfoFile(string path)
         {
+            var version = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion().Split(".");
             string packageInfo =
 $@"{{
     ""name"": ""{NameExtension.ToLower()}.{InputPackageName.ToLower()}"",
     ""displayName"": ""{InputPackageName}"",
     
     ""version"": ""0.0.1"",
-    ""unity"": ""2019.4"",
+    ""unity"": ""{version[0]}.{version[1]}"",
     ""description"": ""Wizard Fast Created."",
     ""category"": ""PackageWizard"",
     
