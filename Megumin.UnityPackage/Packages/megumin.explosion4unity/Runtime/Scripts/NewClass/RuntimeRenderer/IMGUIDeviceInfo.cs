@@ -54,7 +54,7 @@ namespace Megumin
     public class IMGUIDeviceInfo : MonoBehaviour
     {
         public int fontSize = 14;
-
+        public int Space = 1600;
         [Space]
         public bool FPS = true;
         [SerializeField]
@@ -98,6 +98,7 @@ namespace Megumin
             mystyle.fontSize = fontSize;
 
             GUILayout.BeginHorizontal();
+            GUILayout.Space(Space);
             if (FPS)
             {
                 GUILayout.Label(FPSCounter.Default.FPSString, mystyle);

@@ -44,7 +44,13 @@ namespace Megumin
                 Directory.CreateDirectory(dir);
             }
 
-            dir = MeguminUtility4Unity.BuildAndroidPath;
+            dir = MeguminUtility4Unity.BuildAndroidIL2CPPPath;
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            dir = MeguminUtility4Unity.BuildAndroidMonoPath;
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);

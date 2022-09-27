@@ -24,7 +24,8 @@ namespace UnityEngine
 
         public static string BuildPCMonoPath { get; } = GetProjectFolderPath("Build/PCMono");
         public static string BuildPCIL2CPPPath { get; } = GetProjectFolderPath("Build/PCIL2CPP");
-        public static string BuildAndroidPath { get; } = GetProjectFolderPath("Build/Android");
+        public static string BuildAndroidIL2CPPPath { get; } = GetProjectFolderPath("Build/AndroidIL2CPP");
+        public static string BuildAndroidMonoPath { get; } = GetProjectFolderPath("Build/AndroidMono");
         public static string BuildiOSPath { get; } = GetProjectFolderPath("Build/iOS");
         public static string BuildPS4Path { get; } = GetProjectFolderPath("Build/PS4");
         public static string BuildPS5Path { get; } = GetProjectFolderPath("Build/PS5");
