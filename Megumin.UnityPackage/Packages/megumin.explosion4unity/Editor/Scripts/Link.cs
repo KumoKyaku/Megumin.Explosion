@@ -153,6 +153,12 @@ namespace Megumin
         {
             OpenURL("https://github.com/alelievr/Mixture#installation");
         }
+
+        [MenuItem("Tools/Link/[Graphy] - Ultimate FPS Counter - Stats Monitor & Debugger")]
+        static void Graphy()
+        {
+            OpenURL("https://github.com/Tayx94/graphy#installation");
+        }
     }
 
     partial class Link
