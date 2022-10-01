@@ -27,6 +27,20 @@ namespace Megumin
             Debug.Log($"{Time.frameCount} -- {Utility.ToStringReflection<Time>()}");
             context.Post(MyCallBack, null);
         }
+
+        [Button]
+        public void ThreadTest()
+        {
+            this.LogThreadID(1);
+            Task.Run(async () =>
+            {
+                this.LogThreadID(2);
+                await Task.Delay(10);
+                this.LogThreadID(3);
+                await MainThread.Switch();
+                this.LogThreadID(4);
+            });
+        }
     }
 
     public class MainThread
@@ -36,7 +50,7 @@ namespace Megumin
         /// </summary>
         static SynchronizationContext context;
 
-        public static SynchronizationContext CurrentContext => context;
+        public static SynchronizationContext Context => context;
         public static int ManagedThreadId { get; internal protected set; } = -1;
 
         [RuntimeInitializeOnLoadMethod]
@@ -77,6 +91,11 @@ namespace Megumin
             {
                 await context.Switch();
             }
+        }
+
+        public static void Post(SendOrPostCallback callback, object state)
+        {
+            context.Post(callback, state);
         }
 
         /// <summary>

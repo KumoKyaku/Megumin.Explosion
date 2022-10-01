@@ -208,10 +208,10 @@ namespace UnityEngine
             return func;
         }
 
-        public static void LogThreadID(this Object obj)
+        public static void LogThreadID(this Object obj, object label = null)
         {
             var curID = System.Threading.Thread.CurrentThread.ManagedThreadId;
-            Debug.Log($"[IsMainThread:{curID == MainThread.ManagedThreadId}]----[CurrentThread:{curID}]----[MainThread.ManagedThreadId:{MainThread.ManagedThreadId}]");
+            Debug.Log($"{label}  [IsMainThread:{curID == MainThread.ManagedThreadId}]----[CurrentThread:{curID}]----[MainThread.ManagedThreadId:{MainThread.ManagedThreadId}]");
         }
 
         /// <summary>
