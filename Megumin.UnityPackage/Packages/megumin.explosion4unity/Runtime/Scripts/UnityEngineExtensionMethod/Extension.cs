@@ -208,6 +208,12 @@ namespace UnityEngine
             return func;
         }
 
+        public static void LogThreadID(this Object obj)
+        {
+            var curID = System.Threading.Thread.CurrentThread.ManagedThreadId;
+            Debug.Log($"[IsMainThread:{curID == MainThread.ManagedThreadId}]----[CurrentThread:{curID}]----[MainThread.ManagedThreadId:{MainThread.ManagedThreadId}]");
+        }
+
         /// <summary>
         /// UnityEditor或DEBUG中使用Add添加,发生key冲突直接报错.
         /// Runtime中使用索引添加,尽量让程序不崩溃.

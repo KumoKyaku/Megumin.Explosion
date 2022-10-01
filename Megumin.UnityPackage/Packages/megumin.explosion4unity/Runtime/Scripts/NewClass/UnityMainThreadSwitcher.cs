@@ -37,12 +37,23 @@ namespace Megumin
         static SynchronizationContext context;
 
         public static SynchronizationContext CurrentContext => context;
+        public static int ManagedThreadId { get; internal protected set; } = -1;
 
         [RuntimeInitializeOnLoadMethod]
         static void InitContext()
         {
             context = SynchronizationContext.Current;
+            ManagedThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
         }
+
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoadMethod]
+        static void InitEditorContext()
+        {
+            context = SynchronizationContext.Current;
+            ManagedThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+        }
+#endif
 
         public static SynchronizationContextExtension_F196DAE75A234F72A3AC998F76A66F1A.Awaitable Switch()
         {
