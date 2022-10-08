@@ -1527,11 +1527,37 @@
             public bool UseSynchronizationContext { get; set; } = true;
             </remarks>
         </member>
+        <member name="M:Megumin.IPipe`1.Enqueue(`0)">
+            <summary>
+            入队，但是不触发异步回调
+            </summary>
+            <param name="item"></param>
+            <remarks>
+            用例：有时候生产者同时生产多个值，不想逐个触发异步回调，就需要多个值都Enqueue，然后一次Flush。
+            </remarks>
+        </member>
+        <member name="M:Megumin.IPipe`1.Flush">
+            <summary>
+            尝试触发异步回调
+            </summary>
+        </member>
         <member name="M:Megumin.IPipe`1.ReadAsync">
             <summary>
             当队列中有元素时返回。
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Megumin.IPipe`1.ReadValueTaskAsync">
+            <summary>
+            当队列中有元素时返回。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.IPipe`1.Write(`0)">
+            <summary>
+            写入，同时触发异步回调
+            </summary>
+            <param name="item"></param>
         </member>
         <member name="T:Megumin.IValuePipe`1">
             <summary>

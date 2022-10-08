@@ -10,7 +10,7 @@ namespace Megumin
     /// <para/>也可以通过（bool isEnd,T value）元组，来实现终止信号
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [Obsolete]
+    [Obsolete("Use QueuePipe instead.", true)]
     public class SimplePipeQueue<T> : Queue<T>, IValuePipe<T>
     {
         readonly object _innerLock = new object();
@@ -64,7 +64,7 @@ namespace Megumin
     /// <inheritdoc/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [Obsolete]
+    [Obsolete("Use QueueSignalPipe instead.", true)]
     public class SimplePipeQueueWithEndSignal<T> : SimplePipeQueue<(T Value, bool IsEnd)>
     {
         //public bool IsEnd { get; private set; }
@@ -122,6 +122,28 @@ namespace Megumin
             }
         }
 
+        public new void Enqueue(T item)
+        {
+            lock (_innerLock)
+            {
+                base.Enqueue(item);
+            }
+        }
+
+        public void Flush()
+        {
+            lock (_innerLock)
+            {
+                if (Count > 0)
+                {
+                    var res = Dequeue();
+                    var next = source;
+                    source = null;
+                    next?.TrySetResult(res);
+                }
+            }
+        }
+
         public virtual Task<T> ReadAsync()
         {
             lock (_innerLock)
@@ -137,6 +159,11 @@ namespace Megumin
                     return source.Task;
                 }
             }
+        }
+
+        public ValueTask<T> ReadValueTaskAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -156,7 +183,8 @@ namespace Megumin
     /// <inheritdoc cref="IPipe{T}"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class StackPipe<T> : Stack<T>
+    [Obsolete("没有存在意义,后续版本删除")]
+    public class StackPipe<T> : Stack<T>, IPipe<T>
     {
         readonly object _innerLock = new object();
         private TaskCompletionSource<T> source;
@@ -187,6 +215,28 @@ namespace Megumin
             }
         }
 
+        public void Enqueue(T item)
+        {
+            lock (_innerLock)
+            {
+                base.Push(item);
+            }
+        }
+
+        public void Flush()
+        {
+            lock (_innerLock)
+            {
+                if (Count > 0)
+                {
+                    var res = Pop();
+                    var next = source;
+                    source = null;
+                    next?.TrySetResult(res);
+                }
+            }
+        }
+
         public virtual Task<T> ReadAsync()
         {
             lock (_innerLock)
@@ -202,6 +252,11 @@ namespace Megumin
                     return source.Task;
                 }
             }
+        }
+
+        public ValueTask<T> ReadValueTaskAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
