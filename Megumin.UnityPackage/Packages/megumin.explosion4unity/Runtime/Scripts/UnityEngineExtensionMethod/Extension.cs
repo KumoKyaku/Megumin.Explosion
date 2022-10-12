@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
 using Megumin;
@@ -9,7 +7,6 @@ using System;
 using System.Runtime.CompilerServices;
 using UnityEngine.Profiling;
 using System.Runtime.InteropServices;
-using System.Windows; // Or use whatever point class you like for the implicit cast operator
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -220,6 +217,19 @@ namespace UnityEngine
             {
                 Debug.Log($"{label}  [IsMainThread:{isMain.HtmlColor()}]----[CurrentThread:{curID}]----[MainThread.ManagedThreadId:{MainThread.ManagedThreadId}]");
             }
+        }
+
+        public static void ThreadTest(this Object obj)
+        {
+            obj.LogThreadID(1);
+            System.Threading.Tasks.Task.Run(async () =>
+            {
+                obj.LogThreadID(2);
+                await System.Threading.Tasks.Task.Delay(10);
+                obj.LogThreadID(3);
+                await MainThread.Switch();
+                obj.LogThreadID(4);
+            });
         }
 
         /// <summary>
