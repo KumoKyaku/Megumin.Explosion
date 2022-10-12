@@ -22,6 +22,11 @@ public static class ColorExtension_E574E5EC
         return target.ToString().Html(color, force);
     }
 
+    public static string HtmlColor(this bool target, bool force = false)
+    {
+        return target.ToString().Html(target ? HexColor.DarkGreenX : HexColor.DarkRed, force);
+    }
+
     /// <summary>
     /// 使用Html标签包裹对象
     /// </summary>

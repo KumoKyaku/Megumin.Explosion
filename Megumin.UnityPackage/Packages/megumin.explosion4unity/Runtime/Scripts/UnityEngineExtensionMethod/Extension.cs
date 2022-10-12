@@ -211,7 +211,15 @@ namespace UnityEngine
         public static void LogThreadID(this Object obj, object label = null)
         {
             var curID = System.Threading.Thread.CurrentThread.ManagedThreadId;
-            Debug.Log($"{label}  [IsMainThread:{curID == MainThread.ManagedThreadId}]----[CurrentThread:{curID}]----[MainThread.ManagedThreadId:{MainThread.ManagedThreadId}]");
+            bool isMain = curID == MainThread.ManagedThreadId;
+            if (label == null)
+            {
+                Debug.Log($"[IsMainThread:{isMain.HtmlColor()}]----[CurrentThread:{curID}]----[MainThread.ManagedThreadId:{MainThread.ManagedThreadId}]");
+            }
+            else
+            {
+                Debug.Log($"{label}  [IsMainThread:{isMain.HtmlColor()}]----[CurrentThread:{curID}]----[MainThread.ManagedThreadId:{MainThread.ManagedThreadId}]");
+            }
         }
 
         /// <summary>
