@@ -865,6 +865,11 @@
             <para></para>这是个简单的实现,更复杂使用微软官方实现<see cref="!:System.Threading.Channels.Channel.CreateBounded&lt;T&gt;(int)"/>
             </summary>
             <typeparam name="T"></typeparam>
+            <remarks>
+            <para/> 如果能用 while(true),就不要用递归。
+            <para/> 在捕捉上下文时，while(true)堆栈更少更清晰，逻辑上复合直觉，不容易爆栈。
+            <para/> 递归还会导致方法引用计数增加，阅读代码时制造混乱。
+            </remarks>
         </member>
         <member name="T:Megumin.QueueSignalPipe`1">
             <summary>
@@ -1105,17 +1110,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:Megumin.ValueTaskSource">
-            <summary>
-            失败品，多线程不安全，有逻辑错误
-            </summary>
-        </member>
-        <member name="T:Megumin.ValueTaskSource`1">
-            <summary>
-            失败品，多线程不安全，有逻辑错误
-            </summary>
-        </member>
-        <member name="M:Megumin.ValueTaskSource`1.EatContinuation(System.Int16)">
+        <member name="M:Megumin.ObsoleteValueTaskSource`1.EatContinuation(System.Int16)">
             <summary>
             吃掉异步后续，释放关联引用，什么也不会发生。
             </summary>
@@ -1124,19 +1119,25 @@
         <member name="T:Megumin.TempValueTaskSource`1">
             <summary>
             临时使用的IValueTaskSource，线程安全，但是没有性能优化。当作包装类使用。
+            <para/> 不支持executioncontext 和 synchronizationcontext
+            <para/> https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/
             </summary>
             <typeparam name="TResult"></typeparam>
+        </member>
+        <member name="F:Megumin.TempValueTaskSource`1.resetEvent">
+            <summary>
+            为了实现挂起时访问<see cref="P:System.Threading.Tasks.ValueTask`1.Result"/>阻塞线程。
+            </summary>
         </member>
         <member name="M:Megumin.TempValueTaskSource`1.Reset">
             <summary>
             清理所有状态，准备重用
             </summary>
         </member>
-        <member name="M:Megumin.TempValueTaskSource`1.EatContinuation(System.Int16)">
+        <member name="M:Megumin.TempValueTaskSource`1.FreeContinuation">
             <summary>
-            吃掉已等待异步后续，释放关联引用，什么也不触发。
+            释放已等待异步后续，释放关联引用，什么也不触发。
             </summary>
-            <param name="token"></param>
         </member>
         <member name="T:Megumin.TempValueTaskSource">
             <inheritdoc/>
@@ -1156,6 +1157,12 @@
             <summary>
             返回一个永远不会完成的Task
             </summary>
+        </member>
+        <member name="T:Megumin.ValueTaskPool`1">
+            <summary>
+            没有意义。直接用TaskCompletionSource 就行。
+            </summary>
+            <typeparam name="T"></typeparam>
         </member>
         <member name="T:Megumin.WeakEvent">
             <summary>
@@ -1515,6 +1522,17 @@
             todo 调试相关
             </summary>
         </member>
+        <member name="T:Megumin.ITimeoutOption">
+            <summary>
+            超时选项。
+            </summary>
+        </member>
+        <member name="P:Megumin.ITimeoutOption.MillisecondsTimeout">
+            <summary>
+            指定毫秒后超时，-1表示永不超时。
+            <seealso cref="M:System.Threading.CancellationTokenSource.CancelAfter(System.Int32)"/>
+            </summary>
+        </member>
         <member name="T:Megumin.IPipe`1">
             <summary>
             管道队列，用于处理生产者已经产出，消费者还没有就绪的情况
@@ -1541,6 +1559,11 @@
             尝试触发异步回调
             </summary>
         </member>
+        <member name="M:Megumin.IPipe`1.FlushAsync">
+            <summary>
+            异步尝试触发异步回调
+            </summary>
+        </member>
         <member name="M:Megumin.IPipe`1.ReadAsync">
             <summary>
             当队列中有元素时返回。
@@ -1555,7 +1578,13 @@
         </member>
         <member name="M:Megumin.IPipe`1.Write(`0)">
             <summary>
-            写入，同时触发异步回调
+            写入，同时触发ReadAsync异步延续
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:Megumin.IPipe`1.WriteAsync(`0)">
+            <summary>
+            写入，同时异步触发ReadAsync异步延续
             </summary>
             <param name="item"></param>
         </member>

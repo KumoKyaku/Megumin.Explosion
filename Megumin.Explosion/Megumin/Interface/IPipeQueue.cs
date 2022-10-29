@@ -27,7 +27,10 @@ namespace Megumin
         /// 尝试触发异步回调
         /// </summary>
         void Flush();
-
+        /// <summary>
+        /// 异步尝试触发异步回调
+        /// </summary>
+        void FlushAsync();
         /// <summary>
         /// 当队列中有元素时返回。
         /// </summary>
@@ -39,10 +42,15 @@ namespace Megumin
         /// <returns></returns>
         ValueTask<T> ReadValueTaskAsync();
         /// <summary>
-        /// 写入，同时触发异步回调
+        /// 写入，同时触发ReadAsync异步延续
         /// </summary>
         /// <param name="item"></param>
         void Write(T item);
+        /// <summary>
+        /// 写入，同时异步触发ReadAsync异步延续
+        /// </summary>
+        /// <param name="item"></param>
+        void WriteAsync(T item);
     }
 
     /// <summary>

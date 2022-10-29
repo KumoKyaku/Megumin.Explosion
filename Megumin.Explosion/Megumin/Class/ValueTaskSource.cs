@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,10 +8,8 @@ using System.Threading.Tasks.Sources;
 
 namespace Megumin
 {
-    /// <summary>
-    /// 失败品，多线程不安全，有逻辑错误
-    /// </summary>
-    public class ValueTaskSource : ValueTaskSource<bool>, IValueTaskSource
+    [Obsolete("失败品，多线程不安全，有逻辑错误", true)]
+    public class ObsoleteValueTaskSource : ObsoleteValueTaskSource<bool>, IValueTaskSource
     {
         public new void GetResult(short token)
         {
@@ -23,10 +22,8 @@ namespace Megumin
         }
     }
 
-    /// <summary>
-    /// 失败品，多线程不安全，有逻辑错误
-    /// </summary>
-    public class ValueTaskSource<TResult> : IValueTaskSource<TResult>
+    [Obsolete("失败品，多线程不安全，有逻辑错误", true)]
+    public class ObsoleteValueTaskSource<TResult> : IValueTaskSource<TResult>
     {
         Dictionary<short, Cache> caches
              = new Dictionary<short, Cache>();
@@ -150,14 +147,20 @@ namespace Megumin
 
     /// <summary>
     /// 临时使用的IValueTaskSource，线程安全，但是没有性能优化。当作包装类使用。
+    /// <para/> 不支持executioncontext 和 synchronizationcontext
+    /// <para/> https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
     public class TempValueTaskSource<TResult> : IValueTaskSource<TResult>
     {
         public Exception Ex { get; private set; }
 
-        ValueTaskSourceStatus status = ValueTaskSourceStatus.Pending;
-        private ManualResetEvent resetEvent;
+        volatile ValueTaskSourceStatus status = ValueTaskSourceStatus.Pending;
+
+        /// <summary>
+        /// 为了实现挂起时访问<see cref="ValueTask{TResult}.Result"/>阻塞线程。
+        /// </summary>
+        protected ManualResetEvent resetEvent = new ManualResetEvent(false);
         readonly object locker = new object();
         public List<(Action<object> Continuation, object State)> Continuations
                 = new List<(Action<object> Continuation, object State)>();
@@ -181,11 +184,34 @@ namespace Megumin
         {
             lock (locker)
             {
-                resetEvent?.Reset();
-                status = ValueTaskSourceStatus.Pending;
                 Continuations.Clear();
+                resetEvent.Reset();
+                status = ValueTaskSourceStatus.Pending;
                 Value = default;
                 Ex = null;
+                Token++;
+            }
+        }
+
+        /// <summary>
+        /// 释放已等待异步后续，释放关联引用，什么也不触发。
+        /// </summary>
+        public void FreeContinuation()
+        {
+            lock (locker)
+            {
+                Continuations.Clear();
+                TrySetCanceled();
+                Reset();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CheckToken(short token)
+        {
+            if (token != Token)
+            {
+                throw new InvalidOperationException($"IValueTaskSource.Token 与 ValueTask.Token不一致。");
             }
         }
 
@@ -195,6 +221,7 @@ namespace Megumin
         {
             lock (locker)
             {
+                CheckToken(token);
                 return status;
             }
         }
@@ -203,6 +230,7 @@ namespace Megumin
         {
             lock (locker)
             {
+                CheckToken(token);
                 if (status == ValueTaskSourceStatus.Pending)
                 {
                     Continuations.Add((continuation, state));
@@ -212,38 +240,51 @@ namespace Megumin
                     throw new TaskSchedulerException();
                 }
             }
-
         }
 
         public TResult GetResult(short token)
         {
             lock (locker)
             {
-                switch (status)
+                CheckToken(token);
+            }
+
+            switch (status)
+            {
+                case ValueTaskSourceStatus.Pending:
+                    resetEvent.WaitOne();
+                    return GetResult(token);
+                case ValueTaskSourceStatus.Succeeded:
+                    return Value;
+                case ValueTaskSourceStatus.Faulted:
+                    if (Ex != null)
+                    {
+                        throw Ex;
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+                case ValueTaskSourceStatus.Canceled:
+                    throw new TaskCanceledException();
+                default:
+                    return default;
+            }
+        }
+
+        protected virtual void CompleteTask()
+        {
+            resetEvent?.Set();
+            try
+            {
+                foreach (var (Continuation, State) in Continuations)
                 {
-                    case ValueTaskSourceStatus.Pending:
-                        if (resetEvent == null)
-                        {
-                            resetEvent = new ManualResetEvent(false);
-                        }
-                        resetEvent.WaitOne();
-                        return GetResult(token);
-                    case ValueTaskSourceStatus.Succeeded:
-                        return Value;
-                    case ValueTaskSourceStatus.Faulted:
-                        if (Ex != null)
-                        {
-                            throw Ex;
-                        }
-                        else
-                        {
-                            throw new Exception();
-                        }
-                    case ValueTaskSourceStatus.Canceled:
-                        throw new TaskCanceledException();
-                    default:
-                        return default;
+                    Continuation?.Invoke(State);
                 }
+            }
+            finally
+            {
+                Continuations.Clear();
             }
         }
 
@@ -255,11 +296,7 @@ namespace Megumin
                 {
                     Value = result;
                     status = ValueTaskSourceStatus.Succeeded;
-                    resetEvent?.Set();
-                    foreach (var item in Continuations)
-                    {
-                        item.Continuation?.Invoke(item.State);
-                    }
+                    CompleteTask();
                     return true;
                 }
                 else
@@ -276,11 +313,7 @@ namespace Megumin
                 if (status == ValueTaskSourceStatus.Pending)
                 {
                     status = ValueTaskSourceStatus.Canceled;
-                    resetEvent?.Set();
-                    foreach (var item in Continuations)
-                    {
-                        item.Continuation?.Invoke(item.State);
-                    }
+                    CompleteTask();
                     return true;
                 }
                 else
@@ -298,29 +331,13 @@ namespace Megumin
                 {
                     Ex = exception;
                     status = ValueTaskSourceStatus.Faulted;
-                    resetEvent?.Set();
-                    foreach (var item in Continuations)
-                    {
-                        item.Continuation?.Invoke(item.State);
-                    }
+                    CompleteTask();
                     return true;
                 }
                 else
                 {
                     return false;
                 }
-            }
-        }
-
-        /// <summary>
-        /// 吃掉已等待异步后续，释放关联引用，什么也不触发。
-        /// </summary>
-        /// <param name="token"></param>
-        public void EatContinuation(short token)
-        {
-            lock (locker)
-            {
-                Continuations.Clear();
             }
         }
     }
@@ -413,6 +430,24 @@ namespace Megumin
             {
                 return new ValueTask(new ForgetValueTaskSource(), 0);
             }
+        }
+    }
+
+    /// <summary>
+    /// 没有意义。直接用TaskCompletionSource 就行。
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ValueTaskPool<T>
+    {
+        public ValueTask<T> Regist()
+        {
+            return default;
+        }
+
+        void Test()
+        {
+            var v = Regist();
+            var r = v.Result;
         }
     }
 }

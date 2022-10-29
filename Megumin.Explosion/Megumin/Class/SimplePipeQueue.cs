@@ -107,6 +107,10 @@ namespace Megumin
 
         public virtual void Write(T item)
         {
+            //优化一下，如果存在source，就不入队出队了。
+            //Enqueue(item);
+            //Flush();
+
             lock (_innerLock)
             {
                 if (source == null)
@@ -125,6 +129,12 @@ namespace Megumin
                     next.TrySetResult(item);
                 }
             }
+        }
+
+        public void WriteAsync(T item)
+        {
+            Enqueue(item);
+            FlushAsync();
         }
 
         public new void Enqueue(T item)
@@ -149,6 +159,11 @@ namespace Megumin
             }
         }
 
+        public void FlushAsync()
+        {
+            Task.Run(Flush);
+        }
+
         public virtual Task<T> ReadAsync()
         {
             lock (_innerLock)
@@ -168,7 +183,7 @@ namespace Megumin
 
         public ValueTask<T> ReadValueTaskAsync()
         {
-            throw new NotImplementedException();
+            return new ValueTask<T>(ReadAsync());
         }
     }
 
@@ -189,7 +204,7 @@ namespace Megumin
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Obsolete("没有存在意义,后续版本删除")]
-    public class StackPipe<T> : Stack<T>, IPipe<T>
+    public class StackPipe<T> : Stack<T>
     {
         readonly object _innerLock = new object();
         private TaskCompletionSource<T> source;
