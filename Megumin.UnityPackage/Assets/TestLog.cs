@@ -36,6 +36,8 @@ public class TestLog : MonoBehaviour
     //[OnValueChanged]
     public HSVColor HSVColor;
 
+    public EventValue<int> EventIntValue;
+
     //[OnValueChanged(CallBackName = "OnValueChangeTest1")]
     public STest STest;
     public SaveAsset SaveAsset;
