@@ -2,6 +2,8 @@
 using Megumin;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
+using System.ComponentModel;
 
 namespace MyApp // Note: actual namespace depends on the project name.
 {

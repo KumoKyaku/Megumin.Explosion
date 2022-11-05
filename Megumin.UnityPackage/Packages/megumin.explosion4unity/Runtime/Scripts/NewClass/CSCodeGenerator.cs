@@ -132,14 +132,17 @@ namespace Megumin
             }
         }
 
-        public void PushSummaryNote(params string[] notes)
+        [Obsolete]
+        public void PushSummaryNote(string comment) => PushComment(comment);
+
+        public void PushComment(string comment)
         {
-            if (notes == null || notes.Length == 0)
+            if (comment == null || comment.Length == 0)
             {
                 return;
             }
 
-            if (notes.Length == 1 && string.IsNullOrEmpty(notes[0]))
+            if (string.IsNullOrEmpty(comment))
             {
                 return;
             }
@@ -147,7 +150,29 @@ namespace Megumin
             //增加注释
             Push("");
             Push(@$"/// <summary>");
-            foreach (var item in notes)
+            Push(@$"/// {comment}");
+            Push(@$"/// </summary>");
+        }
+
+        [Obsolete]
+        public void PushSummaryNote(params string[] comments) => PushComment(comments);
+
+        public void PushComment(params string[] comments)
+        {
+            if (comments == null || comments.Length == 0)
+            {
+                return;
+            }
+
+            if (comments.Length == 1 && string.IsNullOrEmpty(comments[0]))
+            {
+                return;
+            }
+
+            //增加注释
+            Push("");
+            Push(@$"/// <summary>");
+            foreach (var item in comments)
             {
                 StringReader sr = new StringReader(item);
                 string line = null;

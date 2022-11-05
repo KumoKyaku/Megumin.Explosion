@@ -12,6 +12,11 @@ namespace Megumin
 
     public enum HelpBoxMessageType { None, Info, Warning, Error }
 
+    /// <summary>
+    /// https://learn.microsoft.com/zh-cn/visualstudio/extensibility/walkthrough-displaying-quickinfo-tooltips?view=vs-2022&tabs=csharp
+    /// https://developercommunity.visualstudio.com/t/visual-studio-tools-for-unity-use-unityenginetoolt/683906
+    /// https://developercommunity.visualstudio.com/t/Visual-Studio-Tools-for-Unity:-Custom-At/10187477?ftype=idea
+    /// </summary>
     public class HelpBoxAttribute : PropertyAttribute
     {
 

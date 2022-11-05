@@ -1,9 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 
 namespace Megumin
 {
+    ///原则，能不定义的特性，就不要定义。能不定义的枚举，就不要定义。
+    ///能不定义的接口，就不要定义。接口可能都是特例，而且需要最小原则，大多时找不到能代替的。
+    ///使用反射先做个所有特性列表 枚举列表，生一个代码方便F1, F12，所有特性都new一个，看名字那个顺眼用哪个。
+    ///冲突与语义，尽量选功能交叉比较小的特性去使用。避免功能冲突。
+    ///尽量选择AttributeTargets.All  AllowMultiple = true, Inherited = true 一致的。
+    ///很多特性用于传参，其实可以用字符串传参。这样原生特性选择性就大大提高。
+    ///例如：
+    ///<see cref="CategoryAttribute"/>
+    ///<see cref="DescriptionAttribute"/>
+    ///<see cref="AttributeProviderAttribute"/>
+    ///<see cref="LookupBindingPropertiesAttribute"/>
+
+    ///尽量删除自己的特性，改用原生特性。
+    ///为了兼容第三方插件，尽量不要声明自己的特性，使用.net 原生特性（或者unity特性，尽可能不用）。
+    ///unity 项目中或者unity插件就无法避免要从 PropertyAttribute，不过能用unity原生特性就尽量原生。
+    ///第三方插件与行为树做兼容时就不必引用你的包。
+    ///这样很多特性就不必定义了。少即是多。
+
+
+    ///同理。通用枚举也尽量不要用，改用string或者int，跨模块传参时更方便，避免不必要耦合。
+
+    ///接口则不在这个范围，定义接口通常都是十分确切的功能。除非功能和.net底层接口重合。
+    ///C# 泛型没有成员约束，不然就不用定义接口了。
+
     /// <summary>
     /// 别名
     /// </summary>
@@ -26,6 +49,7 @@ namespace Megumin
         }
     }
 
+    [Obsolete("", true)]
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class ShortNameAttribute : Attribute
     {
