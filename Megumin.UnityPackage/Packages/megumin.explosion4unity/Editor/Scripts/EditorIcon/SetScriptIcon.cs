@@ -93,7 +93,7 @@ namespace Megumin
             generator.Push(@"public static class EditorIconListByCodeGenerate");
             using (generator.NewScope)
             {
-                generator.PushSummaryNote(@$"AutoGeneric. TotalCount : {set.Count} ");
+                generator.PushComment(@$"AutoGeneric. TotalCount : {set.Count} ");
                 generator.Push(@"public static string[] IconList =");
                 generator.BeginScope();
                 int count = 0;
