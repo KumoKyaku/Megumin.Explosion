@@ -94,6 +94,8 @@ namespace Megumin
             this.MessageType = messageType;
         }
 
+        public string QuickInfo => Text;
+
         //// 不是有效的特性参数类型
         //public HelpBoxAttribute(string text, KV[] tranlate, HelpBoxMessageType messageType = HelpBoxMessageType.None)
         //{

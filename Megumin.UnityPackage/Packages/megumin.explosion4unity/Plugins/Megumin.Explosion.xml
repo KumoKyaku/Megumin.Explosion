@@ -336,6 +336,25 @@
             <returns></returns>
         </member>
         <member name="T:Megumin.AliasAttribute">
+            原则，能不定义的特性，就不要定义。能不定义的枚举，就不要定义。
+            能不定义的接口，就不要定义。接口可能都是特例，而且需要最小原则，大多时找不到能代替的。
+            使用反射先做个所有特性列表 枚举列表，生一个代码方便F1, F12，所有特性都new一个，看名字那个顺眼用哪个。
+            冲突与语义，尽量选功能交叉比较小的特性去使用。避免功能冲突。
+            尽量选择AttributeTargets.All  AllowMultiple = true, Inherited = true 一致的。
+            很多特性用于传参，其实可以用字符串传参。这样原生特性选择性就大大提高。
+            例如：
+            <see cref="T:System.ComponentModel.CategoryAttribute"/>
+            <see cref="T:System.ComponentModel.DescriptionAttribute"/>
+            <see cref="T:System.ComponentModel.AttributeProviderAttribute"/>
+            <see cref="T:System.ComponentModel.LookupBindingPropertiesAttribute"/>
+            尽量删除自己的特性，改用原生特性。
+            为了兼容第三方插件，尽量不要声明自己的特性，使用.net 原生特性（或者unity特性，尽可能不用）。
+            unity 项目中或者unity插件就无法避免要从 PropertyAttribute，不过能用unity原生特性就尽量原生。
+            第三方插件与行为树做兼容时就不必引用你的包。
+            这样很多特性就不必定义了。少即是多。
+            同理。通用枚举也尽量不要用，改用string或者int，跨模块传参时更方便，避免不必要耦合。
+            接口则不在这个范围，定义接口通常都是十分确切的功能。除非功能和.net底层接口重合。
+            C# 泛型没有成员约束，不然就不用定义接口了。
             <summary>
             别名
             </summary>
@@ -426,6 +445,27 @@
         <member name="P:Megumin.CoolDownTime.MinDelta">
             <summary>
             最小间隔
+            </summary>
+        </member>
+        <member name="T:Megumin.DisposeHandler">
+            <summary>
+            观察者模式注册时需要返回IDisposable，这里时将一个回调包装成一个IDisposable
+            <seealso cref="M:System.IObservable`1.Subscribe(System.IObserver{`0})"/>
+            </summary>
+            <remarks>
+            https://learn.microsoft.com/zh-cn/dotnet/csharp/fundamentals/types/anonymous-types
+            <para/>
+            C# 不允许匿名类实现接口，所以必须声明一个类型。
+            </remarks>
+        </member>
+        <member name="F:Megumin.EventValue`1.value">
+            <summary>
+            这里public是为了能在unity中序列化，这里没办法标记SerializeField
+            </summary>
+        </member>
+        <member name="T:Megumin.EventValue`1.ValueObservable">
+            <summary>
+            为什么需要这个类型包装一次，IObserver.OnNext 不能与ValueChange时间匹配。
             </summary>
         </member>
         <member name="T:Megumin.InterlockedID`1">
@@ -1183,10 +1223,31 @@
             </summary>
             <param name="action"></param>
         </member>
+        <member name="T:Megumin.OnValueGet`1">
+            <summary>
+            当值被访问时被调用。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="value"></param>
+            <remarks>
+            保持API一致性。<see cref="T:Megumin.OnValueSet`1"/>
+            虽然应该是Got，但是为了一致性。
+            </remarks>
+        </member>
+        <member name="T:Megumin.OnValueSet`1">
+            <summary>
+            当值被赋值后被调用，无论新值是否与旧值相等。
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="newValue"></param>
+            <param name="oldValue"></param>
+            <remarks>
+            Set过去式也是Set。
+            </remarks>
+        </member>
         <member name="T:Megumin.OnValueChanged`1">
             <summary>
-            当值发生改变时被调用
-            <para>因为 new 是关键字，所以参数带有下划线</para>
+            当值发生改变后被调用。
             </summary>
             <typeparam name="T"></typeparam>
             <param name="newValue">新的值</param>
