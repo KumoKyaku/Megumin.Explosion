@@ -56,7 +56,7 @@ namespace Megumin
     /// <para></para><see cref="EditorGUIMethod.DrawInspectorMethods"/>
     /// <para>在自定义Serializable类型方法中无效,无法显示在面板</para>
     /// </summary>
-    [Obsolete("Rename. Use ButtonAttribute instead.")]
+    [Obsolete("Rename. Use ButtonAttribute instead.", true)]
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
     public class EditorButtonAttribute : PropertyAttribute
     {
@@ -88,8 +88,20 @@ namespace Megumin
 #endif
 
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
-    public class ButtonAttribute : EditorButtonAttribute
+    public class ButtonAttribute : PropertyAttribute
     {
+        public bool AfterDrawDefaultInspector = true;
+        public string ButtonName { get; set; }
+        public bool UseTypeFullName { get; set; }
+        public float ButtonHeight { get; set; } = 20f;
+
+        /// <summary>
+        /// <para/>true :编辑模式运行模式都有效.
+        /// <para/>false:仅运行模式有效.
+        /// </summary>
+        /// <value></value>
+        public bool OnlyPlaying { get; set; } = false;
+
         public string Name
         {
             get
@@ -152,7 +164,7 @@ namespace UnityEditor.Megumin
         {
             public MethodInfo Method { get; set; }
             public EditorButtonState State { get; set; }
-            public EditorButtonAttribute Attribute { get; internal set; }
+            public ButtonAttribute Attribute { get; internal set; }
         }
 
         public delegate object ParameterDrawer(ParameterInfo parameter, object val);
@@ -426,10 +438,10 @@ namespace UnityEditor.Megumin
         public static string MethodDisplayName(MethodInfo method)
         {
             string editorButtonName = "Unknown";
-            if (Attribute.IsDefined(method, typeof(EditorButtonAttribute)))
+            if (Attribute.IsDefined(method, typeof(ButtonAttribute)))
             {
-                EditorButtonAttribute tmp =
-                    (EditorButtonAttribute)Attribute.GetCustomAttribute(method, typeof(EditorButtonAttribute));
+                ButtonAttribute tmp =
+                    (ButtonAttribute)Attribute.GetCustomAttribute(method, typeof(ButtonAttribute));
                 editorButtonName = tmp.ButtonName;
                 if (string.IsNullOrEmpty(editorButtonName))
                 {
@@ -543,7 +555,7 @@ namespace UnityEditor.Megumin
             var methods = editor.target.GetType()
                         .GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
                             BindingFlags.NonPublic)
-                        .Where(o => Attribute.IsDefined(o, typeof(EditorButtonAttribute)));
+                        .Where(o => Attribute.IsDefined(o, typeof(ButtonAttribute)));
 
             list.Clear();
             foreach (var methodInfo in methods)
@@ -551,7 +563,7 @@ namespace UnityEditor.Megumin
                 list.Add(new DrawMethod()
                 {
                     Method = methodInfo,
-                    Attribute = methodInfo.GetCustomAttribute<EditorButtonAttribute>(),
+                    Attribute = methodInfo.GetCustomAttribute<ButtonAttribute>(),
                     State = new EditorButtonState(methodInfo),
                 });
             }
