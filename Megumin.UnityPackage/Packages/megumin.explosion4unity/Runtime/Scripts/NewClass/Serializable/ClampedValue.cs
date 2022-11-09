@@ -26,19 +26,19 @@ namespace UnityEditor.Megumin
 #endif
     internal sealed class ClampedValueDrawer : PropertyDrawer
     {
-        /// <summary>
-        /// 如果在基于 UIElements 的检查器或 EditorWindow 中使用 PropertyDrawer，则在 PropertyDrawer.CreatePropertyGUI 被任何 IMGUI 实现的回退覆盖时，将使用 UIElements 实现。如果在基于 IMGUI 的检查器或 EditorWindow 中使用 PropertyDrawer，则只会显示 IMGUI 实现。您不能让 UIElements 在 IMGUI 中运行。
-        /// <para>https://docs.unity3d.com/2022.2/Documentation/ScriptReference/PropertyDrawer.html</para>
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        public override VisualElement CreatePropertyGUI(SerializedProperty property)
-        {
-            var root = new VisualElement();
-            root.Add(new IntegerField("MinTest"));
-            root.Add(new IntegerField("MaxTest"));
-            return root;
-        }
+        ///// <summary>
+        ///// 如果在基于 UIElements 的检查器或 EditorWindow 中使用 PropertyDrawer，则在 PropertyDrawer.CreatePropertyGUI 被任何 IMGUI 实现的回退覆盖时，将使用 UIElements 实现。如果在基于 IMGUI 的检查器或 EditorWindow 中使用 PropertyDrawer，则只会显示 IMGUI 实现。您不能让 UIElements 在 IMGUI 中运行。
+        ///// <para>https://docs.unity3d.com/2022.2/Documentation/ScriptReference/PropertyDrawer.html</para>
+        ///// </summary>
+        ///// <param name="property"></param>
+        ///// <returns></returns>
+        //public override VisualElement CreatePropertyGUI(SerializedProperty property)
+        //{
+        //    var root = new VisualElement();
+        //    root.Add(new IntegerField("MinTest"));
+        //    root.Add(new IntegerField("MaxTest"));
+        //    return root;
+        //}
 
         //public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         //{
