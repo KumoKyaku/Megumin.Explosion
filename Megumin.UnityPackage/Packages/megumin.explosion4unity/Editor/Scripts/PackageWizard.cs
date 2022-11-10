@@ -248,7 +248,7 @@ PackageWizard Fast Created.
             string packageInfo =
 $@"{{
     ""name"": ""{NameExtension.ToLower()}.{InputPackageName.ToLower()}"",
-    ""displayName"": ""{InputPackageName}"",
+    ""displayName"": ""Megumin {InputPackageName}"",
     
     ""version"": ""0.0.1"",
     ""unity"": ""{version[0]}.{version[1]}"",

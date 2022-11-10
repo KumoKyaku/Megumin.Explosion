@@ -21,6 +21,8 @@ namespace Megumin
     ///第三方插件与行为树做兼容时就不必引用你的包。
     ///这样很多特性就不必定义了。少即是多。
 
+    ///既然设计理念是一个特性可以用于不同的功能，那么为了方式冲突，特性中应该增几个一个识别字段 Feature,平时不用保持为空。
+    ///冲突时可以增加一个标记用于检测。检测 Feature == null || Feature.Contain “FeatureName” 才确认执行特性。
 
     ///同理。通用枚举也尽量不要用，改用string或者int，跨模块传参时更方便，避免不必要耦合。
 
@@ -33,6 +35,12 @@ namespace Megumin
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class AliasAttribute : Attribute
     {
+        /// <summary>
+        /// <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+        /// 检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+        /// </summary>
+        public string Feature { get; set; }
+
         /// <summary>
         /// 别名
         /// </summary>
@@ -54,6 +62,12 @@ namespace Megumin
     public class ShortNameAttribute : Attribute
     {
         /// <summary>
+        /// <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+        /// 检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+        /// </summary>
+        public string Feature { get; set; }
+
+        /// <summary>
         /// 别名
         /// </summary>
         public string Name { get; set; }
@@ -73,6 +87,12 @@ namespace Megumin
     public class SupportTypesAttribute : Attribute
     {
         public static readonly SupportTypesAttribute Default = new SupportTypesAttribute();
+
+        /// <summary>
+        /// <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+        /// 检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+        /// </summary>
+        public string Feature { get; set; }
 
         public Type[] Support { get; set; }
 
@@ -126,6 +146,12 @@ namespace Megumin
     public class GenarateNameAttribute : Attribute
     {
         /// <summary>
+        /// <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+        /// 检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+        /// </summary>
+        public string Feature { get; set; }
+
+        /// <summary>
         /// None,
         /// Fixed,
         /// Dynamic
@@ -143,7 +169,11 @@ namespace Megumin
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class OnF1Attribute : Attribute
     {
-
+        /// <summary>
+        /// <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+        /// 检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+        /// </summary>
+        public string Feature { get; set; }
     }
 
     /// <summary>
@@ -153,6 +183,12 @@ namespace Megumin
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class OnKeyAttribute : Attribute
     {
+        /// <summary>
+        /// <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+        /// 检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+        /// </summary>
+        public string Feature { get; set; }
+
         public ConsoleKey Key { get; set; }
 
         public OnKeyAttribute()
