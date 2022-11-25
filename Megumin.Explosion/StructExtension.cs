@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -22,14 +23,7 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clamp<T>(this ref T cur, in T min, in T max) where T : struct, IComparable<T>
     {
-        if (cur.CompareTo(min) < 0)
-        {
-            cur = min;
-        }
-        else if (cur.CompareTo(max) > 0)
-        {
-            cur = max;
-        }
+        cur = cur.GetClamp(min, max);
     }
 
     /// <summary>
@@ -45,13 +39,27 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
     {
         var res = cur;
 
-        if (cur.CompareTo(min) < 0)
+        if (min.CompareTo(max) <= 0)
         {
-            res = min;
+            if (cur.CompareTo(min) < 0)
+            {
+                res = min;
+            }
+            else if (cur.CompareTo(max) > 0)
+            {
+                res = max;
+            }
         }
-        else if (cur.CompareTo(max) > 0)
+        else
         {
-            res = max;
+            if (cur.CompareTo(max) < 0)
+            {
+                res = max;
+            }
+            else if (cur.CompareTo(min) > 0)
+            {
+                res = min;
+            }
         }
 
         return res;
@@ -71,6 +79,7 @@ public static class StructExtension_28FDB7156FD24F39B5EA39D95892E328
     /// <param name="value1"></param>
     /// <param name="value2"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Obsolete("", true)]
     public static void ClampIn<T>(this ref T cur, in T value1, in T value2) where T : struct, IComparable<T>
     {
         var mm = value1.CompareTo(value2);

@@ -7,8 +7,8 @@ namespace Megumin
     /// <summary>
     /// 匹配器
     /// </summary>
-    /// <typeparam name="T"><peparam>
-    /// <typeparam name="K"><peparam>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="K"></typeparam>
     public interface IMatcher<in T, in K>
     {
         /// <summary>

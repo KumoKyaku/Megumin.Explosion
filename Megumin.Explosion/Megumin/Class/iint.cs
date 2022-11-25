@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Numerics;
 using System.Text;
 
 namespace Megumin
@@ -9,7 +12,7 @@ namespace Megumin
     /// <para/>https://stackoverflow.com/questions/21312081/how-to-represent-integer-infinity
     /// </summary>
     [Serializable]
-    public struct iint : IComparable<iint>
+    public partial struct iint : IComparable<iint>
     {
         public int _int;
 
@@ -135,6 +138,11 @@ namespace Megumin
             return a._int + b._int;
         }
 
+        public static iint operator +(iint a)
+        {
+            return a;
+        }
+
         public static iint operator -(iint a, iint b)
         {
             return a + (-b);
@@ -155,4 +163,254 @@ namespace Megumin
             return _int.CompareTo(other._int);
         }
     }
+
+#if NET7_0_OR_GREATER
+
+    public partial struct iint: INumber<iint>
+    {
+        public int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool operator >=(iint left, iint right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool operator <=(iint left, iint right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint operator %(iint left, iint right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint Abs(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsCanonical(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsComplexNumber(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsEvenInteger(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsFinite(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsImaginaryNumber(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsInfinity(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsInteger(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsNaN(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsNegative(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        static bool INumberBase<iint>.IsNegativeInfinity(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsNormal(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsOddInteger(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsPositive(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        static bool INumberBase<iint>.IsPositiveInfinity(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsRealNumber(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsSubnormal(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool IsZero(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint MaxMagnitude(iint x, iint y)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint MaxMagnitudeNumber(iint x, iint y)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint MinMagnitude(iint x, iint y)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint MinMagnitudeNumber(iint x, iint y)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint Parse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint Parse(string s, NumberStyles style, IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider provider, [MaybeNullWhen(false)] out iint result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool TryParse([NotNullWhen(true)] string s, NumberStyles style, IFormatProvider provider, [MaybeNullWhen(false)] out iint result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint One { get; }
+        public static int Radix { get; }
+        public static iint Zero { get; }
+
+        public bool Equals(iint other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, [MaybeNullWhen(false)] out iint result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint Parse(string s, IFormatProvider provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool TryParse([NotNullWhen(true)] string s, IFormatProvider provider, [MaybeNullWhen(false)] out iint result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint AdditiveIdentity { get; }
+
+        public static iint operator --(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint operator /(iint left, iint right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint operator ++(iint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static iint MultiplicativeIdentity { get; }
+
+        public static iint operator *(iint left, iint right)
+        {
+            throw new NotImplementedException();
+        }
+
+        static bool INumberBase<iint>.TryConvertFromChecked<TOther>(TOther value, out iint result)
+        {
+            throw new NotImplementedException();
+        }
+
+        static bool INumberBase<iint>.TryConvertFromSaturating<TOther>(TOther value, out iint result)
+        {
+            throw new NotImplementedException();
+        }
+
+        static bool INumberBase<iint>.TryConvertFromTruncating<TOther>(TOther value, out iint result)
+        {
+            throw new NotImplementedException();
+        }
+
+        static bool INumberBase<iint>.TryConvertToChecked<TOther>(iint value, out TOther result)
+        {
+            throw new NotImplementedException();
+        }
+
+        static bool INumberBase<iint>.TryConvertToSaturating<TOther>(iint value, out TOther result)
+        {
+            throw new NotImplementedException();
+        }
+
+        static bool INumberBase<iint>.TryConvertToTruncating<TOther>(iint value, out TOther result)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+#endif
 }

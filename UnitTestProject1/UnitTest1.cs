@@ -28,7 +28,7 @@ namespace UnitTestProject1
             int a = 5;
             a.Clamp(3, 6);
             Assert.AreEqual(5, a);
-            a.ClampIn(6, 3);
+            a.Clamp(6, 3);
             Assert.AreEqual(5, a);
             a.Clamp(6, 6);
             Assert.AreEqual(6, a);

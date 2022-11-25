@@ -139,6 +139,52 @@ namespace Megumin
         }
     }
 
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+    public class SupportTypesAttribute<T> : SupportTypesAttribute
+    {
+        public SupportTypesAttribute()
+        {
+            Support = new Type[1];
+            Support[0] = typeof(T);
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+    public class SupportTypesAttribute<T1, T2> : SupportTypesAttribute
+    {
+        public SupportTypesAttribute()
+        {
+            Support = new Type[2];
+            Support[0] = typeof(T1);
+            Support[1] = typeof(T2);
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+    public class SupportTypesAttribute<T1, T2, T3> : SupportTypesAttribute
+    {
+        public SupportTypesAttribute()
+        {
+            Support = new Type[3];
+            Support[0] = typeof(T1);
+            Support[1] = typeof(T2);
+            Support[2] = typeof(T3);
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+    public class SupportTypesAttribute<T1, T2, T3, T4> : SupportTypesAttribute
+    {
+        public SupportTypesAttribute()
+        {
+            Support = new Type[4];
+            Support[0] = typeof(T1);
+            Support[1] = typeof(T2);
+            Support[2] = typeof(T3);
+            Support[3] = typeof(T4);
+        }
+    }
+
     /// <summary>
     /// 生成名字时的生成方式.
     /// </summary>
