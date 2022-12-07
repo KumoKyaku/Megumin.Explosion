@@ -662,6 +662,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8924700087206059368, guid: 882e468d77cb4d241b4bdecc9b974f0f,
         type: 3}
+      propertyPath: GUID
+      value: 265adc52755a859418a85064bee96fa3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924700087206059368, guid: 882e468d77cb4d241b4bdecc9b974f0f,
+        type: 3}
       propertyPath: Path
       value: Assets/Log
       objectReference: {fileID: 0}

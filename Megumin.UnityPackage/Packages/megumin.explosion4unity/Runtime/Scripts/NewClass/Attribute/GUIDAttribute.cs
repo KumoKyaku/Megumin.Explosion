@@ -28,17 +28,17 @@ namespace UnityEditor.Megumin
     {
         static GUIStyle left = new GUIStyle("minibuttonleft");
         static GUIStyle right = new GUIStyle("minibuttonright");
-        
-        string needNewPath = null;
+
+        //string needNewPath = null;
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType == SerializedPropertyType.String)
             {
-                if (needNewPath == property.propertyPath && !string.IsNullOrEmpty(needNewPath))
-                {
-                    needNewPath = null;
-                    property.stringValue = GUID.Generate().ToString();
-                }
+                //if (needNewPath == property.propertyPath && !string.IsNullOrEmpty(needNewPath))
+                //{
+                //    needNewPath = null;
+                //    property.stringValue = GUID.Generate().ToString();
+                //}
 
                 var propertyPosition = position;
                 propertyPosition.width -= 86;
@@ -67,14 +67,19 @@ namespace UnityEditor.Megumin
                     }
                 }
 
-                if (GUI.Button(leftPosotion, "GUID", left))
+                //if (GUI.Button(leftPosotion, "GUID", left))
+                //{
+                //    if (EditorUtility.DisplayDialog("GUID", "确定生成新的GUID吗", "OK", "Cancel"))
+                //    {
+                //        needNewPath = property.propertyPath;
+                //        //property.stringValue = GUID.Generate().ToString();不生效,改用needNewPath.
+                //    }
+                //    GUIUtility.ExitGUI();
+                //}
+
+                if (property.DisplayDialog(GUI.Button(leftPosotion, "GUID", left), "GUID", "确定生成新的GUID吗", "OK", "Cancel"))
                 {
-                    if (EditorUtility.DisplayDialog("GUID", "确定生成新的GUID吗", "OK", "Cancel"))
-                    {
-                        needNewPath = property.propertyPath;
-                        //property.stringValue = GUID.Generate().ToString();不生效,改用needNewPath.
-                    }
-                    GUIUtility.ExitGUI();
+                    property.stringValue = GUID.Generate().ToString();
                 }
 
                 if (GUI.Button(rightPosition, "Copy", right))
