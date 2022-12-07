@@ -80,6 +80,9 @@ public class TestAttribute : MonoBehaviour
         "ReadOnlyInInspector3"
     };
 
+    [Path]
+    public List<string> Paths = new List<string>();
+
     [Snap(60)]
     public int Snap = 60;
 

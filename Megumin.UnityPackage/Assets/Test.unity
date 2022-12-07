@@ -490,7 +490,6 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 128657510070853129, guid: 2532449c2594cda4f9bf2375324c1f09,
@@ -554,14 +553,12 @@ PrefabInstance:
       value: TestClass
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 2532449c2594cda4f9bf2375324c1f09, type: 3}
 --- !u!1001 &2934216655231609562
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2934216654910737505, guid: a404c80f01a01d145aac8258e5749c44,
@@ -655,16 +652,39 @@ PrefabInstance:
       value: GameObject
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: a404c80f01a01d145aac8258e5749c44, type: 3}
 --- !u!1001 &8924700087908109514
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8924700087206059368, guid: 882e468d77cb4d241b4bdecc9b974f0f,
+        type: 3}
+      propertyPath: Path
+      value: Assets/Log
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924700087206059368, guid: 882e468d77cb4d241b4bdecc9b974f0f,
+        type: 3}
+      propertyPath: Paths.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924700087206059368, guid: 882e468d77cb4d241b4bdecc9b974f0f,
+        type: 3}
+      propertyPath: Paths.Array.data[0]
+      value: Assets/Profiler
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924700087206059368, guid: 882e468d77cb4d241b4bdecc9b974f0f,
+        type: 3}
+      propertyPath: Paths.Array.data[1]
+      value: Assets/Editor
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924700087206059368, guid: 882e468d77cb4d241b4bdecc9b974f0f,
+        type: 3}
+      propertyPath: Paths.Array.data[2]
+      value: Assets/Samples
+      objectReference: {fileID: 0}
     - target: {fileID: 8924700087206059370, guid: 882e468d77cb4d241b4bdecc9b974f0f,
         type: 3}
       propertyPath: m_Name
@@ -726,5 +746,4 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 882e468d77cb4d241b4bdecc9b974f0f, type: 3}

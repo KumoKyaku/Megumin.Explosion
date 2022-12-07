@@ -27,7 +27,7 @@ namespace UnityEditor.Megumin
 #endif
     internal sealed class PathAttributeDrawer : PropertyDrawer
     {
-        string m_Path = null;
+        //string m_Path = null;
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var propertyPosition = position;
@@ -39,23 +39,23 @@ namespace UnityEditor.Megumin
 
             PathAttribute myattribute = attribute as PathAttribute;
 
-            if (m_Path != null)
-            {
-                if (myattribute.RelativePath)
-                {
-                    if (m_Path.Contains(":/"))
-                    {
-                        //转换为相对路径。
-                        var p1 = new System.Uri(m_Path);
-                        var p2 = new System.Uri(MeguminUtility4Unity.ProjectPath);
-                        var r = p2.MakeRelativeUri(p1);
-                        m_Path = r.ToString();
-                    }
-                }
+            //if (m_Path != null)
+            //{
+            //    if (myattribute.RelativePath)
+            //    {
+            //        if (m_Path.Contains(":/"))
+            //        {
+            //            //转换为相对路径。
+            //            var p1 = new System.Uri(m_Path);
+            //            var p2 = new System.Uri(MeguminUtility4Unity.ProjectPath);
+            //            var r = p2.MakeRelativeUri(p1);
+            //            m_Path = r.ToString();
+            //        }
+            //    }
 
-                property.stringValue = m_Path;
-                m_Path = null;
-            }
+            //    property.stringValue = m_Path;
+            //    m_Path = null;
+            //}
 
             var obj = AssetDatabase.LoadAssetAtPath(property.stringValue, typeof(UnityEngine.Object));
             if (obj)
@@ -78,27 +78,45 @@ namespace UnityEditor.Megumin
                 EditorGUI.PropertyField(propertyPosition, property, label);
             }
 
-            if (GUI.Button(buttonPosition, "Select"))
+            if (property.SelectPath(GUI.Button(buttonPosition, "Select"),
+                out var pathResult, myattribute.IsFolder, myattribute.Exetension))
             {
-                string dir = Path.Combine(MeguminUtility4Unity.ProjectPath, property.stringValue);
-                dir = Path.GetDirectoryName(dir);
-                dir = Path.GetFullPath(dir);
+                if (myattribute.RelativePath)
+                {
+                    if (pathResult.Contains(":/"))
+                    {
+                        //转换为相对路径。
+                        var p1 = new System.Uri(pathResult);
+                        var p2 = new System.Uri(MeguminUtility4Unity.ProjectPath);
+                        var r = p2.MakeRelativeUri(p1);
+                        pathResult = r.ToString();
+                    }
+                }
 
-                if (myattribute.IsFolder)
-                {
-                    var path = EditorUtility.OpenFolderPanel("选择文件夹", dir, "");
-                    m_Path = path;
-                    //property.stringValue = path;
-                    GUIUtility.ExitGUI();
-                }
-                else
-                {
-                    var path = EditorUtility.OpenFilePanel("选择文件", dir, myattribute.Exetension);
-                    m_Path = path;
-                    //property.stringValue = path;
-                    GUIUtility.ExitGUI();
-                }
+                property.stringValue = pathResult;
             }
+
+            //if (GUI.Button(buttonPosition, "Select"))
+            //{
+            //    string dir = Path.Combine(MeguminUtility4Unity.ProjectPath, property.stringValue);
+            //    dir = Path.GetDirectoryName(dir);
+            //    dir = Path.GetFullPath(dir);
+
+            //    if (myattribute.IsFolder)
+            //    {
+            //        var path = EditorUtility.OpenFolderPanel("选择文件夹", dir, "");
+            //        m_Path = path;
+            //        //property.stringValue = path;
+            //        GUIUtility.ExitGUI();
+            //    }
+            //    else
+            //    {
+            //        var path = EditorUtility.OpenFilePanel("选择文件", dir, myattribute.Exetension);
+            //        m_Path = path;
+            //        //property.stringValue = path;
+            //        GUIUtility.ExitGUI();
+            //    }
+            //}
         }
     }
 }

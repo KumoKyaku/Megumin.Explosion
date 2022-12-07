@@ -20,6 +20,12 @@ namespace Megumin
             OpenURL("https://github.com/Unity-Technologies/com.unity.immediate-window");
         }
 
+        [MenuItem("Tools/Link/Unity/Timeline Playables Wizard")]
+        static void TimelinePlayablesWizard()
+        {
+            OpenURL("https://assetstore.unity.com/packages/essentials/default-playables-95266");
+        }
+
         [MenuItem(@"Tools/Link/Unity/NavMesh Components | com.unity.ai.navigation")]
         static void NavMeshComponents()
         {
