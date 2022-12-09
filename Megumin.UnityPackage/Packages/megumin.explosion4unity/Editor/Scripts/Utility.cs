@@ -45,7 +45,7 @@ public static partial class MeguminEditorUtility
             _icons.Add((gc, new GUIContent(x.name)));
         }
 
-        _icons.Sort((x,y) => { return x.name.text.CompareTo(y.name.text); });
+        _icons.Sort((x, y) => { return x.name.text.CompareTo(y.name.text); });
         Resources.UnloadUnusedAssets();
         System.GC.Collect();
         return _icons;
@@ -283,6 +283,7 @@ public static partial class MeguminEditorUtility
             var fn = folderPath.CreateFileName(res.Name, ".asset");
             AssetDatabase.CreateAsset(so, fn);
             AssetDatabase.Refresh();
+            Debug.Log($"CreateSelectScriptableObjectAsset : {res.FullName}");
         }
     }
 
@@ -305,6 +306,59 @@ public static partial class MeguminEditorUtility
         }
 
         return null;
+    }
+
+    [MenuItem("Assets/※Open in VSCode", priority = 19)]
+    public static void OpeninVSCode()
+    {
+        ///https://stackoverflow.com/questions/61937342/launch-visual-studio-code-programmatically
+        ///https://learn.microsoft.com/zh-cn/dotnet/api/system.diagnostics.processstartinfo?view=net-7.0
+
+        if (Selection.activeObject)
+        {
+            var path = Selection.activeObject.GetAbsoluteFilePath();
+
+            path = Path.GetFullPath(path);
+
+            //System.Diagnostics.Process.Start("code.exe", path); //NotWork and Crash!!!
+
+            try
+            {
+                using (System.Diagnostics.Process myProcess = new System.Diagnostics.Process())
+                {
+                    //var vscodePath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Programs\Microsoft VS Code\");
+                    //if (Directory.Exists(vscodePath))
+                    //{
+                    //    myProcess.StartInfo.WorkingDirectory = vscodePath;
+                    //    myProcess.StartInfo.Environment.Add("UnityOpeninVSCode_C", vscodePath);
+                    //}
+
+                    //var p2 = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Microsoft VS Code\");
+                    //if (Directory.Exists(p2))
+                    //{
+                    //    myProcess.StartInfo.Environment.Add("UnityOpeninVSCode_ProgramFiles", Path.GetFileName(p2));
+                    //}
+
+                    //var p3 = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Microsoft VS Code\");
+                    //if (Directory.Exists(p3))
+                    //{
+                    //    myProcess.StartInfo.Environment.Add("UnityOpeninVSCode_ProgramFilesX86", Path.GetFileName(p3));
+                    //}
+
+                    myProcess.StartInfo.UseShellExecute = true; //must true
+                    myProcess.StartInfo.FileName = "code";
+                    myProcess.StartInfo.Arguments = path;
+                    myProcess.StartInfo.CreateNoWindow = true;
+                    myProcess.StartInfo.ErrorDialog = true;
+                    myProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    myProcess.Start();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
     }
 }
 
