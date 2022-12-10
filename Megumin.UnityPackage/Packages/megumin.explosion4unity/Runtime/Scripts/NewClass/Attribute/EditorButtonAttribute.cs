@@ -7,7 +7,6 @@ using System.Collections;
 using Object = UnityEngine.Object;
 using System.Reflection;
 using Megumin;
-using System.Diagnostics;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -87,6 +86,10 @@ namespace Megumin
 
 #endif
 
+    /// <summary>
+    /// <see cref="UnityEngine.ContextMenu"/> 和 <see cref="System.ComponentModel.EditorAttribute"/>
+    /// 同样可以显示一个按钮，因为是借用通用的特性，所以没有精确绘制参数可以设置。
+    /// </summary>
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
     public class ButtonAttribute : PropertyAttribute
     {
@@ -164,7 +167,7 @@ namespace UnityEditor.Megumin
         {
             public MethodInfo Method { get; set; }
             public EditorButtonState State { get; set; }
-            public ButtonAttribute Attribute { get; internal set; }
+            public Attribute Attribute { get; internal set; }
         }
 
         public delegate object ParameterDrawer(ParameterInfo parameter, object val);
@@ -437,35 +440,38 @@ namespace UnityEditor.Megumin
 
         public static string MethodDisplayName(MethodInfo method)
         {
-            string editorButtonName = "Unknown";
+            string editorButtonName = "";
+            bool useTypeFullName = false;
             if (Attribute.IsDefined(method, typeof(ButtonAttribute)))
             {
                 ButtonAttribute tmp =
                     (ButtonAttribute)Attribute.GetCustomAttribute(method, typeof(ButtonAttribute));
                 editorButtonName = tmp.ButtonName;
-                if (string.IsNullOrEmpty(editorButtonName))
+                useTypeFullName = tmp.UseTypeFullName;
+            }
+
+            if (string.IsNullOrEmpty(editorButtonName))
+            {
+                editorButtonName = method.Name;
+            }
+
+            var methodParams = method.GetParameters();
+            if (methodParams.Length > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(editorButtonName + "(");
+
+                foreach (ParameterInfo parameter in methodParams)
                 {
-                    editorButtonName = method.Name;
+                    sb.Append(MethodParameterDisplayName(parameter, useTypeFullName));
+                    sb.Append(",");
                 }
 
-                var methodParams = method.GetParameters();
                 if (methodParams.Length > 0)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append(editorButtonName + "(");
+                    sb.Remove(sb.Length - 1, 1);
 
-                    foreach (ParameterInfo parameter in methodParams)
-                    {
-                        sb.Append(MethodParameterDisplayName(parameter, tmp.UseTypeFullName));
-                        sb.Append(",");
-                    }
-
-                    if (methodParams.Length > 0)
-                        sb.Remove(sb.Length - 1, 1);
-
-                    sb.Append(")");
-                    editorButtonName = sb.ToString();
-                }
+                sb.Append(")");
+                editorButtonName = sb.ToString();
             }
             return editorButtonName;
         }
@@ -484,7 +490,29 @@ namespace UnityEditor.Megumin
             return sb.ToString();
         }
 
-        public static void DrawButtonforMethod(Object target, MethodInfo methodInfo, EditorButtonState state, bool onlyPlaying)
+        public static void DrawButtonforMethod(Object target,
+                                               MethodInfo methodInfo,
+                                               EditorButtonState state,
+                                               bool onlyPlaying)
+        {
+            DrawButtonforMethod(target, methodInfo, state, onlyPlaying ? 1 : 0);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="methodInfo"></param>
+        /// <param name="state"></param>
+        /// <param name="enableMode">
+        /// <para/> 1 : only playing  
+        /// <para/> 2 : only editor
+        /// <para/> others : always   
+        /// </param>
+        public static void DrawButtonforMethod(Object target,
+                                               MethodInfo methodInfo,
+                                               EditorButtonState state,
+                                               int enableMode = 0)
         {
             ///方法绘制间隔
             EditorGUILayout.Space(1);
@@ -497,7 +525,20 @@ namespace UnityEditor.Megumin
                 state.opened = EditorGUI.Foldout(foldoutRect, state.opened, "");
             }
 
-            EditorGUI.BeginDisabledGroup(onlyPlaying && !Application.isPlaying);
+            var enable = true;
+            switch (enableMode)
+            {
+                case 1:
+                    enable = Application.isPlaying;
+                    break;
+                case 2:
+                    enable = !Application.isPlaying;
+                    break;
+                default:
+                    break;
+            }
+
+            EditorGUI.BeginDisabledGroup(!enable);
             string buttonName = MethodDisplayName(methodInfo);
             bool clicked = GUILayout.Button(buttonName, GUILayout.ExpandWidth(true));
             EditorGUI.EndDisabledGroup();
@@ -519,15 +560,15 @@ namespace UnityEditor.Megumin
 
             if (clicked)
             {
-                if (!onlyPlaying || Application.isPlaying)
+                object returnVal = methodInfo.Invoke(target, state.parameters);
+
+                if (returnVal != null)
                 {
-                    object returnVal = methodInfo.Invoke(target, state.parameters);
+                    UnityEngine.Debug.Log($"{methodInfo.Name} return : {returnVal}");
+                }
 
-                    if (returnVal != null)
-                    {
-                        UnityEngine.Debug.Log($"{methodInfo.Name} return : {returnVal}");
-                    }
-
+                if (Application.isPlaying)
+                {
                     if (returnVal is IEnumerator)
                     {
                         if (target is MonoBehaviour mono)
@@ -535,12 +576,12 @@ namespace UnityEditor.Megumin
                             mono.StartCoroutine((IEnumerator)returnVal);
                         }
                     }
+                }
 
-                    ///强制更新
-                    if (target)
-                    {
-                        target.InspectorForceUpdate();
-                    }
+                ///强制更新
+                if (target)
+                {
+                    target.InspectorForceUpdate();
                 }
             }
         }
@@ -550,28 +591,79 @@ namespace UnityEditor.Megumin
         /// </summary>
         /// <param name="target"></param>
         /// <param name="list"></param>
-        public static void CollectDrawButtonMethod(this Editor editor, List<DrawMethod> list)
+        public static void CollectDrawButtonMethod(this Editor editor,
+                                                   List<DrawMethod> list,
+                                                   bool alsoCollectContextMenu = true,
+                                                   bool alsoCollectSystemComponentModelEditor = true)
         {
-            var methods = editor.target.GetType()
-                        .GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
-                            BindingFlags.NonPublic)
-                        .Where(o => Attribute.IsDefined(o, typeof(ButtonAttribute)));
-
             list.Clear();
-            foreach (var methodInfo in methods)
+
+            var methods = from method in editor.target.GetType()
+                         .GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
+                             BindingFlags.NonPublic)
+                          select method;
+
+            var methodsButtonAttribute = from method in methods
+                                         let attri = method.GetCustomAttribute<ButtonAttribute>()
+                                         where attri != null
+                                         orderby attri.order ascending
+                                         select (method, attri);
+
+            foreach (var item in methodsButtonAttribute)
             {
                 list.Add(new DrawMethod()
                 {
-                    Method = methodInfo,
-                    Attribute = methodInfo.GetCustomAttribute<ButtonAttribute>(),
-                    State = new EditorButtonState(methodInfo),
+                    Method = item.method,
+                    Attribute = item.attri,
+                    State = new EditorButtonState(item.method),
                 });
             }
 
-            list.Sort((lhs, rhs) =>
+            if (alsoCollectContextMenu)
             {
-                return lhs.Attribute.order.CompareTo(rhs.Attribute.order);
-            });
+                //借用 UnityEngine.ContextMenu
+                var methodsContextMenu = from method in methods
+                                         let attri = method.GetCustomAttribute<UnityEngine.ContextMenu>()
+                                         where attri != null
+                                         orderby method.MetadataToken ascending
+                                         select (method, attri);
+
+                foreach (var item in methodsContextMenu)
+                {
+                    if (!list.Any(draw => draw.Method == item.method))
+                    {
+                        list.Add(new DrawMethod()
+                        {
+                            Method = item.method,
+                            Attribute = item.attri,
+                            State = new EditorButtonState(item.method),
+                        });
+                    }
+                }
+            }
+
+            if (alsoCollectSystemComponentModelEditor)
+            {
+                //借用 System.ComponentModel.EditorAttribute
+                var methodsEditorAttribute = from method in methods
+                                             let attri = method.GetCustomAttribute<System.ComponentModel.EditorAttribute>()
+                                             where attri != null
+                                             orderby method.MetadataToken ascending
+                                             select (method, attri);
+
+                foreach (var item in methodsEditorAttribute)
+                {
+                    if (!list.Any(draw => draw.Method == item.method))
+                    {
+                        list.Add(new DrawMethod()
+                        {
+                            Method = item.method,
+                            Attribute = item.attri,
+                            State = new EditorButtonState(item.method),
+                        });
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -583,7 +675,19 @@ namespace UnityEditor.Megumin
         {
             foreach (var draw in list)
             {
-                DrawButtonforMethod(editor.target, draw.Method, draw.State, draw.Attribute.OnlyPlaying);
+                if (draw.Attribute is ButtonAttribute button)
+                {
+                    DrawButtonforMethod(editor.target, draw.Method, draw.State, button.OnlyPlaying);
+                }
+                else if (draw.Attribute is System.ComponentModel.EditorAttribute editorattri)
+                {
+                    DrawButtonforMethod(editor.target, draw.Method, draw.State,
+                        string.Equals(editorattri.EditorTypeName, "OnlyPlaying", StringComparison.OrdinalIgnoreCase));
+                }
+                else
+                {
+                    DrawButtonforMethod(editor.target, draw.Method, draw.State);
+                }
             }
         }
 
@@ -591,9 +695,12 @@ namespace UnityEditor.Megumin
         {
             foreach (var draw in list)
             {
-                if (draw.Attribute.AfterDrawDefaultInspector == false || draw.Attribute.order < 0)
+                if (draw.Attribute is ButtonAttribute button)
                 {
-                    DrawButtonforMethod(editor.target, draw.Method, draw.State, draw.Attribute.OnlyPlaying);
+                    if (button.AfterDrawDefaultInspector == false || button.order < 0)
+                    {
+                        DrawButtonforMethod(editor.target, draw.Method, draw.State, button.OnlyPlaying);
+                    }
                 }
             }
         }
@@ -602,13 +709,25 @@ namespace UnityEditor.Megumin
         {
             foreach (var draw in list)
             {
-                if (draw.Attribute.AfterDrawDefaultInspector == false || draw.Attribute.order < 0)
+                if (draw.Attribute is ButtonAttribute button)
                 {
+                    if (button.AfterDrawDefaultInspector == false || button.order < 0)
+                    {
 
+                    }
+                    else
+                    {
+                        DrawButtonforMethod(editor.target, draw.Method, draw.State, button.OnlyPlaying);
+                    }
+                }
+                else if (draw.Attribute is System.ComponentModel.EditorAttribute editorattri)
+                {
+                    DrawButtonforMethod(editor.target, draw.Method, draw.State,
+                        string.Equals(editorattri.EditorTypeName, "OnlyPlaying", StringComparison.OrdinalIgnoreCase));
                 }
                 else
                 {
-                    DrawButtonforMethod(editor.target, draw.Method, draw.State, draw.Attribute.OnlyPlaying);
+                    DrawButtonforMethod(editor.target, draw.Method, draw.State);
                 }
             }
         }
@@ -624,39 +743,45 @@ namespace UnityEditor.Megumin
         /// </summary>
         /// <param name="target"></param>
         /// <param name="list"></param>
-        public static void DrawInspectorMethods(this Editor editor)
+        public static void DrawInspectorMethods(this Editor editor,
+                                                bool alsoCollectContextMenu = true,
+                                                bool alsoCollectSystemComponentModelEditor = true)
         {
             Type type = editor.target.GetType();
             if (!MethodCache.TryGetValue(type, out var list))
             {
                 list = new List<DrawMethod>();
-                editor.CollectDrawButtonMethod(list);
+                editor.CollectDrawButtonMethod(list, alsoCollectContextMenu, alsoCollectSystemComponentModelEditor);
                 MethodCache[type] = list;
             }
 
             editor.DrawInspectorMethods(list);
         }
 
-        public static void DrawButtonBeforeDefaultInspector(this Editor editor)
+        public static void DrawButtonBeforeDefaultInspector(this Editor editor,
+                                                            bool alsoCollectContextMenu = true,
+                                                            bool alsoCollectSystemComponentModelEditor = true)
         {
             Type type = editor.target.GetType();
             if (!MethodCache.TryGetValue(type, out var list))
             {
                 list = new List<DrawMethod>();
-                editor.CollectDrawButtonMethod(list);
+                editor.CollectDrawButtonMethod(list, alsoCollectContextMenu, alsoCollectSystemComponentModelEditor);
                 MethodCache[type] = list;
             }
 
             editor.DrawInspectorMethodsBeforeDefault(list);
         }
 
-        public static void DrawButtonAfterDefaultInspector(this Editor editor)
+        public static void DrawButtonAfterDefaultInspector(this Editor editor,
+                                                           bool alsoCollectContextMenu = true,
+                                                           bool alsoCollectSystemComponentModelEditor = true)
         {
             Type type = editor.target.GetType();
             if (!MethodCache.TryGetValue(type, out var list))
             {
                 list = new List<DrawMethod>();
-                editor.CollectDrawButtonMethod(list);
+                editor.CollectDrawButtonMethod(list, alsoCollectContextMenu, alsoCollectSystemComponentModelEditor);
                 MethodCache[type] = list;
             }
 

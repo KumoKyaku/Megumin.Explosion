@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 [OnKey(ConsoleKey.Oem3)]
@@ -117,10 +118,22 @@ public class TestLog : MonoBehaviour
         //MeguminEditorUtility.FindCustomEditorTypeByType(typeof(TestScriptObject), false);
     }
 
+    [Editor]
+    public void Test4(int? loger)
+    {
+        this.LogCallerMemberName();
+    }
+
     [Button(true)]
     public void Test2(int? loger)
     {
+        this.LogCallerMemberName();
+    }
 
+    [Editor("OnlyPlaying", "")]
+    public void Test3(int? loger)
+    {
+        this.LogCallerMemberName();
     }
 
     public enum TestEnum
@@ -148,7 +161,7 @@ public interface IStest
 }
 
 [Serializable]
-public class STest: IStest
+public class STest : IStest
 {
     //[OnValueChanged(CallBackName = "OnValueChangeTest2")]
     public int inta;
