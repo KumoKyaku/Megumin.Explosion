@@ -352,6 +352,7 @@ public static partial class MeguminEditorUtility
                     myProcess.StartInfo.ErrorDialog = true;
                     myProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     myProcess.Start();
+                    Debug.Log($"※Open in VSCode : {path}");
                 }
             }
             catch (Exception e)
