@@ -16,6 +16,7 @@ namespace Megumin
         public string DesDir;
         public List<TextAsset> CSFile = new List<TextAsset>();
 
+        [Tooltip("拷贝文件到目标目录")]
         [HelpBox("执行操作前请使用版本管理！！！", HelpBoxMessageType.Warning)]
         [Editor]
         public void Copy()
