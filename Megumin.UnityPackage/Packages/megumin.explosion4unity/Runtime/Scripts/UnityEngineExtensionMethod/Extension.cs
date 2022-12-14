@@ -288,6 +288,7 @@ namespace UnityEngine
             var fp = AssetDatabase.GetAssetPathFromTextMetaFilePath(mfp);
             //Debug.Log(fp);
             var gp = Path.Combine(MeguminUtility4Unity.ProjectPath, fp);
+            gp = Path.GetFullPath(gp);
             //Debug.Log(gp);
             return gp;
 #endif

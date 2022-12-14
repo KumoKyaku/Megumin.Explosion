@@ -17,6 +17,7 @@ namespace Megumin
     /// https://developercommunity.visualstudio.com/t/visual-studio-tools-for-unity-use-unityenginetoolt/683906
     /// https://developercommunity.visualstudio.com/t/Visual-Studio-Tools-for-Unity:-Custom-At/10187477?ftype=idea
     /// </summary>
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class HelpBoxAttribute : PropertyAttribute
     {
 
