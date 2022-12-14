@@ -352,6 +352,8 @@
             unity 项目中或者unity插件就无法避免要从 PropertyAttribute，不过能用unity原生特性就尽量原生。
             第三方插件与行为树做兼容时就不必引用你的包。
             这样很多特性就不必定义了。少即是多。
+            既然设计理念是一个特性可以用于不同的功能，那么为了方式冲突，特性中应该增几个一个识别字段 Feature,平时不用保持为空。
+            冲突时可以增加一个标记用于检测。检测 Feature == null || Feature.Contain “FeatureName” 才确认执行特性。
             同理。通用枚举也尽量不要用，改用string或者int，跨模块传参时更方便，避免不必要耦合。
             接口则不在这个范围，定义接口通常都是十分确切的功能。除非功能和.net底层接口重合。
             C# 泛型没有成员约束，不然就不用定义接口了。
@@ -359,14 +361,32 @@
             别名
             </summary>
         </member>
+        <member name="P:Megumin.AliasAttribute.Feature">
+            <summary>
+            <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+            检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+            </summary>
+        </member>
         <member name="P:Megumin.AliasAttribute.Alias">
             <summary>
             别名
             </summary>
         </member>
+        <member name="P:Megumin.ShortNameAttribute.Feature">
+            <summary>
+            <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+            检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+            </summary>
+        </member>
         <member name="P:Megumin.ShortNameAttribute.Name">
             <summary>
             别名
+            </summary>
+        </member>
+        <member name="P:Megumin.SupportTypesAttribute.Feature">
+            <summary>
+            <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+            检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
             </summary>
         </member>
         <member name="P:Megumin.SupportTypesAttribute.IncludeChildInOtherAssembly">
@@ -400,6 +420,12 @@
             生成名字时的生成方式.
             </summary>
         </member>
+        <member name="P:Megumin.GenarateNameAttribute.Feature">
+            <summary>
+            <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+            检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+            </summary>
+        </member>
         <member name="P:Megumin.GenarateNameAttribute.PrefixType">
             <summary>
             None,
@@ -412,10 +438,22 @@
             在unity中,仅编辑器有效,回调标记的方法
             </summary>
         </member>
+        <member name="P:Megumin.OnF1Attribute.Feature">
+            <summary>
+            <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+            检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
+            </summary>
+        </member>
         <member name="T:Megumin.OnKeyAttribute">
             <summary>
             <para>todo, 现在仅部分按键有效 </para>
             在unity中,仅编辑器有效,回调标记的方法
+            </summary>
+        </member>
+        <member name="P:Megumin.OnKeyAttribute.Feature">
+            <summary>
+            <para>设计理念是一个特性可以用于不同的功能，冲突时这个标记用于检测。</para>
+            检测 <![CDATA[string.IsNullOrEmpty(Feature) || Feature.Contains("FeatureName")]]> 才确认执行特性。
             </summary>
         </member>
         <member name="T:Megumin.CDTimer`1">
@@ -1496,7 +1534,13 @@
             当前键值任一发生改变时被调用
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:Megumin.IMatcher`2" -->
+        <member name="T:Megumin.IMatcher`2">
+            <summary>
+            匹配器
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="K"></typeparam>
+        </member>
         <member name="M:Megumin.IMatcher`2.Match(`0,`1)">
             <summary>
             检测两个对象是否可以匹配

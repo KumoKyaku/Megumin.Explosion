@@ -198,6 +198,8 @@ namespace UnityEditor.Megumin
             /// </summary>
             public int EnableMode { get; set; } = 0;
             public TooltipAttribute Tooltip { get; internal set; }
+            public string HelpBox { get; internal set; }
+            public MessageType HelpBoxMessageType { get; internal set; }
         }
 
         public delegate object ParameterDrawer(ParameterInfo parameter, object val);
@@ -531,12 +533,6 @@ namespace UnityEditor.Megumin
         public static void DrawButtonforMethod(Object target,
                                                DrawMethod drawMethod)
         {
-
-            var helpBoxAttribute = drawMethod.Method.GetCustomAttribute<HelpBoxAttribute>();
-            if (helpBoxAttribute != null)
-            {
-                EditorGUILayout.HelpBox(helpBoxAttribute.Text, (MessageType)helpBoxAttribute.MessageType);
-            }
             DrawButtonforMethod(target, drawMethod.Method, drawMethod.State, drawMethod.EnableMode, drawMethod);
         }
 
@@ -559,6 +555,12 @@ namespace UnityEditor.Megumin
         {
             ///方法绘制间隔
             EditorGUILayout.Space(1);
+
+            if (!string.IsNullOrEmpty(drawMethod?.HelpBox))
+            {
+                EditorGUILayout.HelpBox(drawMethod.HelpBox, drawMethod.HelpBoxMessageType);
+            }
+
             EditorGUILayout.BeginHorizontal();
 
             using (new EditorGUI.DisabledScope(methodInfo.GetParameters().Length <= 0))
@@ -737,6 +739,13 @@ namespace UnityEditor.Megumin
             foreach (var item in list)
             {
                 item.Tooltip = item.Method.GetCustomAttribute<TooltipAttribute>();
+                var helpBoxAttribute = item.Method.GetCustomAttribute<HelpBoxAttribute>();
+                if (helpBoxAttribute != null)
+                {
+                    item.HelpBox = helpBoxAttribute.Text;
+                    item.HelpBoxMessageType = (MessageType)helpBoxAttribute.MessageType;
+                }
+
             }
         }
 
