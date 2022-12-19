@@ -124,7 +124,7 @@ public class TestLog : MonoBehaviour
         this.LogCallerMemberName();
     }
 
-    [Button(true)]
+    [Button(1)]
     public void Test2(int? loger)
     {
         this.LogCallerMemberName();

@@ -138,6 +138,8 @@ namespace Megumin
             OnlyPlaying = onlyPlaying;
         }
 
+
+        /// <inheritdoc cref="EnableMode"/>
         public ButtonAttribute(int enableMode)
         {
             EnableMode = enableMode;
