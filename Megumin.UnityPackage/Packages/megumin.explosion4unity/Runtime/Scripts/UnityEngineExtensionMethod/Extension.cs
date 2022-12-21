@@ -199,9 +199,27 @@ namespace UnityEngine
             UnityEngine.Debug.LogError($"{funcName} NotImplemented.    [Instead throw Exception]");
         }
 
-        public static string LogCallerMemberName(this Object obj, [CallerMemberName] string func = default)
+        public static string LogCallerMemberName(this Object obj,
+                                                 object append = null,
+                                                 [CallerMemberName] string func = default)
         {
-            Debug.Log(func);
+            Debug.Log($"{func}----{append}");
+            return func;
+        }
+
+        public static string LogFrameID_CallerMemberName(this Object obj,
+                                                         object append = null,
+                                                         [CallerMemberName] string func = default)
+        {
+            Debug.Log($"[FrameID:{Time.frameCount}]----{func}----{append}");
+            return func;
+        }
+
+        public static string LogFrameID_Name_CallerMemberName(this Object obj,
+                                                              object append = null,
+                                                              [CallerMemberName] string func = default)
+        {
+            Debug.Log($"[FrameID:{Time.frameCount}]----Object:{obj.name}----{obj.GetType().Name}.{func}----{append}");
             return func;
         }
 

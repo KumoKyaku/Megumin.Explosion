@@ -1,25 +1,42 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Megumin
 {
-
+    [DefaultExecutionOrder(-10)]
     public class OrderofExecutionTest : MonoBehaviour
     {
+        public bool ApplyTimeScaleAndTargetFrameRate = false;
+        [Range(0.01f, 1)]
+        public float TimeScale = 1f;
+        [Range(0.01f, 1)]
+        public float FixedTimeStep = 0.5f;
+        [Range(1, 60)]
+        public int TargetFrameRate = 4;
+
         [System.Diagnostics.DebuggerHidden]
         [System.Diagnostics.DebuggerStepThrough]
-        public string LogCallerMemberName([CallerMemberName] string func = default)
+        public string LogCallerMemberName(object append = null, [CallerMemberName] string func = default)
         {
-            Debug.Log(func);
+            Debug.Log($"[FrameID:{Time.frameCount}]----Object:{name}----{this.GetType().Name}.{func}----{append}");
             return func;
+        }
+
+        void ApplySetting()
+        {
+            if (Application.isPlaying && ApplyTimeScaleAndTargetFrameRate)
+            {
+                Time.timeScale = TimeScale;
+                Time.fixedDeltaTime = FixedTimeStep;
+                Application.targetFrameRate = TargetFrameRate;
+            }
         }
 
         // 加载脚本实例时调用 Awake
         private void Awake()
         {
             LogCallerMemberName();
+            ApplySetting();
         }
 
         // 当对象已启用并处于活动状态时调用此函数
@@ -40,10 +57,14 @@ namespace Megumin
             LogCallerMemberName();
         }
 
+        public bool Update_Log = false;
         // 如果 MonoBehaviour 已启用，则在每一帧都调用 Update
         private void Update()
         {
-            //LogCallerMemberName();
+            if (Update_Log)
+            {
+                LogCallerMemberName();
+            }
         }
 
 
@@ -54,17 +75,24 @@ namespace Megumin
         }
 
 
-
+        public bool FixedUpdate_Log = false;
         // 如果启用 MonoBehaviour，则每个固定帧速率的帧都将调用此函数
         private void FixedUpdate()
         {
-
+            if (FixedUpdate_Log)
+            {
+                LogCallerMemberName();
+            }
         }
 
+        public bool LateUpdate_Log = false;
         // 如果启用 Behaviour，则在每一帧都将调用 LateUpdate
         private void LateUpdate()
         {
-
+            if (LateUpdate_Log)
+            {
+                LogCallerMemberName();
+            }
         }
 
         public bool OnApplicationFocus_Log = false;
@@ -127,6 +155,8 @@ namespace Megumin
             {
                 LogCallerMemberName();
             }
+
+            ApplySetting();
         }
 
         // 回叫在转换子级发生更改后发送到图形
