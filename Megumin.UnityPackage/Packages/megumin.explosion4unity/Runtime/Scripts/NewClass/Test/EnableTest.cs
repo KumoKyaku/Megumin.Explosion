@@ -4,7 +4,16 @@ using UnityEngine;
 
 namespace Megumin
 {
+    /// TODO 有时间找下C++源码验证一下。
     /// <summary>
+    /// Awake 和 OnEnable 在同一个批次，多个gameobject 同时激活，初始化场景
+    ///     Behaviour1.Awake
+    ///     Behaviour1.OnEnable
+    ///     Behaviour2.Awake
+    ///     Behaviour2.OnEnable
+    ///     Behaviour3.Awake
+    ///     Behaviour3.OnEnable
+    /// 
     /// 简单的说，OnEnable/OnDisable 在 Behaviour.enabled = true/false时立即执行。
     /// Start 一定在 FixedUpdate/Update/LateUpdate前执行一次。具体执行时间不确定。
     /// 当在一个Behaviour1中的Awake/OnEnable中将另一个Behaviour2.enabled = true时，

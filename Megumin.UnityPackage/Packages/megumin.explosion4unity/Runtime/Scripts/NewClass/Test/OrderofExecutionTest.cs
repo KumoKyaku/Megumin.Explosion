@@ -32,17 +32,26 @@ namespace Megumin
             }
         }
 
+        public bool Awake_Log = true;
         // 加载脚本实例时调用 Awake
         private void Awake()
         {
-            LogCallerMemberName();
+            if (Awake_Log)
+            {
+                LogCallerMemberName();
+            }
+
             ApplySetting();
         }
 
+        public bool OnEnable_Log = true;
         // 当对象已启用并处于活动状态时调用此函数
         private void OnEnable()
         {
-            LogCallerMemberName();
+            if (OnEnable_Log)
+            {
+                LogCallerMemberName();
+            }
         }
 
         // 重置为默认值
@@ -51,10 +60,14 @@ namespace Megumin
             LogCallerMemberName();
         }
 
+        public bool Start_Log = true;
         // 仅在首次调用 Update 方法之前调用 Start
         private void Start()
         {
-            LogCallerMemberName();
+            if (Start_Log)
+            {
+                LogCallerMemberName();
+            }
         }
 
         public bool Update_Log = false;
