@@ -160,10 +160,10 @@ namespace Megumin
         {
             if (CreateThirdPartyNotices)
             {
-                var filepath = Path.Combine(path, "ThirdPartyNotices.md");
+                var filepath = Path.Combine(path, "Third Party Notices.md");
                 if (File.Exists(filepath))
                 {
-                    Debug.LogWarning("ThirdPartyNotices.md exists");
+                    Debug.LogWarning("Third Party Notices.md exists");
                 }
                 else
                 {
