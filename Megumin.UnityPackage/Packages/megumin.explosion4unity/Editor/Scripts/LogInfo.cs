@@ -34,11 +34,11 @@ namespace Megumin
         [MenuItem("Tools/LogInfo/ActiveCustomEditorType")]
         static void LogActiveCustomEditorType()
         {
-            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(Object), false);
-            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(Component), false);
-            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(Behaviour), false);
-            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(MonoBehaviour), false);
-            MeguminEditorUtility.FindCustomEditorTypeByType(typeof(ScriptableObject), false);
+            MeguminExtension_2B5D73B2.FindCustomEditorTypeByType(typeof(Object), false);
+            MeguminExtension_2B5D73B2.FindCustomEditorTypeByType(typeof(Component), false);
+            MeguminExtension_2B5D73B2.FindCustomEditorTypeByType(typeof(Behaviour), false);
+            MeguminExtension_2B5D73B2.FindCustomEditorTypeByType(typeof(MonoBehaviour), false);
+            MeguminExtension_2B5D73B2.FindCustomEditorTypeByType(typeof(ScriptableObject), false);
         }
     }
 }

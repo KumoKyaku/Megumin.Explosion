@@ -169,7 +169,7 @@ namespace UnityEngine
         /// <returns></returns>
         public static string GetUnityProjectLink(this Type type)
         {
-#if MEGUMIN_MONOCECIL
+#if MEGUMIN_MONOCECIL && UNITY_EDITOR
             static (string rpath, int StartLine) GetPath(Mono.Cecil.TypeDefinition t)
             {
                 foreach (var method in t.Methods)
