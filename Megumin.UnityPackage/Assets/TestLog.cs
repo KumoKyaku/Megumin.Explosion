@@ -17,6 +17,8 @@ public class TestLog : MonoBehaviour
     public int IntValue;
     [ReadOnlyInInspector]
     public int ReadOnlyIntValue = 9999;
+    [ProtectedInInspector]
+    public GameObject ProtectedGameObj;
     public Enableable<int> IntValue2 = new Enableable<int>(false, 20);
     public EnableFrame IntValue3 = new EnableFrame() { Enabled = false, Value = 30 };
 

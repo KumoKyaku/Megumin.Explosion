@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -19,25 +20,86 @@ namespace Megumin
 
             wizard.minSize = new Vector2(k_WindowWidth, 400);
 
-            Vector2 position = Vector2.zero;
-            SceneView sceneView = SceneView.lastActiveSceneView;
+            //Vector2 position = Vector2.zero;
+            //SceneView sceneView = SceneView.lastActiveSceneView;
 
-            if (sceneView != null)
+            //if (sceneView != null)
+            //{
+            //    position = new Vector2(sceneView.position.x, sceneView.position.y);
+            //}
+
+            //wizard.position = new Rect(position.x + k_ScreenSizeWindowBuffer, position.y + k_ScreenSizeWindowBuffer, k_WindowWidth, Mathf.Min(Screen.currentResolution.height - k_ScreenSizeWindowBuffer, k_MaxWindowHeight));
+
+            wizard.Show();
+        }
+
+        class Prop
+        {
+            public Prop() { }
+
+            public Prop(Func<string, string> overrideFunc)
             {
-                position = new Vector2(sceneView.position.x, sceneView.position.y);
+                GetOverrideValue = overrideFunc;
             }
 
-            wizard.position = new Rect(position.x + k_ScreenSizeWindowBuffer, position.y + k_ScreenSizeWindowBuffer, k_WindowWidth, Mathf.Min(Screen.currentResolution.height - k_ScreenSizeWindowBuffer, k_MaxWindowHeight));
-            wizard.Show();
+            public bool IsOverride = false;
+            public string Label = "";
+            public string OverrideValue = "";
+
+            public string defuaultValue;
+            public Func<string, string> GetOverrideValue;
+
+            internal void OnGUI(string input)
+            {
+                EditorGUILayout.BeginHorizontal();
+                IsOverride = EditorGUILayout.Toggle(IsOverride, GUILayout.Width(17));
+
+                EditorGUILayout.LabelField(Label, GUILayout.Width(EditorGUIUtility.labelWidth - 21));
+                if (IsOverride)
+                {
+                    OverrideValue = EditorGUILayout.TextField(OverrideValue);
+                }
+                else
+                {
+                    if (GetOverrideValue == null)
+                    {
+                        defuaultValue = input;
+                    }
+                    else
+                    {
+                        defuaultValue = GetOverrideValue?.Invoke(input);
+                    }
+
+                    if (string.IsNullOrEmpty(OverrideValue))
+                    {
+                        OverrideValue = defuaultValue;
+                    }
+                    EditorGUILayout.LabelField(defuaultValue, new GUIStyle("SelectionRect"));
+                }
+
+                EditorGUILayout.EndHorizontal();
+            }
+
+            public override string ToString()
+            {
+                return IsOverride ? OverrideValue : defuaultValue;
+            }
         }
 
         readonly GUIContent m_NameContent = new GUIContent("PackageName");
         string InputPackageName = "TestPackage";
+
+        Prop DisplayName = new Prop(static (str) => $"Megumin {str}") { Label = nameof(DisplayName) };
+
+        Prop FolderName = new Prop() { Label = nameof(FolderName) };
+
+        Prop AsmdefName = new Prop(static str => $"Megumin.GameFramework.{str}") { Label = nameof(AsmdefName) };
+
         bool CreateRuntimeAsmdef = true;
         bool CreateEditorAsmdef = false;
         string NameExtension = "com.megumin";
-        bool AutoFullName = true;
-        string FullName = null;
+        //bool AutoFullName = true;
+        //string FullName = null;
         bool CreateReadme = true;
         bool CreateChangeLog = true;
         /// <summary>
@@ -49,10 +111,6 @@ namespace Megumin
         void OnGUI()
         {
             InputPackageName = EditorGUILayout.TextField(m_NameContent, InputPackageName);
-            var path = Path.GetFullPath($"{MeguminUtility4Unity.PackagesPath}/{InputPackageName}");
-
-            CreateRuntimeAsmdef = EditorGUILayout.Toggle("CreateRuntimeAsmdef", CreateRuntimeAsmdef);
-            CreateEditorAsmdef = EditorGUILayout.Toggle("CreateEditorAsmdef", CreateEditorAsmdef);
 
             EditorGUILayout.Separator();
             EditorGUILayout.HelpBox("NameExtension用于包全名前缀,自动变为小写.", MessageType.Info);
@@ -62,18 +120,36 @@ namespace Megumin
             }
             NameExtension = EditorGUILayout.TextField("NameExtension", NameExtension);
 
+
             EditorGUILayout.Separator();
-            EditorGUILayout.HelpBox("FullName用于创建asmdef程序集文件名,name和rootNamespace。", MessageType.Info);
-            AutoFullName = EditorGUILayout.Toggle("AutoFullName", AutoFullName);
-            if (AutoFullName)
+            DisplayName.OnGUI(InputPackageName);
+            FolderName.OnGUI($"{NameExtension?.ToLower()}.{InputPackageName.ToLower()}");
+            var path = Path.GetFullPath($"{MeguminUtility4Unity.PackagesPath}/{FolderName}");
+
+            using (new EditorGUI.DisabledScope(!CreateRuntimeAsmdef))
             {
-                FullName = $"Megumin.GameFramework.{InputPackageName}";
-                EditorGUILayout.LabelField("FullName", FullName);
+                AsmdefName.OnGUI(InputPackageName);
             }
-            else
-            {
-                FullName = EditorGUILayout.TextField("FullName", FullName);
-            }
+
+            CreateRuntimeAsmdef = EditorGUILayout.Toggle("CreateRuntimeAsmdef", CreateRuntimeAsmdef);
+            CreateEditorAsmdef = EditorGUILayout.Toggle("CreateEditorAsmdef", CreateEditorAsmdef);
+
+            //EditorGUILayout.Separator();
+            //EditorGUILayout.HelpBox("FullName用于创建asmdef程序集文件名,name和rootNamespace。", MessageType.Info);
+
+
+            //AutoFullName = EditorGUILayout.Toggle("AutoFullName", AutoFullName);
+            //if (AutoFullName)
+            //{
+            //    FullName = $"Megumin.GameFramework.{InputPackageName}";
+            //    EditorGUILayout.LabelField("FullName", FullName);
+            //}
+            //else
+            //{
+            //    FullName = EditorGUILayout.TextField("FullName", FullName);
+            //}
+
+
 
             EditorGUILayout.Separator();
             CreateReadme = EditorGUILayout.Toggle(nameof(CreateReadme), CreateReadme);
@@ -87,13 +163,15 @@ namespace Megumin
             EditorGUILayout.Separator();
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Delete", GUILayout.Width(60f)))
+            var hasPath = Directory.Exists(path);
+
+            using (new EditorGUI.DisabledScope(!hasPath))
             {
-                if (Directory.Exists(path))
+                if (GUILayout.Button("Delete", GUILayout.Width(60f)))
                 {
                     if (EditorUtility.DisplayDialog("删除确认",
-                                                    "确定要删除本地包么?\n操作不可恢复,请做好备份或使用版本工具.",
-                                                    "确定", "取消"))
+                                                        "确定要删除本地包么?\n操作不可恢复,请做好备份或使用版本工具.",
+                                                        "确定", "取消"))
                     {
                         Directory.Delete(path, true);
                         RefreshAsset();
@@ -104,12 +182,25 @@ namespace Megumin
             GUILayout.FlexibleSpace();
             GUILayout.Space(5);
 
-            if (GUILayout.Button("Create", GUILayout.Width(60f)))
+            if (hasPath)
             {
-                CreatePackageFolder(path);
-                RefreshAsset();
-                Close();
+                if (GUILayout.Button("Append", new GUIStyle("flow node 5 on"), GUILayout.Height(30), GUILayout.Width(60f)))
+                {
+                    CreatePackageFolder(path);
+                    RefreshAsset();
+                    Close();
+                }
             }
+            else
+            {
+                if (GUILayout.Button("Create", new GUIStyle("flow node 1 on"), GUILayout.Height(30), GUILayout.Width(60f)))
+                {
+                    CreatePackageFolder(path);
+                    RefreshAsset();
+                    Close();
+                }
+            }
+
 
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(5);
@@ -248,7 +339,7 @@ PackageWizard Fast Created.
             string packageInfo =
 $@"{{
     ""name"": ""{NameExtension.ToLower()}.{InputPackageName.ToLower()}"",
-    ""displayName"": ""Megumin {InputPackageName}"",
+    ""displayName"": ""{DisplayName}"",
     
     ""version"": ""0.0.1"",
     ""unity"": ""{version[0]}.{version[1]}"",
@@ -287,8 +378,8 @@ $@"{{
             {
                 string runtimeasmdef =
 $@"{{
-    ""name"": ""{FullName}"",
-    ""rootNamespace"": ""{FullName}"",
+    ""name"": ""{AsmdefName}"",
+    ""rootNamespace"": ""{AsmdefName}"",
     ""references"": [],
     ""includePlatforms"": [],
     ""excludePlatforms"": [],
@@ -301,7 +392,7 @@ $@"{{
     ""noEngineReferences"": false
 }}";
 
-                File.WriteAllText(path + "/Runtime" + $"/{FullName}.asmdef", runtimeasmdef);
+                File.WriteAllText(path + "/Runtime" + $"/{AsmdefName}.asmdef", runtimeasmdef);
 
                 //无法找到构造函数
                 //AssemblyDefinitionAsset assembly =
@@ -332,7 +423,7 @@ $@"{{
                     Directory.CreateDirectory(path);
                 }
 
-                var editorNamespace = FullName;
+                var editorNamespace = AsmdefName.ToString();
                 if (!string.IsNullOrEmpty(editorNamespace))
                 {
                     editorNamespace = $"{editorNamespace}.Editor";
@@ -351,7 +442,7 @@ $@"{{
     ""name"": ""{editorNamespace}"",
     ""rootNamespace"": ""{editorNamespace}"",
     ""references"": [
-        ""{(CreateRuntimeAsmdef ? FullName : "")}""
+        ""{(CreateRuntimeAsmdef ? AsmdefName : "")}""
     ],
     ""includePlatforms"": [
         ""Editor""

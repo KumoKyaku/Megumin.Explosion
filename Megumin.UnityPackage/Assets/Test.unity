@@ -376,6 +376,7 @@ MonoBehaviour:
   ret: 
   IntValue: 55
   ReadOnlyIntValue: 9999
+  ProtectedGameObj: {fileID: 1309913110}
   IntValue2:
     Enabled: 0
     Value: 0
