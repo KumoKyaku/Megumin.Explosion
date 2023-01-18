@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,6 +13,13 @@ namespace Megumin
         static void Init()
         {
             PackageManagerExtensions.RegisterExtension(new Ex());
+        }
+
+        //[MenuItem("Tools/Test")]
+        static void Test()
+        {
+            Client.Embed("com.unity.ugui");
+            //没找对对应UnEmbed.
         }
 
         class Ex : IPackageManagerExtension
@@ -46,17 +54,23 @@ namespace Megumin
                 opengit.style.width = width;
                 buttons.Add(opengit);
 
+                VisualElement buttonsLine2 = new VisualElement();
+                ExtentionRoot.Add(buttonsLine2);
+
+                buttonsLine2.style.flexDirection = FlexDirection.Row;
+                buttonsLine2.style.flexWrap = Wrap.Wrap;
+
                 move2Local = new Button();
-                move2Local.text = "Move To Packages Folder";
+                move2Local.text = "Embed";
                 move2Local.clicked += Move2PackagesFolder_clicked;
                 move2Local.style.width = width;
-                buttons.Add(move2Local);
+                buttonsLine2.Add(move2Local);
 
                 move2Cache = new Button();
-                move2Cache.text = "Move To Library Folder";
+                move2Cache.text = "UnEmbed";
                 move2Cache.clicked += Move2LibraryFolder_clicked;
                 move2Cache.style.width = width;
-                buttons.Add(move2Cache);
+                buttonsLine2.Add(move2Cache);
 
                 return ExtentionRoot;
             }
