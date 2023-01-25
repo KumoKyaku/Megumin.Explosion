@@ -114,6 +114,18 @@ namespace Megumin
         public int Indent { get; internal set; } = 0;
         public List<string> Lines { get; set; } = new List<string>();
 
+        /// <summary>
+        /// 添加一个空行
+        /// </summary>
+        /// <param name="count"></param>
+        public void PushBlankLines(int count = 1)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                Push("");
+            }
+        }
+
         public void Push(string code)
         {
             if (!string.IsNullOrEmpty(code))
