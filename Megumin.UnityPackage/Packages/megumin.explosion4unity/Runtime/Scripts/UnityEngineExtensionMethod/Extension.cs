@@ -50,7 +50,7 @@ namespace UnityEngine
 
 
         /// <summary>
-        /// 这里插入一个EditorUpdate达到刷效果，否则编辑器模式下脚本Update调用不及时。
+        /// 这里插入一个EditorUpdate达到刷新效果，否则编辑器模式下脚本Update调用不及时。
         /// </summary>
         /// <param name="obj"></param>
         [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -59,9 +59,54 @@ namespace UnityEngine
 
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+            RepaintWindows(obj);
 #endif
 
         }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        public static void RepaintWindows(this UnityEngine.Object obj, string title = "Inspector")
+        {
+
+#if UNITY_EDITOR
+            var resultWindows = FindWindows<EditorWindow>(title);
+            
+            foreach (var item in resultWindows)
+            {
+                item.Repaint();
+            }
+#endif
+
+        }
+
+#if UNITY_EDITOR
+
+        public static IEnumerable<EditorWindow> FindWindowsByTypeName(string windowTypeName)
+        {
+            EditorWindow[] array = Resources.FindObjectsOfTypeAll(typeof(EditorWindow)) as EditorWindow[];
+            var resultWindows = from wnd in array
+                                where wnd.GetType().Name == windowTypeName
+                                select wnd;
+            return resultWindows;
+        }
+
+        public static IEnumerable<T> FindWindows<T>(string title = null)
+            where T : EditorWindow
+        {
+            T[] array = Resources.FindObjectsOfTypeAll(typeof(T)) as T[];
+
+            if (string.IsNullOrEmpty(title))
+            {
+                return array;
+            }
+
+            var resultWindows = from wnd in array
+                                where wnd.titleContent.text == title
+                                select wnd;
+            return resultWindows;
+        }
+
+#endif
 
         /// <summary>
         /// 这里插入一个编辑器刷新，导入新文件等，否则编辑器模式下脚本Update调用不及时。

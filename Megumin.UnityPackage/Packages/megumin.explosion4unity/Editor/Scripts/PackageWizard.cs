@@ -358,9 +358,9 @@ $@"{{
     ],
 
     ""author"": {{
-        ""name"": ""Unity"",
-        ""email"": ""unity@example.com"",
-        ""url"": ""https://www.unity3d.com""
+        ""name"": ""云却"",
+        ""email"": ""479813005@qq.com"",
+        ""url"": ""https://github.com/KumoKyaku""
     }}
 }}
 
