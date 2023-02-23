@@ -10,7 +10,7 @@ namespace Megumin
     public class PackageWizard : EditorWindow
     {
         const float k_WindowWidth = 600f;
-        const float k_MaxWindowHeight = 800f;
+        const float k_MaxWindowHeight = 420f;
         const float k_ScreenSizeWindowBuffer = 50f;
 
         [MenuItem("Tools/Package Wizard...")]
@@ -18,7 +18,7 @@ namespace Megumin
         {
             PackageWizard wizard = GetWindow<PackageWizard>(true, "Package Wizard", true);
 
-            wizard.minSize = new Vector2(k_WindowWidth, 400);
+            wizard.minSize = new Vector2(k_WindowWidth, k_MaxWindowHeight);
 
             //Vector2 position = Vector2.zero;
             //SceneView sceneView = SceneView.lastActiveSceneView;
@@ -100,6 +100,9 @@ namespace Megumin
         string NameExtension = "com.megumin";
         //bool AutoFullName = true;
         //string FullName = null;
+        bool CreateTestsFolder = true;
+        bool CreateSamplesFolder = false;
+        bool CreateDemosFolder = false;
         bool CreateReadme = true;
         bool CreateChangeLog = true;
         /// <summary>
@@ -152,6 +155,11 @@ namespace Megumin
 
 
             EditorGUILayout.Separator();
+            CreateTestsFolder = EditorGUILayout.Toggle(nameof(CreateTestsFolder), CreateTestsFolder);
+            CreateSamplesFolder = EditorGUILayout.Toggle(nameof(CreateSamplesFolder), CreateSamplesFolder);
+            CreateDemosFolder = EditorGUILayout.Toggle(nameof(CreateDemosFolder), CreateDemosFolder);
+
+            EditorGUILayout.Separator();
             CreateReadme = EditorGUILayout.Toggle(nameof(CreateReadme), CreateReadme);
             CreateChangeLog = EditorGUILayout.Toggle(nameof(CreateChangeLog), CreateChangeLog);
             using (new EditorGUI.DisabledScope(true))
@@ -186,7 +194,7 @@ namespace Megumin
             {
                 if (GUILayout.Button("Append", new GUIStyle("flow node 5 on"), GUILayout.Height(30), GUILayout.Width(60f)))
                 {
-                    CreatePackageFolder(path);
+                    CreatePackage(path);
                     RefreshAsset();
                     Close();
                 }
@@ -195,7 +203,7 @@ namespace Megumin
             {
                 if (GUILayout.Button("Create", new GUIStyle("flow node 1 on"), GUILayout.Height(30), GUILayout.Width(60f)))
                 {
-                    CreatePackageFolder(path);
+                    CreatePackage(path);
                     RefreshAsset();
                     Close();
                 }
@@ -214,7 +222,7 @@ namespace Megumin
             var process = System.Diagnostics.Process.Start(MeguminUtility4Unity.PackagesPath);
         }
 
-        private void CreatePackageFolder(string path)
+        private void CreatePackage(string path)
         {
             if (string.IsNullOrEmpty(InputPackageName))
             {
@@ -222,21 +230,29 @@ namespace Megumin
                 return;
             }
 
-            if (Directory.Exists(path))
-            {
-                Debug.LogError($"包已存在");
-            }
-            else
-            {
-                Directory.CreateDirectory(path);
-                Directory.CreateDirectory(path + "/Editor");
-                Directory.CreateDirectory(path + "/Runtime");
-                Directory.CreateDirectory(path + "/Tests");
+            CreateDirIfNotExist(path);
 
-                CreatePackageInfoFile(path);
+            CreateDirIfNotExist(path + "/Editor");
+            CreateDirIfNotExist(path + "/Runtime");
 
-                CreateRuntimeAsmdefFile(path);
+            if (CreateTestsFolder)
+            {
+                CreateDirIfNotExist(path + "/Tests");
             }
+
+            if (CreateSamplesFolder)
+            {
+                CreateDirIfNotExist(path + "/Samples");
+            }
+
+            if (CreateDemosFolder)
+            {
+                CreateDirIfNotExist(path + "/Demos");
+            }
+
+            CreatePackageInfoFile(path);
+
+            CreateRuntimeAsmdefFile(path);
 
             CreateEditorAsmdefFile(path);
 
@@ -245,6 +261,18 @@ namespace Megumin
             CreateChangeLogFile(path);
 
             CreateCreateThirdPartyNoticesFile(path);
+        }
+
+        public void CreateDirIfNotExist(string path)
+        {
+            if (Directory.Exists(path))
+            {
+
+            }
+            else
+            {
+                Directory.CreateDirectory(path);
+            }
         }
 
         private void CreateCreateThirdPartyNoticesFile(string path)
@@ -335,6 +363,13 @@ PackageWizard Fast Created.
 
         private void CreatePackageInfoFile(string path)
         {
+            var filePath = path + "/package.json";
+
+            if (File.Exists(filePath))
+            {
+                return;
+            }
+
             var version = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion().Split(".");
             string packageInfo =
 $@"{{
@@ -369,13 +404,20 @@ $@"{{
 
 ";
 
-            File.WriteAllText(path + "/package.json", packageInfo);
+            File.WriteAllText(filePath, packageInfo);
         }
 
         private void CreateRuntimeAsmdefFile(string path)
         {
             if (CreateRuntimeAsmdef)
             {
+                var filePath = path + "/Runtime" + $"/{AsmdefName}.asmdef";
+
+                if (File.Exists(filePath))
+                {
+                    return;
+                }
+
                 string runtimeasmdef =
 $@"{{
     ""name"": ""{AsmdefName}"",
@@ -392,7 +434,7 @@ $@"{{
     ""noEngineReferences"": false
 }}";
 
-                File.WriteAllText(path + "/Runtime" + $"/{AsmdefName}.asmdef", runtimeasmdef);
+                File.WriteAllText(filePath, runtimeasmdef);
 
                 //无法找到构造函数
                 //AssemblyDefinitionAsset assembly =
