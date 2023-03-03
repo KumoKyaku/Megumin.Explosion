@@ -287,7 +287,10 @@ public static partial class MeguminEditorUtility
 
                     myProcess.StartInfo.UseShellExecute = true; //must true
                     myProcess.StartInfo.FileName = "code";
-                    myProcess.StartInfo.Arguments = path;
+                    
+                    //https://stackoverflow.com/a/27910242/15201132 修复路径中含有空格问题
+                    myProcess.StartInfo.Arguments = $"\"{path}\""; 
+                    
                     myProcess.StartInfo.CreateNoWindow = true;
                     myProcess.StartInfo.ErrorDialog = true;
                     myProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
