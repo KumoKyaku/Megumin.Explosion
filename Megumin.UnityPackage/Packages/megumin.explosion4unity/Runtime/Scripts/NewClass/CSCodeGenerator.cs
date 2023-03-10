@@ -57,6 +57,7 @@ namespace Megumin
             stringBuilder.Append($"///生成器类型：$(CodeGenericType)\n");
             stringBuilder.Append($"///配置源文件：$(CodeGenericSourceFilePath)\n");
             stringBuilder.Append($"///********************************************************************************************************************************\n");
+            stringBuilder.Append($"\n");
             stringBuilder.Append(txt);
             txt = stringBuilder.ToString();
 

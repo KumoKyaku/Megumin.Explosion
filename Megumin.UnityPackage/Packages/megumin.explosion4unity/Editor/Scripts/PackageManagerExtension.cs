@@ -117,7 +117,15 @@ namespace Megumin
                         Directory.Delete(desPath);
                     }
 
-                    Directory.Move(current.resolvedPath, desPath);
+                    try
+                    {
+                        Directory.Move(current.resolvedPath, desPath);
+                    }
+                    catch (System.IO.IOException e)
+                    {
+                        Debug.Log($"Close IDE!!!        ".HtmlColor(HexColor.BarnRed) + e.ToString());
+                    }
+
                     System.Diagnostics.Process.Start(desPath);
                     MeguminEditorUtility.SyncSolution();
                 }
