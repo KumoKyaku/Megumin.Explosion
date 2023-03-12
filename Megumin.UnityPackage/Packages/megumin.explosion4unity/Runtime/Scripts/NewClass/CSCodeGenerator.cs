@@ -186,10 +186,6 @@ namespace Megumin
             }
         }
 
-
-        [Obsolete]
-        public void PushSummaryNote(string comment) => PushComment(comment);
-
         public void PushComment(string comment)
         {
             if (comment == null || comment.Length == 0)
@@ -203,14 +199,11 @@ namespace Megumin
             }
 
             //增加注释
-            Push("");
+            //Push("");  //不要自动添加空行
             Push(@$"/// <summary>");
             Push(@$"/// {comment}");
             Push(@$"/// </summary>");
         }
-
-        [Obsolete]
-        public void PushSummaryNote(params string[] comments) => PushComment(comments);
 
         public void PushComment(params string[] comments)
         {
@@ -225,7 +218,7 @@ namespace Megumin
             }
 
             //增加注释
-            Push("");
+            //Push("");  //不要自动添加空行
             Push(@$"/// <summary>");
             foreach (var item in comments)
             {
@@ -252,12 +245,30 @@ namespace Megumin
         }
 
         /// <summary>
-        /// 结束一个区域并附带分号
+        /// 结束一个区域,附加一个字符，通常用于 "," 或者 ";"
+        /// </summary>
+        public void EndScopeWith(string str)
+        {
+            Indent--;
+            Push(@$"}}{str}");
+        }
+
+        /// <summary>
+        /// 结束一个区域并附带 ";"
         /// </summary>
         public void EndScopeWithSemicolon()
         {
             Indent--;
             Push(@$"}};");
+        }
+
+        /// <summary>
+        /// 结束一个区域并附带 ","
+        /// </summary>
+        public void EndScopeWithComma()
+        {
+            Indent--;
+            Push(@$"}},");
         }
 
         /// <summary>
@@ -281,9 +292,10 @@ namespace Megumin
             return result;
         }
 
-        class Scope : IDisposable
+        public class Scope : IDisposable
         {
             CSCodeGenerator g;
+            public string EndWith { get; set; }
             public Scope(CSCodeGenerator g)
             {
                 this.g = g;
@@ -291,7 +303,7 @@ namespace Megumin
             }
             public void Dispose()
             {
-                g.EndScope();
+                g.EndScopeWith(EndWith);
             }
         }
 
@@ -310,6 +322,11 @@ namespace Megumin
             {
                 return new Scope(this);
             }
+        }
+
+        public Scope GetNewScope(string endWith = null)
+        {
+            return new Scope(this) { EndWith = endWith };
         }
     }
 
