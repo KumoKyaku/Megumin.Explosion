@@ -266,13 +266,19 @@ namespace Megumin
         /// <returns></returns>
         public override string GetCodeString()
         {
-            string txt = "";
+            //string txt = "";
+            StringBuilder stringBuilder = new();
             foreach (var item in Lines)
             {
-                txt += item + NewLine;
+                //txt += item + NewLine;
+                stringBuilder.Append(item);
+                stringBuilder.Append(NewLine);
             }
 
-            return txt;
+            var result = stringBuilder.ToString();
+
+            //var v = txt == result;
+            return result;
         }
 
         class Scope : IDisposable
