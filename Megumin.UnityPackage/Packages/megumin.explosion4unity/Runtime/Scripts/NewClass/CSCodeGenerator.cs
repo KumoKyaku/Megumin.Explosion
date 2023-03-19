@@ -101,11 +101,11 @@ namespace Megumin
             near.AssetDatabaseRefresh();
         }
 
-        public string UpperFirstChar(string str)
+        public string UpperStartChar(string str, int length = 1)
         {
             if (str.Length >= 1)
             {
-                var up = str.Substring(0, 1).ToUpper() + str.Substring(1);
+                var up = str.Substring(0, length).ToUpper() + str.Substring(length);
                 return up;
             }
 
