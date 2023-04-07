@@ -1,4 +1,6 @@
-﻿using Megumin;
+﻿#if !MEGUMIN_Common
+
+using Megumin;
 using UnityEngine;
 
 namespace Megumin
@@ -35,3 +37,5 @@ namespace Megumin
 
 #endif
 }
+
+# endif
