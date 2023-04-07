@@ -1,3 +1,5 @@
+#if !MEGUMIN_Common
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,4 +44,4 @@ namespace UnityEditor.Megumin
 
 #endif
 
-
+#endif

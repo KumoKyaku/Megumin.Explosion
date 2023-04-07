@@ -1,3 +1,5 @@
+#if !MEGUMIN_Common
+
 using Megumin;
 using System;
 using System.Collections;
@@ -149,3 +151,4 @@ namespace UnityEditor.Megumin
 
 #endif
 
+#endif

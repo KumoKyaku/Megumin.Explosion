@@ -21,6 +21,9 @@ or add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Exp
 Unity2021.2之前的版本请使用 vnetstandard2.0版本,后续不会在维护旧版本.  
 Add `"com.megumin.explosion4unity": "https://github.com/KumoKyaku/Megumin.Explosion.git?path=Megumin.UnityPackage/Packages/megumin.explosion4unity#vnetstandard2.0"` to `Packages/manifest.json`.
 
+## 部分代码拆分到Common包
+https://github.com/0x3f3f3f3f/Megumin.Common
+
 # 功能列表
 
 编辑器功能：
