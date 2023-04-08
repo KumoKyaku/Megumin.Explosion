@@ -5,7 +5,8 @@
         "Megumin.Explosion4Unity",
         "Unity.Settings.Editor",
         "Unity.InputSystem",
-        "Unity.ImmediateWindow.Editor"
+        "Unity.ImmediateWindow.Editor",
+        "Megumin.Common"
     ],
     "includePlatforms": [
         "Editor"

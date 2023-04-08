@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#if !MEGUMIN_Common
+
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -344,4 +346,5 @@ namespace Megumin
     }
 }
 
+#endif
 
