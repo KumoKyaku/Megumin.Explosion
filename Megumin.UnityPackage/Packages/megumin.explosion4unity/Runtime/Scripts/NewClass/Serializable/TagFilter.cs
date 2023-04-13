@@ -26,7 +26,7 @@ namespace Megumin
 
         public bool Check(Component component)
         {
-            if (Mode.HasFlag(TestMode.Equal))
+            if ((Mode & TestMode.Equal) != 0)
             {
                 if (!component.CompareTag(EqualTag))
                 {
@@ -34,7 +34,7 @@ namespace Megumin
                 }
             }
 
-            if (Mode.HasFlag(TestMode.Ignore))
+            if ((Mode & TestMode.Ignore) != 0)
             {
                 foreach (var item in IgnoreTag)
                 {
