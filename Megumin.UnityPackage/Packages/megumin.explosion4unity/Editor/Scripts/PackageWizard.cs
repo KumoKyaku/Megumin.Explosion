@@ -381,9 +381,9 @@ $@"{{
     ""description"": ""Wizard Fast Created."",
     ""category"": ""PackageWizard"",
     
-    ""documentationUrl"": ""https://example.com/"",
-    ""changelogUrl"": ""https://example.com/changelog.html"",
-    ""licensesUrl"": ""https://example.com/licensing.html"",
+    ""documentationUrl"": """",
+    ""changelogUrl"": """",
+    ""licensesUrl"": """",
     
     ""hideInEditor"" : false,
     
