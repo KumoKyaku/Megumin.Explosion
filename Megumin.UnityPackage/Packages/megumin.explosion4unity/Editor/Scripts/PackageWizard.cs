@@ -10,7 +10,7 @@ namespace Megumin
     public class PackageWizard : EditorWindow
     {
         const float k_WindowWidth = 600f;
-        const float k_MaxWindowHeight = 420f;
+        const float k_MaxWindowHeight = 440f;
         const float k_ScreenSizeWindowBuffer = 50f;
 
         [MenuItem("Tools/Package Wizard...")]
@@ -98,6 +98,7 @@ namespace Megumin
         bool CreateRuntimeAsmdef = true;
         bool CreateEditorAsmdef = false;
         string NameExtension = "com.megumin";
+        string Category = "Megumin";
         //bool AutoFullName = true;
         //string FullName = null;
         bool CreateTestsFolder = true;
@@ -122,7 +123,7 @@ namespace Megumin
                 Application.OpenURL("https://docs.unity3d.com/2020.3/Documentation/Manual/cus-naming.html");
             }
             NameExtension = EditorGUILayout.TextField("NameExtension", NameExtension);
-
+            Category = EditorGUILayout.TextField("Category", Category);
 
             EditorGUILayout.Separator();
             DisplayName.OnGUI(InputPackageName);
@@ -379,7 +380,7 @@ $@"{{
     ""version"": ""0.0.1"",
     ""unity"": ""{version[0]}.{version[1]}"",
     ""description"": ""Wizard Fast Created."",
-    ""category"": ""PackageWizard"",
+    ""category"": ""{Category}"",
     
     ""documentationUrl"": """",
     ""changelogUrl"": """",

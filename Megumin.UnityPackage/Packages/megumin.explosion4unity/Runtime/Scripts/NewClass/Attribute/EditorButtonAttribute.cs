@@ -132,10 +132,9 @@ namespace Megumin
             ButtonHeight = buttonSize;
         }
 
-        [Obsolete("Use EnableMode")]
         public ButtonAttribute(bool onlyPlaying)
         {
-            OnlyPlaying = onlyPlaying;
+            EnableMode = onlyPlaying ? 1 : 0;
         }
 
 
