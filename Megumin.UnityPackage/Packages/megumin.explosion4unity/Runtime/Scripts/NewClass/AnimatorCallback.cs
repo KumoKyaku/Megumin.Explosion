@@ -73,6 +73,9 @@ namespace Megumin
             }
         }
 
+        /// <summary>
+        /// See Animator.GetOnAnimatorMoveTime
+        /// </summary>
         void OnAnimatorMove()
         {
             if (LogDelta)

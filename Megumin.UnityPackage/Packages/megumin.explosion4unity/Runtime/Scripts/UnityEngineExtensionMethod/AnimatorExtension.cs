@@ -35,6 +35,32 @@ public static class AnimatorExtension_B0724B3FE1814EEB809D274438B254A6
         return AxialAigned.None;
     }
 
+    /// <summary>
+    /// 用与在OnAnimatorMove中调用，计算速度等。
+    /// https://docs.unity3d.com/ScriptReference/Time-deltaTime.html
+    /// </summary>
+    /// <returns></returns>
+    public static float GetOnAnimatorMoveTime(this Animator animator)
+    {
+        if (animator)
+        {
+            switch (animator.updateMode)
+            {
+                case AnimatorUpdateMode.Normal:
+                    return Time.deltaTime;
+                case AnimatorUpdateMode.Fixed:
+                    return Time.deltaTime;
+                case AnimatorUpdateMode.UnscaledTime:
+                    return Time.unscaledDeltaTime;
+                default:
+                    break;
+            }
+        }
+
+        //这里不要返回0，防止/0错误。
+        return float.Epsilon;
+    }
+
     public static AxialAigned GetAxial(Vector3 locol)
     {
         AxialAigned axial = AxialAigned.None;
