@@ -32,50 +32,30 @@ namespace Megumin
         [MenuItem("Tools/Path/Create Build Folder")]
         static void CreateBuildFolder()
         {
-            var dir = MeguminUtility4Unity.BuildPCMonoPath;
-            if (!Directory.Exists(dir))
+            List<string> list = new List<string>()
             {
-                Directory.CreateDirectory(dir);
-            }
+                MeguminUtility4Unity.BuildPath_StandaloneOSX,
+                MeguminUtility4Unity.BuildPath_iOS,
+                MeguminUtility4Unity.BuildPath_Android_Mono,
+                MeguminUtility4Unity.BuildPath_Android_IL2CPP,
+                MeguminUtility4Unity.BuildPath_StandaloneWindows64_Mono,
+                MeguminUtility4Unity.BuildPath_StandaloneWindows64_IL2CPP,
+                MeguminUtility4Unity.BuildPath_StandaloneLinux64,
+                MeguminUtility4Unity.BuildPath_PS4,
+                MeguminUtility4Unity.BuildPath_PS5,
+                MeguminUtility4Unity.BuildPath_activeBuildTarget,
+            };
 
-            dir = MeguminUtility4Unity.BuildPCIL2CPPPath;
-            if (!Directory.Exists(dir))
+            foreach (var dir in list) 
             {
-                Directory.CreateDirectory(dir);
-            }
-
-            dir = MeguminUtility4Unity.BuildAndroidIL2CPPPath;
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-
-            dir = MeguminUtility4Unity.BuildAndroidMonoPath;
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-
-            dir = MeguminUtility4Unity.BuildiOSPath;
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-
-            dir = MeguminUtility4Unity.BuildPS4Path;
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-
-            dir = MeguminUtility4Unity.BuildPS5Path;
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
             }
 
             Debug.Log($"创建打包目录");
-            System.Diagnostics.Process.Start(MeguminUtility4Unity.ProjectPath);
+            System.Diagnostics.Process.Start(MeguminUtility4Unity.BuildPath);
         }
 
         [MenuItem("Tools/Path/Open ConsoleLog Folder")]

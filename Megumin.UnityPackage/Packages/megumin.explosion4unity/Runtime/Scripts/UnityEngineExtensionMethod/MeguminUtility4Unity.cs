@@ -22,14 +22,24 @@ namespace UnityEngine
         public static string TempPath { get; } = GetProjectFolderPath("Temp");
         public static string UserSettingsPath { get; } = GetProjectFolderPath("UserSettings");
 
-        public static string BuildPCMonoPath { get; } = GetProjectFolderPath("Build/PCMono");
-        public static string BuildPCIL2CPPPath { get; } = GetProjectFolderPath("Build/PCIL2CPP");
-        public static string BuildAndroidIL2CPPPath { get; } = GetProjectFolderPath("Build/AndroidIL2CPP");
-        public static string BuildAndroidMonoPath { get; } = GetProjectFolderPath("Build/AndroidMono");
-        public static string BuildiOSPath { get; } = GetProjectFolderPath("Build/iOS");
-        public static string BuildPS4Path { get; } = GetProjectFolderPath("Build/PS4");
-        public static string BuildPS5Path { get; } = GetProjectFolderPath("Build/PS5");
+        //BuildPath
+        public static string BuildPath { get; } = GetProjectFolderPath("Build");
 
+        public static string BuildPath_StandaloneOSX { get; } = GetProjectFolderPath("Build/StandaloneOSX");
+        public static string BuildPath_iOS { get; } = GetProjectFolderPath("Build/iOS");
+
+        public static string BuildPath_Android_Mono { get; } = GetProjectFolderPath("Build/Android_Mono");
+        public static string BuildPath_Android_IL2CPP { get; } = GetProjectFolderPath("Build/Android_IL2CPP");
+
+        public static string BuildPath_StandaloneWindows64_Mono { get; } = GetProjectFolderPath("Build/StandaloneWindows64_Mono");
+        public static string BuildPath_StandaloneWindows64_IL2CPP { get; } = GetProjectFolderPath("Build/StandaloneWindows64_IL2CPP");
+
+        public static string BuildPath_StandaloneLinux64 { get; } = GetProjectFolderPath("Build/StandaloneLinux64");
+
+        public static string BuildPath_PS4 { get; } = GetProjectFolderPath("Build/PS4");
+        public static string BuildPath_PS5 { get; } = GetProjectFolderPath("Build/PS5");
+
+        public static string BuildPath_activeBuildTarget { get; } = GetProjectFolderPath("Build/activeBuildTarget");
 
         public static string ProjectSettingsPath { get; } = GetProjectFolderPath("ProjectSettings");
         public static string ConsoleLogPath { get; } = Path.GetDirectoryName(Application.consoleLogPath);
