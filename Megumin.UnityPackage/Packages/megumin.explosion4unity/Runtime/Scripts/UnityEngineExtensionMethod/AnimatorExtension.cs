@@ -48,8 +48,13 @@ public static class AnimatorExtension_B0724B3FE1814EEB809D274438B254A6
             {
                 case AnimatorUpdateMode.Normal:
                     return Time.deltaTime;
+#if UNITY_2023_1_OR_NEWER
                 case AnimatorUpdateMode.Fixed:
                     return Time.deltaTime;
+#else
+                case AnimatorUpdateMode.AnimatePhysics: 
+                    return Time.deltaTime;
+#endif
                 case AnimatorUpdateMode.UnscaledTime:
                     return Time.unscaledDeltaTime;
                 default:
