@@ -208,6 +208,7 @@ namespace Megumin
     /// <para>可以将ascending参数设置为true,改为 只要有个一个源为false,结果就是false.</para>
     /// </summary>
     /// <remarks>处理黑屏，碰撞盒开闭</remarks>
+    [Obsolete("use AnyTrueControl instead")]
     public class ActiveControl : MultipleControl<object, bool>
     {
         /// <summary>
@@ -227,34 +228,54 @@ namespace Megumin
         {
 
         }
+    }
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// 重写比较方法提高了性能
-        /// </summary>
-        protected override void ApplyValue()
+    /// <summary>
+    /// 开启控制，只要有个一个控制源为true，结果就是true.
+    /// </summary>
+    /// <remarks>
+    /// 例如处理黑屏过渡
+    /// </remarks>
+    public class AnyTrueControl : MultipleControl<object, bool>
+    {
+        public AnyTrueControl(object defaultHandle,
+                              bool defaultValue,
+                              OnValueChanged<(object, bool)> onValueChangedKV = null,
+                              OnValueChanged<bool> onValueChanged = null)
+            : base(defaultHandle, defaultValue, onValueChangedKV, onValueChanged, false)
         {
-            var old = Current;
-            var oldK = CurrentKey;
-            var result = CalNewValue();
-            Current = result.Value;
-            CurrentKey = result.Key;
 
-            bool flagV = old == result.Value;
+        }
 
-            if (!flagV)
-            {
-                OnValueChanged(result.Value, old);
-                OnValueChangedKV((result.Key, result.Value), (oldK, old));
-            }
+        public AnyTrueControl(OnValueChanged<(object, bool)> onValueChangedKV = null,
+                              OnValueChanged<bool> onValueChanged = null)
+            : this(new(), false, onValueChangedKV, onValueChanged)
+        {
 
-            if (!flagV || Equals(oldK, result.Key))
-            {
-                OnKeyValueChanged((result.Key, result.Value), (oldK, old));
-            }
         }
     }
 
+    /// <summary>
+    /// 关闭控制，只要有一个控制源为false,结果就是false.
+    /// </summary>
+    public class AnyFalseControl : MultipleControl<object, bool>
+    {
+        public AnyFalseControl(object defaultHandle,
+                               bool defaultValue,
+                               OnValueChanged<(object, bool)> onValueChangedKV = null,
+                               OnValueChanged<bool> onValueChanged = null)
+            : base(defaultHandle, defaultValue, onValueChangedKV, onValueChanged, true)
+        {
+
+        }
+
+        public AnyFalseControl(OnValueChanged<(object, bool)> onValueChangedKV = null,
+                               OnValueChanged<bool> onValueChanged = null)
+            : this(new(), true, onValueChangedKV, onValueChanged)
+        {
+
+        }
+    }
 
 }
 

@@ -14,7 +14,7 @@ namespace Megumin.Tests
         [TestMethod()]
         public void ActiveControlRentAutoReturn()
         {
-            ActiveControl control = new ActiveControl(new object(), false);
+            AnyTrueControl control = new AnyTrueControl();
             Assert.AreEqual(false, control);
 
             var c1 = new object();

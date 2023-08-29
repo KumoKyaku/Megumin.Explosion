@@ -32,7 +32,7 @@ namespace Megumin
             Current = newValue;
             CurrentKey = newKey;
 
-            bool flagV = EqualityComparer<V>.Default.Equals(oldValue, newValue);
+            bool flagV = EqualsValue(oldValue, newValue);
             //if (old is IEquatable<V> oe)
             //{
             //    //转成接口必然装箱
@@ -50,10 +50,58 @@ namespace Megumin
                 OnValueChangedKV((newKey, newValue), (oldKey, oldValue));
             }
 
-            if (!flagV || !EqualityComparer<K>.Default.Equals(oldKey, newKey))
+            if (!flagV || !EqualsKey(oldKey, newKey))
             {
                 OnKeyValueChanged((newKey, newValue), (oldKey, oldValue));
             }
+        }
+
+        /// <summary>
+        /// 判定Key是否相等
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// 必须使用EqualsKey，EqualsValue两个函数名，不能同名使用重载，否则在子类重写时会提示二义性，无法重写，编译错误。
+        /// </remarks>
+        protected virtual bool EqualsKey(K x, K y)
+        {
+            bool flag = EqualityComparer<K>.Default.Equals(x, y);
+            return flag;
+        }
+
+        protected virtual bool EqualsValue(V x, V y)
+        {
+            bool flag = EqualityComparer<V>.Default.Equals(x, y);
+            return flag;
+        }
+
+        //public bool Equals(object objA, object objB)
+        //{
+        //    return object.Equals(objA, objB);
+        //}
+
+        protected virtual bool EqualsKey(object x, object y)
+        {
+            return Equals(x, y);
+        }
+
+        protected bool EqualsValue(bool x, bool y)
+        {
+            return x == y;
+        }
+
+        protected bool EqualsValue(int x, int y)
+        {
+            return x == y;
+        }
+
+        protected virtual bool EqualsValue<N>(N x, N y)
+            where N : IEquatable<N>
+        {
+            bool flag = x.Equals(y);
+            return flag;
         }
 
         /// <summary>

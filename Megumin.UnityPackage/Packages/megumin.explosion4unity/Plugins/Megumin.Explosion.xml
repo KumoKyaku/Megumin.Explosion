@@ -631,6 +631,17 @@
             应用值,使用<see cref="T:System.Collections.Generic.EqualityComparer`1"/>比较是否发生改变,优化了装箱.
             </summary>
         </member>
+        <member name="M:Megumin.Multiple`2.EqualsKey(`0,`0)">
+            <summary>
+            判定Key是否相等
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+            <remarks>
+            必须使用EqualsKey，EqualsValue两个函数名，不能同名使用重载，否则在子类重写时会提示二义性，无法重写，编译错误。
+            </remarks>
+        </member>
         <member name="M:Megumin.Multiple`2.CalNewValue">
             <summary>
             计算新的值, 返回值也可以用KeyValuePair,没什么区别.
@@ -798,10 +809,17 @@
             <param name="onValueChanged"></param>
             <param name="ascending">默认false,降序排列,true=1排在false=0前面,结果为第一个值.任意一个true结果就true</param>
         </member>
-        <member name="M:Megumin.ActiveControl.ApplyValue">
+        <member name="T:Megumin.AnyTrueControl">
             <summary>
-            <inheritdoc/>
-            重写比较方法提高了性能
+            开启控制，只要有个一个控制源为true，结果就是true.
+            </summary>
+            <remarks>
+            例如处理黑屏过渡
+            </remarks>
+        </member>
+        <member name="T:Megumin.AnyFalseControl">
+            <summary>
+            关闭控制，只要有一个控制源为false,结果就是false.
             </summary>
         </member>
         <member name="T:Megumin.MultipleValue`2">
@@ -1476,7 +1494,10 @@
         </member>
         <member name="T:Megumin.IMultiple`2">
             <summary>
-            对象有多个部分构成
+            对象有多个部分构成。
+            <para/> 根据一个或多个值，得到一个结果值。多个部分可能随时添加或者移除
+            <para/> 运算规则可能为排序，求和，均值等多种算法，用于不同业务场景。
+            <para/> 例如：是否静音由多个业务模块同时控制。最大血量可能由多个装备求和。
             </summary>
         </member>
         <member name="P:Megumin.IMultiple`2.DefaultKey">
@@ -1502,7 +1523,7 @@
         </member>
         <member name="M:Megumin.IMultiple`2.Add(`0,`1)">
             <summary>
-            加入一个构成项
+            添加一个构成项
             </summary>
             <param name="key"></param>
             <param name="value"></param>

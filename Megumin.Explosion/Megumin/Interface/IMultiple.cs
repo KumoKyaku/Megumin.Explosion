@@ -4,9 +4,11 @@ using System.Text;
 
 namespace Megumin
 {
-
     /// <summary>
-    /// 对象有多个部分构成
+    /// 对象有多个部分构成。
+    /// <para/> 根据一个或多个值，得到一个结果值。多个部分可能随时添加或者移除
+    /// <para/> 运算规则可能为排序，求和，均值等多种算法，用于不同业务场景。
+    /// <para/> 例如：是否静音由多个业务模块同时控制。最大血量可能由多个装备求和。
     /// </summary>
     public interface IMultiple<K, V>
     {
@@ -32,7 +34,7 @@ namespace Megumin
         V Current { get; }
 
         /// <summary>
-        /// 加入一个构成项
+        /// 添加一个构成项
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
