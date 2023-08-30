@@ -10,7 +10,7 @@ namespace Megumin
     public class PackageWizard : EditorWindow
     {
         const float k_WindowWidth = 600f;
-        const float k_MaxWindowHeight = 440f;
+        const float k_MaxWindowHeight = 480;
         const float k_ScreenSizeWindowBuffer = 50f;
 
         [MenuItem("Tools/Package Wizard...")]
@@ -37,7 +37,7 @@ namespace Megumin
         {
             public Prop() { }
 
-            public Prop(Func<string, string> overrideFunc)
+            public Prop(Func<string, string> overrideFunc = null)
             {
                 GetOverrideValue = overrideFunc;
             }
@@ -89,18 +89,15 @@ namespace Megumin
         readonly GUIContent m_NameContent = new GUIContent("PackageName");
         string InputPackageName = "TestPackage";
 
-        Prop DisplayName = new Prop(static (str) => $"Megumin {str}") { Label = nameof(DisplayName) };
+        string Company = "Megumin";
 
+        Prop DisplayName = new Prop() { Label = nameof(DisplayName) };
+        Prop NameExtension = new Prop() { Label = nameof(NameExtension) };
         Prop FolderName = new Prop() { Label = nameof(FolderName) };
-
-        Prop AsmdefName = new Prop(static str => $"Megumin.GameFramework.{str}") { Label = nameof(AsmdefName) };
+        Prop AsmdefName = new Prop() { Label = nameof(AsmdefName) };
 
         bool CreateRuntimeAsmdef = true;
         bool CreateEditorAsmdef = false;
-        string NameExtension = "com.megumin";
-        string Category = "Megumin";
-        //bool AutoFullName = true;
-        //string FullName = null;
         bool CreateTestsFolder = true;
         bool CreateSamplesFolder = false;
         bool CreateDemosFolder = false;
@@ -112,8 +109,25 @@ namespace Megumin
         bool CreateLicense = false;
         bool CreateThirdPartyNotices = true;
 
+        /// <summary>
+        /// 打开这个脚本
+        /// </summary>
+        public void OpenPackageWizardScript()
+        {
+            var path = AssetDatabase.GUIDToAssetPath("f853b7b701c17ad478a19360697577a9");
+            var script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
+            AssetDatabase.OpenAsset(script);
+        }
+
         void OnGUI()
         {
+            if (GUILayout.Button("Edit PackageWizard"))
+            {
+                OpenPackageWizardScript();
+            }
+            EditorGUILayout.Separator();
+            EditorGUILayout.Separator();
+
             InputPackageName = EditorGUILayout.TextField(m_NameContent, InputPackageName);
 
             EditorGUILayout.Separator();
@@ -122,38 +136,24 @@ namespace Megumin
             {
                 Application.OpenURL("https://docs.unity3d.com/2020.3/Documentation/Manual/cus-naming.html");
             }
-            NameExtension = EditorGUILayout.TextField("NameExtension", NameExtension);
-            Category = EditorGUILayout.TextField("Category", Category);
+
+            Company = EditorGUILayout.TextField(nameof(Company), Company);
 
             EditorGUILayout.Separator();
-            DisplayName.OnGUI(InputPackageName);
-            FolderName.OnGUI($"{NameExtension?.ToLower()}.{InputPackageName.ToLower()}");
+            //显示的名字将. 替换为空格
+            DisplayName.OnGUI($"{Company} {InputPackageName.Replace('.', ' ')}");
+            NameExtension.OnGUI($"com.{Company.ToLower()}");
+            FolderName.OnGUI($"{NameExtension.ToString()?.ToLower()}.{InputPackageName.ToLower()}");
+
             var path = Path.GetFullPath($"{MeguminUtility4Unity.PackagesPath}/{FolderName}");
 
             using (new EditorGUI.DisabledScope(!CreateRuntimeAsmdef))
             {
-                AsmdefName.OnGUI(InputPackageName);
+                AsmdefName.OnGUI($"{Company}.{InputPackageName}");
             }
 
             CreateRuntimeAsmdef = EditorGUILayout.Toggle("CreateRuntimeAsmdef", CreateRuntimeAsmdef);
             CreateEditorAsmdef = EditorGUILayout.Toggle("CreateEditorAsmdef", CreateEditorAsmdef);
-
-            //EditorGUILayout.Separator();
-            //EditorGUILayout.HelpBox("FullName用于创建asmdef程序集文件名,name和rootNamespace。", MessageType.Info);
-
-
-            //AutoFullName = EditorGUILayout.Toggle("AutoFullName", AutoFullName);
-            //if (AutoFullName)
-            //{
-            //    FullName = $"Megumin.GameFramework.{InputPackageName}";
-            //    EditorGUILayout.LabelField("FullName", FullName);
-            //}
-            //else
-            //{
-            //    FullName = EditorGUILayout.TextField("FullName", FullName);
-            //}
-
-
 
             EditorGUILayout.Separator();
             CreateTestsFolder = EditorGUILayout.Toggle(nameof(CreateTestsFolder), CreateTestsFolder);
@@ -179,8 +179,9 @@ namespace Megumin
                 if (GUILayout.Button("Delete", GUILayout.Width(60f)))
                 {
                     if (EditorUtility.DisplayDialog("删除确认",
-                                                        "确定要删除本地包么?\n操作不可恢复,请做好备份或使用版本工具.",
-                                                        "确定", "取消"))
+                                                    "确定要删除本地包么?\n操作不可恢复,请做好备份或使用版本工具.",
+                                                    "确定",
+                                                    "取消"))
                     {
                         Directory.Delete(path, true);
                         RefreshAsset();
@@ -374,13 +375,13 @@ PackageWizard Fast Created.
             var version = UnityEditorInternal.InternalEditorUtility.GetFullUnityVersion().Split(".");
             string packageInfo =
 $@"{{
-    ""name"": ""{NameExtension.ToLower()}.{InputPackageName.ToLower()}"",
+    ""name"": ""{NameExtension.ToString().ToLower()}.{InputPackageName.ToLower()}"",
     ""displayName"": ""{DisplayName}"",
     
     ""version"": ""0.0.1"",
     ""unity"": ""{version[0]}.{version[1]}"",
     ""description"": ""Wizard Fast Created."",
-    ""category"": ""{Category}"",
+    ""category"": ""{Company}"",
     
     ""documentationUrl"": """",
     ""changelogUrl"": """",
@@ -390,6 +391,7 @@ $@"{{
     
     ""keywords"": [
         ""PackageWizard"",
+        ""{Company}"",
         ""{InputPackageName}""
     ],
 
