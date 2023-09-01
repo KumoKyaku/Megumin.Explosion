@@ -396,7 +396,7 @@ $@"{{
     ],
 
     ""author"": {{
-        ""name"": ""云却"",
+        ""name"": ""KumoKyaku"",
         ""email"": ""479813005@qq.com"",
         ""url"": ""https://github.com/KumoKyaku""
     }}
