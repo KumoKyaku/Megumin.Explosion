@@ -39,6 +39,10 @@ namespace UnityEngine
         public static string BuildPath_PS4 { get; } = GetProjectFolderPath("Build/PS4");
         public static string BuildPath_PS5 { get; } = GetProjectFolderPath("Build/PS5");
 
+        public static string BuildPath_WebGL { get; } = GetProjectFolderPath("Build/WebGL");
+
+        public static string BuildPath_DedicatedServer { get; } = GetProjectFolderPath("Build/DedicatedServer");
+
         public static string BuildPath_activeBuildTarget { get; } = GetProjectFolderPath("Build/activeBuildTarget");
 
         public static string ProjectSettingsPath { get; } = GetProjectFolderPath("ProjectSettings");

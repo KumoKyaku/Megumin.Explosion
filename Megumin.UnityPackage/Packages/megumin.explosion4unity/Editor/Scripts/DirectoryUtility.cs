@@ -43,6 +43,8 @@ namespace Megumin
                 MeguminUtility4Unity.BuildPath_StandaloneLinux64,
                 MeguminUtility4Unity.BuildPath_PS4,
                 MeguminUtility4Unity.BuildPath_PS5,
+                MeguminUtility4Unity.BuildPath_WebGL,
+                MeguminUtility4Unity.BuildPath_DedicatedServer,
                 MeguminUtility4Unity.BuildPath_activeBuildTarget,
             };
 
