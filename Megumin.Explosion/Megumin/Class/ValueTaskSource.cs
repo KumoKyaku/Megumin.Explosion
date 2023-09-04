@@ -452,8 +452,59 @@ namespace Megumin
     }
 }
 
+///https://github.com/dotnet/runtime/issues/91527
+
+//public interface IValueTaskSource<out TResult, KToken>
+//{
+//    TResult GetResult(KToken token);
+//    ValueTaskSourceStatus GetStatus(KToken token);
+//    void OnCompleted(Action<object> continuation, object state, KToken token, ValueTaskSourceOnCompletedFlags flags);
+//}
+
+//public readonly struct ValueTask<TResult, TokenK>
+//{
+//    public ValueTask(IValueTaskSource<TResult, TokenK> source, TokenK token)
+//    {
+
+//    }
+//}
+
+//public interface IValueTaskSource<out TResult> : IValueTaskSource<TResult, short> { }
+
+//public class MyValueTaskSource<TResult, KToken> : IValueTaskSource<TResult, KToken>
+//{
+//    public TResult GetResult(KToken token)
+//    {
+//        throw new NotImplementedException();
+//    }
+
+//    public ValueTaskSourceStatus GetStatus(KToken token)
+//    {
+//        throw new NotImplementedException();
+//    }
+
+//    public void OnCompleted(Action<object> continuation, object state, KToken token, ValueTaskSourceOnCompletedFlags flags)
+//    {
+//        throw new NotImplementedException();
+//    }
+//}
 
 
+//public void APIUsage()
+//{
+//    List<string> myFriends = new List<string>()
+//            {
+//                "Tom","Jerry"
+//            };
+
+//    //Token type is string instead of short
+//    //I no longer need to convert my type to short
+//    foreach (string fri in myFriends)
+//    {
+//        IValueTaskSource<bool, string> dinnerTaskSource = new MyValueTaskSource<bool, string>();
+//        ValueTask<bool, string> dinnerTask = new ValueTask<bool, string>(dinnerTaskSource, fri);
+//    }
+//}
 
 
 
