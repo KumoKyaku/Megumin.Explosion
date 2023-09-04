@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !MEGUMIN_Common
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -79,4 +81,4 @@ namespace Megumin
     }
 }
 
-
+#endif
