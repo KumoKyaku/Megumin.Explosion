@@ -487,6 +487,28 @@ namespace Megumin
 //    {
 //        throw new NotImplementedException();
 //    }
+
+//    public ValueTask<int> GetOrCreate(string key)
+//    {
+//        //If you want to implement this function
+
+//        IValueTaskSource<int> source = MyValueTaskSource.Default;
+
+//        short token = 0;
+//        if (key == "Tom")
+//        {
+//            token = 1;
+//        }
+//        else if (key == "Jerry")
+//        {
+//            token = 2;
+//        }
+
+//        return new ValueTask<int>(source, token);
+
+
+//        //return new ValueTask<int, string>(source, key);
+//    }
 //}
 
 
@@ -505,6 +527,7 @@ namespace Megumin
 //        ValueTask<bool, string> dinnerTask = new ValueTask<bool, string>(dinnerTaskSource, fri);
 //    }
 //}
+
 
 
 
