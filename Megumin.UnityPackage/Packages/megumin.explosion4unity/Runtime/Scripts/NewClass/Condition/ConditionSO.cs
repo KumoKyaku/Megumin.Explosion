@@ -26,7 +26,7 @@ namespace Megumin
     }
 
     [Serializable]
-    public class EnableableConditionSO : Enableable
+    public class EnableableConditionSO : Enable
     {
         [SupportTypes(typeof(ConditionSO),
             AllowAbstract = false,

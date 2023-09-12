@@ -17,7 +17,7 @@ namespace Megumin
         [Header("Editor")]
         public SceneAsset TargetScene;
         public OpenSceneMode OpenSceneMode = OpenSceneMode.Single;
-        public Megumin.Enableable<KeyCode> Key = new Megumin.Enableable<KeyCode>(true, KeyCode.F4);
+        public Megumin.Enable<KeyCode> Key = new Megumin.Enable<KeyCode>(true, KeyCode.F4);
 #endif
 
         [Space]
