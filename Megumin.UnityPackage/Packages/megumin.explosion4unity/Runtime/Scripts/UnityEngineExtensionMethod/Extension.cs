@@ -230,7 +230,10 @@ namespace UnityEngine
             orignal = orignal.Replace("$(localPosition)", transform.localPosition.ToString());
             orignal = orignal.Replace("$(localRotation)", transform.localRotation.ToString());
             orignal = orignal.Replace("$(localEulerAngles)", transform.localEulerAngles.ToString());
-
+            
+            orignal = orignal.Replace("$(localScale)", transform.localScale.ToString());
+            orignal = orignal.Replace("$(lossyScale)", transform.lossyScale.ToString());
+            
             orignal = orignal.Replace("$(parent)", transform.parent?.name);
         }
 
