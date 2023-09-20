@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR && !Megumin_Explosion4Unity
+﻿#if !MEGUMIN_Common && UNITY_EDITOR && !Megumin_Explosion4Unity
 
 using System.Collections;
 using System.Collections.Generic;
