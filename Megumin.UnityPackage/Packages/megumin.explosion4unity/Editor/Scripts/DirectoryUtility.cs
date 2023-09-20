@@ -34,18 +34,18 @@ namespace Megumin
         {
             List<string> list = new List<string>()
             {
-                MeguminUtility4Unity.BuildPath_StandaloneOSX,
-                MeguminUtility4Unity.BuildPath_iOS,
-                MeguminUtility4Unity.BuildPath_Android_Mono,
-                MeguminUtility4Unity.BuildPath_Android_IL2CPP,
-                MeguminUtility4Unity.BuildPath_StandaloneWindows64_Mono,
-                MeguminUtility4Unity.BuildPath_StandaloneWindows64_IL2CPP,
-                MeguminUtility4Unity.BuildPath_StandaloneLinux64,
-                MeguminUtility4Unity.BuildPath_PS4,
-                MeguminUtility4Unity.BuildPath_PS5,
-                MeguminUtility4Unity.BuildPath_WebGL,
-                MeguminUtility4Unity.BuildPath_DedicatedServer,
-                MeguminUtility4Unity.BuildPath_activeBuildTarget,
+                PathUtility.BuildPath_StandaloneOSX,
+                PathUtility.BuildPath_iOS,
+                PathUtility.BuildPath_Android_Mono,
+                PathUtility.BuildPath_Android_IL2CPP,
+                PathUtility.BuildPath_StandaloneWindows64_Mono,
+                PathUtility.BuildPath_StandaloneWindows64_IL2CPP,
+                PathUtility.BuildPath_StandaloneLinux64,
+                PathUtility.BuildPath_PS4,
+                PathUtility.BuildPath_PS5,
+                PathUtility.BuildPath_WebGL,
+                PathUtility.BuildPath_DedicatedServer,
+                PathUtility.BuildPath_activeBuildTarget,
             };
 
             foreach (var dir in list) 
@@ -57,13 +57,13 @@ namespace Megumin
             }
 
             Debug.Log($"创建打包目录");
-            System.Diagnostics.Process.Start(MeguminUtility4Unity.BuildPath);
+            System.Diagnostics.Process.Start(PathUtility.BuildPath);
         }
 
         [MenuItem("Tools/Path/Open ConsoleLog Folder")]
         static void OpenLogFolder()
         {
-            var dir = MeguminUtility4Unity.ConsoleLogPath;
+            var dir = PathUtility.ConsoleLogPath;
             Debug.Log($"打开 {dir}");
             System.Diagnostics.Process.Start(dir);
         }

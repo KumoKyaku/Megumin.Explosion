@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using Megumin;
 
 /// <summary>
 /// 为什么要包装一次，因为在PropertyDrawer里，有一些等同于异步的API没办法使用。
@@ -26,7 +27,7 @@ public static class SerializedPropertyExtension_7A82EFA57627471BB151327BD58CEDA3
     {
         if (display)
         {
-            string dir = Path.Combine(MeguminUtility4Unity.ProjectPath, orignalPath);
+            string dir = Path.Combine(PathUtility.ProjectPath, orignalPath);
             dir = Path.GetDirectoryName(dir);
             dir = Path.GetFullPath(dir);
 

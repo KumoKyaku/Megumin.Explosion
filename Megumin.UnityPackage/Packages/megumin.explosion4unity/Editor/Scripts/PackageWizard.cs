@@ -145,7 +145,7 @@ namespace Megumin
             NameExtension.OnGUI($"com.{Company.ToLower()}");
             FolderName.OnGUI($"{NameExtension.ToString()?.ToLower()}.{InputPackageName.ToLower()}");
 
-            var path = Path.GetFullPath($"{MeguminUtility4Unity.PackagesPath}/{FolderName}");
+            var path = Path.GetFullPath($"{PathUtility.PackagesPath}/{FolderName}");
 
             using (new EditorGUI.DisabledScope(!CreateRuntimeAsmdef))
             {
@@ -221,7 +221,7 @@ namespace Megumin
 
         private static void RefreshAsset()
         {
-            var process = System.Diagnostics.Process.Start(MeguminUtility4Unity.PackagesPath);
+            var process = System.Diagnostics.Process.Start(PathUtility.PackagesPath);
         }
 
         private void CreatePackage(string path)

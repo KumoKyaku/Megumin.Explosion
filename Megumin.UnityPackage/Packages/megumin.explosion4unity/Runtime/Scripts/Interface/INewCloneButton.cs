@@ -244,9 +244,9 @@ namespace UnityEditor.Megumin
                     instance = ScriptableObject.CreateInstance(TName);
                 }
 
-                if (instancePath.StartsWith(MeguminUtility4Unity.ProjectPath))
+                if (instancePath.StartsWith(PathUtility.ProjectPath))
                 {
-                    instancePath = instancePath.Replace(MeguminUtility4Unity.ProjectPath, "");
+                    instancePath = instancePath.Replace(PathUtility.ProjectPath, "");
                 }
 
                 AssetDatabase.CreateAsset(instance, instancePath);

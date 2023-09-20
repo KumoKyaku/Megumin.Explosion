@@ -85,7 +85,7 @@ namespace Megumin
                 {
                     DirectoryInfo info = new DirectoryInfo(current.resolvedPath);
                     var foldername = info.Name;
-                    var desPath = Path.Combine(MeguminUtility4Unity.LibraryPackageCachePath, foldername);
+                    var desPath = Path.Combine(PathUtility.LibraryPackageCachePath, foldername);
                     Debug.Log(desPath);
 
                     if (Directory.Exists(desPath))
@@ -109,7 +109,7 @@ namespace Megumin
                 {
                     DirectoryInfo info = new DirectoryInfo(current.resolvedPath);
                     var foldername = info.Name;
-                    var desPath = Path.Combine(MeguminUtility4Unity.PackagesPath, foldername);
+                    var desPath = Path.Combine(PathUtility.PackagesPath, foldername);
                     Debug.Log(desPath);
 
                     if (Directory.Exists(desPath))
@@ -169,9 +169,9 @@ namespace Megumin
                 current = packageInfo;
                 //button.SetEnabled(false);
                 bool isGit = current?.source == UnityEditor.PackageManager.PackageSource.Git;
-                bool? isInLocal = current?.resolvedPath.StartsWith(MeguminUtility4Unity.PackagesPath);
+                bool? isInLocal = current?.resolvedPath.StartsWith(PathUtility.PackagesPath);
                 bool canMove2Local = !isInLocal ?? false;
-                bool? isInLibrary = current?.resolvedPath.StartsWith(MeguminUtility4Unity.LibraryPackageCachePath);
+                bool? isInLibrary = current?.resolvedPath.StartsWith(PathUtility.LibraryPackageCachePath);
                 bool canMove2Cache = !isInLibrary ?? false;
 
                 detail.text = $"[Git : {isGit}]    [InLocalPackage : {isInLocal ?? false}]    [InLiraryCache : {isInLibrary ?? false}]";

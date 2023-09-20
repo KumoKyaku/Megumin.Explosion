@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#if !MEGUMIN_Common
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Megumin;
@@ -87,7 +89,7 @@ namespace UnityEditor.Megumin
                     {
                         //转换为相对路径。
                         var p1 = new System.Uri(pathResult);
-                        var p2 = new System.Uri(MeguminUtility4Unity.ProjectPath);
+                        var p2 = new System.Uri(PathUtility.ProjectPath);
                         var r = p2.MakeRelativeUri(p1);
                         pathResult = r.ToString();
                     }
@@ -120,6 +122,8 @@ namespace UnityEditor.Megumin
         }
     }
 }
+
+#endif
 
 #endif
 

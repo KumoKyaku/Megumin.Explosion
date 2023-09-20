@@ -109,7 +109,7 @@ namespace Megumin
             generator.Push("");
 
             //var path = @"W:\Git\Megumin.Explosion\Megumin.UnityPackage\Packages\megumin.explosion4unity\Editor\Scripts\EditorIcon\EditorIconList.cs";
-            var path = Path.Combine(MeguminUtility4Unity.PackagesPath,
+            var path = Path.Combine(PathUtility.PackagesPath,
                 @"megumin.explosion4unity\Editor\Scripts\EditorIcon\EditorIconList.cs");
             path = Path.GetFullPath(path);
             EditorUtility.DisplayProgressBar("Export", "WirteCodeToPath", 0.75f);

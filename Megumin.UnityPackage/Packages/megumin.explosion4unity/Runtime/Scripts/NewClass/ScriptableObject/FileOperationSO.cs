@@ -48,7 +48,7 @@ namespace Megumin
             {
                 var path = file.GetAbsoluteFilePath();
                 path = Path.GetFullPath(path);
-                var des = Path.Combine(MeguminUtility4Unity.ProjectPath, outputFolder);
+                var des = Path.Combine(PathUtility.ProjectPath, outputFolder);
                 var fileName = Path.GetFileName(path);
                 des = Path.Combine(des, fileName);
                 des = Path.GetFullPath(des);
