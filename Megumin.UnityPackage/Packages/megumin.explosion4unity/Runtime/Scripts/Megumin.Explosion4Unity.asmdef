@@ -40,6 +40,11 @@
             "name": "com.megumin.common",
             "expression": "0.0.1",
             "define": "MEGUMIN_Common"
+        },
+        {
+            "name": "com.unity.ugui",
+            "expression": "2.0.0",
+            "define": "MEGUMIN_TMPROEX"
         }
     ],
     "noEngineReferences": false
