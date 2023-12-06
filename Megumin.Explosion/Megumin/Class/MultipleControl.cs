@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Megumin
 {
@@ -34,17 +35,19 @@ namespace Megumin
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        V Control(K key, V value);
+        /// <param name="forceRaiseEvent"></param>
+        V Control(K key, V value, bool forceRaiseEvent = false);
         /// <summary>
         /// 取消控制
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
-        V Cancel(K key, V value = default);
+        /// <param name="forceRaiseEvent"></param>
+        V Cancel(K key, V value = default, bool forceRaiseEvent = false);
         /// <summary>
         /// 取消除默认值以外的所有控制
         /// </summary>
-        V CancelAll();
+        V CancelAll(bool forceRaiseEvent = false);
     }
 
     /// <inheritdoc cref="IMultipleControlable{K, V}"/>
@@ -111,12 +114,14 @@ namespace Megumin
 
         }
 
-        public V Control(K key, V value) => Add(key, value);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V Control(K key, V value, bool forceRaiseEvent = false) => Add(key, value, forceRaiseEvent);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V Cancel(K key, V value = default, bool forceRaiseEvent = false) => Remove(key, value, forceRaiseEvent);
 
-        public V Cancel(K key, V value = default) => Remove(key, value);
-
-        public V CancelAll() => RemoveAll();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V CancelAll(bool forceRaiseEvent = false) => RemoveAll(forceRaiseEvent);
 
         /// <summary>
         /// 返回当前值

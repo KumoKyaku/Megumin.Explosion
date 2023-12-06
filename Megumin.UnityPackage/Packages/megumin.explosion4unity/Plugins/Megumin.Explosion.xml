@@ -626,9 +626,14 @@
             <typeparam name="K"></typeparam>
             <typeparam name="V"></typeparam>
         </member>
-        <member name="M:Megumin.Multiple`2.ApplyValue">
+        <member name="M:Megumin.Multiple`2.ApplyValue(System.Boolean)">
             <summary>
             应用值,使用<see cref="T:System.Collections.Generic.EqualityComparer`1"/>比较是否发生改变,优化了装箱.
+            </summary>
+        </member>
+        <member name="M:Megumin.Multiple`2.Refresh(System.Boolean)">
+            <summary>
+            在控制项没有变动的情况下，触发ApplyValue，尝试触发事件。
             </summary>
         </member>
         <member name="M:Megumin.Multiple`2.EqualsKey(`0,`0)">
@@ -698,21 +703,23 @@
             这时用一个枚举值来存共有哪些禁用,就无法实现需求.
             </remarks>
         </member>
-        <member name="M:Megumin.IMultipleControlable`2.Control(`0,`1)">
+        <member name="M:Megumin.IMultipleControlable`2.Control(`0,`1,System.Boolean)">
             <summary>
             开始控制
             </summary>
             <param name="key"></param>
             <param name="value"></param>
+            <param name="forceRaiseEvent"></param>
         </member>
-        <member name="M:Megumin.IMultipleControlable`2.Cancel(`0,`1)">
+        <member name="M:Megumin.IMultipleControlable`2.Cancel(`0,`1,System.Boolean)">
             <summary>
             取消控制
             </summary>
             <param name="key"></param>
             <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
+            <param name="forceRaiseEvent"></param>
         </member>
-        <member name="M:Megumin.IMultipleControlable`2.CancelAll">
+        <member name="M:Megumin.IMultipleControlable`2.CancelAll(System.Boolean)">
             <summary>
             取消除默认值以外的所有控制
             </summary>
@@ -744,7 +751,7 @@
         </member>
         <member name="M:Megumin.MultipleControlBase`3.InitInCtor(`2)">
             <summary>
-            构造函数中间调用的虚方法,用于初始化排序字段,在第一次<see cref="M:Megumin.Multiple`2.ApplyValue"/>前调用.
+            构造函数中间调用的虚方法,用于初始化排序字段,在第一次<see cref="M:Megumin.Multiple`2.ApplyValue(System.Boolean)"/>前调用.
             <para>不需要排序的或者计算方式不需要缓存的,可以忽略这个函数.</para>
             这个主要作用用来初始化排序的linq表达式.
             </summary>
@@ -1521,21 +1528,23 @@
             当前值
             </summary>
         </member>
-        <member name="M:Megumin.IMultiple`2.Add(`0,`1)">
+        <member name="M:Megumin.IMultiple`2.Add(`0,`1,System.Boolean)">
             <summary>
             添加一个构成项
             </summary>
             <param name="key"></param>
             <param name="value"></param>
+            <param name="forceRaiseEvent"></param>
         </member>
-        <member name="M:Megumin.IMultiple`2.Remove(`0,`1)">
+        <member name="M:Megumin.IMultiple`2.Remove(`0,`1,System.Boolean)">
             <summary>
             移除一个构成项
             </summary>
             <param name="key"></param>
             <param name="value">因为总是复制粘贴Add,参数个数对不上,这个值没有使用,只是为了对齐参数个数.</param>
+            <param name="forceRaiseEvent"></param>
         </member>
-        <member name="M:Megumin.IMultiple`2.RemoveAll">
+        <member name="M:Megumin.IMultiple`2.RemoveAll(System.Boolean)">
             <summary>
             取消除默认值以外的所有构成项
             </summary>

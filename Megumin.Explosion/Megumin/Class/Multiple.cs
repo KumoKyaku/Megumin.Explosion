@@ -24,7 +24,7 @@ namespace Megumin
         /// <summary>
         /// 应用值,使用<see cref="EqualityComparer{T}"/>比较是否发生改变,优化了装箱.
         /// </summary>
-        protected virtual void ApplyValue()
+        protected virtual void ApplyValue(bool forceRaiseEvent = false)
         {
             var oldValue = Current;
             var oldKey = CurrentKey;
@@ -44,16 +44,24 @@ namespace Megumin
             //    flagV = Equals(old, Current);
             //}
 
-            if (!flagV)
+            if (!flagV || forceRaiseEvent)
             {
                 OnValueChanged(newValue, oldValue);
                 OnValueChangedKV((newKey, newValue), (oldKey, oldValue));
             }
 
-            if (!flagV || !EqualsKey(oldKey, newKey))
+            if (!flagV || !EqualsKey(oldKey, newKey) || forceRaiseEvent)
             {
                 OnKeyValueChanged((newKey, newValue), (oldKey, oldValue));
             }
+        }
+
+        /// <summary>
+        /// 在控制项没有变动的情况下，触发ApplyValue，尝试触发事件。
+        /// </summary>
+        public void Refresh(bool forceRaiseEvent = false)
+        {
+            ApplyValue(forceRaiseEvent);
         }
 
         /// <summary>
@@ -131,21 +139,21 @@ namespace Megumin
             KeyValueChanged?.Invoke(newValue, oldValue);
         }
 
-        public V Add(K key, V value)
+        public V Add(K key, V value, bool forceRaiseEvent = false)
         {
             ElementDic[key] = value;
-            ApplyValue();
+            ApplyValue(forceRaiseEvent);
             return Current;
         }
 
-        public V Remove(K key, V value = default)
+        public V Remove(K key, V value = default, bool forceRaiseEvent = false)
         {
             ElementDic.Remove(key);
-            ApplyValue();
+            ApplyValue(forceRaiseEvent);
             return Current;
         }
 
-        public virtual V RemoveAll()
+        public virtual V RemoveAll(bool forceRaiseEvent = false)
         {
             ElementDic.Clear();
 
@@ -158,7 +166,7 @@ namespace Megumin
             //}
 
             ElementDic[DefaultKey] = DefaultValue;
-            ApplyValue();
+            ApplyValue(forceRaiseEvent);
             return Current;
         }
 

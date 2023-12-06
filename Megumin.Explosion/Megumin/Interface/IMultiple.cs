@@ -38,19 +38,21 @@ namespace Megumin
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        V Add(K key, V value);
+        /// <param name="forceRaiseEvent"></param>
+        V Add(K key, V value, bool forceRaiseEvent = false);
 
         /// <summary>
         /// 移除一个构成项
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value">因为总是复制粘贴Add,参数个数对不上,这个值没有使用,只是为了对齐参数个数.</param>
-        V Remove(K key, V value = default);
+        /// <param name="forceRaiseEvent"></param>
+        V Remove(K key, V value = default, bool forceRaiseEvent = false);
 
         /// <summary>
         /// 取消除默认值以外的所有构成项
         /// </summary>
-        V RemoveAll();
+        V RemoveAll(bool forceRaiseEvent = false);
 
         /// <summary>
         /// 仅当值发生改变时被调用
