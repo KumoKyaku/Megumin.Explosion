@@ -14,7 +14,7 @@ namespace Megumin
         protected readonly Dictionary<K, V> ElementDic = new Dictionary<K, V>();
         public event OnValueChanged<V> ValueChanged;
         public event OnValueChanged<(K Key, V Value)> ValueChangedKV;
-        public event OnValueChanged<(K Key, V Value)> KeyValueChanged;
+        public event OnValueChanged<(K Key, V Value)> KeyOrValueChanged;
 
         public abstract K DefaultKey { get; }
         public abstract V DefaultValue { get; }
@@ -52,7 +52,7 @@ namespace Megumin
 
             if (!flagV || !EqualsKey(oldKey, newKey) || forceRaiseEvent)
             {
-                OnKeyValueChanged((newKey, newValue), (oldKey, oldValue));
+                OnKeyOrValueChanged((newKey, newValue), (oldKey, oldValue));
             }
         }
 
@@ -134,9 +134,9 @@ namespace Megumin
             ValueChangedKV?.Invoke(newValue, oldValue);
         }
 
-        protected void OnKeyValueChanged((K, V) newValue, (K, V) oldValue)
+        protected void OnKeyOrValueChanged((K, V) newValue, (K, V) oldValue)
         {
-            KeyValueChanged?.Invoke(newValue, oldValue);
+            KeyOrValueChanged?.Invoke(newValue, oldValue);
         }
 
         public V Add(K key, V value, bool forceRaiseEvent = false)
@@ -230,17 +230,17 @@ namespace Megumin
             {
                 this.Multiple = multiple;
                 this.Observer = observer;
-                Multiple.KeyValueChanged += this.OnKeyValueChanged;
+                Multiple.KeyOrValueChanged += this.OnKeyOrValueChanged;
             }
 
-            private void OnKeyValueChanged((K Key, V Value) newValue, (K Key, V Value) oldValue)
+            private void OnKeyOrValueChanged((K Key, V Value) newValue, (K Key, V Value) oldValue)
             {
                 Observer.OnNext(newValue);
             }
 
             public void Dispose()
             {
-                Multiple.KeyValueChanged -= this.OnKeyValueChanged;
+                Multiple.KeyOrValueChanged -= this.OnKeyOrValueChanged;
             }
         }
 

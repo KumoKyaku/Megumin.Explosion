@@ -65,6 +65,6 @@ namespace Megumin
         /// <summary>
         /// 当前键值任一发生改变时被调用
         /// </summary>
-        event OnValueChanged<(K Key, V Value)> KeyValueChanged;
+        event OnValueChanged<(K Key, V Value)> KeyOrValueChanged;
     }
 }
