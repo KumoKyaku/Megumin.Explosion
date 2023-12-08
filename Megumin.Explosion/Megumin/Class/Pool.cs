@@ -1,11 +1,12 @@
-﻿using System;
+﻿#if !MEGUMIN_EXPLOSION_EXTERNAL_DLL  //引用外部dll时忽略编译,用于Unity工程和外部工程共享代码
+
+using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Collections;
 
-namespace System
+namespace Megumin
 {
     /// <summary>
     /// 对象池核心容器 
@@ -413,5 +414,9 @@ namespace System
             new() { PostRentPop = IsSafeCollection<HashSet<T>, T>, OnReturn = ClearCollection<HashSet<T>, T> };
     }
 }
+
+#endif
+
+
 
 

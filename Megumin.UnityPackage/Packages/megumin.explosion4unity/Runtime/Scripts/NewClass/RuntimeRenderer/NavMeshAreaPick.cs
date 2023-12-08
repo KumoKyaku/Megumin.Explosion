@@ -16,7 +16,7 @@ namespace Megumin
     {
         [AreaMask]
         public int mask = -1;
-        public LayerMask rayMask = 0b0111_1111_1111_1111_1111_1111_1111_1111;
+        public LayerMask LayerMask = -5;
 
         [ProtectedInInspector]
         public Camera Camera;
@@ -75,7 +75,7 @@ namespace Megumin
 
             HitAreaName = "";
             NavMeshPosition = null;
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, rayMask))
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, LayerMask))
             {
                 if (DrawRayHitPoint)
                 {

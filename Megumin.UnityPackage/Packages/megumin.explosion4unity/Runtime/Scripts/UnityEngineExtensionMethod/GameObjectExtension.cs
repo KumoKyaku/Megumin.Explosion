@@ -103,7 +103,7 @@ public static class GameObjectExtension_044A46672EEE4ED5BDE291E8DEC3012E
 
         if (gameObject)
         {
-            using (ListPool<T>.Rent(out var list))
+            using (ListPool<T>.Shared.Rent(out var list))
             {
                 gameObject.GetComponentsInChildren(true, list);
                 foreach (var item in list)
@@ -143,7 +143,7 @@ public static class GameObjectExtension_044A46672EEE4ED5BDE291E8DEC3012E
 
         if (gameObject)
         {
-            using (ListPool<T>.Rent(out var list))
+            using (ListPool<T>.Shared.Rent(out var list))
             {
                 gameObject.GetComponentsInParent(true, list);
                 foreach (var item in list)

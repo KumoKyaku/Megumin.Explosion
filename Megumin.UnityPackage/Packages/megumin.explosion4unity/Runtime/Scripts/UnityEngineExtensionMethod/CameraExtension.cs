@@ -3,9 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public static class CameraExtension_BA2750CDA0DB4FDEA611922CCD6F7C3E
 {
+
+    public static Ray MouseRay(this Camera camera)
+    {
+        if (camera == null)
+        {
+            camera = Camera.main;
+        }
+
+#if ENABLE_INPUT_SYSTEM
+        var mousePosition = Mouse.current.position.ReadValue();
+#else
+        var mousePosition = Input.mousePosition;
+#endif
+
+        var ray = camera.ScreenPointToRay(mousePosition);
+        return ray;
+    }
+
     /// <summary>
     /// 世界中一个点是否在相机内
     /// </summary>
