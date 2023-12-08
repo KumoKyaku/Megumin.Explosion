@@ -79,7 +79,7 @@ namespace System.Collections.Generic
             public Remover(ICollection<T> list)
             {
                 this.list = list;
-                cache = ListPool<T>.Rent();
+                cache = ListPool<T>.Shared.Rent();
             }
 
             public void Push(T item)
@@ -91,7 +91,7 @@ namespace System.Collections.Generic
             {
                 if (cache == null)
                 {
-                    cache = ListPool<T>.Rent();
+                    cache = ListPool<T>.Shared.Rent();
                 }
                 cache.Add(item);
             }
@@ -102,7 +102,7 @@ namespace System.Collections.Generic
                 {
                     list.Remove(item);
                 }
-                ListPool<T>.Return(ref cache);
+                ListPool<T>.Shared.Return(ref cache);
                 cache = null;
             }
         }

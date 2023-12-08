@@ -108,14 +108,14 @@ namespace UnitTestProject1
         [TestMethod]
         public void TestListPool()
         {
-            List<int> temp = ListPool<int>.Rent();
+            List<int> temp = ListPool<int>.Shared.Rent();
             temp.Add(1);
-            ListPool<int>.Return(ref temp);
+            ListPool<int>.Shared.Return(ref temp);
             Assert.AreEqual(null, temp);
 
-            temp = ListPool<int>.Rent();
+            temp = ListPool<int>.Shared.Rent();
             temp.Add(1);
-            ListPool<int>.Return(ref temp);
+            ListPool<int>.Shared.Return(ref temp);
             Assert.AreEqual(null, temp);
         }
 

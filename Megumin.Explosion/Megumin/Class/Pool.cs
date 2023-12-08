@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Collections;
 
 namespace System
 {
@@ -102,6 +103,38 @@ namespace System
 
         public abstract T Rent();
         public abstract void Return(ref T element, bool forceSafeCheck = false);
+
+        public static bool IsSafeCollection<C>(C collection)
+            where C : ICollection
+        {
+            if (collection == null || collection.Count != 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool IsSafeCollection<C, E>(C collection)
+            where C : ICollection<E>
+        {
+            if (collection == null || collection.Count != 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static void ClearCollection<C>(C collection)
+            where C : IList
+        {
+            collection?.Clear();
+        }
+
+        public static void ClearCollection<C, E>(C collection)
+            where C : ICollection<E>
+        {
+            collection?.Clear();
+        }
     }
 
     public class StackPoolCore<T> : PoolCoreBase<T>
@@ -336,4 +369,49 @@ namespace System
         }
     }
 
+    /// <summary>
+    /// 线程不安全List池
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <remarks>内部使用<see cref="Stack{T}"/>实现</remarks>
+    public class ListPool<T> : StackPoolCore<List<T>>
+    {
+        public static ListPool<T> Shared { get; } =
+            new() { PostRentPop = IsSafeCollection, OnReturn = ClearCollection };
+    }
+
+    /// <summary>
+    /// 线程安全List池
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <remarks>内部使用<see cref="ConcurrentStack{T}"/>实现</remarks>
+    public class ConcurrentListPool<T> : ConcurrentStackPoolCore<List<T>>
+    {
+        public static ConcurrentListPool<T> Shared { get; } =
+            new() { PostRentPop = IsSafeCollection, OnReturn = ClearCollection };
+    }
+
+    /// <summary>
+    /// 线程不安全HashSet池
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <remarks>内部使用<see cref="Stack{T}"/>实现</remarks>
+    public class HashSetPool<T> : StackPoolCore<HashSet<T>>
+    {
+        public static HashSetPool<T> Shared { get; } =
+            new() { PostRentPop = IsSafeCollection<HashSet<T>, T>, OnReturn = ClearCollection<HashSet<T>, T> };
+    }
+
+    /// <summary>
+    /// 线程安全HashSet池
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <remarks>内部使用<see cref="ConcurrentStack{T}"/>实现</remarks>
+    public class ConcurrentHashSetPool<T> : ConcurrentStackPoolCore<HashSet<T>>
+    {
+        public static ConcurrentHashSetPool<T> Shared { get; } =
+            new() { PostRentPop = IsSafeCollection<HashSet<T>, T>, OnReturn = ClearCollection<HashSet<T>, T> };
+    }
 }
+
+

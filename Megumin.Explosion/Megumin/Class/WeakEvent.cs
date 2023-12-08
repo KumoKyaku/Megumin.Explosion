@@ -46,7 +46,7 @@ namespace Megumin
 
         public void Invoke()
         {
-            using (ListPool<WeakReference>.Rent(out var rList))
+            using (ListPool<WeakReference>.Shared.Rent(out var rList))
             {
                 foreach (var item in callback)
                 {

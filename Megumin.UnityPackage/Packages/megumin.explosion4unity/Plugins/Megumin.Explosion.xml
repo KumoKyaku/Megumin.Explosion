@@ -30,7 +30,7 @@
         </member>
         <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.RemoveAll``2(System.Collections.Generic.Dictionary{``0,``1},System.Func{System.Collections.Generic.KeyValuePair{``0,``1},System.Boolean})">
             <summary>
-            使用<see cref="T:Megumin.ListPool`1"/>缓存key实现。
+            使用<see cref="T:System.ListPool`1"/>缓存key实现。
             </summary>
             <typeparam name="K"></typeparam>
             <typeparam name="V"></typeparam>
@@ -196,6 +196,34 @@
             <inheritdoc cref="M:System.IPoolCore`1.Return(`0@,System.Boolean)"/>
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:System.ListPool`1">
+            <summary>
+            线程不安全List池
+            </summary>
+            <typeparam name="T"></typeparam>
+            <remarks>内部使用<see cref="T:System.Collections.Generic.Stack`1"/>实现</remarks>
+        </member>
+        <member name="T:System.ConcurrentListPool`1">
+            <summary>
+            线程安全List池
+            </summary>
+            <typeparam name="T"></typeparam>
+            <remarks>内部使用<see cref="T:System.Collections.Concurrent.ConcurrentStack`1"/>实现</remarks>
+        </member>
+        <member name="T:System.HashSetPool`1">
+            <summary>
+            线程不安全HashSet池
+            </summary>
+            <typeparam name="T"></typeparam>
+            <remarks>内部使用<see cref="T:System.Collections.Generic.Stack`1"/>实现</remarks>
+        </member>
+        <member name="T:System.ConcurrentHashSetPool`1">
+            <summary>
+            线程安全HashSet池
+            </summary>
+            <typeparam name="T"></typeparam>
+            <remarks>内部使用<see cref="T:System.Collections.Concurrent.ConcurrentStack`1"/>实现</remarks>
         </member>
         <member name="T:System.Net.IPAddressExtension_A6F086FB3EE3403BB5033720C34DA414">
             <summary>
@@ -545,66 +573,6 @@
             <typeparam name="TKey1"></typeparam>
             <typeparam name="TKey2"></typeparam>
             <typeparam name="TValue"></typeparam>
-        </member>
-        <member name="T:Megumin.ListPool`1">
-            <summary>
-            线程不安全List池
-            </summary>
-            <typeparam name="T"></typeparam>
-            <remarks>内部使用<see cref="T:System.Collections.Generic.Stack`1"/>实现</remarks>
-        </member>
-        <member name="F:Megumin.ListPool`1.poolCore">
-            <summary>
-            不要继承静态自动,父类和子类共有可能存在隐藏bug
-            </summary>
-        </member>
-        <member name="M:Megumin.ListPool`1.Rent">
-            <summary>
-            <inheritdoc cref="M:System.IPoolCore`1.Rent"/>
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Megumin.ListPool`1.Return(System.Collections.Generic.List{`0}@,System.Boolean)">
-            <summary>
-            <inheritdoc cref="M:System.IPoolCore`1.Return(`0@,System.Boolean)"/>
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Megumin.ListPool`1.Rent(System.Collections.Generic.List{`0}@,System.Boolean)">
-            <summary>
-            <inheritdoc cref="M:System.IPoolCore`1.Rent(`0@,System.Boolean)"/>
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Megumin.ConcurrentListPool`1">
-            <summary>
-            线程安全List池
-            </summary>
-            <typeparam name="T"></typeparam>
-            <remarks>内部使用<see cref="T:System.Collections.Concurrent.ConcurrentStack`1"/>实现</remarks>
-        </member>
-        <member name="F:Megumin.ConcurrentListPool`1.poolCore">
-            <summary>
-            不要继承静态自动,父类和子类共有可能存在隐藏bug
-            </summary>
-        </member>
-        <member name="M:Megumin.ConcurrentListPool`1.Rent">
-            <summary>
-            <inheritdoc cref="M:System.IPoolCore`1.Rent"/>
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Megumin.ConcurrentListPool`1.Return(System.Collections.Generic.List{`0}@,System.Boolean)">
-            <summary>
-            <inheritdoc cref="M:System.IPoolCore`1.Return(`0@,System.Boolean)"/>
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Megumin.ConcurrentListPool`1.Rent(System.Collections.Generic.List{`0}@,System.Boolean)">
-            <summary>
-            <inheritdoc cref="M:System.IPoolCore`1.Rent(`0@,System.Boolean)"/>
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:Megumin.MeguminUtility">
             <summary>
@@ -1559,7 +1527,7 @@
             仅当值发生改变时被调用
             </summary>
         </member>
-        <member name="E:Megumin.IMultiple`2.KeyValueChanged">
+        <member name="E:Megumin.IMultiple`2.KeyOrValueChanged">
             <summary>
             当前键值任一发生改变时被调用
             </summary>

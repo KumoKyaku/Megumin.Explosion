@@ -96,7 +96,7 @@ namespace System.Collections.Generic
                 return;
             }
 
-            using (var handle = ListPool<K>.Rent(out var removeList))
+            using (var handle = ListPool<K>.Shared.Rent(out var removeList))
             {
                 foreach (var item in source)
                 {
@@ -189,7 +189,7 @@ namespace System.Collections.Generic
             public Remover(IDictionary<K, V> list)
             {
                 this.list = list;
-                cache = ListPool<K>.Rent();
+                cache = ListPool<K>.Shared.Rent();
             }
 
             public void Push(K item)
@@ -201,7 +201,7 @@ namespace System.Collections.Generic
             {
                 if (cache == null)
                 {
-                    cache = ListPool<K>.Rent();
+                    cache = ListPool<K>.Shared.Rent();
                 }
                 cache.Add(item);
             }
@@ -212,7 +212,7 @@ namespace System.Collections.Generic
                 {
                     list.Remove(item);
                 }
-                ListPool<K>.Return(ref cache);
+                ListPool<K>.Shared.Return(ref cache);
                 cache = null;
             }
         }

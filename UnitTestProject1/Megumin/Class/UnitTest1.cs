@@ -14,20 +14,20 @@ namespace Megumin.Tests
         [TestMethod()]
         public void RentAutoReturnRentAutoReturn()
         {
-            using (var handle = ListPool<IVisibleable>.Rent(out var _))
+            using (var handle = ListPool<IVisibleable>.Shared.Rent(out var _))
             {
                 var list = handle.Element;
                 list.Add(null);
             }
 
-            using (ListPool<IVisibleable>.Rent(out var list))
+            using (ListPool<IVisibleable>.Shared.Rent(out var list))
             {
 
             }
 
 #if NET5_0_OR_GREATER
-            using var _ = ListPool<int>.Rent(out var test);
-            using var __ = ListPool<int>.Rent(out var test2);
+            using var _ = ListPool<int>.Shared.Rent(out var test);
+            using var __ = ListPool<int>.Shared.Rent(out var test2);
 #endif
 
             //CListP<int>.Pool = new PoolCore<List<int>>()
