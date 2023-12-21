@@ -4,12 +4,11 @@ using System.Text;
 
 namespace Megumin
 {
-
-    public enum WhenEqual
+    public enum WhenValueEqual
     {
         UseFirst,
         UseLast,
-        Unkonw,
+        Unkonwn,
     }
 
     /// <summary>
@@ -20,7 +19,7 @@ namespace Megumin
     public abstract class MultipleSelector<K, V> : Multiple<K, V>
         where V : IEquatable<V>
     {
-        public MultipleSelector(OnValueChanged<(K, V)> onKeyOrValueChanged = null)
+        public MultipleSelector(OnChanged<(K, V)> onKeyOrValueChanged = null)
         {
             if (onKeyOrValueChanged != null)
             {
@@ -28,10 +27,10 @@ namespace Megumin
             }
         }
 
-        public WhenEqual WhenEqual { get; set; } = WhenEqual.UseLast;
+        public WhenValueEqual WhenEqual { get; set; } = WhenValueEqual.UseLast;
         public Dictionary<K, DateTimeOffset> JoinTime { get; } = new();
 
-        public override V Add(K key, V value, bool forceRaiseEvent = false)
+        public override V Add(K key, V value, int raiseEvent = 0)
         {
             if (key is null)
             {
@@ -39,10 +38,10 @@ namespace Megumin
             }
 
             JoinTime[key] = DateTimeOffset.UtcNow;
-            return base.Add(key, value, forceRaiseEvent);
+            return base.Add(key, value, raiseEvent);
         }
 
-        public override V Remove(K key, V value = default, bool forceRaiseEvent = false)
+        public override V Remove(K key, V value = default, int raiseEvent = 0)
         {
             if (key is null)
             {
@@ -50,13 +49,13 @@ namespace Megumin
             }
 
             JoinTime.Remove(key);
-            return base.Remove(key, value, forceRaiseEvent);
+            return base.Remove(key, value, raiseEvent);
         }
 
-        public override V RemoveAll(bool forceRaiseEvent = false)
+        public override V RemoveAll(int raiseEvent = 0)
         {
             JoinTime.Clear();
-            return base.RemoveAll(forceRaiseEvent);
+            return base.RemoveAll(raiseEvent);
         }
     }
 
@@ -66,7 +65,7 @@ namespace Megumin
     /// <typeparam name="T"></typeparam>
     public class PrioritySelector<T> : MultipleSelector<T, (bool Enabled, int Priority)>
     {
-        public PrioritySelector(OnValueChanged<(T, (bool Enabled, int Priority))> onKeyOrValueChanged = null)
+        public PrioritySelector(OnChanged<(T, (bool Enabled, int Priority))> onKeyOrValueChanged = null)
             : base(onKeyOrValueChanged)
         {
         }
@@ -74,14 +73,14 @@ namespace Megumin
         public override T DefaultKey { get; }
         public override (bool Enabled, int Priority) DefaultValue { get; }
 
-        public T Join(T key, bool enabled, int priority, bool forceRaiseEvent = false)
+        public T Join(T key, bool enabled, int priority, int raiseEvent = 0)
         {
             if (key is null)
             {
                 return CurrentKey;
             }
 
-            Add(key, (enabled, priority), forceRaiseEvent);
+            Add(key, (enabled, priority), raiseEvent);
             return CurrentKey;
         }
 

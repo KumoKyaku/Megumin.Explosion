@@ -35,19 +35,20 @@ namespace Megumin
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <param name="forceRaiseEvent"></param>
-        V Control(K key, V value, bool forceRaiseEvent = false);
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        V Control(K key, V value, int raiseEvent = 0);
         /// <summary>
         /// 取消控制
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
-        /// <param name="forceRaiseEvent"></param>
-        V Cancel(K key, V value = default, bool forceRaiseEvent = false);
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        V Cancel(K key, V value = default, int raiseEvent = 0);
         /// <summary>
         /// 取消除默认值以外的所有控制
         /// </summary>
-        V CancelAll(bool forceRaiseEvent = false);
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        V CancelAll(int raiseEvent = 0);
     }
 
     /// <inheritdoc cref="IMultipleControlable{K, V}"/>
@@ -82,8 +83,8 @@ namespace Megumin
         /// <param name="init"></param>
         public MultipleControlBase(K defaultKey,
                                V defaultValue,
-                               OnValueChanged<(K, V)> onValueChangedKV = null,
-                               OnValueChanged<V> onValueChanged = null,
+                               OnChanged<(K, V)> onValueChangedKV = null,
+                               OnChanged<V> onValueChanged = null,
                                C init = default)
         {
             this.defaultKey = defaultKey;
@@ -115,13 +116,13 @@ namespace Megumin
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V Control(K key, V value, bool forceRaiseEvent = false) => Add(key, value, forceRaiseEvent);
+        public V Control(K key, V value, int raiseEvent = 0) => Add(key, value, raiseEvent);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V Cancel(K key, V value = default, bool forceRaiseEvent = false) => Remove(key, value, forceRaiseEvent);
+        public V Cancel(K key, V value = default, int raiseEvent = 0) => Remove(key, value, raiseEvent);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V CancelAll(bool forceRaiseEvent = false) => RemoveAll(forceRaiseEvent);
+        public V CancelAll(int raiseEvent = 0) => RemoveAll(raiseEvent);
 
         /// <summary>
         /// 返回当前值
@@ -153,8 +154,8 @@ namespace Megumin
         /// <param name="ascending">true 按升序排列，结果为应用最小值，false为降序排列，结果为应用最大值。</param>
         public MultipleControl(K defaultKey,
                                V defaultValue,
-                               OnValueChanged<(K, V)> onValueChangedKV = null,
-                               OnValueChanged<V> onValueChanged = null,
+                               OnChanged<(K, V)> onValueChangedKV = null,
+                               OnChanged<V> onValueChanged = null,
                                bool ascending = true)
             : base(defaultKey, defaultValue, onValueChangedKV, onValueChanged, ascending)
         {
@@ -209,33 +210,6 @@ namespace Megumin
     }
 
     /// <summary>
-    /// 开启关闭控制，默认只要有个一个控制源为true，结果就是true.
-    /// <para>可以将ascending参数设置为true,改为 只要有个一个源为false,结果就是false.</para>
-    /// </summary>
-    /// <remarks>处理黑屏，碰撞盒开闭</remarks>
-    [Obsolete("use AnyTrueControl instead")]
-    public class ActiveControl : MultipleControl<object, bool>
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="defaultHandle"></param>
-        /// <param name="defaultValue"></param>
-        /// <param name="onValueChangedKV"></param>
-        /// <param name="onValueChanged"></param>
-        /// <param name="ascending">默认false,降序排列,true=1排在false=0前面,结果为第一个值.任意一个true结果就true</param>
-        public ActiveControl(object defaultHandle,
-                             bool defaultValue,
-                             OnValueChanged<(object, bool)> onValueChangedKV = null,
-                             OnValueChanged<bool> onValueChanged = null,
-                             bool ascending = false)
-            : base(defaultHandle, defaultValue, onValueChangedKV, onValueChanged, ascending)
-        {
-
-        }
-    }
-
-    /// <summary>
     /// 开启控制，只要有个一个控制源为true，结果就是true.
     /// </summary>
     /// <remarks>
@@ -245,15 +219,15 @@ namespace Megumin
     {
         public AnyTrueControl(object defaultHandle,
                               bool defaultValue,
-                              OnValueChanged<(object, bool)> onValueChangedKV = null,
-                              OnValueChanged<bool> onValueChanged = null)
+                              OnChanged<(object, bool)> onValueChangedKV = null,
+                              OnChanged<bool> onValueChanged = null)
             : base(defaultHandle, defaultValue, onValueChangedKV, onValueChanged, false)
         {
 
         }
 
-        public AnyTrueControl(OnValueChanged<(object, bool)> onValueChangedKV = null,
-                              OnValueChanged<bool> onValueChanged = null)
+        public AnyTrueControl(OnChanged<(object, bool)> onValueChangedKV = null,
+                              OnChanged<bool> onValueChanged = null)
             : this(new(), false, onValueChangedKV, onValueChanged)
         {
 
@@ -267,15 +241,15 @@ namespace Megumin
     {
         public AnyFalseControl(object defaultHandle,
                                bool defaultValue,
-                               OnValueChanged<(object, bool)> onValueChangedKV = null,
-                               OnValueChanged<bool> onValueChanged = null)
+                               OnChanged<(object, bool)> onValueChangedKV = null,
+                               OnChanged<bool> onValueChanged = null)
             : base(defaultHandle, defaultValue, onValueChangedKV, onValueChanged, true)
         {
 
         }
 
-        public AnyFalseControl(OnValueChanged<(object, bool)> onValueChangedKV = null,
-                               OnValueChanged<bool> onValueChanged = null)
+        public AnyFalseControl(OnChanged<(object, bool)> onValueChangedKV = null,
+                               OnChanged<bool> onValueChanged = null)
             : this(new(), true, onValueChangedKV, onValueChanged)
         {
 

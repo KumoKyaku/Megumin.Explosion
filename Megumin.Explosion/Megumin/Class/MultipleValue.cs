@@ -29,7 +29,7 @@ namespace Megumin
         public MultipleValue() { }
         public MultipleValue(K defaultKey,
                              V defaultValue = default,
-                             OnValueChanged<V> onValueChanged = null)
+                             OnChanged<V> onValueChanged = null)
         {
             this.defaultKey = defaultKey;
             this.defaultValue = defaultValue;
@@ -77,7 +77,7 @@ namespace Megumin
     {
         public MultipleValueEnum(K defaultKey,
                                    V defaultValue,
-                                   OnValueChanged<V> onValueChanged = null)
+                                   OnChanged<V> onValueChanged = null)
             : base(defaultKey, defaultValue, onValueChanged)
         {
         }
@@ -145,7 +145,7 @@ namespace Megumin
     {
         public MultipleValueEnumKeypadSudoku(object defaultKey,
                                            KeypadSudoku defaultValue,
-                                           OnValueChanged<KeypadSudoku> onValueChanged = null)
+                                           OnChanged<KeypadSudoku> onValueChanged = null)
             : base(defaultKey, defaultValue, onValueChanged)
         {
         }
@@ -171,7 +171,7 @@ namespace Megumin
     {
         public MultipleValueCollection(K defaultKey,
                                          ICollection<V> defaultValue,
-                                         OnValueChanged<ICollection<V>> onValueChanged = null)
+                                         OnChanged<ICollection<V>> onValueChanged = null)
             : base(defaultKey, defaultValue, onValueChanged)
         {
 

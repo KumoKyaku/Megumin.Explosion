@@ -38,7 +38,7 @@ namespace Megumin
         /// 全局显示开关
         /// </summary>
         public static Pref<bool> GlobalToggle;
-        public readonly static ActiveControl ActiveControl = new ActiveControl(new object(), true, ascending: true);
+        public readonly static AnyFalseControl ActiveControl = new();
 
         [ReadOnlyInInspector]
         public string cacheText;

@@ -11,9 +11,9 @@ namespace Megumin
         /// </summary>
         public T value;
 
-        public event OnValueGet<T> OnValueGet;
-        public event OnValueSet<T> OnValueSet;
-        public event OnValueChanged<T> OnValueChanged;
+        public event OnGet<T> OnValueGet;
+        public event OnSet<T> OnValueSet;
+        public event OnChanged<T> OnValueChanged;
 
         public T Value
         {

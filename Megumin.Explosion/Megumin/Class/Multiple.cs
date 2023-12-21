@@ -12,9 +12,9 @@ namespace Megumin
     public abstract partial class Multiple<K, V> : IMultiple<K, V>
     {
         protected readonly Dictionary<K, V> ElementDic = new Dictionary<K, V>();
-        public event OnValueChanged<V> ValueChanged;
-        public event OnValueChanged<(K Key, V Value)> ValueChangedKV;
-        public event OnValueChanged<(K Key, V Value)> KeyOrValueChanged;
+        public event OnChanged<V> ValueChanged;
+        public event OnChanged<(K Key, V Value)> ValueChangedKV;
+        public event OnChanged<(K Key, V Value)> KeyOrValueChanged;
 
         public abstract K DefaultKey { get; }
         public abstract V DefaultValue { get; }
@@ -24,7 +24,7 @@ namespace Megumin
         /// <summary>
         /// 应用值,使用<see cref="EqualityComparer{T}"/>比较是否发生改变,优化了装箱.
         /// </summary>
-        protected virtual void ApplyValue(bool forceRaiseEvent = false)
+        protected virtual void ApplyValue(int raiseEvent = 0)
         {
             var oldValue = Current;
             var oldKey = CurrentKey;
@@ -32,7 +32,23 @@ namespace Megumin
             Current = newValue;
             CurrentKey = newKey;
 
-            bool flagV = EqualsValue(oldValue, newValue);
+
+            bool flagV = false;
+            bool flagKorV = false;
+
+            if (raiseEvent > 100)
+            {
+                //强制触发事件，不必判断相等性。
+                flagKorV = true;
+                flagV = true;
+            }
+            else if (raiseEvent >= 0)
+            {
+                flagV = !EqualsValue(oldValue, newValue);
+                flagKorV = flagV || !EqualsKey(oldKey, newKey);
+            }
+
+
             //if (old is IEquatable<V> oe)
             //{
             //    //转成接口必然装箱
@@ -44,24 +60,21 @@ namespace Megumin
             //    flagV = Equals(old, Current);
             //}
 
-            if (!flagV || forceRaiseEvent)
+            if (flagV)
             {
                 OnValueChanged(newValue, oldValue);
                 OnValueChangedKV((newKey, newValue), (oldKey, oldValue));
             }
 
-            if (!flagV || !EqualsKey(oldKey, newKey) || forceRaiseEvent)
+            if (flagKorV)
             {
                 OnKeyOrValueChanged((newKey, newValue), (oldKey, oldValue));
             }
         }
 
-        /// <summary>
-        /// 在控制项没有变动的情况下，触发ApplyValue，尝试触发事件。
-        /// </summary>
-        public void Refresh(bool forceRaiseEvent = false)
+        public void Refresh(int raiseEvent = 0)
         {
-            ApplyValue(forceRaiseEvent);
+            ApplyValue(raiseEvent);
         }
 
         /// <summary>
@@ -139,7 +152,7 @@ namespace Megumin
             KeyOrValueChanged?.Invoke(newValue, oldValue);
         }
 
-        public virtual V Add(K key, V value, bool forceRaiseEvent = false)
+        public virtual V Add(K key, V value, int raiseEvent = 0)
         {
             if (key is null)
             {
@@ -147,11 +160,11 @@ namespace Megumin
             }
 
             ElementDic[key] = value;
-            ApplyValue(forceRaiseEvent);
+            ApplyValue(raiseEvent);
             return Current;
         }
 
-        public virtual V Remove(K key, V value = default, bool forceRaiseEvent = false)
+        public virtual V Remove(K key, V value = default, int raiseEvent = 0)
         {
             if (key is null)
             {
@@ -159,11 +172,11 @@ namespace Megumin
             }
 
             ElementDic.Remove(key);
-            ApplyValue(forceRaiseEvent);
+            ApplyValue(raiseEvent);
             return Current;
         }
 
-        public virtual V RemoveAll(bool forceRaiseEvent = false)
+        public virtual V RemoveAll(int raiseEvent = 0)
         {
             ElementDic.Clear();
 
@@ -176,7 +189,7 @@ namespace Megumin
             //}
 
             ElementDic[DefaultKey] = DefaultValue;
-            ApplyValue(forceRaiseEvent);
+            ApplyValue(raiseEvent);
             return Current;
         }
 

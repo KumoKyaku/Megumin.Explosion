@@ -23,7 +23,7 @@ namespace Megumin
     /// 保持API一致性。<see cref="OnValueSet{T}"/>
     /// 虽然应该是Got，但是为了一致性。
     /// </remarks>
-    [Obsolete("Use OnGet instead.")]
+    [Obsolete("Use OnGet instead.", true)]
     public delegate void OnValueGet<in T>(T value);
 
     /// <summary>
@@ -35,7 +35,7 @@ namespace Megumin
     /// <remarks>
     /// Set过去式也是Set。
     /// </remarks>
-    [Obsolete("Use OnSet instead.")]
+    [Obsolete("Use OnSet instead.", true)]
     public delegate void OnValueSet<in T>(T newValue, T oldValue);
 
     /// <summary>
@@ -44,7 +44,7 @@ namespace Megumin
     /// <typeparam name="T"></typeparam>
     /// <param name="newValue">新的值</param>
     /// <param name="oldValue">旧的值</param>
-    [Obsolete("Use OnChanged instead.")]
+    [Obsolete("Use OnChanged instead.", true)]
     public delegate void OnValueChanged<in T>(T newValue, T oldValue);
 
     /// <summary>

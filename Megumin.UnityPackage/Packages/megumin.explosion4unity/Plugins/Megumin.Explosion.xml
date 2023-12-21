@@ -489,14 +489,9 @@
             <typeparam name="K"></typeparam>
             <typeparam name="V"></typeparam>
         </member>
-        <member name="M:Megumin.Multiple`2.ApplyValue(System.Boolean)">
+        <member name="M:Megumin.Multiple`2.ApplyValue(System.Int32)">
             <summary>
             应用值,使用<see cref="T:System.Collections.Generic.EqualityComparer`1"/>比较是否发生改变,优化了装箱.
-            </summary>
-        </member>
-        <member name="M:Megumin.Multiple`2.Refresh(System.Boolean)">
-            <summary>
-            在控制项没有变动的情况下，触发ApplyValue，尝试触发事件。
             </summary>
         </member>
         <member name="M:Megumin.Multiple`2.EqualsKey(`0,`0)">
@@ -566,26 +561,27 @@
             这时用一个枚举值来存共有哪些禁用,就无法实现需求.
             </remarks>
         </member>
-        <member name="M:Megumin.IMultipleControlable`2.Control(`0,`1,System.Boolean)">
+        <member name="M:Megumin.IMultipleControlable`2.Control(`0,`1,System.Int32)">
             <summary>
             开始控制
             </summary>
             <param name="key"></param>
             <param name="value"></param>
-            <param name="forceRaiseEvent"></param>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
         </member>
-        <member name="M:Megumin.IMultipleControlable`2.Cancel(`0,`1,System.Boolean)">
+        <member name="M:Megumin.IMultipleControlable`2.Cancel(`0,`1,System.Int32)">
             <summary>
             取消控制
             </summary>
             <param name="key"></param>
             <param name="value">因为总是复制粘贴Control,参数个数对不上,这个值没有使用,只是为了对其参数个数.</param>
-            <param name="forceRaiseEvent"></param>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
         </member>
-        <member name="M:Megumin.IMultipleControlable`2.CancelAll(System.Boolean)">
+        <member name="M:Megumin.IMultipleControlable`2.CancelAll(System.Int32)">
             <summary>
             取消除默认值以外的所有控制
             </summary>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
         </member>
         <member name="T:Megumin.MultipleControlBase`3">
             <inheritdoc cref="T:Megumin.IMultipleControlable`2"/>
@@ -602,7 +598,7 @@
             TODO,使用最大堆最小堆优化
             </summary>
         </member>
-        <member name="M:Megumin.MultipleControlBase`3.#ctor(`0,`1,Megumin.OnValueChanged{System.ValueTuple{`0,`1}},Megumin.OnValueChanged{`1},`2)">
+        <member name="M:Megumin.MultipleControlBase`3.#ctor(`0,`1,Megumin.OnChanged{System.ValueTuple{`0,`1}},Megumin.OnChanged{`1},`2)">
             <summary>
             
             </summary>
@@ -614,7 +610,7 @@
         </member>
         <member name="M:Megumin.MultipleControlBase`3.InitInCtor(`2)">
             <summary>
-            构造函数中间调用的虚方法,用于初始化排序字段,在第一次<see cref="M:Megumin.Multiple`2.ApplyValue(System.Boolean)"/>前调用.
+            构造函数中间调用的虚方法,用于初始化排序字段,在第一次<see cref="M:Megumin.Multiple`2.ApplyValue(System.Int32)"/>前调用.
             <para>不需要排序的或者计算方式不需要缓存的,可以忽略这个函数.</para>
             这个主要作用用来初始化排序的linq表达式.
             </summary>
@@ -633,7 +629,7 @@
             排序用Linq表达式
             </summary>
         </member>
-        <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1,Megumin.OnValueChanged{System.ValueTuple{`0,`1}},Megumin.OnValueChanged{`1},System.Boolean)">
+        <member name="M:Megumin.MultipleControl`2.#ctor(`0,`1,Megumin.OnChanged{System.ValueTuple{`0,`1}},Megumin.OnChanged{`1},System.Boolean)">
             <summary>
             构造函数
             </summary>
@@ -661,23 +657,6 @@
             </summary>
             <returns></returns>
             <remarks>有的多重控制并不是比较大小,例如FlagEnum,可能时其他运算</remarks>
-        </member>
-        <member name="T:Megumin.ActiveControl">
-            <summary>
-            开启关闭控制，默认只要有个一个控制源为true，结果就是true.
-            <para>可以将ascending参数设置为true,改为 只要有个一个源为false,结果就是false.</para>
-            </summary>
-            <remarks>处理黑屏，碰撞盒开闭</remarks>
-        </member>
-        <member name="M:Megumin.ActiveControl.#ctor(System.Object,System.Boolean,Megumin.OnValueChanged{System.ValueTuple{System.Object,System.Boolean}},Megumin.OnValueChanged{System.Boolean},System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="defaultHandle"></param>
-            <param name="defaultValue"></param>
-            <param name="onValueChangedKV"></param>
-            <param name="onValueChanged"></param>
-            <param name="ascending">默认false,降序排列,true=1排在false=0前面,结果为第一个值.任意一个true结果就true</param>
         </member>
         <member name="T:Megumin.AnyTrueControl">
             <summary>
@@ -1459,6 +1438,16 @@
             已释放
             </summary>
         </member>
+        <member name="T:Megumin.RaiseEvent">
+            <summary>
+            触发事件类型
+            </summary>
+        </member>
+        <member name="F:Megumin.RaiseEvent.ForceRaise">
+            <summary>
+            强制触发
+            </summary>
+        </member>
         <member name="T:Megumin.ISamplable">
             <summary>
             可采样的
@@ -1539,26 +1528,34 @@
             当前值
             </summary>
         </member>
-        <member name="M:Megumin.IMultiple`2.Add(`0,`1,System.Boolean)">
+        <member name="M:Megumin.IMultiple`2.Add(`0,`1,System.Int32)">
             <summary>
             添加一个构成项
             </summary>
             <param name="key"></param>
             <param name="value"></param>
-            <param name="forceRaiseEvent"></param>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
         </member>
-        <member name="M:Megumin.IMultiple`2.Remove(`0,`1,System.Boolean)">
+        <member name="M:Megumin.IMultiple`2.Remove(`0,`1,System.Int32)">
             <summary>
             移除一个构成项
             </summary>
             <param name="key"></param>
             <param name="value">因为总是复制粘贴Add,参数个数对不上,这个值没有使用,只是为了对齐参数个数.</param>
-            <param name="forceRaiseEvent"></param>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
         </member>
-        <member name="M:Megumin.IMultiple`2.RemoveAll(System.Boolean)">
+        <member name="M:Megumin.IMultiple`2.RemoveAll(System.Int32)">
             <summary>
             取消除默认值以外的所有构成项
             </summary>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.IMultiple`2.Refresh(System.Int32)">
+            <summary>
+            在控制项没有变动的情况下，触发ApplyValue，尝试触发事件。
+            </summary>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
         </member>
         <member name="E:Megumin.IMultiple`2.ValueChanged">
             <summary>

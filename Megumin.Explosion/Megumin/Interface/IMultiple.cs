@@ -38,33 +38,41 @@ namespace Megumin
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        /// <param name="forceRaiseEvent"></param>
-        V Add(K key, V value, bool forceRaiseEvent = false);
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        V Add(K key, V value, int raiseEvent = 0);
 
         /// <summary>
         /// 移除一个构成项
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value">因为总是复制粘贴Add,参数个数对不上,这个值没有使用,只是为了对齐参数个数.</param>
-        /// <param name="forceRaiseEvent"></param>
-        V Remove(K key, V value = default, bool forceRaiseEvent = false);
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        V Remove(K key, V value = default, int raiseEvent = 0);
 
         /// <summary>
         /// 取消除默认值以外的所有构成项
         /// </summary>
-        V RemoveAll(bool forceRaiseEvent = false);
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        /// <returns></returns>
+        V RemoveAll(int raiseEvent = 0);
+
+        /// <summary>
+        /// 在控制项没有变动的情况下，触发ApplyValue，尝试触发事件。
+        /// </summary>
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        void Refresh(int raiseEvent = 0);
 
         /// <summary>
         /// 仅当值发生改变时被调用
         /// </summary>
-        event OnValueChanged<V> ValueChanged;
+        event OnChanged<V> ValueChanged;
         /// <summary>
         /// 仅当值发生改变时被调用
         /// </summary>
-        event OnValueChanged<(K Key, V Value)> ValueChangedKV;
+        event OnChanged<(K Key, V Value)> ValueChangedKV;
         /// <summary>
         /// 当前键值任一发生改变时被调用
         /// </summary>
-        event OnValueChanged<(K Key, V Value)> KeyOrValueChanged;
+        event OnChanged<(K Key, V Value)> KeyOrValueChanged;
     }
 }
