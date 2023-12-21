@@ -44,6 +44,11 @@ namespace Megumin
 
         public override V Remove(K key, V value = default, bool forceRaiseEvent = false)
         {
+            if (key is null)
+            {
+                return Current;
+            }
+
             JoinTime.Remove(key);
             return base.Remove(key, value, forceRaiseEvent);
         }
@@ -82,13 +87,9 @@ namespace Megumin
 
         protected override (T Key, (bool Enabled, int Priority) Value) CalNewValue()
         {
-            var curKey = CurrentKey;
-            var curValue = Current;
+            T curKey = default;
+            (bool Enabled, int Priority) curValue = default;
             var curJoinTime = DateTimeOffset.MinValue;
-            if (curKey is not null)
-            {
-                JoinTime.TryGetValue(curKey, out curJoinTime);
-            }
 
             foreach (var kv in ElementDic)
             {
