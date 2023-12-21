@@ -243,33 +243,33 @@ namespace UnityEngine
             orignal = orignal.Replace("$(tag)", gameObject.tag);
         }
 
-        public static void LogNotImplemented(this Object obj, [CallerMemberName] string funcName = null)
+        public static void LogNotImplemented(this Object obj, [CallerMemberName] string callerName = null)
         {
-            UnityEngine.Debug.LogError($"{funcName} NotImplemented.    [Instead throw Exception]");
+            UnityEngine.Debug.LogError($"{callerName.Html(HexColor.Blueberry)} NotImplemented.    [Instead throw Exception]");
         }
 
         public static string LogCallerMemberName(this Object obj,
                                                  object append = null,
-                                                 [CallerMemberName] string func = default)
+                                                 [CallerMemberName] string callerName = default)
         {
-            Debug.Log($"{func}----{append}");
-            return func;
+            Debug.Log($"{callerName.Html(HexColor.Blueberry)}----{append}");
+            return callerName;
         }
 
         public static string LogFrameID_CallerMemberName(this Object obj,
                                                          object append = null,
-                                                         [CallerMemberName] string func = default)
+                                                         [CallerMemberName] string callerName = default)
         {
-            Debug.Log($"[FrameID:{Time.frameCount}]----{func}----{append}");
-            return func;
+            Debug.Log($"[FrameID:{Time.frameCount}]----{callerName.Html(HexColor.Blueberry)}----{append}");
+            return callerName;
         }
 
         public static string LogFrameID_Name_CallerMemberName(this Object obj,
                                                               object append = null,
-                                                              [CallerMemberName] string func = default)
+                                                              [CallerMemberName] string callerName = default)
         {
-            Debug.Log($"[FrameID:{Time.frameCount}]----Object:{obj.name}----{obj.GetType().Name}.{func}----{append}");
-            return func;
+            Debug.Log($"[FrameID:{Time.frameCount}]----Object:{obj.name}----{obj.GetType().Name}.{callerName.Html(HexColor.Blueberry)}----{append}");
+            return callerName;
         }
 
         public static void LogThreadID(this Object obj, object label = null)
