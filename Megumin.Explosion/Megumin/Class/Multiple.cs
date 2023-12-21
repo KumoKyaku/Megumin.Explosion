@@ -139,15 +139,25 @@ namespace Megumin
             KeyOrValueChanged?.Invoke(newValue, oldValue);
         }
 
-        public V Add(K key, V value, bool forceRaiseEvent = false)
+        public virtual V Add(K key, V value, bool forceRaiseEvent = false)
         {
+            if (key is null)
+            {
+                return Current;
+            }
+
             ElementDic[key] = value;
             ApplyValue(forceRaiseEvent);
             return Current;
         }
 
-        public V Remove(K key, V value = default, bool forceRaiseEvent = false)
+        public virtual V Remove(K key, V value = default, bool forceRaiseEvent = false)
         {
+            if (key is null)
+            {
+                return Current;
+            }
+
             ElementDic.Remove(key);
             ApplyValue(forceRaiseEvent);
             return Current;
