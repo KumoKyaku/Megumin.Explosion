@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Megumin
 {
     [Serializable]
-    public partial class EventValue<T>
+    public partial class EventValue<T> : EqualComparer<T>
     {
         /// <summary>
         /// 这里public是为了能在unity中序列化，这里没办法标记SerializeField
@@ -40,14 +40,36 @@ namespace Megumin
             }
         }
 
-        public void SetValue(T value)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        public void SetValue(T value, int raiseEvent = 0)
         {
-            Value = value;
+            var old = this.value;
+            this.value = value;
+
+            //先赋值完成在触发回调
+            if (raiseEvent >= 0)
+            {
+                OnValueSet?.Invoke(value, old);
+                if (raiseEvent > 100)
+                {
+                    if (OnValueChanged != null)
+                    {
+                        if (!EqualsValue(value, old))
+                        {
+                            OnValueChanged.Invoke(value, old);
+                        }
+                    }
+                }
+            }
         }
 
         public void SetValueSilent(T value)
         {
-            this.value = value;
+            SetValue(value, -1);
         }
     }
 

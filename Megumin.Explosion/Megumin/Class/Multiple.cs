@@ -9,7 +9,7 @@ namespace Megumin
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public abstract partial class Multiple<K, V> : IMultiple<K, V>
+    public abstract partial class Multiple<K, V> : EqualComparer<V>, IMultiple<K, V>
     {
         protected readonly Dictionary<K, V> ElementDic = new Dictionary<K, V>();
         public event OnChanged<V> ValueChanged;
@@ -89,39 +89,6 @@ namespace Megumin
         protected virtual bool EqualsKey(K x, K y)
         {
             bool flag = EqualityComparer<K>.Default.Equals(x, y);
-            return flag;
-        }
-
-        protected virtual bool EqualsValue(V x, V y)
-        {
-            bool flag = EqualityComparer<V>.Default.Equals(x, y);
-            return flag;
-        }
-
-        //public bool Equals(object objA, object objB)
-        //{
-        //    return object.Equals(objA, objB);
-        //}
-
-        protected virtual bool EqualsKey(object x, object y)
-        {
-            return Equals(x, y);
-        }
-
-        protected bool EqualsValue(bool x, bool y)
-        {
-            return x == y;
-        }
-
-        protected bool EqualsValue(int x, int y)
-        {
-            return x == y;
-        }
-
-        protected virtual bool EqualsValue<N>(N x, N y)
-            where N : IEquatable<N>
-        {
-            bool flag = x.Equals(y);
             return flag;
         }
 

@@ -419,10 +419,24 @@
             C# 不允许匿名类实现接口，所以必须声明一个类型。
             </remarks>
         </member>
+        <member name="T:Megumin.EqualComparer`1">
+            <summary>
+            解决泛型不能直接判断 == 问题
+            <seealso cref="!:System.Numerics.IEqualityOperators&lt;TSelf, TOther, TResult&gt;"/>"/>
+            </summary>
+            <typeparam name="V"></typeparam>
+        </member>
         <member name="F:Megumin.EventValue`1.value">
             <summary>
             这里public是为了能在unity中序列化，这里没办法标记SerializeField
             </summary>
+        </member>
+        <member name="M:Megumin.EventValue`1.SetValue(`0,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
         </member>
         <member name="T:Megumin.EventValue`1.ValueObservable">
             <summary>
