@@ -25,18 +25,7 @@ namespace Megumin
 
             set
             {
-                var old = this.value;
-                this.value = value;
-
-                //先赋值完成在触发回调
-                OnValueSet?.Invoke(value, old);
-                if (OnValueChanged != null)
-                {
-                    if (!EqualityComparer<T>.Default.Equals(value, old))
-                    {
-                        OnValueChanged.Invoke(value, old);
-                    }
-                }
+                SetValue(value);
             }
         }
 
