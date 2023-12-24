@@ -43,14 +43,11 @@ namespace Megumin
             if (raiseEvent >= 0)
             {
                 OnValueSet?.Invoke(value, old);
-                if (raiseEvent > 100)
+                if (OnValueChanged != null)
                 {
-                    if (OnValueChanged != null)
+                    if (raiseEvent > 100 || !EqualsValue(value, old))
                     {
-                        if (!EqualsValue(value, old))
-                        {
-                            OnValueChanged.Invoke(value, old);
-                        }
+                        OnValueChanged.Invoke(value, old);
                     }
                 }
             }

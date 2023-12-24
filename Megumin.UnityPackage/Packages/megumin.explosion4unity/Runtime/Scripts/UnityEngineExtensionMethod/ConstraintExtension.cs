@@ -38,6 +38,17 @@ public static class ConstraintExtension_2BC2DF21765A4B2DA4F5FEAF623440E7
         constraint.SetParent(target?.transform);
         constraint.gameObject.SetActive(target?.transform);
     }
+
+    /// <summary>
+    /// 标记显示一个对象
+    /// </summary>
+    /// <param name="constraint"></param>
+    /// <param name="target"></param>
+    public static void Mark(this ParentConstraint constraint, Component target)
+    {
+        constraint.SetParent(target?.transform);
+        constraint.gameObject.SetActive(target?.transform);
+    }
 }
 
 
