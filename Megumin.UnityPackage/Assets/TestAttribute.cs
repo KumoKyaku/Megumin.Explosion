@@ -25,6 +25,7 @@ public class TestAttribute : MonoBehaviour
 
     [Enableable]
     public EnableTest EnableAttribut;
+    public Enable<int> EnableClassInt;
 
     [Enum2String(typeof(LerpType))]
     public string Enum2String = LerpType.Lerp.ToString();
