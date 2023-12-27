@@ -19,6 +19,12 @@ public static class VectorExtension_DC454F9ED17B4327A47F7EF4F0E76DAF
         return new Vector3(v.x, 0, v.z);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2 XZ(this in Vector3 v)
+    {
+        return new Vector2(v.x, v.z);
+    }
+
     public static Vector3Int ToVector3Int(this IXYZ<int> value)
     {
         if (value == null)

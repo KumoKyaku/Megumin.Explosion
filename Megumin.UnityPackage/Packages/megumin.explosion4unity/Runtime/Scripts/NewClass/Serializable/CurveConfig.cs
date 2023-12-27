@@ -46,6 +46,25 @@ namespace Megumin
             }
         }
     }
+
+    public static class EnableCurveConfigExtension
+    {
+        public static float Evaluate(this Enable<CurveConfig> curveConfig, float time, float defaultValue = 0)
+        {
+            if (curveConfig == null)
+            {
+                return defaultValue;
+            }
+
+            if (curveConfig.HasValue)
+            {
+                return curveConfig.Value.Evaluate(time);
+            }
+
+            return defaultValue;
+        }
+    }
+
 }
 
 
