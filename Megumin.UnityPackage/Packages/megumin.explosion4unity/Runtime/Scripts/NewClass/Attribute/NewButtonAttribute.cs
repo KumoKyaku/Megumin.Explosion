@@ -223,11 +223,25 @@ namespace UnityEditor.Megumin
                     var indexCacheKey = (property.serializedObject.targetObject, property.propertyPath);
                     SelectedIndex.TryGetValue(indexCacheKey, out var index);
 
+                    var oldSelectedIndex = index;
                     index = EditorGUI.Popup(popPosition, index, SupportNames);
 
                     SelectedIndex[indexCacheKey] = index;
 
                     var targetType = SupportTypes[index];
+
+                    if (oldSelectedIndex != index)
+                    {
+                        //这里打印日志，方便定为脚本文件位置。
+                        if (targetType == null)
+                        {
+                            Debug.Log($"Select Type: null");
+                        }
+                        else
+                        {
+                            Debug.Log($"Select Type: {targetType.GetUnityProjectLink()}");
+                        }
+                    }
 
                     //new button 放在上面，不然new时会与Expanded折叠功能冲突。
                     if (GUI.Button(leftPosotion, "New", left))
