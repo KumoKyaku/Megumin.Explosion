@@ -32,6 +32,7 @@ public class TestLog : MonoBehaviour
     [Indent]
     public Color TestColor;
     public HexColor HexColor;
+    [NewButton]
     public List<Loger> Loggers;
     public List<Test12345> Test12345s;
 
@@ -43,7 +44,46 @@ public class TestLog : MonoBehaviour
 
     //[OnValueChanged(CallBackName = "OnValueChangeTest1")]
     public STest STest;
+    [NewButton]
     public SaveAsset SaveAsset;
+
+
+    public Pref<bool> GlobalToggle;
+    [SerializeReference]
+    //[NewButton]
+    [SerializeReferenceNewButton]
+    public IStest TestRef;
+
+    [SerializeReference]
+    [NewButton]
+    //[SerializeReferenceNewButton]
+    public IStest TestRef2;
+
+    [SerializeReference]
+    //[SerializeReferenceNewButton]
+    [NewButton]
+    public List<STest> TestRefList;
+
+
+    public enum TestEnum
+    {
+        Aaa,
+        Bbb,
+    }
+
+    private void OnValidate()
+    {
+
+    }
+
+    public void OnValueChangeTest1()
+    {
+        Debug.LogError($"OnValueChangeTest1 {STest.intb}");
+    }
+
+    public TestScriptObject TestScriptObject;
+
+
     void Start()
     {
         string message = ColorUtility.ToHtmlStringRGBA(Color.green);
@@ -97,14 +137,6 @@ public class TestLog : MonoBehaviour
     }
 
 
-    public Pref<bool> GlobalToggle;
-    [SerializeReference]
-    [SerializeReferenceNewButton]
-    public IStest TestRef;
-
-    [SerializeReference]
-    [SerializeReferenceNewButton]
-    public List<STest> TestRefList;
 
     [Button]
     public void TestQ()
@@ -137,24 +169,6 @@ public class TestLog : MonoBehaviour
     {
         this.LogCallerMemberName();
     }
-
-    public enum TestEnum
-    {
-        Aaa,
-        Bbb,
-    }
-
-    private void OnValidate()
-    {
-
-    }
-
-    public void OnValueChangeTest1()
-    {
-        Debug.LogError($"OnValueChangeTest1 {STest.intb}");
-    }
-
-    public TestScriptObject TestScriptObject;
 }
 
 public interface IStest

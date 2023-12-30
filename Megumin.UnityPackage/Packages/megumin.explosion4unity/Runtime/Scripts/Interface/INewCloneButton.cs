@@ -15,8 +15,18 @@ using UnityEditor.SceneManagement;
 namespace Megumin
 {
     /// <summary>
+    /// 使用<see cref="SupportTypesAttribute"/>设置支持类型的搜索范围。
+    /// <para><see cref="SerializeReference"/>不从<see cref="PropertyAttribute"/>继承，所以这个特性无法省略。</para>
+    /// </summary>
+    public class NewButtonAttribute : PropertyAttribute
+    {
+
+    }
+
+    /// <summary>
     /// 在面板绘制new clone 按钮
     /// </summary>
+    [Obsolete("Use NewButtonAttribute instead.")]
     public interface INewCloneButton
     {
 
@@ -26,6 +36,7 @@ namespace Megumin
     /// 使用<see cref="SupportTypesAttribute"/>设置支持类型的搜索范围。
     /// <para><see cref="SerializeReference"/>不从<see cref="PropertyAttribute"/>继承，所以这个特性无法省略。</para>
     /// </summary>
+    [Obsolete("Use NewButtonAttribute instead.")]
     public class SerializeReferenceNewButtonAttribute : PropertyAttribute
     {
 
@@ -64,14 +75,22 @@ namespace UnityEditor.Megumin
     //[CustomPropertyDrawer(typeof(Material), true)]
     [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
-    [CustomPropertyDrawer(typeof(INewCloneButton), true)]
+    //[CustomPropertyDrawer(typeof(INewCloneButton), true)]
+    [CustomPropertyDrawer(typeof(NewButtonAttribute), true)]
     [CustomPropertyDrawer(typeof(SerializeReferenceNewButtonAttribute), true)]
 #endif
-    public class INewCloneButtonDrawer_8F11D385 : PropertyDrawer
+    public partial class INewCloneButtonDrawer_72946648EEF14A43B837BAC45D14BFF3 : PropertyDrawer
     {
         static GUIStyle left = new GUIStyle("minibuttonleft");
         static GUIStyle right = new GUIStyle("minibuttonright");
         static Regex typeRegex = new Regex(@"^PPtr\<\$(.*)>$");
+
+        class SaveTask
+        {
+            public Type T;
+            public string TName;
+            public string instancePath;
+        }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -84,148 +103,22 @@ namespace UnityEditor.Megumin
         /// 表现就是选项当前值会每次new都会变，没有什么好的办法。
         /// <para/> 而且必须CanCacheInspectorGUI为true，否则类型缓存和savetask都会失效。
         /// </summary>
-        int index = 0;
+        int DropMenuIndex = 0;
+
+        /// <summary>
+        /// 代码中声明的成员类型
+        /// </summary>
+        Type memberType;
+
+        /// <summary>
+        /// 代码中声明的成员类型名字，有时候类型取不到
+        /// </summary>
+        string memberTypeName;
         Type[] SupportTypes;
         HashSet<Type> allTypes;
         SaveTask saveTask = null;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            var propertyPosition = position;
-            propertyPosition.width -= 86;
-
-            var buttonPosition = position;
-            buttonPosition.width = 80;
-            buttonPosition.x += position.width - 80;
-
-
-            var leftPosotion = buttonPosition;
-            leftPosotion.width = 40;
-            var rightPosition = buttonPosition;
-            rightPosition.width = 40;
-            rightPosition.x += 40;
-
-            if (property.type.StartsWith("PPtr"))
-            {
-                CacheSupportType(property);
-                DrawPPtrType(property, label, propertyPosition, leftPosotion, rightPosition);
-            }
-            else if (attribute is SerializeReferenceNewButtonAttribute add)
-            {
-                CacheSupportType(property, true);
-                DrawSerializeReference(property, label, position, propertyPosition, leftPosotion, rightPosition);
-            }
-            else
-            {
-                EditorGUI.PropertyField(position, property, label, true);
-                return;
-            }
-        }
-
-        /// <summary>
-        /// 缓存支持的类型
-        /// </summary>
-        public void CacheSupportType(SerializedProperty property, bool collectSelfTypeIfNoAttribute = false)
-        {
-            if (allTypes == null)
-            {
-                allTypes = new HashSet<Type>();
-
-                //额外检测SO对象本身类型所在程序集
-                HashSet<Assembly> extraAss = new HashSet<Assembly>();
-                if (property.serializedObject.targetObjects != null)
-                {
-                    foreach (var item in property.serializedObject.targetObjects)
-                    {
-                        extraAss.Add(item.GetType().Assembly);
-                    }
-                }
-
-                this.fieldInfo.CollectSupportType(allTypes,
-                                                  AssemblyFilter,
-                                                  collectSelfTypeIfNoAttribute,
-                                                  extraCheck: extraAss);
-
-                int index = 0;
-                SupportNames = new string[allTypes.Count];
-                SupportTypes = new Type[allTypes.Count];
-                foreach (var item in allTypes)
-                {
-                    SupportNames[index] = item.Name;
-                    SupportTypes[index] = item;
-                    index++;
-                }
-            }
-        }
-
-        public bool AssemblyFilter(Assembly assembly)
-        {
-            //过滤掉一些，不然肯能太卡
-            var assName = assembly.FullName;
-            if (assName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-
-            //可以通过这个宏来强行搜索unity中的类型
-#if !SCROBJ_DRAWER_FORCEDSEARCH_UNITY
-            if (assName.StartsWith("Unity", StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-#endif
-
-            return true;
-        }
-
-        public void DrawSerializeReference(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
-        {
-            if (leftPosotion.height > 18)
-            {
-                leftPosotion.height = 18;
-                rightPosition.height = 18;
-            }
-
-            if (SupportNames != null && SupportNames.Length > 0)
-            {
-                //通过特性支持多个类型
-
-                //偏移两个像素，让UI更好看，不然左边会有一个空隙
-                var popPosition = rightPosition;
-                popPosition.width += 2;
-                popPosition.x -= 2;
-                index = EditorGUI.Popup(popPosition, index, SupportNames);
-
-                var targetType = SupportTypes[index];
-
-                if (GUI.Button(leftPosotion, "New", left))
-                {
-                    var newObj = Activator.CreateInstance(targetType);
-                    var source = property.managedReferenceValue;
-                    source.SimilarityCopyTo(newObj);
-                    property.managedReferenceValue = newObj;
-                    Debug.Log($"创建多态对象: {targetType.GetUnityProjectLink()}");
-                }
-            }
-
-            if (!property.isExpanded)
-            {
-                EditorGUI.PropertyField(propertyPosition, property, label, true);
-                using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
-                {
-                    var textPosition = propertyPosition;
-                    textPosition.x += EditorGUIUtility.labelWidth;
-                    textPosition.width -= EditorGUIUtility.labelWidth;
-                    EditorGUI.TextField(textPosition, property.managedReferenceValue?.ToString());
-                }
-            }
-            else
-            {
-                EditorGUI.PropertyField(position, property, label, true);
-            }
-        }
-
-        protected void DrawPPtrType(SerializedProperty property, GUIContent label, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
         {
             if (saveTask != null)
             {
@@ -254,39 +147,44 @@ namespace UnityEditor.Megumin
                 property.objectReferenceValue = instance;
             }
 
-            var obj = property.objectReferenceValue;
-            if (obj)
+            var propertyPosition = position;
+            propertyPosition.width -= 86;
+
+            var buttonPosition = position;
+            buttonPosition.width = 80;
+            buttonPosition.x += position.width - 80;
+
+
+            var leftPosotion = buttonPosition;
+            leftPosotion.width = 40;
+            leftPosotion.height = 18;
+            var rightPosition = buttonPosition;
+            rightPosition.width = 40;
+            rightPosition.x += 40;
+            rightPosition.height = 18;
+
+            var propertyType = property.propertyType;
+            if (propertyType == SerializedPropertyType.ManagedReference
+                || propertyType == SerializedPropertyType.ObjectReference)
             {
-                EditorGUI.PropertyField(propertyPosition, property, label);
+                DrawReference(property, label, position, propertyPosition, leftPosotion, rightPosition);
+                return;
+            }
 
-                if (GUI.Button(rightPosition, "Clone", right))
-                {
-                    var clone = ScriptableObject.Instantiate(obj);
-                    if (!Event.current.alt && ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.ReferencePath)
-                    {
-                        var path = AssetDatabase.GetAssetPath(obj);
-                        var oriName = Path.GetFileNameWithoutExtension(path);
+            EditorGUI.PropertyField(position, property, label, true);
+        }
 
-                        var newFileName = oriName.FileNameAddOne();
-                        path = path.ReplaceFileName(newFileName);
-
-                        AssetDatabase.CreateAsset(clone, path);
-                        AssetDatabase.Refresh();
-                        property.objectReferenceValue = clone;
-                    }
-                    else
-                    {
-                        CreateInstanceAsset(property, clone);
-                    }
-                }
-
-                if (GUI.Button(leftPosotion, "New", left))
-                {
-                    CreateInstance(property, obj.GetType());
-                }
+        protected void DrawReference(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
+        {
+            if (property.propertyType == SerializedPropertyType.ObjectReference
+                && property.objectReferenceValue)
+            {
+                //当前已经存在unityObject对象。根据当前对象new clone即可，不用计算类型
+                NewCloneCurrentUnityObject(property, label, propertyPosition, leftPosotion, rightPosition, property.objectReferenceValue);
             }
             else
             {
+                CacheSupportType(property);
                 if (SupportNames != null && SupportNames.Length > 0)
                 {
                     //通过特性支持多个类型
@@ -295,69 +193,60 @@ namespace UnityEditor.Megumin
                     var popPosition = rightPosition;
                     popPosition.width += 2;
                     popPosition.x -= 2;
-                    index = EditorGUI.Popup(popPosition, index, SupportNames);
+                    DropMenuIndex = EditorGUI.Popup(popPosition, DropMenuIndex, SupportNames);
 
-                    var targetType = SupportTypes[index];
-                    EditorGUI.ObjectField(propertyPosition, property, targetType, label);
+                    var targetType = SupportTypes[DropMenuIndex];
 
+                    //new button 放在上面，不然new时会与Expanded折叠功能冲突。
                     if (GUI.Button(leftPosotion, "New", left))
                     {
-                        CreateInstance(property, targetType);
+                        if (property.propertyType == SerializedPropertyType.ManagedReference)
+                        {
+                            CreateManagedReferenceInstance(property, targetType);
+                        }
+                        else
+                        {
+                            CreateUnityObjectInstance(property, targetType);
+                        }
                     }
+
+                    if (property.propertyType == SerializedPropertyType.ManagedReference)
+                    {
+                        if (!property.isExpanded)
+                        {
+                            EditorGUI.PropertyField(propertyPosition, property, label, true);
+                        }
+                        else
+                        {
+                            EditorGUI.PropertyField(position, property, label, true);
+                        }
+
+                        using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
+                        {
+                            var textPosition = propertyPosition;
+                            textPosition.x += EditorGUIUtility.labelWidth;
+                            textPosition.width -= EditorGUIUtility.labelWidth;
+                            textPosition.height = 18;
+                            EditorGUI.TextField(textPosition, property.managedReferenceValue?.ToString());
+                        }
+                    }
+                    else
+                    {
+                        EditorGUI.ObjectField(propertyPosition, property, targetType, label);
+                    }
+
                 }
                 else
                 {
                     //没有设置特性
+
                     EditorGUI.PropertyField(propertyPosition, property, label);
 
-                    (Type T, string TName) CalTargetType()
-                    {
-                        var fieldType = fieldInfo.FieldType;
-                        Type resultType = null;
-                        string resultTName = null;
-                        if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
-                        {
-                            var type = fieldType.GetGenericArguments()[0];
-                            resultType = type;
-                        }
-                        else if (fieldType.IsSubclassOf(typeof(Array)))
-                        {
-                            var type = fieldType.GetElementType();
-                            resultType = type;
-                        }
-                        else
-                        {
-                            var ret = typeRegex.Match(property.type);
-                            if (ret.Success)
-                            {
-                                if (ret.Groups[1].Value == fieldType.Name)
-                                {
-                                    resultType = fieldType;
-                                }
-                                else
-                                {
-                                    resultTName = ret.Groups[1].Value;
-                                }
-                            }
-                            else
-                            {
-                                resultType = fieldType;
-                            }
-                        }
-
-                        if (resultType != null)
-                        {
-                            resultTName = resultType.Name;
-                        }
-
-                        return (resultType, resultTName);
-                    }
-
+                    CacheMemberType(property);
                     if (GUI.Button(rightPosition, "Save", right))
                     {
-                        var (T, TName) = CalTargetType();
                         string dir = GetDir(property);
-                        var fileName = $"{property.serializedObject.targetObject.name}_{TName}";
+                        var fileName = $"{property.serializedObject.targetObject.name}_{memberTypeName}";
                         fileName = fileName.AutoFileName(dir, ".asset",
                                           EditorSettings.gameObjectNamingScheme.ToString(),
                                           EditorSettings.gameObjectNamingDigits);
@@ -365,7 +254,7 @@ namespace UnityEditor.Megumin
                         if (!string.IsNullOrEmpty(instancePath))
                         {
                             instancePath = Path.GetFullPath(instancePath);
-                            saveTask = new SaveTask() { instancePath = instancePath, T = T, TName = TName };
+                            saveTask = new SaveTask() { instancePath = instancePath, T = memberType, TName = memberTypeName };
                         }
                         GUIUtility.ExitGUI();
                     }
@@ -373,41 +262,305 @@ namespace UnityEditor.Megumin
                     if (GUI.Button(leftPosotion, "New", left))
                     {
                         // 识别是不是按住Alt，进入subAsset模式。
-                        var (T, TName) = CalTargetType();
-                        if (T != null)
+                        if (memberType != null)
                         {
-                            CreateInstance(property, T);
+                            CreateUnityObjectInstance(property, memberType);
                         }
                         else
                         {
-                            CreateInstance(property, TName);
+                            CreateUnityObjectInstance(property, memberTypeName);
                         }
                     }
                 }
             }
         }
 
-        class SaveTask
+        private static void NewCloneCurrentUnityObject(SerializedProperty property, GUIContent label, Rect propertyPosition, Rect leftPosotion, Rect rightPosition, UnityEngine.Object obj)
         {
-            public Type T;
-            public string TName;
-            public string instancePath;
+            EditorGUI.PropertyField(propertyPosition, property, label);
+
+            if (GUI.Button(rightPosition, "Clone", right))
+            {
+                var clone = ScriptableObject.Instantiate(obj);
+                if (!Event.current.alt && ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.ReferencePath)
+                {
+                    var path = AssetDatabase.GetAssetPath(obj);
+                    var oriName = Path.GetFileNameWithoutExtension(path);
+
+                    var newFileName = oriName.FileNameAddOne();
+                    path = path.ReplaceFileName(newFileName);
+
+                    AssetDatabase.CreateAsset(clone, path);
+                    AssetDatabase.Refresh();
+                    property.objectReferenceValue = clone;
+                }
+                else
+                {
+                    CreateUnityObjectInstance(property, clone);
+                }
+            }
+
+            if (GUI.Button(leftPosotion, "New", left))
+            {
+                CreateUnityObjectInstance(property, obj.GetType());
+            }
         }
 
-        private static void CreateInstance(SerializedProperty property, string type)
+        /// <summary>
+        /// 求当前成员代码声明时的类型
+        /// </summary>
+        /// <param name="property"></param>
+        public void CacheMemberType(SerializedProperty property)
         {
-            var instance = ScriptableObject.CreateInstance(type);
-            CreateInstanceAsset(property, instance);
+            if (!string.IsNullOrEmpty(memberTypeName))
+            {
+                return;
+            }
+
+            var fieldType = fieldInfo.FieldType;
+            Type resultType = null;
+            string resultTName = null;
+            if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                var type = fieldType.GetGenericArguments()[0];
+                resultType = type;
+            }
+            else if (fieldType.IsSubclassOf(typeof(Array)))
+            {
+                var type = fieldType.GetElementType();
+                resultType = type;
+            }
+            else
+            {
+                var ret = typeRegex.Match(property.type);
+                if (ret.Success)
+                {
+                    if (ret.Groups[1].Value == fieldType.Name)
+                    {
+                        resultType = fieldType;
+                    }
+                    else
+                    {
+                        resultTName = ret.Groups[1].Value;
+                    }
+                }
+                else
+                {
+                    resultType = fieldType;
+                }
+            }
+
+            if (resultType != null)
+            {
+                resultTName = resultType.Name;
+            }
+
+            memberTypeName = resultTName;
+            memberType = resultType;
         }
 
-        private static void CreateInstance(SerializedProperty property, Type type)
+        /// <summary>
+        /// 缓存支持的类型
+        /// </summary>
+        public void CacheSupportType(SerializedProperty property)
+        {
+            if (allTypes == null)
+            {
+                CacheMemberType(property);
+                allTypes = new HashSet<Type>();
+
+                //额外检测SO对象本身类型所在程序集
+                HashSet<Assembly> extraAss = new HashSet<Assembly>();
+                if (property.serializedObject.targetObjects != null)
+                {
+                    foreach (var item in property.serializedObject.targetObjects)
+                    {
+                        extraAss.Add(item.GetType().Assembly);
+                    }
+                }
+
+                ///多态序列化强制搜索所有子类型 
+                var forceReference = property.propertyType == SerializedPropertyType.ManagedReference;
+
+                ////Todo 反射查找有没有SerializeReference
+                //var attri = fieldInfo.GetCustomAttribute<SerializeReference>();
+                //{
+                //    forceReference = attri != null;
+                //}
+
+                this.fieldInfo.CollectSupportType(allTypes,
+                                                  AssemblyFilter,
+                                                  forceReference,
+                                                  extraCheck: extraAss);
+
+                if (property.propertyType == SerializedPropertyType.ManagedReference)
+                {
+                    //一般类型，因为没办法设置为null，在下拉菜单中最后加入null类型，用于清空当前值
+                    int index = 0;
+                    SupportNames = new string[allTypes.Count + 1];
+                    SupportTypes = new Type[allTypes.Count + 1];
+
+                    var currentType = property.managedReferenceValue?.GetType();
+                    DropMenuIndex = allTypes.Count;
+
+                    foreach (var item in allTypes)
+                    {
+                        SupportNames[index] = item.Name;
+                        SupportTypes[index] = item;
+
+                        if (currentType == item)
+                        {
+                            this.DropMenuIndex = index;
+                        }
+                        index++;
+                    }
+
+                    SupportNames[allTypes.Count] = "Null";
+                    SupportTypes[allTypes.Count] = null;
+                }
+                else
+                {
+                    //Unity对象会绘制为ObjectField，不用再 下拉列表中加null
+                    int index = 0;
+                    SupportNames = new string[allTypes.Count];
+                    SupportTypes = new Type[allTypes.Count];
+                    foreach (var item in allTypes)
+                    {
+                        SupportNames[index] = item.Name;
+                        SupportTypes[index] = item;
+                        index++;
+                    }
+                }
+
+            }
+        }
+    }
+
+    //tool
+    partial class INewCloneButtonDrawer_72946648EEF14A43B837BAC45D14BFF3
+    {
+        public bool AssemblyFilter(Assembly assembly)
+        {
+            //过滤掉一些，不然肯能太卡
+            var assName = assembly.FullName;
+            if (assName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            //可以通过这个宏来强行搜索unity中的类型
+#if !SCROBJ_DRAWER_FORCEDSEARCH_UNITY
+            if (assName.StartsWith("Unity", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+#endif
+
+            return true;
+        }
+
+        //多态序列化历史值缓存
+        //一个路径代表一个位置，这个位置在多个类型中切换，每个类型保存一个历史值
+        public class PathManagedReferencePair : Dictionary<string, Dictionary<Type, object>> { }
+        public class HistoryCache : Dictionary<UnityEngine.Object, PathManagedReferencePair>
+        {
+            public bool TryGetOld(SerializedProperty property, Type type, out object old)
+            {
+                old = null;
+                if (type == null)
+                {
+                    return false;
+                }
+                if (TryGetValue(property.serializedObject.targetObject, out var pair))
+                {
+                    if (pair.TryGetValue(property.propertyPath, out var TVPair))
+                    {
+                        return TVPair.TryGetValue(type, out old);
+                    }
+                }
+
+                return false;
+            }
+
+            public void Cache(SerializedProperty property, object newObj)
+            {
+                if (newObj == null)
+                {
+                    return;
+                }
+
+                if (!TryGetValue(property.serializedObject.targetObject, out var pair))
+                {
+                    pair = new PathManagedReferencePair();
+                    this[property.serializedObject.targetObject] = pair;
+                }
+
+                if (!pair.TryGetValue(property.propertyPath, out var TVPair))
+                {
+                    TVPair = new Dictionary<Type, object>();
+                    pair[property.propertyPath] = TVPair;
+                }
+
+                TVPair[newObj.GetType()] = newObj;
+            }
+        }
+
+        /// <summary>
+        /// 可能内存泄露，但是管不了那么多了
+        /// </summary>
+        static HistoryCache History = new HistoryCache();
+
+        /// <summary>
+        /// 创建新的托管对象
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="type"></param>
+        private static void CreateManagedReferenceInstance(SerializedProperty property, Type type)
+        {
+            object newObj = null;
+            if (type == null)
+            {
+                Debug.Log($"SerializeReference: null");
+            }
+            else
+            {
+                Debug.Log($"SerializeReference: {type.GetUnityProjectLink()}");
+                if (History.TryGetOld(property, type, out var old)
+                    && property.managedReferenceValue != old) //切换时使用旧值，没切换，保持当前值是旧值是，表示new，强制new新值
+                {
+                    //存在旧的值就不用new了
+                    newObj = old;
+                }
+                else
+                {
+                    newObj = Activator.CreateInstance(type);
+                    if (Event.current.alt)
+                    {
+                        //新的引用值，将当前值尽可能复制字段到新值
+                        var source = property.managedReferenceValue;
+                        source.SimilarityCopyTo(newObj);
+                    }
+                }
+            }
+
+            property.managedReferenceValue = newObj;
+            History.Cache(property, newObj);
+        }
+
+        private static void CreateUnityObjectInstance(SerializedProperty property, string type)
         {
             var instance = ScriptableObject.CreateInstance(type);
-            CreateInstanceAsset(property, instance);
+            CreateUnityObjectInstance(property, instance);
+        }
+
+        private static void CreateUnityObjectInstance(SerializedProperty property, Type type)
+        {
+            var instance = ScriptableObject.CreateInstance(type);
+            CreateUnityObjectInstance(property, instance);
         }
 
         const string Root = @"Assets";
-        private static void CreateInstanceAsset(SerializedProperty property, UnityEngine.Object instance)
+        private static void CreateUnityObjectInstance(SerializedProperty property, UnityEngine.Object instance)
         {
             string dir = GetDir(property);
 
@@ -525,8 +678,6 @@ namespace UnityEditor.Megumin
             return SafeObjectDir(path);
         }
     }
-
-
 #endif
 }
 
