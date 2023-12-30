@@ -20,7 +20,19 @@ namespace Megumin
     /// </summary>
     public class NewButtonAttribute : PropertyAttribute
     {
+        public int LeftButtonWidth { get; set; } = 40;
+        public int RightButtonWidth { get; set; } = 40;
 
+        public NewButtonAttribute()
+        {
+
+        }
+
+        public NewButtonAttribute(int leftButtonWidth = 40, int rightButtonWidth = 40)
+        {
+            LeftButtonWidth = leftButtonWidth;
+            RightButtonWidth = rightButtonWidth;
+        }
     }
 
     /// <summary>
@@ -102,6 +114,7 @@ namespace UnityEditor.Megumin
         /// 多态序列化时，每个不同的类型都有自己的PropertyDrawer实例，所以这个index会每个实例有自己的值。
         /// 表现就是选项当前值会每次new都会变，没有什么好的办法。
         /// <para/> 而且必须CanCacheInspectorGUI为true，否则类型缓存和savetask都会失效。
+        /// 也没办法使用静态LastIndex,因为多个draw同时工作，设置之后立刻会被List其他元素的draw使用。
         /// </summary>
         int DropMenuIndex = 0;
 
@@ -147,21 +160,30 @@ namespace UnityEditor.Megumin
                 property.objectReferenceValue = instance;
             }
 
+            var leftButtonWidth = 40;
+            var rightButtonWidth = 40;
+
+            if (attribute is NewButtonAttribute newButtonAttribute)
+            {
+                leftButtonWidth = newButtonAttribute.LeftButtonWidth;
+                rightButtonWidth = newButtonAttribute.RightButtonWidth;
+            }
+
+            //按钮和属性间隔
+            var spaceWidth = 6;
+
             var propertyPosition = position;
-            propertyPosition.width -= 86;
+            propertyPosition.width -= leftButtonWidth + rightButtonWidth + spaceWidth;
 
-            var buttonPosition = position;
-            buttonPosition.width = 80;
-            buttonPosition.x += position.width - 80;
-
-
-            var leftPosotion = buttonPosition;
-            leftPosotion.width = 40;
+            var leftPosotion = position;
+            leftPosotion.width = leftButtonWidth;
             leftPosotion.height = 18;
-            var rightPosition = buttonPosition;
-            rightPosition.width = 40;
-            rightPosition.x += 40;
+            leftPosotion.x = position.x + position.width - leftButtonWidth - rightButtonWidth;
+
+            var rightPosition = position;
+            rightPosition.width = rightButtonWidth;
             rightPosition.height = 18;
+            rightPosition.x = position.x + position.width - rightButtonWidth;
 
             var propertyType = property.propertyType;
             if (propertyType == SerializedPropertyType.ManagedReference

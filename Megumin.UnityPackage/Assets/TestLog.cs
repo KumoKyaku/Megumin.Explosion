@@ -50,8 +50,8 @@ public class TestLog : MonoBehaviour
 
     public Pref<bool> GlobalToggle;
     [SerializeReference]
-    //[NewButton]
-    [SerializeReferenceNewButton]
+    [NewButton(40, 80)]
+    //[SerializeReferenceNewButton]
     public IStest TestRef;
 
     [SerializeReference]
