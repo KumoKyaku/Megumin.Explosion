@@ -671,7 +671,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: MEGUMIN_DEV_PROJECT
+    Standalone: MEGUMIN_DEV_PROJECT;DISABLE_SCROBJ_DRAWER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
