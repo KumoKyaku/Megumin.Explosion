@@ -97,19 +97,13 @@ namespace UnityEditor.Megumin
         static GUIStyle right = new GUIStyle("minibuttonright");
         static Regex typeRegex = new Regex(@"^PPtr\<\$(.*)>$");
 
-        class SaveTask
+        public class SaveTask
         {
             public Type T;
             public string TName;
             public string instancePath;
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
-            return EditorGUI.GetPropertyHeight(property, label);
-        }
-
-        string[] SupportNames;
         /// <summary>
         /// 多态序列化时，每个不同的类型都有自己的PropertyDrawer实例，所以这个index会每个实例有自己的值。
         /// 表现就是选项当前值会每次new都会变，没有什么好的办法。
@@ -119,17 +113,27 @@ namespace UnityEditor.Megumin
         int DropMenuIndex = 0;
 
         /// <summary>
+        /// 为每个序列化对象的每个path缓存index，同一个path共享index。
+        /// </summary>
+        public static Dictionary<(UnityEngine.Object Target, string Path), int> SelectedIndex = new();
+
+        /// <summary>
         /// 代码中声明的成员类型
         /// </summary>
-        Type memberType;
+        public Type memberType;
 
         /// <summary>
         /// 代码中声明的成员类型名字，有时候类型取不到
         /// </summary>
-        string memberTypeName;
-        Type[] SupportTypes;
-        HashSet<Type> allTypes;
-        SaveTask saveTask = null;
+        public string memberTypeName;
+        string[] SupportNames;
+        public Type[] SupportTypes;
+        public HashSet<Type> allTypes;
+        public SaveTask saveTask = null;
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label);
+        }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -215,9 +219,15 @@ namespace UnityEditor.Megumin
                     var popPosition = rightPosition;
                     popPosition.width += 2;
                     popPosition.x -= 2;
-                    DropMenuIndex = EditorGUI.Popup(popPosition, DropMenuIndex, SupportNames);
 
-                    var targetType = SupportTypes[DropMenuIndex];
+                    var indexCacheKey = (property.serializedObject.targetObject, property.propertyPath);
+                    SelectedIndex.TryGetValue(indexCacheKey, out var index);
+
+                    index = EditorGUI.Popup(popPosition, index, SupportNames);
+
+                    SelectedIndex[indexCacheKey] = index;
+
+                    var targetType = SupportTypes[index];
 
                     //new button 放在上面，不然new时会与Expanded折叠功能冲突。
                     if (GUI.Button(leftPosotion, "New", left))
