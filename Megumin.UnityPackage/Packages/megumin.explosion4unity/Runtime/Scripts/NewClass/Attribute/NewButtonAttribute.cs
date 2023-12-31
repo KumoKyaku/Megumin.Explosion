@@ -229,7 +229,15 @@ namespace UnityEditor.Megumin
                     SelectedIndex.TryGetValue(indexCacheKey, out var index);
 
                     var oldSelectedIndex = index;
+
+                    var oldIndentLevel = EditorGUI.indentLevel;
+                    EditorGUI.indentLevel = 0;
+
+                    ///EditorGUI会自动应用缩进，导致Popup每个层级向右偏移15个单位
+                    ///这里Popup默认不出来缩进
                     index = EditorGUI.Popup(popPosition, index, SupportNames);
+
+                    EditorGUI.indentLevel = oldIndentLevel;
 
                     SelectedIndex[indexCacheKey] = index;
 
