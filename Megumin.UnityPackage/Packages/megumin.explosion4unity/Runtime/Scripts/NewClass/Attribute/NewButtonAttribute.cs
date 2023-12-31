@@ -616,13 +616,13 @@ namespace UnityEditor.Megumin
             object newObj = null;
             if (type == null)
             {
-                Debug.Log($"SerializeReference: null");
+                //Debug.Log($"SerializeReference: null");
             }
             else
             {
                 bool isChangeType = property.managedReferenceValue?.GetType() != type;
 
-                Debug.Log($"SerializeReference: {type.GetUnityProjectLink()}");
+                //Debug.Log($"SerializeReference: {type.GetUnityProjectLink()}");
                 if (History.TryGetOld(property, type, out var cache)
                     && property.managedReferenceValue != cache) //切换时使用旧值，没切换，保持当前值是旧值是，表示new，强制new新值
                 {
