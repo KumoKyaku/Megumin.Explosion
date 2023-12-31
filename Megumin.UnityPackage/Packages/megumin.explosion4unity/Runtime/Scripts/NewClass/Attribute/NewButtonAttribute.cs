@@ -73,6 +73,9 @@ namespace Megumin
     }
 }
 
+//命名空间应该用Megumin.UnityEditor
+//还是UnityEditor.Megumin
+//UnityEditor.Megumin 导致无法访问Megumin根命名空间，需要加 global::Megumin
 namespace UnityEditor.Megumin
 {
 
@@ -95,6 +98,8 @@ namespace UnityEditor.Megumin
     {
         static GUIStyle left = new GUIStyle("minibuttonleft");
         static GUIStyle right = new GUIStyle("minibuttonright");
+        static GUIStyle TypeLabel = new GUIStyle("ObjectField");
+        static GUIStyle TypeButton = new GUIStyle("NotificationText");
         static Regex typeRegex = new Regex(@"^PPtr\<\$(.*)>$");
 
         public class SaveTask
@@ -233,6 +238,7 @@ namespace UnityEditor.Megumin
                     if (oldSelectedIndex != index)
                     {
                         //这里打印日志，方便定为脚本文件位置。
+                        //本来想在TypeLabel 上点击跳转的，但是不好实现OpenAsset，改为超链接。
                         if (targetType == null)
                         {
                             Debug.Log($"Select Type: null");
@@ -241,6 +247,12 @@ namespace UnityEditor.Megumin
                         {
                             Debug.Log($"Select Type: {targetType.GetUnityProjectLink()}");
                         }
+
+                        //切换时自动切换对象
+                        if (property.propertyType == SerializedPropertyType.ManagedReference)
+                        {
+                            ChangeManagedReferenceInstance(property, targetType);
+                        }
                     }
 
                     //new button 放在上面，不然new时会与Expanded折叠功能冲突。
@@ -248,7 +260,7 @@ namespace UnityEditor.Megumin
                     {
                         if (property.propertyType == SerializedPropertyType.ManagedReference)
                         {
-                            CreateManagedReferenceInstance(property, targetType);
+                            ChangeManagedReferenceInstance(property, targetType);
                         }
                         else
                         {
@@ -258,6 +270,24 @@ namespace UnityEditor.Megumin
 
                     if (property.propertyType == SerializedPropertyType.ManagedReference)
                     {
+                        var textPosition = propertyPosition;
+                        textPosition.x += EditorGUIUtility.labelWidth + 2;
+                        textPosition.width -= EditorGUIUtility.labelWidth;
+                        textPosition.height = 18;
+
+                        //绘制当前类型按钮，点击选中类型脚本，双击打开类型脚本
+                        using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
+                        {
+                            //绘制一个Disabled风格的Field，再在上面绘制一个button
+                            //直接绘制button在里面没办法点击
+                            GUI.Label(textPosition, SupportNames[index], TypeLabel);
+                        }
+
+                        if (GUI.Button(textPosition, "", TypeButton))//按钮不显示名字
+                        {
+                            ClickTypeLable(targetType);
+                        }
+
                         if (!property.isExpanded)
                         {
                             EditorGUI.PropertyField(propertyPosition, property, label, true);
@@ -266,25 +296,16 @@ namespace UnityEditor.Megumin
                         {
                             EditorGUI.PropertyField(position, property, label, true);
                         }
-
-                        using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
-                        {
-                            var textPosition = propertyPosition;
-                            textPosition.x += EditorGUIUtility.labelWidth;
-                            textPosition.width -= EditorGUIUtility.labelWidth;
-                            textPosition.height = 18;
-                            EditorGUI.TextField(textPosition, property.managedReferenceValue?.ToString());
-                        }
                     }
                     else
                     {
                         EditorGUI.ObjectField(propertyPosition, property, targetType, label);
                     }
-
                 }
                 else
                 {
                     //没有设置特性
+                    //通常这里是UnityObject类型。如果是托管类型，SupportNames肯定至少有2个值。
 
                     EditorGUI.PropertyField(propertyPosition, property, label);
 
@@ -317,6 +338,35 @@ namespace UnityEditor.Megumin
                             CreateUnityObjectInstance(property, memberTypeName);
                         }
                     }
+                }
+            }
+        }
+
+        float LastTypeLableClickTime = -100;
+        public void ClickTypeLable(Type targetType)
+        {
+            var delta = Time.realtimeSinceStartup - LastTypeLableClickTime;
+            LastTypeLableClickTime = Time.realtimeSinceStartup;
+            //Debug.Log(global::Megumin.Utility.ToStringReflection<Time>());
+
+            if (targetType != null)
+            {
+
+                if (delta <= 0.5f)
+                {
+                    //Debug.Log($"Double----{Event.current.clickCount}");
+#if MEGUMIN_Common
+                    targetType.OpenScript();
+#endif
+
+                }
+                else
+                {
+                    //Debug.Log($"Click----{Event.current.clickCount}");
+#if MEGUMIN_Common
+                    targetType.PingScript();
+#endif
+
                 }
             }
         }
@@ -557,11 +607,11 @@ namespace UnityEditor.Megumin
         static HistoryCache History = new HistoryCache();
 
         /// <summary>
-        /// 创建新的托管对象
+        /// 切换新的托管对象
         /// </summary>
         /// <param name="property"></param>
         /// <param name="type"></param>
-        private static void CreateManagedReferenceInstance(SerializedProperty property, Type type)
+        private static void ChangeManagedReferenceInstance(SerializedProperty property, Type type, bool forceNew = false)
         {
             object newObj = null;
             if (type == null)
@@ -570,24 +620,38 @@ namespace UnityEditor.Megumin
             }
             else
             {
+                bool isChangeType = property.managedReferenceValue?.GetType() != type;
+
                 Debug.Log($"SerializeReference: {type.GetUnityProjectLink()}");
-                if (History.TryGetOld(property, type, out var old)
-                    && property.managedReferenceValue != old) //切换时使用旧值，没切换，保持当前值是旧值是，表示new，强制new新值
+                if (History.TryGetOld(property, type, out var cache)
+                    && property.managedReferenceValue != cache) //切换时使用旧值，没切换，保持当前值是旧值是，表示new，强制new新值
                 {
                     //存在旧的值就不用new了
-                    newObj = old;
+                    newObj = cache;
                 }
                 else
                 {
+                    //创建新的引用值
                     newObj = Activator.CreateInstance(type);
-                    if (Event.current.alt)
+
+                    if (property.managedReferenceValue != null
+                        && isChangeType)
                     {
+                        //当前对象不是相同类型，表示从其他类型切换而来
                         //新的引用值，将当前值尽可能复制字段到新值
                         var source = property.managedReferenceValue;
                         source.SimilarityCopyTo(newObj);
                     }
+                    else
+                    {
+                        //相同类型二次new，
+                        //这里表示强制new 新对象，不做任何操作。
+                    }
                 }
             }
+
+            //切换前缓存当前值，否则第一显示对象，切换后，初始值没有被缓存。
+            History.Cache(property, property.managedReferenceValue);
 
             property.managedReferenceValue = newObj;
             History.Cache(property, newObj);
