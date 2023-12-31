@@ -497,7 +497,9 @@ namespace UnityEditor.Megumin
                     SupportTypes = new Type[allTypes.Count + 1];
 
                     var currentType = property.managedReferenceValue?.GetType();
-                    DropMenuIndex = allTypes.Count;
+
+                    var indexCacheKey = (property.serializedObject.targetObject, property.propertyPath);
+                    SelectedIndex[indexCacheKey] = allTypes.Count;
 
                     foreach (var item in allTypes)
                     {
@@ -506,7 +508,7 @@ namespace UnityEditor.Megumin
 
                         if (currentType == item)
                         {
-                            this.DropMenuIndex = index;
+                            SelectedIndex[indexCacheKey] = index;
                         }
                         index++;
                     }
