@@ -1,0 +1,210 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6099640185432875608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6099640185432875623}
+  - component: {fileID: 6099640185432875622}
+  - component: {fileID: 6099640185432875609}
+  - component: {fileID: 6099640185432875621}
+  - component: {fileID: 6099640185432875620}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6099640185432875623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6099640185432875608}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &6099640185432875622
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6099640185432875608}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!81 &6099640185432875609
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6099640185432875608}
+  m_Enabled: 1
+--- !u!114 &6099640185432875621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6099640185432875608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4022607622b6eec4386be97f9b2b242f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teststr: TestStr
+  ret: 
+  IntValue: 55
+  ReadOnlyIntValue: 9999
+  ProtectedGameObj: {fileID: 0}
+  IntValue2:
+    Enabled: 0
+    Value: 0
+  IntValue3:
+    Enabled: 0
+    Value: 30
+  OverridableInt:
+    defaultValue: 20
+    IsOverride: 0
+    MyOverrideValue: 0
+  FrameCount: 40
+  TestEnumField: ccc
+  Iint:
+    _int: 2147483647
+  TestColor: {r: 0, g: 0, b: 0, a: 0}
+  HexColor:
+    hexCode: '#E5761BD2'
+  Loggers:
+  - {fileID: 11400000, guid: 8dda040d6cbc7754582cfd5a3d2dcdac, type: 2}
+  Test12345s:
+  - mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  - mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  HSVColor:
+    Hue: 0.178
+    Saturation: 1
+    Value: 2
+    Alpha: 0.415
+  EventIntValue:
+    value: 100
+  STest:
+    inta: 151
+    intb: 1234568
+  SaveAsset: {fileID: 11400000, guid: c6930315ef3e77f4ea45af1032878fca, type: 2}
+  TestRef:
+    rid: 1811329162690166812
+  TestRef2:
+    rid: -2
+  TestRefList:
+  - rid: 5271465886733565969
+  - rid: 5271465886733565970
+  - rid: 5271465886733565971
+  TestScriptObject: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 1811329162690166812
+      type: {class: STest, ns: , asm: Assembly-CSharp}
+      data:
+        inta: 111
+        intb: 111
+    - rid: 5271465886733565969
+      type: {class: STest, ns: , asm: Assembly-CSharp}
+      data:
+        inta: 0
+        intb: 0
+    - rid: 5271465886733565970
+      type: {class: STestAAA, ns: , asm: Assembly-CSharp}
+      data:
+        inta: 0
+        intb: 0
+        ChildAAA: ChildA
+    - rid: 5271465886733565971
+      type: {class: STestBBB, ns: , asm: Assembly-CSharp}
+      data:
+        inta: 0
+        intb: 0
+        ChildBBB: ChildB
+--- !u!114 &6099640185432875620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6099640185432875608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77c1e11b387a9dc4baa1abaa65c5d2d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ButtonPos:
+    serializedVersion: 2
+    x: 0.9
+    y: 0.1
+    width: 100
+    height: 30
+  Space: 8
+  Buttons:
+  - Name: "\u8C03\u8BD5\u6309\u94AE"
+    Bind:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6099640185432875620}
+          m_TargetAssemblyTypeName: 
+          m_MethodName: TestLog
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
