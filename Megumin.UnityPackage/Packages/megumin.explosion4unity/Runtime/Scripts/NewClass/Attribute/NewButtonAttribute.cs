@@ -179,7 +179,7 @@ namespace UnityEditor.Megumin
             }
 
             //按钮和属性间隔
-            var spaceWidth = 6;
+            var spaceWidth = 4;
 
             var propertyPosition = position;
             propertyPosition.width -= leftButtonWidth + rightButtonWidth + spaceWidth;

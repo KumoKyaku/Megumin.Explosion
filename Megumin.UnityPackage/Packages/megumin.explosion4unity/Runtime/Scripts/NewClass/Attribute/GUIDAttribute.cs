@@ -41,7 +41,7 @@ namespace UnityEditor.Megumin
                 //}
 
                 var propertyPosition = position;
-                propertyPosition.width -= 86;
+                propertyPosition.width -= 84;
 
                 var buttonPosition = position;
                 buttonPosition.width = 80;
