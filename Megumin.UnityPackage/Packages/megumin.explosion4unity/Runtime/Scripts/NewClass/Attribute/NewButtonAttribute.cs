@@ -215,7 +215,7 @@ namespace UnityEditor.Megumin
                 && property.objectReferenceValue)
             {
                 //当前已经存在unityObject对象。根据当前对象new clone即可，不用计算类型
-                NewCloneCurrentUnityObject(property, label, propertyPosition, leftPosotion, rightPosition, property.objectReferenceValue);
+                NewCloneCurrentUnityObject(property, label, position, propertyPosition, leftPosotion, rightPosition, property.objectReferenceValue);
             }
             else
             {
@@ -311,7 +311,7 @@ namespace UnityEditor.Megumin
                     }
                     else
                     {
-                        EditorGUI.ObjectField(propertyPosition, property, targetType, label);
+                        DrawUnityObjectField(property, label, position, propertyPosition, targetType);
                     }
                 }
                 else
@@ -383,9 +383,11 @@ namespace UnityEditor.Megumin
             }
         }
 
-        private static void NewCloneCurrentUnityObject(SerializedProperty property, GUIContent label, Rect propertyPosition, Rect leftPosotion, Rect rightPosition, UnityEngine.Object obj)
+        private static void NewCloneCurrentUnityObject(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition, UnityEngine.Object obj)
         {
-            EditorGUI.PropertyField(propertyPosition, property, label);
+            Type targetType = obj.GetType();
+            //EditorGUI.PropertyField(propertyPosition, property, label);
+            DrawUnityObjectField(property, label, position, propertyPosition, targetType);
 
             if (GUI.Button(rightPosition, "Clone", right))
             {
@@ -410,7 +412,7 @@ namespace UnityEditor.Megumin
 
             if (GUI.Button(leftPosotion, "New", left))
             {
-                CreateUnityObjectInstance(property, obj.GetType());
+                CreateUnityObjectInstance(property, targetType);
             }
         }
 
@@ -545,6 +547,48 @@ namespace UnityEditor.Megumin
             }
         }
     }
+
+    //Expanded
+    partial class INewCloneButtonDrawer_72946648EEF14A43B837BAC45D14BFF3
+    {
+        public static void DrawUnityObjectField(SerializedProperty property,
+                                                GUIContent label,
+                                                Rect position,
+                                                Rect propertyPosition,
+                                                Type targetType)
+        {
+            if (property.propertyType == SerializedPropertyType.ObjectReference
+                && property.objectReferenceValue != null)
+            {
+                // Draw a foldout
+                Rect foldoutRect = new Rect()
+                {
+                    x = position.x,
+                    y = position.y,
+                    width = EditorGUIUtility.labelWidth,
+                    height = EditorGUIUtility.singleLineHeight
+                };
+
+                //使用GUIContent.none，避免Foldout绘制多余的label
+                property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, toggleOnLabelClick: true);
+
+                // Draw the scriptable object field
+                EditorGUI.ObjectField(propertyPosition, property, targetType, label);
+
+                // Draw the child properties
+                if (property.isExpanded)
+                {
+                    //DrawChildProperties(rect, property);
+                }
+            }
+            else
+            {
+                EditorGUI.ObjectField(propertyPosition, property, targetType, label);
+            }
+        }
+
+    }
+
 
     //tool
     partial class INewCloneButtonDrawer_72946648EEF14A43B837BAC45D14BFF3
