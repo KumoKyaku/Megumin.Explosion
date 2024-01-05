@@ -137,6 +137,10 @@ namespace UnityEditor.Megumin
         public SaveTask saveTask = null;
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+            if (property.propertyType == SerializedPropertyType.ObjectReference)
+            {
+                return GetUnityObjectFieldPropertyHeight(property, label);
+            }
             return EditorGUI.GetPropertyHeight(property, label);
         }
 
@@ -548,9 +552,50 @@ namespace UnityEditor.Megumin
         }
     }
 
-    //Expanded
+    //Expanded  UnityObject 展开。托管对象时自动展开的，不用处理
+    //从 https://github.com/dbrizov/NaughtyAttributes 修改
     partial class INewCloneButtonDrawer_72946648EEF14A43B837BAC45D14BFF3
     {
+        public static float GetUnityObjectFieldPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (property.isExpanded && property.objectReferenceValue != null)
+            {
+                using (SerializedObject serializedObject = new SerializedObject(property.objectReferenceValue))
+                {
+                    float totalHeight = EditorGUIUtility.singleLineHeight;
+
+                    using (var iterator = serializedObject.GetIterator())
+                    {
+                        if (iterator.NextVisible(true))
+                        {
+                            do
+                            {
+                                SerializedProperty childProperty = serializedObject.FindProperty(iterator.name);
+                                if (childProperty.name.Equals("m_Script", System.StringComparison.Ordinal))
+                                {
+                                    continue;
+                                }
+
+                                bool visible = true;
+                                if (!visible)
+                                {
+                                    continue;
+                                }
+
+                                float height = EditorGUI.GetPropertyHeight(childProperty, includeChildren: true);
+                                totalHeight += height + EditorGUIUtility.standardVerticalSpacing;
+                            }
+                            while (iterator.NextVisible(false));
+                        }
+                    }
+
+                    totalHeight += EditorGUIUtility.standardVerticalSpacing;
+                    return totalHeight;
+                }
+            }
+            return EditorGUI.GetPropertyHeight(property, label);
+        }
+
         public static void DrawUnityObjectField(SerializedProperty property,
                                                 GUIContent label,
                                                 Rect position,
@@ -573,12 +618,14 @@ namespace UnityEditor.Megumin
                 property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, toggleOnLabelClick: true);
 
                 // Draw the scriptable object field
-                EditorGUI.ObjectField(propertyPosition, property, targetType, label);
+                var objPos = propertyPosition;
+                objPos.height = EditorGUIUtility.singleLineHeight;
+                EditorGUI.ObjectField(objPos, property, targetType, label);
 
                 // Draw the child properties
                 if (property.isExpanded)
                 {
-                    //DrawChildProperties(rect, property);
+                    DrawChildProperties(position, property);
                 }
             }
             else
@@ -587,6 +634,70 @@ namespace UnityEditor.Megumin
             }
         }
 
+        public static void DrawChildProperties(Rect rect, SerializedProperty property)
+        {
+            if (property.objectReferenceValue == null)
+            {
+                return;
+            }
+
+            Rect boxRect = new Rect()
+            {
+                x = 0.0f,
+                y = rect.y + EditorGUIUtility.singleLineHeight,
+                width = rect.width * 2.0f,
+                height = rect.height - EditorGUIUtility.singleLineHeight
+            };
+
+            GUI.Box(boxRect, GUIContent.none);
+
+            using (new EditorGUI.IndentLevelScope())
+            {
+                SerializedObject serializedObject = new SerializedObject(property.objectReferenceValue);
+                serializedObject.Update();
+
+                using (var iterator = serializedObject.GetIterator())
+                {
+                    float yOffset = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                    if (iterator.NextVisible(true))
+                    {
+                        do
+                        {
+                            SerializedProperty childProperty = serializedObject.FindProperty(iterator.name);
+                            if (childProperty.name.Equals("m_Script", System.StringComparison.Ordinal))
+                            {
+                                continue;
+                            }
+
+                            bool visible = true;
+                            if (!visible)
+                            {
+                                continue;
+                            }
+
+                            float childHeight = EditorGUI.GetPropertyHeight(childProperty, includeChildren: true); ;
+                            Rect childRect = new Rect()
+                            {
+                                x = rect.x,
+                                y = rect.y + yOffset,
+                                width = rect.width,
+                                height = childHeight
+                            };
+
+                            //EditorGUI.BeginProperty(childRect, GUIContent.none, childProperty);
+                            EditorGUI.PropertyField(childRect, childProperty, true);
+                            //EditorGUI.EndProperty();
+
+                            yOffset += childHeight + EditorGUIUtility.standardVerticalSpacing;
+                        }
+                        while (iterator.NextVisible(false));
+                    }
+                }
+
+                serializedObject.ApplyModifiedProperties();
+            }
+        }
     }
 
 
