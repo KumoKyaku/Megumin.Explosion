@@ -87,12 +87,12 @@ namespace UnityEditor.Megumin
 #if UNITY_EDITOR
 
     /// <summary>
-    /// 增加new,clone两个按钮.对Material无效.想增加SubAsset功能,但是发现没有必要.
+    /// 增加new,clone两个按钮
     /// </summary>
     /// 
 #if !DISABLE_MEGUMIN_PROPERTYDRWAER
 #if !DISABLE_SCROBJ_DRAWER
-    //[CustomPropertyDrawer(typeof(Material), true)]
+    //[CustomPropertyDrawer(typeof(Material), true)] //对Material无效
     [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
     //[CustomPropertyDrawer(typeof(INewCloneButton), true)]
@@ -400,7 +400,7 @@ namespace UnityEditor.Megumin
 
             if (GUI.Button(rightPosition, "Clone", right))
             {
-                var clone = ScriptableObject.Instantiate(obj);
+                var clone = UnityEngine.Object.Instantiate(obj);
                 if (!Event.current.alt && ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.ReferencePath)
                 {
                     var path = AssetDatabase.GetAssetPath(obj);
@@ -415,7 +415,7 @@ namespace UnityEditor.Megumin
                 }
                 else
                 {
-                    CreateUnityObjectInstance(property, clone);
+                    CreateUnityObjectAsset(property, clone);
                 }
             }
 
@@ -837,17 +837,57 @@ namespace UnityEditor.Megumin
         private static void CreateUnityObjectInstance(SerializedProperty property, string type)
         {
             var instance = ScriptableObject.CreateInstance(type);
-            CreateUnityObjectInstance(property, instance);
+            CreateUnityObjectAsset(property, instance);
         }
 
         private static void CreateUnityObjectInstance(SerializedProperty property, Type type)
         {
-            var instance = ScriptableObject.CreateInstance(type);
-            CreateUnityObjectInstance(property, instance);
+            UnityEngine.Object instance = null;
+            if (typeof(ScriptableObject).IsAssignableFrom(type))
+            {
+                instance = ScriptableObject.CreateInstance(type);
+            }
+            else if (typeof(Component).IsAssignableFrom(type))
+            {
+                if (property.serializedObject.targetObject is GameObject gameObject)
+                {
+                    instance = gameObject.AddComponent(type);
+                }
+            }
+
+            if (!instance)
+            {
+                var constructor = type.GetConstructors()[0];
+                var count = constructor.GetParameters().Length;
+                object[] args = null;
+                switch (count)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        args = new object[] { null };
+                        break;
+                    case 2:
+                        args = new object[] { null, null };
+                        break;
+                    case 3:
+                        args = new object[] { null, null, null };
+                        break;
+                    case 4:
+                        args = new object[] { null, null, null, null };
+                        break;
+                    default:
+                        break;
+                }
+
+                instance = constructor.Invoke(args) as UnityEngine.Object;
+            }
+
+            CreateUnityObjectAsset(property, instance);
         }
 
         const string Root = @"Assets";
-        private static void CreateUnityObjectInstance(SerializedProperty property, UnityEngine.Object instance)
+        private static void CreateUnityObjectAsset(SerializedProperty property, UnityEngine.Object instance)
         {
             string dir = GetDir(property);
 
@@ -857,10 +897,6 @@ namespace UnityEditor.Megumin
                 if (success)
                 {
                     return;
-                }
-                else
-                {
-                    Debug.LogError($"创建SubAsset失败，使用普通模式创建。");
                 }
             }
 
