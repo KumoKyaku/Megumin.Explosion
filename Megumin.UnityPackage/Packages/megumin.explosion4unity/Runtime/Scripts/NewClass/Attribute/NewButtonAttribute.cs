@@ -194,6 +194,8 @@ namespace UnityEditor.Megumin
             rightPosition.height = 18;
             rightPosition.x = position.x + position.width - rightButtonWidth;
 
+            EditorGUI.BeginProperty(position, label, property);
+
             var propertyType = property.propertyType;
             if (propertyType == SerializedPropertyType.ManagedReference
                 || propertyType == SerializedPropertyType.ObjectReference)
@@ -203,6 +205,8 @@ namespace UnityEditor.Megumin
             }
 
             EditorGUI.PropertyField(position, property, label, true);
+
+            EditorGUI.EndProperty();
         }
 
         protected void DrawReference(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition)
