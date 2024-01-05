@@ -23,6 +23,11 @@ namespace Megumin
         public int LeftButtonWidth { get; set; } = 40;
         public int RightButtonWidth { get; set; } = 40;
 
+        /// <summary>
+        /// 是否在当前Inspector展开子嵌套对象
+        /// </summary>
+        public bool CanExpand { get; set; } = true;
+
         public NewButtonAttribute()
         {
 
@@ -387,7 +392,7 @@ namespace UnityEditor.Megumin
             }
         }
 
-        private static void NewCloneCurrentUnityObject(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition, UnityEngine.Object obj)
+        public void NewCloneCurrentUnityObject(SerializedProperty property, GUIContent label, Rect position, Rect propertyPosition, Rect leftPosotion, Rect rightPosition, UnityEngine.Object obj)
         {
             Type targetType = obj.GetType();
             //EditorGUI.PropertyField(propertyPosition, property, label);
@@ -556,9 +561,11 @@ namespace UnityEditor.Megumin
     //从 https://github.com/dbrizov/NaughtyAttributes 修改
     partial class INewCloneButtonDrawer_72946648EEF14A43B837BAC45D14BFF3
     {
-        public static float GetUnityObjectFieldPropertyHeight(SerializedProperty property, GUIContent label)
+        public float GetUnityObjectFieldPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (property.isExpanded && property.objectReferenceValue != null)
+            var canExpand = (attribute as NewButtonAttribute)?.CanExpand ?? true;
+
+            if (canExpand && property.isExpanded && property.objectReferenceValue != null)
             {
                 using (SerializedObject serializedObject = new SerializedObject(property.objectReferenceValue))
                 {
@@ -596,13 +603,14 @@ namespace UnityEditor.Megumin
             return EditorGUI.GetPropertyHeight(property, label);
         }
 
-        public static void DrawUnityObjectField(SerializedProperty property,
+        public void DrawUnityObjectField(SerializedProperty property,
                                                 GUIContent label,
                                                 Rect position,
                                                 Rect propertyPosition,
                                                 Type targetType)
         {
-            if (property.propertyType == SerializedPropertyType.ObjectReference
+            var canExpand = (attribute as NewButtonAttribute)?.CanExpand ?? true;
+            if (canExpand && property.propertyType == SerializedPropertyType.ObjectReference
                 && property.objectReferenceValue != null)
             {
                 // Draw a foldout
