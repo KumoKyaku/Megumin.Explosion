@@ -54,6 +54,46 @@
             <param name="source"></param>
             <returns></returns>
         </member>
+        <member name="M:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.SortAaBbCc(System.Collections.Generic.List{System.String})">
+            <summary>
+            按照AaBbCc排序比较
+            </summary>
+            <param name="list"></param>
+        </member>
+        <member name="F:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.Remover`1.cache">
+            <summary>
+            待移除缓存区
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.Remover`1.Push(`0)">
+            <summary>
+            添加元素到待移除缓存区
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.Remover`1.Add(`0)">
+            <summary>
+            添加元素到待移除缓存区
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.Remover`1.DelayRemove(`0)">
+            <summary>
+            添加元素到待移除缓存区
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.Remover`1.RemoveDelay(`0)">
+            <summary>
+            添加元素到待移除缓存区
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.Remover`1.RemoveNow">
+            <summary>
+            现在从源容器中移除所有待移除缓存区中的元素
+            </summary>
+        </member>
         <member name="M:System.Collections.Generic.IEnumerableExtensionD36DB03F995A41EA836C18482535C530.GetForeachRemover``1(System.Collections.Generic.ICollection{``0})">
             <summary>
             获得一个在foreach中使用的删除器

@@ -66,28 +66,61 @@ namespace System.Collections.Generic
             return true;
         }
 
+        /// <summary>
+        /// 按照AaBbCc排序比较
+        /// </summary>
+        /// <param name="list"></param>
         public static void SortAaBbCc(this List<string> list)
         {
             list.Sort((a, b) => a.CompareAaBbCc(b));
         }
 
-        public struct Remover<T>
+        public struct Remover<T> : IDisposable
         {
-            private readonly ICollection<T> list;
+            private readonly ICollection<T> sourceCollection;
+            /// <summary>
+            /// 待移除缓存区
+            /// </summary>
             private List<T> cache;
 
-            public Remover(ICollection<T> list)
+            public Remover(ICollection<T> collection)
             {
-                this.list = list;
+                this.sourceCollection = collection;
                 cache = ListPool<T>.Shared.Rent();
             }
 
+            /// <summary>
+            /// 添加元素到待移除缓存区
+            /// </summary>
+            /// <param name="item"></param>
             public void Push(T item)
             {
-                DelayRemove(item);
+                RemoveDelay(item);
             }
 
+            /// <summary>
+            /// 添加元素到待移除缓存区
+            /// </summary>
+            /// <param name="item"></param>
+            public void Add(T item)
+            {
+                RemoveDelay(item);
+            }
+
+            /// <summary>
+            /// 添加元素到待移除缓存区
+            /// </summary>
+            /// <param name="item"></param>
             public void DelayRemove(T item)
+            {
+                RemoveDelay(item);
+            }
+
+            /// <summary>
+            /// 添加元素到待移除缓存区
+            /// </summary>
+            /// <param name="item"></param>
+            public void RemoveDelay(T item)
             {
                 if (cache == null)
                 {
@@ -96,14 +129,25 @@ namespace System.Collections.Generic
                 cache.Add(item);
             }
 
+            /// <summary>
+            /// 现在从源容器中移除所有待移除缓存区中的元素
+            /// </summary>
             public void RemoveNow()
             {
-                foreach (var item in cache)
+                if (cache != null)
                 {
-                    list.Remove(item);
+                    foreach (var item in cache)
+                    {
+                        sourceCollection.Remove(item);
+                    }
+                    ListPool<T>.Shared.Return(ref cache);
+                    cache = null;
                 }
-                ListPool<T>.Shared.Return(ref cache);
-                cache = null;
+            }
+
+            public void Dispose()
+            {
+                RemoveNow();
             }
         }
 
