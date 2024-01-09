@@ -45,6 +45,40 @@
             <param name="source"></param>
             <param name="predicate"></param>
         </member>
+        <member name="F:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.Remover`2.cache">
+            <summary>
+            待移除缓存区
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.Remover`2.Push(`0)">
+            <summary>
+            添加元素到待移除缓存区
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.Remover`2.Add(`0)">
+            <summary>
+            添加元素到待移除缓存区
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.Remover`2.DelayRemove(`0)">
+            <summary>
+            添加元素到待移除缓存区
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.Remover`2.RemoveDelay(`0)">
+            <summary>
+            添加元素到待移除缓存区
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.Remover`2.RemoveNow">
+            <summary>
+            现在从源容器中移除所有待移除缓存区中的元素
+            </summary>
+        </member>
         <member name="M:System.Collections.Generic.DictionaryExtension_5191D922C5B740EBB5B4C72E5DA5C11C.GetForeachRemover``2(System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
             获得一个在foreach中使用的删除器
@@ -542,6 +576,11 @@
             </summary>
             <typeparam name="K"></typeparam>
             <typeparam name="V"></typeparam>
+        </member>
+        <member name="F:Megumin.Multiple`2.ElementDic">
+            <summary>
+            所有构成项的字典，如果没有特殊需求不要再外部更改，使用方法。
+            </summary>
         </member>
         <member name="M:Megumin.Multiple`2.ApplyValue(System.Int32)">
             <summary>
@@ -1602,6 +1641,14 @@
             <summary>
             取消除默认值以外的所有构成项
             </summary>
+            <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:Megumin.IMultiple`2.RemoveAll(System.Func{System.Collections.Generic.KeyValuePair{`0,`1},System.Boolean},System.Int32)">
+            <summary>
+            取消除默认值以外的所有符合条件的构成项
+            </summary>
+            <param name="predicate"></param>
             <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="T:Megumin.RaiseEvent"/></param>
             <returns></returns>
         </member>

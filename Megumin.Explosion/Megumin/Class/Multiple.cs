@@ -157,8 +157,11 @@ namespace Megumin
 
             //    //微软源码直接用泛型与null比较,这里不做判断了，增加两个构造函数保证DefaultKey 不为null。
             //}
+            if (DefaultKey is not null)
+            {
+                ElementDic[DefaultKey] = DefaultValue;
+            }
 
-            ElementDic[DefaultKey] = DefaultValue;
             ApplyValue(raiseEvent);
             return Current;
         }
@@ -166,7 +169,12 @@ namespace Megumin
         public V RemoveAll(Func<KeyValuePair<K, V>, bool> predicate, int raiseEvent = 0)
         {
             ElementDic.RemoveAll(predicate);
-            ElementDic[DefaultKey] = DefaultValue;
+
+            if (DefaultKey is not null)
+            {
+                ElementDic[DefaultKey] = DefaultValue;
+            }
+
             ApplyValue(raiseEvent);
             return Current;
         }
