@@ -278,5 +278,15 @@ namespace System.Collections.Generic
         {
             return new Remover<K, V>(source);
         }
+
+        public static List<K> RentRemoveList<K, V>(this IDictionary<K, V> source)
+        {
+            return ListPool<K>.Shared.Rent();
+        }
+
+        public static void ReturnRemoveList<K, V>(this IDictionary<K, V> source, ref List<K> element, bool forceSafeCheck = false)
+        {
+            ListPool<K>.Shared.Return(ref element, forceSafeCheck);
+        }
     }
 }

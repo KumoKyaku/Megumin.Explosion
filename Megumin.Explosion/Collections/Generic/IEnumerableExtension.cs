@@ -171,6 +171,16 @@ namespace System.Collections.Generic
         {
             return new Remover<T>(list);
         }
+
+        public static List<T> RentRemoveList<T>(this ICollection<T> list)
+        {
+            return ListPool<T>.Shared.Rent();
+        }
+
+        public static void ReturnRemoveList<T>(this ICollection<T> list, ref List<T> element, bool forceSafeCheck = false)
+        {
+            ListPool<T>.Shared.Return(ref element, forceSafeCheck);
+        }
     }
 }
 
