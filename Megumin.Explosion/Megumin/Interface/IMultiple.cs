@@ -57,6 +57,14 @@ namespace Megumin
         V RemoveAll(int raiseEvent = 0);
 
         /// <summary>
+        /// 取消除默认值以外的所有符合条件的构成项
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>
+        /// <returns></returns>
+        V RemoveAll(Func<KeyValuePair<K, V>, bool> predicate, int raiseEvent = 0);
+
+        /// <summary>
         /// 在控制项没有变动的情况下，触发ApplyValue，尝试触发事件。
         /// </summary>
         /// <param name="raiseEvent">Ignore = -1,Force:101, <seealso cref="RaiseEvent"/></param>

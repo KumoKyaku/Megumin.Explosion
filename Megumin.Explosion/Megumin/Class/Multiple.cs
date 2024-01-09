@@ -11,7 +11,10 @@ namespace Megumin
     /// <typeparam name="V"></typeparam>
     public abstract partial class Multiple<K, V> : EqualComparer<V>, IMultiple<K, V>
     {
-        protected readonly Dictionary<K, V> ElementDic = new Dictionary<K, V>();
+        /// <summary>
+        /// 所有构成项的字典，如果没有特殊需求不要再外部更改，使用方法。
+        /// </summary>
+        public readonly Dictionary<K, V> ElementDic = new();
         public event OnChanged<V> ValueChanged;
         public event OnChanged<(K Key, V Value)> ValueChangedKV;
         public event OnChanged<(K Key, V Value)> KeyOrValueChanged;
@@ -155,6 +158,14 @@ namespace Megumin
             //    //微软源码直接用泛型与null比较,这里不做判断了，增加两个构造函数保证DefaultKey 不为null。
             //}
 
+            ElementDic[DefaultKey] = DefaultValue;
+            ApplyValue(raiseEvent);
+            return Current;
+        }
+
+        public V RemoveAll(Func<KeyValuePair<K, V>, bool> predicate, int raiseEvent = 0)
+        {
+            ElementDic.RemoveAll(predicate);
             ElementDic[DefaultKey] = DefaultValue;
             ApplyValue(raiseEvent);
             return Current;
