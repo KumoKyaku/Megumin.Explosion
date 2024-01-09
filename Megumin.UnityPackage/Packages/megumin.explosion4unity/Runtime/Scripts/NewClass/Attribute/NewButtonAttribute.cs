@@ -206,14 +206,16 @@ namespace UnityEditor.Megumin
             EditorGUI.BeginProperty(position, label, property);
 
             var propertyType = property.propertyType;
+
             if (propertyType == SerializedPropertyType.ManagedReference
                 || propertyType == SerializedPropertyType.ObjectReference)
             {
                 DrawReference(property, label, position, propertyPosition, leftPosotion, rightPosition);
-                return;
             }
-
-            EditorGUI.PropertyField(position, property, label, true);
+            else
+            {
+                EditorGUI.PropertyField(position, property, label, true);
+            }
 
             EditorGUI.EndProperty();
         }
