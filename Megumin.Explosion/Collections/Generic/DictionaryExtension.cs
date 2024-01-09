@@ -181,23 +181,52 @@ namespace System.Collections.Generic
             }
         }
 
-        public struct Remover<K, V>
+        public struct Remover<K, V> : IDisposable, IEnumerable<K>
         {
-            private readonly IDictionary<K, V> list;
+            private readonly IDictionary<K, V> sourceCollection;
+            /// <summary>
+            /// 待移除缓存区
+            /// </summary>
             private List<K> cache;
 
-            public Remover(IDictionary<K, V> list)
+            public Remover(IDictionary<K, V> collection)
             {
-                this.list = list;
+                this.sourceCollection = collection;
                 cache = ListPool<K>.Shared.Rent();
             }
 
+            /// <summary>
+            /// 添加元素到待移除缓存区
+            /// </summary>
+            /// <param name="item"></param>
             public void Push(K item)
             {
                 DelayRemove(item);
             }
 
+            /// <summary>
+            /// 添加元素到待移除缓存区
+            /// </summary>
+            /// <param name="item"></param>
+            public void Add(K item)
+            {
+                RemoveDelay(item);
+            }
+
+            /// <summary>
+            /// 添加元素到待移除缓存区
+            /// </summary>
+            /// <param name="item"></param>
             public void DelayRemove(K item)
+            {
+                RemoveDelay(item);
+            }
+
+            /// <summary>
+            /// 添加元素到待移除缓存区
+            /// </summary>
+            /// <param name="item"></param>
+            public void RemoveDelay(K item)
             {
                 if (cache == null)
                 {
@@ -206,14 +235,35 @@ namespace System.Collections.Generic
                 cache.Add(item);
             }
 
+            /// <summary>
+            /// 现在从源容器中移除所有待移除缓存区中的元素
+            /// </summary>
             public void RemoveNow()
             {
-                foreach (var item in cache)
+                if (cache != null)
                 {
-                    list.Remove(item);
+                    foreach (var item in cache)
+                    {
+                        sourceCollection.Remove(item);
+                    }
+                    ListPool<K>.Shared.Return(ref cache);
+                    cache = null;
                 }
-                ListPool<K>.Shared.Return(ref cache);
-                cache = null;
+            }
+
+            public void Dispose()
+            {
+                RemoveNow();
+            }
+
+            public IEnumerator<K> GetEnumerator()
+            {
+                return ((IEnumerable<K>)cache).GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return ((IEnumerable)cache).GetEnumerator();
             }
         }
 

@@ -75,7 +75,7 @@ namespace System.Collections.Generic
             list.Sort((a, b) => a.CompareAaBbCc(b));
         }
 
-        public struct Remover<T> : IDisposable
+        public struct Remover<T> : IDisposable, IEnumerable<T>
         {
             private readonly ICollection<T> sourceCollection;
             /// <summary>
@@ -148,6 +148,16 @@ namespace System.Collections.Generic
             public void Dispose()
             {
                 RemoveNow();
+            }
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                return ((IEnumerable<T>)cache).GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return ((IEnumerable)cache).GetEnumerator();
             }
         }
 
