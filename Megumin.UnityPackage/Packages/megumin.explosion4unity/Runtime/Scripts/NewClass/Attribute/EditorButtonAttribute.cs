@@ -471,16 +471,18 @@ namespace UnityEditor.Megumin
             return parameterTypeDisplayName + " " + parameterInfo.Name;
         }
 
-        public static string MethodDisplayName(MethodInfo method)
+        public static string MethodDisplayName(MethodInfo method, Attribute drawAttribute)
         {
             string editorButtonName = "";
             bool useTypeFullName = false;
-            if (Attribute.IsDefined(method, typeof(ButtonAttribute)))
+            if (drawAttribute is ButtonAttribute buttonAttribute)
             {
-                ButtonAttribute tmp =
-                    (ButtonAttribute)Attribute.GetCustomAttribute(method, typeof(ButtonAttribute));
-                editorButtonName = tmp.ButtonName;
-                useTypeFullName = tmp.UseTypeFullName;
+                editorButtonName = buttonAttribute.ButtonName;
+                useTypeFullName = buttonAttribute.UseTypeFullName;
+            }
+            else if (drawAttribute is ContextMenu contextMenu)
+            {
+                editorButtonName = contextMenu.menuItem;
             }
 
             if (string.IsNullOrEmpty(editorButtonName))
@@ -523,18 +525,19 @@ namespace UnityEditor.Megumin
             return sb.ToString();
         }
 
+        [Obsolete("", true)]
         public static void DrawButtonforMethod(Object target,
                                                MethodInfo methodInfo,
                                                EditorButtonState state,
                                                bool onlyPlaying)
         {
-            DrawButtonforMethod(target, methodInfo, state, onlyPlaying ? 1 : 0);
+            DrawButtonforMethod(target, methodInfo, null, state, onlyPlaying ? 1 : 0);
         }
 
         public static void DrawButtonforMethod(Object target,
                                                DrawMethod drawMethod)
         {
-            DrawButtonforMethod(target, drawMethod.Method, drawMethod.State, drawMethod.EnableMode, drawMethod);
+            DrawButtonforMethod(target, drawMethod.Method, drawMethod.Attribute, drawMethod.State, drawMethod.EnableMode, drawMethod);
         }
 
         /// <summary>
@@ -550,6 +553,7 @@ namespace UnityEditor.Megumin
         /// </param>
         public static void DrawButtonforMethod(Object target,
                                                MethodInfo methodInfo,
+                                               Attribute drawAttribute,
                                                EditorButtonState state,
                                                int enableMode = 0,
                                                DrawMethod drawMethod = null)
@@ -586,7 +590,7 @@ namespace UnityEditor.Megumin
             EditorGUI.BeginDisabledGroup(!enable);
 
             //绘制按钮
-            string buttonName = MethodDisplayName(methodInfo);
+            string buttonName = MethodDisplayName(methodInfo, drawAttribute);
             GUIContent button = new GUIContent(buttonName);
             button.tooltip = drawMethod?.Tooltip?.tooltip;
             bool clicked = GUILayout.Button(button, GUILayout.ExpandWidth(true));
