@@ -7,9 +7,11 @@ namespace Megumin
 {
     public class DebugLineUtility
     {
-        public static readonly Material Material = new Material(Shader.Find("Unlit/Color"));
-        public static readonly Material MeshMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-        
+        public static readonly Shader UnlitColor = Shader.Find("Unlit/Color");
+        public static readonly Shader URPUnlit = Shader.Find("Universal Render Pipeline/Unlit");
+        public static readonly Material Material = new Material(UnlitColor);
+        public static readonly Material MeshMaterial = new Material(URPUnlit ?? UnlitColor);
+
         static DebugLineUtility()
         {
             Material.color = Color.red;
@@ -26,7 +28,9 @@ namespace Megumin
             MeshMaterial.SetOverrideTag("RenderType", "Transparent");
             MeshMaterial.renderQueue = 3000;
 
-            MeshMaterial.SetColor("_BaseColor", new Color(1, 0, 0, 0.5f));
+            Color debugColor = new Color(1, 0, 0, 0.5f);
+            MeshMaterial.color = debugColor;
+            MeshMaterial.SetColor("_BaseColor", debugColor);
             //无法从包加载
             //var mat = Resources.Load<Material>("New Material.mat");
         }
