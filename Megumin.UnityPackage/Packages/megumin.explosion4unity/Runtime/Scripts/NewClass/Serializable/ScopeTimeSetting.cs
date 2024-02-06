@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 namespace Megumin
 {
@@ -7,8 +8,12 @@ namespace Megumin
     /// 使用做闭右开区间可以大大减小逻辑复杂度
     /// 和<see cref="EnableableAttribute"/>一起使用时不要继承Scope,因为同一时刻只能有PropertyDrawer生效.
     /// </summary>
+    /// <remarks>
+    /// 重命名为ScopeTimeSetting，防止于Scope实例类型命名冲突
+    /// </remarks>
     [Serializable]
-    public class Scope
+    [MovedFrom(true, "Megumin", "Megumin.Explosion4Unity", "Scope")]
+    public class ScopeTimeSetting
     {
         public bool IsDurationMode = false;
 
@@ -77,8 +82,8 @@ namespace UnityEditor.Megumin
     /// <summary>
     /// 使用<see cref="OnValueChangedAttribute"/>没有成功.Odin的OnvalueChanged,可以的但是Odin太卡.
     /// </summary>
-    [CustomPropertyDrawer(typeof(Scope), true)]
-    internal sealed class ScopeDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(ScopeTimeSetting), true)]
+    internal sealed class ScopeTimeSettingDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
