@@ -8,6 +8,9 @@ namespace Megumin
     public class DebugLineUtility
     {
         public static readonly Shader UnlitColor = Shader.Find("Unlit/Color");
+        /// <summary>
+        /// 记得将shader添加到Always Included Shaders
+        /// </summary>
         public static readonly Shader URPUnlit = Shader.Find("Universal Render Pipeline/Unlit");
         public static readonly Material Material = new Material(UnlitColor);
         public static readonly Material MeshMaterial = new Material(URPUnlit ?? UnlitColor);
