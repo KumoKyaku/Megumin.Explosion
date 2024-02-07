@@ -18,6 +18,9 @@ namespace Megumin
     /// 使用<see cref="SupportTypesAttribute"/>设置支持类型的搜索范围。
     /// <para><see cref="SerializeReference"/>不从<see cref="PropertyAttribute"/>继承，所以这个特性无法省略。</para>
     /// </summary>
+    /// <remarks>
+    /// 注意，截止到2023.2不能通过<see cref="SerializeReference"/>，同时支持序列化普通对象和unity对象切换，赋值时回报错
+    /// </remarks>
     public class NewButtonAttribute : PropertyAttribute
     {
         public int LeftButtonWidth { get; set; } = 40;
@@ -811,7 +814,15 @@ namespace UnityEditor.Megumin
                 else
                 {
                     //创建新的引用值
-                    newObj = Activator.CreateInstance(type);
+                    if (typeof(UnityEngine.Object).IsAssignableFrom(type))
+                    {
+                        //当类型是unity类型，使用unity创建
+                        newObj = CreateUnityObjectInstance(property, type);
+                    }
+                    else
+                    {
+                        newObj = Activator.CreateInstance(type);
+                    }
 
                     if (property.managedReferenceValue != null
                         && isChangeType)
@@ -832,17 +843,27 @@ namespace UnityEditor.Megumin
             //切换前缓存当前值，否则第一显示对象，切换后，初始值没有被缓存。
             History.Cache(property, property.managedReferenceValue);
 
-            property.managedReferenceValue = newObj;
+            if (newObj is UnityEngine.Object unityObj)
+            {
+                //当多态序列化时unity对象时赋值到objectReferenceValue
+                //还是不能同时支持unity对象和接口多态序列化。这里赋值回报错，并不能正确执行。
+                property.objectReferenceValue = unityObj;
+            }
+            else
+            {
+                property.managedReferenceValue = newObj;
+            }
+
             History.Cache(property, newObj);
         }
 
-        private static void CreateUnityObjectInstance(SerializedProperty property, string type)
+        private static UnityEngine.Object CreateUnityObjectInstance(SerializedProperty property, string type)
         {
             var instance = ScriptableObject.CreateInstance(type);
-            CreateUnityObjectAsset(property, instance);
+            return CreateUnityObjectAsset(property, instance);
         }
 
-        private static void CreateUnityObjectInstance(SerializedProperty property, Type type)
+        private static UnityEngine.Object CreateUnityObjectInstance(SerializedProperty property, Type type)
         {
             UnityEngine.Object instance = null;
             if (typeof(ScriptableObject).IsAssignableFrom(type))
@@ -885,20 +906,20 @@ namespace UnityEditor.Megumin
                 instance = constructor.Invoke(args) as UnityEngine.Object;
             }
 
-            CreateUnityObjectAsset(property, instance);
+            return CreateUnityObjectAsset(property, instance);
         }
 
         const string Root = @"Assets";
-        private static void CreateUnityObjectAsset(SerializedProperty property, UnityEngine.Object instance)
+        private static UnityEngine.Object CreateUnityObjectAsset(SerializedProperty property, UnityEngine.Object instance)
         {
             string dir = GetDir(property);
 
             if (Event.current.alt || ClonePathModeSetting.PathMode == ClonePathModeSetting.ClonePathMode.SubAsset)
             {
-                var success = CreateSubAsset(property, instance, dir);
+                var success = TryCreateSubAsset(property, instance, dir, out var newAsset);
                 if (success)
                 {
-                    return;
+                    return newAsset;
                 }
             }
 
@@ -911,9 +932,14 @@ namespace UnityEditor.Megumin
             AssetDatabase.CreateAsset(instance, path);
             AssetDatabase.Refresh();
             property.objectReferenceValue = instance;
+            return instance;
         }
 
-        public static bool CreateSubAsset(SerializedProperty property, UnityEngine.Object instance, string dir)
+        public static bool TryCreateSubAsset(
+            SerializedProperty property,
+            UnityEngine.Object instance,
+            string dir,
+            out UnityEngine.Object newAsset)
         {
             try
             {
@@ -937,12 +963,14 @@ namespace UnityEditor.Megumin
                 }
                 instance.name = tempName;
                 //AssetDatabase.ImportAsset(assetPath);
+                newAsset = instance;
                 property.objectReferenceValue = instance;
                 property.serializedObject.targetObject.AssetDataSetDirty();
                 AssetDatabase.SaveAssetIfDirty(property.serializedObject.targetObject);
             }
             catch (Exception)
             {
+                newAsset = null;
                 return false;
             }
 
