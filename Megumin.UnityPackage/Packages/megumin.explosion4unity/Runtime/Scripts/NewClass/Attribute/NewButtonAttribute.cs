@@ -31,6 +31,11 @@ namespace Megumin
         /// </summary>
         public bool CanExpand { get; set; } = true;
 
+        /// <summary>
+        /// 指定一个bool值属性作为开关。并将Toggle绘制在外侧顶部。
+        /// </summary>
+        public string EnabledPropertyPath { get; set; } = "Enabled";
+
         public NewButtonAttribute()
         {
 
@@ -306,7 +311,13 @@ namespace UnityEditor.Megumin
                         #region 绘制额外的开启关闭Toggle
 
                         //当序列化对象允许设置开启关闭时，将开启关闭开关绘制在外层
-                        SerializedProperty toggle = property.FindPropertyRelative("Enabled");
+                        var enabledPath = "Enabled";
+                        if (attribute is NewButtonAttribute newButtonAttribute)
+                        {
+                            enabledPath = newButtonAttribute.EnabledPropertyPath;
+                        }
+
+                        SerializedProperty toggle = property.FindPropertyRelative(enabledPath);
                         if (toggle != null)
                         {
                             var toggleRect = textPosition;
