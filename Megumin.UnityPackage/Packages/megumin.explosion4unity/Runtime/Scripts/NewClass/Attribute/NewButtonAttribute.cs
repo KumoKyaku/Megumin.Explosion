@@ -302,8 +302,29 @@ namespace UnityEditor.Megumin
                         textPosition.xMax = propertyPosition.xMax;
                         textPosition.height = 18;
 
+                        bool contentEnabled = true;
+                        #region 绘制额外的开启关闭Toggle
+
+                        //当序列化对象允许设置开启关闭时，将开启关闭开关绘制在外层
+                        SerializedProperty toggle = property.FindPropertyRelative("Enabled");
+                        if (toggle != null)
+                        {
+                            var toggleRect = textPosition;
+                            toggleRect.width = 18;
+
+                            EditorGUI.BeginProperty(toggleRect, GUIContent.none, toggle);
+                            toggle.boolValue = GUI.Toggle(toggleRect, toggle.boolValue, GUIContent.none);
+                            contentEnabled = toggle.boolValue;
+                            EditorGUI.EndProperty();
+
+                            textPosition.x += 20;
+                            textPosition.width -= 20;
+                        }
+
+                        #endregion
+
                         //绘制当前类型按钮，点击选中类型脚本，双击打开类型脚本
-                        using (new UnityEditor.EditorGUI.DisabledGroupScope(true))
+                        using (new UnityEditor.EditorGUI.DisabledScope(!contentEnabled))
                         {
                             //绘制一个Disabled风格的Field，再在上面绘制一个button
                             //直接绘制button在里面没办法点击
@@ -315,13 +336,16 @@ namespace UnityEditor.Megumin
                             ClickTypeLable(targetType);
                         }
 
-                        if (!property.isExpanded)
+                        using (new EditorGUI.DisabledScope(!contentEnabled))
                         {
-                            EditorGUI.PropertyField(propertyPosition, property, label, true);
-                        }
-                        else
-                        {
-                            EditorGUI.PropertyField(position, property, label, true);
+                            if (!property.isExpanded)
+                            {
+                                EditorGUI.PropertyField(propertyPosition, property, label, true);
+                            }
+                            else
+                            {
+                                EditorGUI.PropertyField(position, property, label, true);
+                            }
                         }
                     }
                     else
