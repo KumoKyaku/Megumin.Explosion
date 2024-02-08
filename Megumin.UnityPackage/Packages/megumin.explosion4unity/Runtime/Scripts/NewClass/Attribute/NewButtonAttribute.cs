@@ -298,7 +298,8 @@ namespace UnityEditor.Megumin
                     {
                         var textPosition = propertyPosition;
                         textPosition.x += EditorGUIUtility.labelWidth + 2;
-                        textPosition.width -= EditorGUIUtility.labelWidth;
+                        //textPosition.width -= EditorGUIUtility.labelWidth;
+                        textPosition.xMax = propertyPosition.xMax;
                         textPosition.height = 18;
 
                         //绘制当前类型按钮，点击选中类型脚本，双击打开类型脚本
