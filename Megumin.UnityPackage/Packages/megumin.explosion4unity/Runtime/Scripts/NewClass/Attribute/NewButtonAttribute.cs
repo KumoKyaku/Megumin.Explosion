@@ -136,6 +136,7 @@ namespace UnityEditor.Megumin
         /// <para/> 必须也使用object instance作为key的一部分，否则当list拖动改变元素顺序时，缓存导致错误。要重新选择才能正确显示。
         /// </summary>
         public static Dictionary<(UnityEngine.Object Target, string Path, object instance), int> SelectedIndex = new();
+        public static DateTimeOffset LastClearSelectedIndexCacheTime = DateTimeOffset.MinValue;
 
         /// <summary>
         /// 代码中声明的成员类型
@@ -161,6 +162,13 @@ namespace UnityEditor.Megumin
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            if (DateTimeOffset.UtcNow - LastClearSelectedIndexCacheTime > TimeSpan.FromMinutes(5))
+            {
+                //每5分钟清理一次缓存，防止过多的内存泄露。
+                SelectedIndex.Clear();
+                LastClearSelectedIndexCacheTime = DateTimeOffset.UtcNow;
+            }
+
             if (saveTask != null)
             {
                 var T = saveTask.T;
