@@ -275,6 +275,11 @@ namespace UnityEditor.Megumin
                                 }
                             }
                         }
+                        else
+                        {
+                            index = 0;
+                            SelectedIndex[indexCacheKey] = 0;
+                        }
                     }
 
                     var oldSelectedIndex = index;
@@ -581,8 +586,7 @@ namespace UnityEditor.Megumin
 
                 if (property.propertyType == SerializedPropertyType.ManagedReference)
                 {
-                    //一般类型，因为没办法设置为null，在下拉菜单中最后加入null类型，用于清空当前值
-                    int index = 0;
+
                     SupportNames = new string[allTypes.Count + 1];
                     SupportTypes = new Type[allTypes.Count + 1];
 
@@ -590,6 +594,12 @@ namespace UnityEditor.Megumin
 
                     var indexCacheKey = (property.serializedObject.targetObject, property.propertyPath, property.managedReferenceValue);
                     SelectedIndex[indexCacheKey] = allTypes.Count;
+
+                    //一般类型，因为没办法设置为null，在下拉菜单中第一项加入null类型，用于清空当前值
+                    int index = 0;
+                    SupportNames[index] = "Null";
+                    SupportTypes[index] = null;
+                    index++;
 
                     foreach (var item in allTypes)
                     {
@@ -602,9 +612,6 @@ namespace UnityEditor.Megumin
                         }
                         index++;
                     }
-
-                    SupportNames[allTypes.Count] = "Null";
-                    SupportTypes[allTypes.Count] = null;
                 }
                 else
                 {
