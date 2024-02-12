@@ -131,10 +131,11 @@ namespace UnityEditor.Megumin
         int DropMenuIndex = 0;
 
         /// <summary>
-        /// 为每个序列化对象的每个path缓存index，同一个path共享index。
-        /// TODO,这里BUG，当list拖动改变元素顺序时，缓存导致错误。要重新选择才能正确显示。
+        /// 这个缓存要是静态的，否则不生效。虽然会导致内存泄露，注意定时清除。
+        /// <para/> 为每个序列化对象的每个path缓存index，同一个path共享index。
+        /// <para/> 必须也使用object instance作为key的一部分，否则当list拖动改变元素顺序时，缓存导致错误。要重新选择才能正确显示。
         /// </summary>
-        public static Dictionary<(UnityEngine.Object Target, string Path), int> SelectedIndex = new();
+        public static Dictionary<(UnityEngine.Object Target, string Path, object instance), int> SelectedIndex = new();
 
         /// <summary>
         /// 代码中声明的成员类型
@@ -249,8 +250,24 @@ namespace UnityEditor.Megumin
                     popPosition.width += 2;
                     popPosition.x -= 2;
 
-                    var indexCacheKey = (property.serializedObject.targetObject, property.propertyPath);
-                    SelectedIndex.TryGetValue(indexCacheKey, out var index);
+                    var indexCacheKey = (property.serializedObject.targetObject, property.propertyPath, property.managedReferenceValue);
+                    if (!SelectedIndex.TryGetValue(indexCacheKey, out var index))
+                    {
+                        //当前对象没用缓存时，尝试匹配类型
+                        if (property.managedReferenceValue != null)
+                        {
+                            var instanceType = property.managedReferenceValue.GetType();
+                            for (int i = 0; i < SupportTypes.Length; i++)
+                            {
+                                if (instanceType == SupportTypes[i])
+                                {
+                                    index = i;
+                                    SelectedIndex[indexCacheKey] = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
                     var oldSelectedIndex = index;
 
@@ -563,7 +580,7 @@ namespace UnityEditor.Megumin
 
                     var currentType = property.managedReferenceValue?.GetType();
 
-                    var indexCacheKey = (property.serializedObject.targetObject, property.propertyPath);
+                    var indexCacheKey = (property.serializedObject.targetObject, property.propertyPath, property.managedReferenceValue);
                     SelectedIndex[indexCacheKey] = allTypes.Count;
 
                     foreach (var item in allTypes)
