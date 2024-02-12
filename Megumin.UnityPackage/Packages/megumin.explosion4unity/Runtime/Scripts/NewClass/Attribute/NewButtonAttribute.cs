@@ -132,6 +132,7 @@ namespace UnityEditor.Megumin
 
         /// <summary>
         /// 为每个序列化对象的每个path缓存index，同一个path共享index。
+        /// TODO,这里BUG，当list拖动改变元素顺序时，缓存导致错误。要重新选择才能正确显示。
         /// </summary>
         public static Dictionary<(UnityEngine.Object Target, string Path), int> SelectedIndex = new();
 
@@ -606,7 +607,9 @@ namespace UnityEditor.Megumin
         {
             var canExpand = (attribute as NewButtonAttribute)?.CanExpand ?? true;
 
-            if (canExpand && property.isExpanded && property.objectReferenceValue != null)
+            if (canExpand && property.isExpanded
+                && property.objectReferenceValue != null
+                && property.objectReferenceValue != property.serializedObject.targetObject)//防止循环嵌套展开
             {
                 using (SerializedObject serializedObject = new SerializedObject(property.objectReferenceValue))
                 {
@@ -652,7 +655,8 @@ namespace UnityEditor.Megumin
         {
             var canExpand = (attribute as NewButtonAttribute)?.CanExpand ?? true;
             if (canExpand && property.propertyType == SerializedPropertyType.ObjectReference
-                && property.objectReferenceValue != null)
+                && property.objectReferenceValue != null
+                && property.objectReferenceValue != property.serializedObject.targetObject)//防止循环嵌套展开
             {
                 // Draw a foldout
                 Rect foldoutRect = new Rect()
