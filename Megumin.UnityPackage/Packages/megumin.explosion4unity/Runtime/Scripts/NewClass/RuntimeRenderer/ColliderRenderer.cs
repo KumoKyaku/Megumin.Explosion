@@ -14,6 +14,7 @@ namespace Megumin
     public class ColliderRenderer : MonoBehaviour
     {
         const string OverrideName = "[Override]";
+        public int BaseColorID = Shader.PropertyToID("_BaseColor");
         /// <summary>
         /// 全局显示开关
         /// </summary>
@@ -214,6 +215,7 @@ namespace Megumin
             overrideMat = Instantiate(DefaultMat);
             overrideMat.name = OverrideName;
             overrideMat.color = color;
+            overrideMat.SetColor(BaseColorID, color);
             CacheOverrideColor = color;
             this.AssetDataSetDirty();
         }
@@ -284,13 +286,24 @@ namespace Megumin
                     {
                         if (ForceShowOnDisable || collider.enabled)
                         {
-                            if (collider is MeshCollider meshCollider)
+                            var mat = Material;
+                            var color = Color.white;
+                            if (mat.HasColor(BaseColorID))
                             {
-                                meshCollider.GizmoDraw(Material.color, MeshDrawOffset);
+                                color = mat.GetColor(BaseColorID);
                             }
                             else
                             {
-                                collider.GizmoDraw(Material.color);
+                                color = mat.color;
+                            }
+
+                            if (collider is MeshCollider meshCollider)
+                            {
+                                meshCollider.GizmoDraw(color, MeshDrawOffset);
+                            }
+                            else
+                            {
+                                collider.GizmoDraw(color);
                             }
                         }
                     }
