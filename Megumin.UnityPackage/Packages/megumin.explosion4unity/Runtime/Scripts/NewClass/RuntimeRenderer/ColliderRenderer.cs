@@ -205,19 +205,34 @@ namespace Megumin
         Color? CacheOverrideColor = null;
 
         [Button]
-        public void OverrideColor(Color color, bool force = false)
+        public Material OverrideColor(Color color, bool force = false)
         {
             if (CacheOverrideColor == color && force == false)
             {
-                return;
+                return null;
             }
 
-            overrideMat = Instantiate(DefaultMat);
-            overrideMat.name = OverrideName;
-            overrideMat.color = color;
-            overrideMat.SetColor(BaseColorID, color);
+            var newMat = Instantiate(DefaultMat);
+            newMat.name = OverrideName;
+            newMat.color = color;
+            newMat.SetColor(BaseColorID, color);
+
             CacheOverrideColor = color;
+            overrideMat = newMat;
             this.AssetDataSetDirty();
+
+            return newMat;
+        }
+
+        [Button]
+        public async void OverrideColor(Color color, float duration, bool force = false)
+        {
+            var newMat = OverrideColor(color, force);
+            await Awaitable.WaitForSecondsAsync(duration);
+            if (newMat == overrideMat)
+            {
+                ResetMat();
+            }
         }
 
         public void OverrideColor(Color? color, bool force = false)

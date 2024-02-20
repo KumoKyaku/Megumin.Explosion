@@ -25,12 +25,14 @@ namespace Megumin
             if (typeof(Color) == typeof(T))
             {
                 defaultValue = (T)(object)Color.gray;
+                MyOverrideValue = defaultValue;
             }
         }
 
         public Overridable(T defaultValue)
         {
             this.defaultValue = defaultValue;
+            this.MyOverrideValue = defaultValue;
         }
 
         public void SetDefaultValue(T value)
