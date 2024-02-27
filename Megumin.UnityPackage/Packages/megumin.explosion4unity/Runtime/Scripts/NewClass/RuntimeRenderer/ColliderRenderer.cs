@@ -228,7 +228,7 @@ namespace Megumin
         public async void OverrideColor(Color color, float duration, bool force = false)
         {
             var newMat = OverrideColor(color, force);
-            await Awaitable.WaitForSecondsAsync(duration);
+            await System.Threading.Tasks.Task.Delay((int)(duration * 1000));
             if (newMat == overrideMat)
             {
                 ResetMat();
