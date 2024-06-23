@@ -113,11 +113,23 @@ namespace Megumin
         void SetAllAreaName()
         {
 #if UNITY_EDITOR
+
+#if UNITY_6000_0_OR_NEWER
+            var areaNames = UnityEngine.AI.NavMesh.GetAreaNames();
+#else
             var areaNames = GameObjectUtility.GetNavMeshAreaNames();
+#endif
+
             AllAreaName = new string[32];
             foreach (var item in areaNames)
             {
+
+#if UNITY_6000_0_OR_NEWER
+                var areaIndex = UnityEngine.AI.NavMesh.GetAreaFromName(item);
+#else
                 var areaIndex = GameObjectUtility.GetNavMeshAreaFromName(item);
+#endif
+
                 AllAreaName[areaIndex] = item;
                 mapping[1 << areaIndex] = item;
             }

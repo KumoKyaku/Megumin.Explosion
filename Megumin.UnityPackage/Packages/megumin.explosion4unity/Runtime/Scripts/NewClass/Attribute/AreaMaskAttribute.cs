@@ -42,7 +42,13 @@ namespace UnityEditor.Megumin
                 buttonPosition.x += position.width - 80;
 
                 //Initially needed data
+
+#if UNITY_6000_0_OR_NEWER
+                var areaNames = UnityEngine.AI.NavMesh.GetAreaNames();
+#else
                 var areaNames = GameObjectUtility.GetNavMeshAreaNames();
+#endif
+
                 var currentMask = property.longValue;
                 var compressedMask = 0;
 
@@ -55,7 +61,13 @@ namespace UnityEditor.Megumin
                     //Need to find the index as the list of names will compress out empty areas
                     for (var i = 0; i < areaNames.Length; i++)
                     {
+
+#if UNITY_6000_0_OR_NEWER
+                        var areaIndex = UnityEngine.AI.NavMesh.GetAreaFromName(areaNames[i]);
+#else
                         var areaIndex = GameObjectUtility.GetNavMeshAreaFromName(areaNames[i]);
+#endif
+
                         if (((1 << areaIndex) & currentMask) != 0)
                             compressedMask = compressedMask | (1 << i);
                     }
@@ -83,7 +95,7 @@ namespace UnityEditor.Megumin
                             if (((areaMask >> i) & 1) != 0)
                             {
                                 //Find out the 'real' layer from the name, then set it in the new mask
-                                newMask = newMask | (uint)(1 << GameObjectUtility.GetNavMeshAreaFromName(areaNames[i]));
+                                newMask = newMask | (uint)(1 << UnityEngine.AI.NavMesh.GetAreaFromName(areaNames[i]));
                             }
                         }
 
