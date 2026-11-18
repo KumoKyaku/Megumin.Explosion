@@ -25,8 +25,7 @@ public static partial class DrawExtension_95DA6E62
                           UnityEngine.Rendering.ShadowCastingMode.Off,
                           false,
                           null,
-                          UnityEngine.Rendering.LightProbeUsage.Off,
-                          null);
+                          UnityEngine.Rendering.LightProbeUsage.Off);
         }
         else
         {

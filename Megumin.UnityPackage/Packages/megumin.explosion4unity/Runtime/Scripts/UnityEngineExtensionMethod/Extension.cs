@@ -558,6 +558,7 @@ namespace UnityEngine
             return null;
         }
 
+#if MEGUMIN_UGUI
         public static void AddUGUI<T>(this MenuCommand command) where T : MonoBehaviour
         {
             System.Reflection.BindingFlags flags
@@ -579,6 +580,7 @@ namespace UnityEngine
             GameObject go = factory.CreateGameObject(typeof(T).Name, typeof(T));
             method.Invoke(null, new object[] { go, command });
         }
+#endif
 
         [MenuItem("CONTEXT/Component/Convert Inheritance Type", true)]
         private static bool CanConvertInheritanceType(MenuCommand command)

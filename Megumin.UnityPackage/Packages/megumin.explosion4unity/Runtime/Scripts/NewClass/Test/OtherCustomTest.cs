@@ -17,7 +17,7 @@ namespace Megumin
         }
 
         public bool OnEnable_Log = true;
-        // µ±¶ÔÏóÒÑÆôÓÃ²¢´¦ÓÚ»î¶¯×´Ì¬Ê±µ÷ÓÃ´Ëº¯Êı
+        // å½“å¯¹è±¡å·²å¯ç”¨å¹¶å¤„äºæ´»åŠ¨çŠ¶æ€æ—¶è°ƒç”¨æ­¤å‡½æ•°
         private void OnEnable()
         {
             if (OnEnable_Log)

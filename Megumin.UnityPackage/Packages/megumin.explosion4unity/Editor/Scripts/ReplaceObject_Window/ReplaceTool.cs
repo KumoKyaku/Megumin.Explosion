@@ -2,6 +2,12 @@
 using UnityEngine;
 using UnityEditor;
 
+#if UNITY_6000_6_OR_NEWER
+using SelectionId = UnityEngine.EntityId;
+#else
+using SelectionId = System.Int32;
+#endif
+
 // This code has been adapted from a tutorial by Patryk Galach
 // https://www.patrykgalach.com/2019/08/26/replace-tool-for-level-designers
 
@@ -134,7 +140,7 @@ namespace Megumin
 		/// <param name="replaceObject">Prefab that will be instantiated in place of the objects to replace.</param>
 		internal static void ReplaceSelectedObjects(GameObject[] objectToReplace, GameObject replaceObject)
 		{
-			var newInstances = new int[objectToReplace.Length];
+			var newInstances = new SelectionId[objectToReplace.Length];
 
 			for (int i = 0; i < objectToReplace.Length; i++)
 			{
@@ -144,7 +150,7 @@ namespace Megumin
 
 				var sibling = go.transform.GetSiblingIndex();
 				var inst = (GameObject)PrefabUtility.InstantiatePrefab(replaceObject);
-				newInstances[i] = inst.GetInstanceID();
+				newInstances[i] = GetSelectionId(inst);
 
 				inst.transform.position = go.transform.position;
 				inst.transform.rotation = go.transform.rotation;
@@ -160,8 +166,30 @@ namespace Megumin
 				Undo.DestroyObjectImmediate(go);
 			}
 
-			Selection.instanceIDs = newInstances;
+			SetSelection(newInstances);
 		}
+
+#if UNITY_6000_6_OR_NEWER
+		static SelectionId GetSelectionId(Object obj)
+		{
+			return obj.GetEntityId();
+		}
+
+		static void SetSelection(SelectionId[] ids)
+		{
+			Selection.entityIds = ids;
+		}
+#else
+		static SelectionId GetSelectionId(Object obj)
+		{
+			return obj.GetInstanceID();
+		}
+
+		static void SetSelection(SelectionId[] ids)
+		{
+			Selection.instanceIDs = ids;
+		}
+#endif
 	}
 
 	/// <summary>

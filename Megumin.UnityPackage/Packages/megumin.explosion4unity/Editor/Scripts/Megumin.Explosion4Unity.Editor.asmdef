@@ -22,6 +22,11 @@
             "name": "com.unity.immediate-window",
             "expression": "1.0.0",
             "define": "InvokeString"
+        },
+        {
+            "name": "com.unity.ugui",
+            "expression": "1.0.0",
+            "define": "MEGUMIN_UGUI"
         }
     ],
     "noEngineReferences": false

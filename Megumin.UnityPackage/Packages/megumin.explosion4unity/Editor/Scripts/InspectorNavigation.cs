@@ -5,6 +5,12 @@ using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
+#if UNITY_6000_6_OR_NEWER
+using SelectionId = UnityEngine.EntityId;
+#else
+using SelectionId = System.Int32;
+#endif
+
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -13,7 +19,7 @@ using UnityEngine.InputSystem;
 /// </summary>
 public partial class InspectorNavigation
 {
-    static Node<int[]> current;
+    static Node<SelectionId[]> current;
     static InspectorNavigation()
     {
         InitRing();
@@ -25,7 +31,7 @@ public partial class InspectorNavigation
     /// <param name="count">默认12个，个人实际使用中感觉最好。</param>
     public static void InitRing(int count = 12)
     {
-        Ring<int[]> ring = new Ring<int[]>(count);
+        Ring<SelectionId[]> ring = new Ring<SelectionId[]>(count);
         current = ring.Current;
     }
 
@@ -60,14 +66,14 @@ public partial class InspectorNavigation
     /// <summary>
     /// 最后手动选中
     /// </summary>
-    public static int[] lastSelected;
+    public static SelectionId[] lastSelected;
     /// <summary>
     /// 最后手动选中的节点
     /// </summary>
-    static Node<int[]> lastSelectedNode;
+    static Node<SelectionId[]> lastSelectedNode;
     public static void OnSelect()
     {
-        var cur = Selection.instanceIDs;
+        var cur = GetSelection();
 
         if (TestSame(cur, current.Value))
         {
@@ -111,7 +117,7 @@ public partial class InspectorNavigation
         }
 
         current = current.Next;
-        Selection.instanceIDs = current.Value;
+        SetSelection(current.Value);
         //Debug.Log($"Foward {Selection.instanceIDs[0]}");
     }
 
@@ -134,7 +140,7 @@ public partial class InspectorNavigation
         }
 
         current = current.Previous;
-        Selection.instanceIDs = current.Value;
+        SetSelection(current.Value);
         //Debug.Log($"Back {Selection.instanceIDs[0]}");
     }
 
@@ -157,16 +163,39 @@ public partial class InspectorNavigation
             if (lastSelectedNode?.Value != null)
             {
                 current = lastSelectedNode;
-                Selection.instanceIDs = current.Value;
+                SetSelection(current.Value);
             }
             return;
         }
 
         current = current.Previous;
-        Selection.instanceIDs = current.Value;
+        SetSelection(current.Value);
     }
 
-    static bool TestSame(int[] a, int[] b)
+#if UNITY_6000_6_OR_NEWER
+    // Unity 6.6 起 Selection.instanceIDs 为 error 级过时 API，改用 EntityId 接口。
+    static SelectionId[] GetSelection()
+    {
+        return Selection.entityIds;
+    }
+
+    static void SetSelection(SelectionId[] ids)
+    {
+        Selection.entityIds = ids;
+    }
+#else
+    static SelectionId[] GetSelection()
+    {
+        return Selection.instanceIDs;
+    }
+
+    static void SetSelection(SelectionId[] ids)
+    {
+        Selection.instanceIDs = ids;
+    }
+#endif
+
+    static bool TestSame(SelectionId[] a, SelectionId[] b)
     {
         if (a == null && b == null)
         {

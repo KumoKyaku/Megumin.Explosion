@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+#if MEGUMIN_UGUI
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -97,4 +98,5 @@ namespace Megumin
         }
     }
 }
+#endif
 

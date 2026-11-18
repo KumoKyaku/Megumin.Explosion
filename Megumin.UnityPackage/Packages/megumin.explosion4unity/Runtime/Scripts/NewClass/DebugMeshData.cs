@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+#if MEGUMIN_TMPROEX
 using TMPro;
+#endif
 
 namespace Megumin
 {
     /// <summary>
-    /// 调试Mesh工具,快速显示mesh数据.
+    /// 璋冭瘯Mesh宸ュ叿,蹇�熸樉绀簃esh鏁版嵁.
     /// </summary>
     public class DebugMeshData : MonoBehaviour
     {
@@ -29,6 +31,7 @@ namespace Megumin
         public Texture Texture;
         public Shader Shader;
 
+#if MEGUMIN_TMPROEX
         [Button]
         void CollectMesh()
         {
@@ -39,6 +42,7 @@ namespace Megumin
                 Meshes.Add(item.mesh);
             }
         }
+#endif
 
         [Button]
         void ParseMat()

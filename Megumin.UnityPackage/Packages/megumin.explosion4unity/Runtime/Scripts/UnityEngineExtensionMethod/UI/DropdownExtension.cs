@@ -1,4 +1,5 @@
 ﻿using System;
+#if MEGUMIN_UGUI
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -80,3 +81,4 @@ namespace UnityEngine.UI
         }
     }
 }
+#endif

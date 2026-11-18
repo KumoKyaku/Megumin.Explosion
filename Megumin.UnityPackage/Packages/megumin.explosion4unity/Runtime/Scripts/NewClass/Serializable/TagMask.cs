@@ -32,7 +32,7 @@ namespace Megumin
         }
 
         /// <summary>
-        /// ²»ÖªµÀµ÷ÓÃCompareTagºÍ Tags.Contains ÄÄ¸ö¸üÊ¡Ò»Ğ©£¿
+        /// ä¸çŸ¥é“è°ƒç”¨CompareTagå’Œ Tags.Contains å“ªä¸ªæ›´çœä¸€äº›ï¼Ÿ
         /// </summary>
         /// <param name="gameObject"></param>
         /// <returns></returns>

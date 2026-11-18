@@ -1,4 +1,5 @@
 using System.Collections;
+#if MEGUMIN_TMPROEX
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
@@ -51,5 +52,6 @@ namespace Megumin
         }
     }
 }
+#endif
 
 

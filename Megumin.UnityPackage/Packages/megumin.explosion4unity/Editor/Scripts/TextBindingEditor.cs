@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+#if MEGUMIN_UGUI
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -133,3 +134,4 @@ public class TextBindingEditor: Editor
                    select item.Name).ToArray();
     }
 }
+#endif

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+#if MEGUMIN_UGUI
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -44,4 +45,5 @@ namespace Megumin.Test
         }
     }
 }
+#endif
 

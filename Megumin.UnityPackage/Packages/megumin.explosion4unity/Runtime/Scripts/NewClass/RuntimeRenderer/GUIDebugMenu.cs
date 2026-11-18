@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+#if MEGUMIN_UGUI
 using UnityEngine.UI;
+#endif
 
 namespace Megumin
 {
@@ -42,7 +44,11 @@ namespace Megumin
         class Binds
         {
             public string Name = "DebugButton";
+#if MEGUMIN_UGUI
             public Button.ButtonClickedEvent Bind;
+#else
+            public UnityEvent Bind;
+#endif
         }
 
         public void TestLog()

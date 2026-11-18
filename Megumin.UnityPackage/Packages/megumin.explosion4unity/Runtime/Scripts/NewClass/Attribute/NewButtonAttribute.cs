@@ -104,8 +104,10 @@ namespace UnityEditor.Megumin
     [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 #endif
     //[CustomPropertyDrawer(typeof(INewCloneButton), true)]
+#pragma warning disable CS0618 // 旧特性已标记过时，但仍需保留抽屉以兼容已有工程
     [CustomPropertyDrawer(typeof(NewButtonAttribute), true)]
     [CustomPropertyDrawer(typeof(SerializeReferenceNewButtonAttribute), true)]
+#pragma warning restore CS0618
 #endif
     public partial class INewCloneButtonDrawer_72946648EEF14A43B837BAC45D14BFF3 : PropertyDrawer
     {

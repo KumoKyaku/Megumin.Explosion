@@ -43,6 +43,11 @@
         },
         {
             "name": "com.unity.ugui",
+            "expression": "1.0.0",
+            "define": "MEGUMIN_UGUI"
+        },
+        {
+            "name": "com.unity.ugui",
             "expression": "2.0.0",
             "define": "MEGUMIN_TMPROEX"
         }

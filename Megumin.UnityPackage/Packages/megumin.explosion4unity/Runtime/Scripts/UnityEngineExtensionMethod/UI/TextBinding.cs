@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+#if MEGUMIN_UGUI
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
@@ -40,3 +41,4 @@ public class TextBinding : MonoBehaviour
         Text.text = targetFeild.GetValue(BindingScript,null).ToString();
     }
 }
+#endif
